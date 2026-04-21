@@ -73,3 +73,22 @@ $routes->group('beneficiarios', function($routes){
     $routes->post('store/(:num)', 'BeneficiariosController::store/$1');
 
 });
+
+// =====================================================
+// RUTAS MÓDULO BENEFICIARIOS — reemplazar en app/Config/Routes.php
+// (borrar las rutas viejas de jornadas/beneficiarios y beneficiarios)
+// =====================================================
+
+$routes->group('jornadas', function($routes){
+    $routes->get('(:num)/beneficiarios', 'JornadaBeneficiariosController::index/$1');
+    $routes->post('(:num)/asociar/(:num)', 'JornadaBeneficiariosController::asociar/$1/$2');
+    $routes->get('(:num)/desasociar/(:num)', 'JornadaBeneficiariosController::desasociar/$1/$2');
+});
+
+$routes->group('beneficiarios', function($routes){
+    $routes->get('buscar/(:num)', 'BeneficiariosController::buscar/$1');
+    $routes->get('buscarAjax', 'BeneficiariosController::buscarAjax');
+    $routes->get('buscarAntecedentesAjax', 'BeneficiariosController::buscarAntecedentesAjax');
+    $routes->get('create/(:num)', 'BeneficiariosController::create/$1');
+    $routes->post('store/(:num)', 'BeneficiariosController::store/$1');
+});
