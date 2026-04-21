@@ -1,23 +1,4 @@
 <?= $this->extend('layouts/main') ?>
-<?= $this->section('css') ?>
-<style>
-.benef-count{display:flex;align-items:center;gap:8px}.benef-count img{width:32px}.benef-count span{font-size:1.4rem;font-weight:700;color:#101a61}
-.btn-registrar{background:transparent;color:#101a61;border:2px solid #101a61;border-radius:25px;padding:6px 20px;font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;text-decoration:none;transition:all .2s}.btn-registrar:hover{background:#101a61;color:#fff}
-.benef-card{background:#fff;border:1px solid #e9ecef;border-radius:8px;padding:1rem 1.2rem;margin-bottom:.75rem;transition:box-shadow .2s;position:relative}.benef-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
-.benef-card-name{font-size:.95rem;font-weight:700;color:#0b1b3f;text-transform:uppercase;margin-bottom:4px}
-.benef-card-meta{font-size:.8rem;color:#555;margin-bottom:10px;line-height:1.5}.benef-card-meta .label-id{color:#0d6efd;font-weight:600}.benef-card-meta .label-fn{color:#0d6efd;font-weight:600}.benef-card-meta .label-rep{color:#e67e22;font-weight:600}
-.pesquisa-icons{display:flex;flex-wrap:wrap;gap:8px}
-.pesquisa-btn{width:38px;height:38px;border-radius:50%;border:2px solid #ddd;background:#f8f9fa;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;padding:0}
-.pesquisa-btn:hover{border-color:#101a61;background:#e8eaf8;transform:scale(1.1)}
-.pesquisa-btn.evaluado{border-color:#28a745;background:#d4edda}
-.pesquisa-btn img{width:24px;height:24px}
-.benef-card-menu{position:absolute;top:12px;right:12px}.benef-card-menu .btn{padding:2px 6px;font-size:1.2rem;color:#999;line-height:1}
-.benef-card-menu .dropdown-item{font-size:.82rem;padding:8px 16px}.benef-card-menu .dropdown-item i{width:20px;text-align:center}
-.pesquisa-modal-list{list-style:none;padding:0;margin:0}.pesquisa-modal-list li{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #eee;cursor:pointer;border-radius:6px;transition:background .15s}.pesquisa-modal-list li:hover{background:#f0f4ff}.pesquisa-modal-list li:last-child{border-bottom:none}.pesquisa-modal-list li img{width:36px;height:36px}.pesquisa-modal-list li .pesq-name{font-weight:600;color:#0b1b3f;font-size:.9rem}.pesquisa-modal-list li .pesq-desc{font-size:.78rem;color:#888}
-.breadcrumb-digi{font-size:.82rem;color:#6c757d;margin-bottom:1rem}.breadcrumb-digi a{color:#6c757d;text-decoration:none}.breadcrumb-digi a:hover{color:#101a61}.breadcrumb-digi .active{font-weight:600;color:#0b1b3f}
-.search-inline{position:relative;margin-bottom:1rem}.search-inline input{width:100%;padding:10px 14px 10px 38px;border:1px solid #dee2e6;border-radius:25px;font-size:.85rem}.search-inline input:focus{outline:none;border-color:#101a61;box-shadow:0 0 0 3px rgba(16,26,97,.1)}.search-inline .icon-search{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#aaa}
-</style>
-<?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 <div class="container my-4">
@@ -43,12 +24,12 @@
     <?php if (!empty($beneficiarios)): ?>
         <?php
             $iconos_color = [
-                '1'=>['img'=>'antropometria2.svg','gris'=>'antropometria-gris.svg','nombre'=>'Antropometría'],
-                '2'=>['img'=>'sanguinea2.svg','gris'=>'sanguinea-gris.svg','nombre'=>'Laboratorio'],
-                '3'=>['img'=>'optica2.svg','gris'=>'optica-gris.svg','nombre'=>'Visual'],
-                '4'=>['img'=>'signosVitales2.svg','gris'=>'signosVitales-gris.svg','nombre'=>'Signos vitales'],
-                '5'=>['img'=>'medicinaGeneral2.svg','gris'=>'medicinaGeneral-gris.svg','nombre'=>'Medicina general'],
-                '6'=>['img'=>'vacunacion2.svg','gris'=>'vacunacion-gris.svg','nombre'=>'Vacunación'],
+                '1'=>['img'=>'antropometria2.svg','gris'=>'antropometria-color.svg','nombre'=>'Antropometría'],
+                '2'=>['img'=>'sanguinea2.svg','gris'=>'sanguinea-color.svg','nombre'=>'Laboratorio'],
+                '3'=>['img'=>'visual2.svg','gris'=>'visual-color.svg','nombre'=>'Visual'],
+                '4'=>['img'=>'signosVitales2.svg','gris'=>'signos-vitales-color.svg','nombre'=>'Signos vitales'],
+                '5'=>['img'=>'medicinaGeneral2.svg','gris'=>'medicina-general-color.svg','nombre'=>'Medicina general'],
+                '6'=>['img'=>'vacunacion2.svg','gris'=>'vacunacion-color.svg','nombre'=>'Vacunación'],
             ];
         ?>
 

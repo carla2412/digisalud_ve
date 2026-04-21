@@ -48,9 +48,10 @@
         $iconos = [
             '1'   => 'antropometria2.svg',
             '2'   => 'sanguinea2.svg',
-            '3'   => 'optica2.svg',
+            '3'   => 'visual2.svg',
             '4'  => 'signosVitales2.svg',
-            '5'  => 'medicinaGeneral2.svg'
+            '5'  => 'medicinaGeneral2.svg',
+            '6'  => 'vacunacion2.svg'
         ];
     ?>
 
