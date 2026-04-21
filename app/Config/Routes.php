@@ -72,6 +72,9 @@ $routes->group('beneficiarios', function($routes){
     $routes->get('create/(:num)', 'BeneficiariosController::create/$1');
     $routes->post('store/(:num)', 'BeneficiariosController::store/$1');
 
+    $routes->get('beneficiarios/editar/(:num)', 'Beneficiarios::edit/$1');
+    $routes->post('beneficiarios/actualizar/(:num)', 'Beneficiarios::update/$1');
+
 });
 
 // =====================================================
