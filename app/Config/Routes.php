@@ -56,27 +56,6 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes) {
     $routes->post('cambiar-status', 'Jornadas::cambiarStatus');
 });
 
- // Acciones BENEFICIARIOS JORNADAS
-$routes->group('jornadas', function($routes){
-
-    $routes->get('(:num)/beneficiarios', 'JornadaBeneficiariosController::index/$1');
-    $routes->post('(:num)/asociar/(:num)', 'JornadaBeneficiariosController::asociar/$1/$2');
-
-});
-
-$routes->group('beneficiarios', function($routes){
-
-    $routes->get('buscar', 'BeneficiariosController::buscar');
-    $routes->get('buscarAjax', 'BeneficiariosController::buscarAjax');
-
-    $routes->get('create/(:num)', 'BeneficiariosController::create/$1');
-    $routes->post('store/(:num)', 'BeneficiariosController::store/$1');
-
-    $routes->get('beneficiarios/editar/(:num)', 'Beneficiarios::edit/$1');
-    $routes->post('beneficiarios/actualizar/(:num)', 'Beneficiarios::update/$1');
-
-});
-
 // =====================================================
 // RUTAS MÓDULO BENEFICIARIOS — reemplazar en app/Config/Routes.php
 // (borrar las rutas viejas de jornadas/beneficiarios y beneficiarios)
@@ -88,10 +67,17 @@ $routes->group('jornadas', function($routes){
     $routes->get('(:num)/desasociar/(:num)', 'JornadaBeneficiariosController::desasociar/$1/$2');
 });
 
+// El group('beneficiarios') completo debe quedar así:
+ 
 $routes->group('beneficiarios', function($routes){
     $routes->get('buscar/(:num)', 'BeneficiariosController::buscar/$1');
     $routes->get('buscarAjax', 'BeneficiariosController::buscarAjax');
     $routes->get('buscarAntecedentesAjax', 'BeneficiariosController::buscarAntecedentesAjax');
     $routes->get('create/(:num)', 'BeneficiariosController::create/$1');
     $routes->post('store/(:num)', 'BeneficiariosController::store/$1');
+ 
+    // EDITAR BENEFICIARIO
+    $routes->get('editar/(:num)', 'BeneficiariosController::edit/$1');
+    $routes->post('actualizar/(:num)', 'BeneficiariosController::update/$1');
 });
+ 

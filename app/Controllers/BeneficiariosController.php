@@ -245,7 +245,257 @@ class BeneficiariosController extends BaseController
         return redirect()->to("/jornadas/$jornada_id/beneficiarios")
                          ->with('success', 'Beneficiario registrado y asociado correctamente');
     }
+    
+    // ════════════════════════════════════════
+    // EDITAR: Cargar datos del beneficiario
+    // ════════════════════════════════════════
+    public function edit($id_beneficiario)
+    {
+        $benefModel = new BeneficiariosModel();
+        $dirModel   = new DireccionModel();
+        $escModel   = new EscolaridadModel();
+        $famModel   = new FamiliaresModel();
+        $antModel   = new AntecedentesBeneficiariosModel();
 
+        // Beneficiario
+        $beneficiario = $benefModel->find($id_beneficiario);
+        if (!$beneficiario) {
+            return redirect()->back()->with('error', 'Beneficiario no encontrado');
+        }
+
+        // Dirección (si tiene)
+        $direccion = null;
+        if (!empty($beneficiario['direccion_id'])) {
+            $direccion = $dirModel->find($beneficiario['direccion_id']);
+        }
+
+        // Escolaridad activa
+        $escolaridad = $escModel->getActiva($id_beneficiario);
+
+        // Familiar/representante
+        $familiar = $famModel
+            ->select('familiares.*, rep.nombres AS rep_nombres, rep.apellidos AS rep_apellidos, rep.id_digisalud AS rep_id_digisalud')
+            ->join('beneficiarios AS rep', 'rep.id_beneficiario = familiares.beneficiario_id_representante', 'left')
+            ->where('familiares.beneficiario_id', $id_beneficiario)
+            ->first();
+
+        // Antecedentes ya asociados
+        $antecedentes = $antModel
+            ->select('antecedentes_beneficiarios.*, antecedentes.descripcion, antecedentes.tipo, antecedentes.nombre')
+            ->join('antecedentes', 'antecedentes.id_antecedente = antecedentes_beneficiarios.id_antecedente')
+            ->where('antecedentes_beneficiarios.id_beneficiario', $id_beneficiario)
+            ->findAll();
+
+        // Separar antecedentes por tipo
+        $antClinico = [];
+        $antSocio   = [];
+        $usaLentes  = false;
+        $observacion = '';
+
+        foreach ($antecedentes as $a) {
+            if ($a['id_antecedente'] == 38) {
+                $usaLentes = true;
+            } elseif ($a['id_antecedente'] == 15 && !empty($a['observacion'])) {
+                $observacion = $a['observacion'];
+            } elseif ($a['tipo'] === 'Antecedentes Clínicos') {
+                $antClinico[] = $a;
+            } elseif ($a['tipo'] === 'Datos Socioeconómicos') {
+                $antSocio[] = $a;
+            }
+        }
+
+        return view('beneficiarios/edit', [
+            'beneficiario' => $beneficiario,
+            'direccion'    => $direccion,
+            'escolaridad'  => $escolaridad,
+            'familiar'     => $familiar,
+            'antClinico'   => $antClinico,
+            'antSocio'     => $antSocio,
+            'usaLentes'    => $usaLentes,
+            'observacion'  => $observacion,
+        ]);
+    }
+
+    // ════════════════════════════════════════
+    // ACTUALIZAR: Guardar cambios del beneficiario
+    // ════════════════════════════════════════
+    public function update($id_beneficiario)
+    {
+        $benefModel = new BeneficiariosModel();
+        $dirModel   = new DireccionModel();
+        $escModel   = new EscolaridadModel();
+        $famModel   = new FamiliaresModel();
+        $antModel   = new AntecedentesBeneficiariosModel();
+
+        $post      = $this->request->getPost();
+        $usuarioId = session('id_usuario') ?? null;
+
+        $beneficiario = $benefModel->find($id_beneficiario);
+        if (!$beneficiario) {
+            return redirect()->back()->with('error', 'Beneficiario no encontrado');
+        }
+
+        // ══ 1) ACTUALIZAR DIRECCIÓN ══
+        if (!empty($post['direccion_activa'])) {
+            $dirData = [
+                'pais'      => $post['pais'] ?? 'Venezuela',
+                'estado'    => $post['estado'] ?? null,
+                'municipio' => $post['municipio'] ?? null,
+                'parroquia' => $post['parroquia'] ?? null,
+                'ciudad'    => $post['ciudad'] ?? null,
+            ];
+
+            if (!empty($beneficiario['direccion_id'])) {
+                // Actualizar dirección existente
+                $dirModel->update($beneficiario['direccion_id'], $dirData);
+            } else {
+                // Crear nueva dirección y asociar
+                $dirModel->insert($dirData);
+                $newDirId = $dirModel->getInsertID();
+                $benefModel->update($id_beneficiario, ['direccion_id' => $newDirId]);
+            }
+        }
+
+        // ══ 2) ACTUALIZAR BENEFICIARIO ══
+        $benefData = [
+            'nombres'          => $post['nombres'] ?? $beneficiario['nombres'],
+            'apellidos'        => $post['apellidos'] ?? $beneficiario['apellidos'],
+            'fecha_nacimiento' => $post['fecha_nacimiento'] ?? $beneficiario['fecha_nacimiento'],
+            'sexo'             => $post['sexo'] ?? $beneficiario['sexo'],
+            'pais_nacimiento'  => $post['pais_nacimiento'] ?? $beneficiario['pais_nacimiento'],
+            'telefono'         => $post['telefono'] ?? null,
+            'correo'           => $post['correo'] ?? null,
+            'modificado_en'    => date('Y-m-d H:i:s'),
+            'modificado_por'   => $usuarioId,
+        ];
+
+        // Regenerar ID Digisalud si cambiaron datos clave
+        $nuevoId = $this->generarID($benefData);
+        if ($nuevoId !== $beneficiario['id_digisalud']) {
+            $benefData['id_digisalud'] = $nuevoId;
+        }
+
+        $benefModel->update($id_beneficiario, $benefData);
+
+        // ══ 3) ESCOLARIDAD ══
+        if (!empty($post['escolaridad_activa'])) {
+            $escActual = $escModel->getActiva($id_beneficiario);
+            $escNueva = [
+                'nombre_escuela' => $post['nombre_escuela'] ?? null,
+                'grado'          => $post['grado'] ?? null,
+                'seccion'        => $post['seccion'] ?? null,
+                'turno'          => $post['turno'] ?? null,
+            ];
+
+            if ($escActual) {
+                // Si cambió el grado → usar cambiarAnio (mantiene historial)
+                if (($escActual['grado'] ?? '') !== ($escNueva['grado'] ?? '')) {
+                    $escModel->cambiarAnio($id_beneficiario, $escNueva, $usuarioId);
+                } else {
+                    // Solo actualizar datos sin cambiar grado
+                    $escModel->update($escActual['escolaridad_id'], array_merge($escNueva, [
+                        'modificado_en'  => date('Y-m-d H:i:s'),
+                        'modificado_por' => $usuarioId,
+                    ]));
+                }
+            } else {
+                // Crear nueva escolaridad
+                $escModel->insert(array_merge($escNueva, [
+                    'id_beneficiario' => $id_beneficiario,
+                    'status_esc'      => 1,
+                    'creado_en'       => date('Y-m-d H:i:s'),
+                    'creado_por'      => $usuarioId,
+                ]));
+            }
+        }
+
+        // ══ 4) FAMILIAR / REPRESENTANTE ══
+        if (!empty($post['familiar_activo'])) {
+            $repId = $post['representante_id'] ?? null;
+
+            // Si no hay representante seleccionado pero hay datos nuevos
+            if (empty($repId) && !empty($post['rep_nombres'])) {
+                $repData = [
+                    'id_digisalud'     => $this->generarID([
+                        'pais_nacimiento'  => $post['pais_nacimiento'] ?? 'Venezuela',
+                        'sexo'             => $post['rep_sexo'] ?? 'M',
+                        'nombres'          => $post['rep_nombres'] ?? '',
+                        'apellidos'        => $post['rep_apellidos'] ?? '',
+                        'fecha_nacimiento' => $post['rep_fecha_nacimiento'] ?? date('Y-m-d'),
+                    ]),
+                    'nombres'          => $post['rep_nombres'],
+                    'apellidos'        => $post['rep_apellidos'] ?? '',
+                    'fecha_nacimiento' => $post['rep_fecha_nacimiento'] ?? date('Y-m-d'),
+                    'sexo'             => $post['rep_sexo'] ?? 'M',
+                    'pais_nacimiento'  => $post['pais_nacimiento'] ?? 'Venezuela',
+                    'creado_en'        => date('Y-m-d H:i:s'),
+                    'creado_por'       => $usuarioId,
+                ];
+                $repId = $benefModel->insert($repData);
+            }
+
+            if ($repId) {
+                // Buscar si ya existe relación familiar
+                $famExiste = $famModel->where('beneficiario_id', $id_beneficiario)->first();
+                $famData = [
+                    'beneficiario_id'               => $id_beneficiario,
+                    'beneficiario_id_representante'  => $repId,
+                    'relacion'                       => $post['relacion'] ?? null,
+                    'telefono'                       => $post['telefono_representante'] ?? null,
+                ];
+
+                if ($famExiste) {
+                    $famModel->update($famExiste['id_familiar'], $famData);
+                } else {
+                    $famModel->insert($famData);
+                }
+            }
+        }
+
+        // ══ 5) ANTECEDENTES — borrar los anteriores y reinsertar ══
+        // Eliminar antecedentes previos de este beneficiario
+        $db = \Config\Database::connect();
+        $db->table('antecedentes_beneficiarios')
+           ->where('id_beneficiario', $id_beneficiario)
+           ->delete();
+
+        // Reinsertar los seleccionados
+        $antecedentes = $post['antecedentes'] ?? [];
+        if (!empty($antecedentes) && is_array($antecedentes)) {
+            foreach ($antecedentes as $id_ant) {
+                $antModel->insert([
+                    'id_beneficiario' => $id_beneficiario,
+                    'id_antecedente'  => $id_ant,
+                    'creado_en'       => date('Y-m-d H:i:s'),
+                    'creado_por'      => $usuarioId ?? 1,
+                ]);
+            }
+        }
+
+        // Usa lentes
+        if (!empty($post['usa_lentes'])) {
+            $antModel->insert([
+                'id_beneficiario' => $id_beneficiario,
+                'id_antecedente'  => 38,
+                'creado_en'       => date('Y-m-d H:i:s'),
+                'creado_por'      => $usuarioId ?? 1,
+            ]);
+        }
+
+        // Observación
+        $obs = $post['observacion_antecedentes'] ?? '';
+        if (!empty($obs)) {
+            $antModel->insert([
+                'id_beneficiario' => $id_beneficiario,
+                'id_antecedente'  => 15,
+                'observacion'     => $obs,
+                'creado_en'       => date('Y-m-d H:i:s'),
+                'creado_por'      => $usuarioId ?? 1,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Beneficiario actualizado correctamente');
+    }
     private function generarID($data)
     {
         $pais = strtoupper(substr($data['pais_nacimiento'] ?? 'VE', 0, 2));
@@ -266,4 +516,6 @@ class BeneficiariosController extends BaseController
         if ($diff->y > 0) return $diff->y . ' año' . ($diff->y > 1 ? 's' : '') . ' con ' . $diff->m . ' mes(es) y ' . $diff->d . ' dias';
         return $diff->m . ' mes(es) y ' . $diff->d . ' días';
     }
+
+    
 }
