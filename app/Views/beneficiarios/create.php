@@ -19,6 +19,7 @@
 .rep-result{padding:8px 12px;border:1px solid #e9ecef;border-radius:8px;margin-bottom:4px;cursor:pointer;font-size:.82rem;transition:background .1s}.rep-result:hover{background:#f0f4ff;border-color:#101a61}
 .rep-selected{background:#d4edda;border-color:#28a745;padding:8px 12px;border-radius:8px;font-size:.82rem;margin-top:8px}
 .chk-evaluar{background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:.82rem}
+.chk-lentes{background:#e6f1fb;border:1px solid #85B7EB;border-radius:8px;padding:10px 14px;margin-top:12px;font-size:.85rem}
 </style>
 <?= $this->endSection() ?>
 
@@ -72,7 +73,7 @@
         </div>
 
         <!-- ═══ ESCOLARIDAD ═══ -->
-        <div class="toggle-bar mt-2" onclick="toggleSeccion(this,'secEscolaridad')"><i class="bi bi-mortarboard" style="font-size:1.1rem;color:#101a61;"></i><div><div class="toggle-label">Escolaridad</div><div class="toggle-desc">Opcional — información escolar</div></div></div>
+        <div class="toggle-bar mt-2" onclick="toggleSeccion(this,'secEscolaridad')"><i class="bi bi-mortarboard" style="font-size:1.1rem;color:#101a61;"></i><div><div class="toggle-label">Escolaridad</div><div class="toggle-desc">Opcional — se registra fecha y usuario para historial</div></div></div>
         <div class="toggle-content" id="secEscolaridad">
             <input type="hidden" name="escolaridad_activa" id="hEscolaridad" value="">
             <div class="row g-3 py-3">
@@ -97,24 +98,10 @@
                     <div id="repResultados" class="mt-2"></div>
                     <div id="repSeleccionado" style="display:none;"></div>
                 </div>
-
-                <!-- CHECKBOX: ¿Evaluar representante en esta jornada? -->
-                <div class="col-12">
-                    <div class="chk-evaluar">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="evaluar_representante" value="1" id="chkEvaluarRep">
-                            <label class="form-check-label" for="chkEvaluarRep">
-                                <strong>¿Evaluar al representante en esta jornada?</strong>
-                                <br><small class="text-muted">Si marcas esta opción, el representante también será agregado como beneficiario de la jornada para ser evaluado.</small>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mini-form para representante nuevo -->
+                <div class="col-12"><div class="chk-evaluar"><div class="form-check"><input class="form-check-input" type="checkbox" name="evaluar_representante" value="1" id="chkEvaluarRep"><label class="form-check-label" for="chkEvaluarRep"><strong>¿Evaluar al representante en esta jornada?</strong><br><small class="text-muted">El representante también será agregado como beneficiario de la jornada.</small></label></div></div></div>
                 <div class="col-12" id="repNuevoBox" style="display:none;">
                     <div class="rep-nuevo-form">
-                        <p style="font-size:.78rem;font-weight:600;color:#101a61;margin-bottom:8px;"><i class="bi bi-person-plus me-1"></i> Registrar representante nuevo (datos básicos)</p>
+                        <p style="font-size:.78rem;font-weight:600;color:#101a61;margin-bottom:8px;"><i class="bi bi-person-plus me-1"></i> Registrar representante nuevo</p>
                         <div class="row g-2">
                             <div class="col-md-6"><label class="form-label">Nombres *</label><input type="text" name="rep_nombres" class="form-control form-control-sm"></div>
                             <div class="col-md-6"><label class="form-label">Apellidos *</label><input type="text" name="rep_apellidos" class="form-control form-control-sm"></div>
@@ -127,10 +114,22 @@
             </div>
         </div>
 
-        <!-- ═══ ANTECEDENTES CLÍNICOS + SOCIOECONÓMICOS ═══ -->
-        <div class="toggle-bar mt-2" onclick="toggleSeccion(this,'secAntecedentes')"><i class="bi bi-heart-pulse" style="font-size:1.1rem;color:#101a61;"></i><div><div class="toggle-label">Antecedentes clínicos y socioeconómicos</div><div class="toggle-desc">Opcional — busca antecedentes en la base de datos</div></div></div>
+        <!-- ═══ ANTECEDENTES ═══ -->
+        <div class="toggle-bar mt-2" onclick="toggleSeccion(this,'secAntecedentes')"><i class="bi bi-heart-pulse" style="font-size:1.1rem;color:#101a61;"></i><div><div class="toggle-label">Antecedentes clínicos y socioeconómicos</div><div class="toggle-desc">Opcional — busca en la base de datos</div></div></div>
         <div class="toggle-content" id="secAntecedentes">
             <div class="py-3">
+                <!-- CHECKBOX USA LENTES (destacado) -->
+                <div class="chk-lentes">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="usa_lentes" value="1" id="chkUsaLentes">
+                        <label class="form-check-label" for="chkUsaLentes">
+                            <strong><i class="bi bi-eyeglasses me-1"></i> ¿Usa lentes correctivos?</strong>
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="my-3">
+
                 <label class="form-label" style="font-size:.8rem;color:#6c757d;">Buscar antecedente clínico:</label>
                 <input type="text" id="buscarAntecedente" class="form-control" placeholder="Ej: diabetes, asma, hipertensión...">
                 <div id="antResultados" class="mt-1" style="max-height:200px;overflow-y:auto;"></div>
@@ -161,13 +160,9 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="<?= base_url('js/venezuela.js') ?>"></script>
 <script>
-// ═══ TOGGLE ═══
 function toggleSeccion(bar,id){const s=document.getElementById(id);const o=s.classList.contains('open');s.classList.toggle('open');bar.classList.toggle('active');const m={secDireccion:'hDireccion',secEscolaridad:'hEscolaridad',secFamiliar:'hFamiliar'};if(m[id])document.getElementById(m[id]).value=o?'':'1';}
-
-// ═══ ID PREVIEW ═══
 function actualizarIdPreview(){const n=(document.getElementById('fNombres').value||'').trim(),a=(document.getElementById('fApellidos').value||'').trim(),f=document.getElementById('fFecha').value||'',s=document.getElementById('fSexo').value||'_',p=(document.getElementById('fPais').value||'VE').substring(0,2).toUpperCase();const np=n.split(' '),ap=a.split(' ');const p1=(np[0]||'___').substring(0,3).toUpperCase(),p2=np[1]?np[1][0].toUpperCase():'',a1=(ap[0]||'___').substring(0,3).toUpperCase(),a2=ap[1]?ap[1][0].toUpperCase():'',fd=f.replace(/-/g,'')||'________';document.getElementById('idPreview').textContent=`${p}${s}${p1}${p2}${a1}${a2}${fd}`;}
 
-// ═══ VENEZUELA.JS ═══
 $(document).ready(function(){
     const $e=$('#estado'),$m=$('#municipio'),$p=$('#parroquia');
     if(typeof ubicaciones!=='undefined'){Object.keys(ubicaciones).forEach(e=>$e.append(new Option(e,e)));}
@@ -177,22 +172,17 @@ $(document).ready(function(){
     $p.on('change',function(){if(this.value)$('#ciudad').val(this.value);});
 });
 
-// ═══ BUSCAR REPRESENTANTE ═══
 let repTimer;
 document.getElementById('buscarRep').addEventListener('input',function(){clearTimeout(repTimer);const q=this.value.trim();const c=document.getElementById('repResultados'),n=document.getElementById('repNuevoBox');if(q.length<2){c.innerHTML='';n.style.display='none';return;}
 repTimer=setTimeout(()=>{fetch(`/beneficiarios/buscarAjax?q=${encodeURIComponent(q)}`).then(r=>r.json()).then(data=>{if(data.length===0){c.innerHTML='<p style="font-size:.78rem;color:#888;">No encontrado</p>';n.style.display='block';return;}n.style.display='none';let h='';data.forEach(b=>{h+=`<div class="rep-result" onclick="seleccionarRep(${b.id_beneficiario},'${b.nombres} ${b.apellidos}','${b.id_digisalud||''}')"><strong>${b.apellidos.toUpperCase()}, ${b.nombres.toUpperCase()}</strong> <span style="color:#888;font-size:.72rem;">— ${b.id_digisalud||''}</span></div>`;});c.innerHTML=h;});},300);});
-
 function seleccionarRep(id,nombre,idDigi){document.getElementById('representanteId').value=id;document.getElementById('repResultados').innerHTML='';document.getElementById('buscarRep').value=nombre;document.getElementById('repNuevoBox').style.display='none';document.getElementById('repSeleccionado').style.display='block';document.getElementById('repSeleccionado').innerHTML=`<div class="rep-selected"><i class="bi bi-check-circle-fill text-success me-1"></i><strong>${nombre}</strong> <span style="color:#888;font-size:.75rem;">(${idDigi})</span><span style="cursor:pointer;float:right;color:#dc3545;" onclick="limpiarRep()">✕</span></div>`;}
 function limpiarRep(){document.getElementById('representanteId').value='';document.getElementById('buscarRep').value='';document.getElementById('repSeleccionado').style.display='none';document.getElementById('repSeleccionado').innerHTML='';}
 
-// ═══ ANTECEDENTES DESDE BD ═══
 const antSet=new Set();
 function initBuscAnt(inputId,resId,contId,tipo){let t;document.getElementById(inputId).addEventListener('input',function(){clearTimeout(t);const q=this.value.trim();const c=document.getElementById(resId);if(q.length<2){c.innerHTML='';return;}
 t=setTimeout(()=>{fetch(`/beneficiarios/buscarAntecedentesAjax?q=${encodeURIComponent(q)}&tipo=${encodeURIComponent(tipo)}`).then(r=>r.json()).then(data=>{let h='';data.forEach(a=>{if(antSet.has(a.id_antecedente))return;h+=`<div class="rep-result" onclick="addAnt(${a.id_antecedente},'${a.descripcion.replace(/'/g,"\\'")}','${contId}')">${a.descripcion} <span style="color:#888;font-size:.72rem;">(${a.tipo})</span></div>`;});c.innerHTML=h||'<p style="font-size:.78rem;color:#888;">Sin resultados</p>';});},300);});}
-
 function addAnt(id,desc,contId){if(antSet.has(id))return;antSet.add(id);const c=document.getElementById(contId);const s=document.createElement('span');s.className='tag-item';s.innerHTML=`${desc}<input type="hidden" name="antecedentes[]" value="${id}"><span class="tag-remove" onclick="rmAnt(this,${id})">×</span>`;c.appendChild(s);document.getElementById(contId==='antSeleccionados'?'antResultados':'socResultados').innerHTML='';document.getElementById(contId==='antSeleccionados'?'buscarAntecedente':'buscarSocioeconomico').value='';}
 function rmAnt(el,id){antSet.delete(id);el.parentElement.remove();}
-
 initBuscAnt('buscarAntecedente','antResultados','antSeleccionados','Antecedentes Clínicos');
 initBuscAnt('buscarSocioeconomico','socResultados','socSeleccionados','Datos Socioeconómicos');
 </script>
