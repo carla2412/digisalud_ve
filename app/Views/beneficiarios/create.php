@@ -140,7 +140,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script src="<?= base_url('js/venezuela.js') ?>"></script>
 <script>
 function toggleSeccion(bar,id){const s=document.getElementById(id);const o=s.classList.contains('open');s.classList.toggle('open');bar.classList.toggle('active');const m={secDireccion:'hDireccion',secEscolaridad:'hEscolaridad',secFamiliar:'hFamiliar'};if(m[id])document.getElementById(m[id]).value=o?'':'1';}

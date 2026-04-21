@@ -122,14 +122,7 @@
 <?= $this->section('scripts') ?>
 
 <script>
-    $(document).ready(function() {
-        // Selecciona las alertas con la clase auto-dismiss
-        setTimeout(function() {
-            $(".auto-dismiss").fadeOut(500, function(){
-                $(this).remove(); 
-            });
-        }, 3000); // 5000ms = 5 segundos
-    });
+     
 const pesquisaInfo={
     '1':{img:'<?=base_url("img/antropometria2.svg")?>',nombre:'Antropometría',desc:'Peso, talla, IMC'},
     '2':{img:'<?=base_url("img/sanguinea2.svg")?>',nombre:'Laboratorio',desc:'Hemoglobina, glucosa'},

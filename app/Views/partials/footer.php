@@ -1,3 +1,14 @@
+<script>
+        $(document).ready(function() {
+        // Selecciona las alertas con la clase auto-dismiss
+        setTimeout(function() {
+            $(".auto-dismiss").fadeOut(500, function(){
+                $(this).remove(); 
+            });
+        }, 3000); // 5000ms = 5 segundos
+    });
+</script>
+
 <!-- partial  -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
