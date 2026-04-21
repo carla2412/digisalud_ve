@@ -1,7 +1,6 @@
 <?php
 // ========================================================
 // ARCHIVO: app/Controllers/BeneficiariosController.php
-// REEMPLAZAR COMPLETO
 // ========================================================
 
 namespace App\Controllers;
@@ -22,33 +21,53 @@ class BeneficiariosController extends BaseController
     }
 
     public function buscarAjax()
-    {
-        $model = new BeneficiariosModel();
-        $term  = $this->request->getGet('q');
-        if (strlen($term) < 2) return $this->response->setJSON([]);
+{
+    $model = new BeneficiariosModel();
+    $term  = $this->request->getGet('q');
+    
+    if (strlen($term) < 2) return $this->response->setJSON([]);
 
-        $data = $model
-            ->select('id_beneficiario, id_digisalud, nombres, apellidos, fecha_nacimiento, sexo, pais_nacimiento')
-            ->groupStart()
-                ->like('nombres', $term)
-                ->orLike('apellidos', $term)
-                ->orLike('id_digisalud', $term)
-            ->groupEnd()
-            ->limit(15)->findAll();
+    // 1. Buscamos los beneficiarios
+    $data = $model
+        ->select('id_beneficiario, id_digisalud, nombres, apellidos, fecha_nacimiento, sexo, pais_nacimiento')
+        ->groupStart()
+            ->like('nombres', $term)
+            ->orLike('apellidos', $term)
+            ->orLike('id_digisalud', $term)
+        ->groupEnd()
+        ->limit(15)->findAll();
 
-        foreach ($data as &$b) {
-            $b['edad'] = $this->calcularEdadTexto($b['fecha_nacimiento']);
-            $fam = (new FamiliaresModel())
-                ->select('familiares.relacion, rep.nombres AS rep_nombres, rep.apellidos AS rep_apellidos')
-                ->join('beneficiarios AS rep', 'rep.id_beneficiario = familiares.beneficiario_id_representante', 'left')
-                ->where('familiares.beneficiario_id', $b['id_beneficiario'])->first();
-            $b['parentesco'] = '';
-            if ($fam && !empty($fam['rep_nombres'])) {
-                $b['parentesco'] = ($fam['relacion'] ?? '') . ': ' . $fam['rep_nombres'] . ' ' . $fam['rep_apellidos'];
-            }
+    $famModel = new FamiliaresModel();
+
+    foreach ($data as &$b) {
+        $b['edad'] = $this->calcularEdadTexto($b['fecha_nacimiento']);
+        
+        // 2. Corregimos la búsqueda de la relación
+        // Buscamos si este beneficiario tiene un representante asignado
+        $fam = $famModel
+            ->select('familiares.relacion, rep.nombres AS rep_nombres, rep.apellidos AS rep_apellidos')
+            ->join('beneficiarios AS rep', 'rep.id_beneficiario = familiares.beneficiario_id_representante', 'left')
+            ->where('familiares.beneficiario_id', $b['id_beneficiario'])
+            ->first();
+
+        // 3. Normalizamos la respuesta para el Dropdown
+        if ($fam) {
+            // Guardamos el texto plano de la relación
+            $b['relacion_texto'] = $fam['relacion']; 
+            $b['parentesco'] = $fam['relacion'] . ': ' . $fam['rep_nombres'] . ' ' . $fam['rep_apellidos'];
+        } else {
+            $b['relacion_texto'] = 'Ninguna';
+            $b['parentesco'] = 'Sin representante';
         }
-        return $this->response->setJSON($data);
+        
+        // IMPORTANTE: Para que muchos plugins de Dropdown (como Select2) funcionen, 
+        // necesitan un campo llamado "id" y "text".
+        $b['id'] = $b['id_beneficiario'];
+        $b['text'] = $b['nombres'] . ' ' . $b['apellidos'] . ' (' . $b['id_digisalud'] . ')';
     }
+
+    return $this->response->setJSON($data);
+}
 
     public function buscarAntecedentesAjax()
     {

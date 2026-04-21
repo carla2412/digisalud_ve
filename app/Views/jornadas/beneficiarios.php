@@ -8,8 +8,8 @@
         <span class="active"><?= esc($jornada['nombre_jornada'] ?? 'Jornada') ?> <?= date('d-m-Y', strtotime($jornada['fecha_inicio'])) ?></span>
     </div>
 
-    <?php if (session('success')): ?><div class="alert alert-success alert-dismissible fade show"><?= session('success') ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endif; ?>
-    <?php if (session('error')): ?><div class="alert alert-warning alert-dismissible fade show"><?= session('error') ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endif; ?>
+    <?php if (session('success')): ?><div class="alert alert-success alert-dismissible fade show auto-dismiss"><?= session('success') ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endif; ?>
+    <?php if (session('error')): ?><div class="alert alert-warning alert-dismissible fade show auto-dismiss"><?= session('error') ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endif; ?>
 
     <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
         <div class="benef-count"><img src="<?= base_url('img/beneficiario-evaluado-azul.svg') ?>" alt=""><span><?= $total ?? 0 ?></span></div>
@@ -120,8 +120,16 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
+    $(document).ready(function() {
+        // Selecciona las alertas con la clase auto-dismiss
+        setTimeout(function() {
+            $(".auto-dismiss").fadeOut(500, function(){
+                $(this).remove(); 
+            });
+        }, 3000); // 5000ms = 5 segundos
+    });
 const pesquisaInfo={
     '1':{img:'<?=base_url("img/antropometria2.svg")?>',nombre:'Antropometría',desc:'Peso, talla, IMC'},
     '2':{img:'<?=base_url("img/sanguinea2.svg")?>',nombre:'Laboratorio',desc:'Hemoglobina, glucosa'},
