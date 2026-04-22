@@ -2,6 +2,7 @@
 /**
  * =====================================================
  * ARCHIVO: app/Models/JornadaModel.php
+ * REEMPLAZAR COMPLETO
  * =====================================================
  */
 
@@ -30,12 +31,8 @@ class JornadaModel extends Model
 
     /**
      * Retorna un array simple con los IDs de las pesquisas
-     * vinculadas a una jornada a través de tipo_pesquisa_actividad.
-     *
-     * Ejemplo de retorno: [1, 2, 6]
-     *
-     * @param int $id_jornada
-     * @return array
+     * vinculadas a una jornada.
+     * Ejemplo: [1, 2, 6]
      */
     public function getPesquisasPorJornada(int $id_jornada): array
     {
@@ -48,7 +45,22 @@ class JornadaModel extends Model
                    ->get()
                    ->getResultArray();
 
-        // Retornar solo un array plano de IDs: [1, 2, 6]
         return array_column($rows, 'idtipo_pesquisa');
+    }
+
+    /**
+     * Retorna la jornada con datos de institución y dirección
+     * para precargar el formulario de edición.
+     */
+    public function getJornadaConDireccion(int $id_jornada): ?array
+    {
+        return $this->select("jornadas.*, 
+                    instituciones.nombre_institucion, 
+                    instituciones.tipo AS tipo_jornada,
+                    dir.id_direccion, dir.pais, dir.estado, dir.ciudad, dir.coordenadas")
+            ->join('instituciones', 'instituciones.id_institucion = jornadas.institucion_id', 'left')
+            ->join('direcciones AS dir', 'dir.id_direccion = instituciones.direccion_id', 'left')
+            ->where('jornadas.id_jornada', $id_jornada)
+            ->first();
     }
 }

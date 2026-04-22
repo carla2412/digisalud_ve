@@ -2,8 +2,8 @@
 /**
  * =====================================================
  * ARCHIVO: app/Controllers/Jornadas.php
- * =====================================================
  * REEMPLAZAR COMPLETO
+ * =====================================================
  */
 
 namespace App\Controllers;
@@ -40,14 +40,15 @@ class Jornadas extends BaseController
             ->join('tipo_pesquisa AS tp', 'tp.idtipo_pesquisa = tpa.idtipo_pesquisa', 'left')
             ->join('direcciones AS dir', 'dir.id_direccion = instituciones.direccion_id', 'left')
             ->where('jornadas.status_jor !=', 0)
-            ->groupBy('jornadas.id_jornada');
+            ->groupBy('jornadas.id_jornada')
+            ->orderBy('jornadas.fecha_inicio', 'DESC');
 
         if ($orgSesion != 2) {
             $builder->where('jornadas.organizacion_id', $orgSesion);
         }
 
-        $jornadas = $builder->findAll();
-        $instituciones = (new InstitucionesModel())->findAll();
+        $jornadas       = $builder->findAll();
+        $instituciones  = (new InstitucionesModel())->findAll();
 
         return view('jornadas/index', [
             'jornadas'      => $jornadas,
@@ -79,7 +80,6 @@ class Jornadas extends BaseController
         }
 
         $jornadas = $builder->findAll();
-
         return $this->response->setJSON(['data' => $jornadas]);
     }
 
@@ -92,9 +92,9 @@ class Jornadas extends BaseController
         $status = $this->request->getPost('status');
 
         $this->jornadaModel->update($id, [
-            'status_jor'    => $status,
-            'modificado_en' => date('Y-m-d H:i:s'),
-            'modificado_por'=> session('id_usuario'),
+            'status_jor'     => $status,
+            'modificado_en'  => date('Y-m-d H:i:s'),
+            'modificado_por' => session('id_usuario'),
         ]);
 
         return $this->response->setJSON(['success' => true]);
@@ -136,10 +136,10 @@ class Jornadas extends BaseController
     {
         $db = \Config\Database::connect();
 
-        $direccionModel    = new \App\Models\DireccionModel();
-        $institucionModel  = new \App\Models\InstitucionesModel();
-        $jornadaModel      = new \App\Models\JornadaModel();
-        $instActModel      = new \App\Models\InstitucionActividadModel();
+        $direccionModel     = new \App\Models\DireccionModel();
+        $institucionModel   = new \App\Models\InstitucionesModel();
+        $jornadaModel       = new \App\Models\JornadaModel();
+        $instActModel       = new \App\Models\InstitucionActividadModel();
         $tipoActividadModel = new \App\Models\TipoPesquisaActividadModel();
 
         // ========= 1) GUARDAR DIRECCIÓN =========
@@ -152,7 +152,6 @@ class Jornadas extends BaseController
             'detalle'     => $this->request->getPost('localidad'),
             'coordenadas' => $this->request->getPost('coords'),
         ];
-
         $direccion_id = $direccionModel->insert($direccionData, true);
 
         // ========= 2) GUARDAR INSTITUCIÓN =========
@@ -166,7 +165,6 @@ class Jornadas extends BaseController
             'tipo'               => $this->request->getPost('tipo_jornada'),
             'direccion_id'       => $direccion_id
         ];
-
         $institucionModel->insert($institucionData);
 
         // ========= 3) GUARDAR JORNADA =========
@@ -179,7 +177,6 @@ class Jornadas extends BaseController
             'creado_en'       => date('Y-m-d H:i:s'),
             'creado_por'      => session('id_usuario')
         ];
-
         $jornadaModel->insert($jornadaData);
         $id_jornada = $jornadaModel->insertID();
 
@@ -192,7 +189,7 @@ class Jornadas extends BaseController
         ]);
 
         // ========= 5) GUARDAR PESQUISAS =========
-        $pesquisasSeleccionadas    = $this->request->getPost('pesquisas');
+        $pesquisasSeleccionadas     = $this->request->getPost('pesquisas');
         $tipoPesquisaActividadModel = new \App\Models\TipoPesquisaActividadModel();
 
         foreach ($pesquisasSeleccionadas as $idPesquisa) {
@@ -203,13 +200,12 @@ class Jornadas extends BaseController
             ]);
         }
 
-        // ========= 6) REDIRIGIR =========
         return redirect()->back()->with('success', true);
     }
 
-    // ================================
-    // EDITAR — Mostrar formulario (GET)
-    // ================================
+    // ════════════════════════════════════════════════
+    // EDITAR — Mostrar formulario de edición (GET)
+    // ════════════════════════════════════════════════
     public function editar($id_jornada)
     {
         // ── Validar rol: solo 1 (Super Admin), 2 (Admin), 3 (Coordinador) ──
@@ -218,17 +214,17 @@ class Jornadas extends BaseController
             return redirect()->to('/jornadas')->with('error', 'No tienes permiso para editar jornadas.');
         }
 
-        // ── Obtener datos de la jornada ──
-        $jornada = $this->jornadaModel->find($id_jornada);
+        // ── Obtener jornada CON datos de institución y dirección ──
+        $jornada = $this->jornadaModel->getJornadaConDireccion($id_jornada);
 
         if (!$jornada) {
             return redirect()->to('/jornadas')->with('error', 'Jornada no encontrada.');
         }
 
-        // ── Obtener pesquisas vinculadas (array de IDs) ──
+        // ── Pesquisas vinculadas (array de IDs) ──
         $pesquisasSeleccionadas = $this->jornadaModel->getPesquisasPorJornada($id_jornada);
 
-        // ── Obtener catálogos ──
+        // ── Catálogos ──
         $orgModel          = new \App\Models\OrganizacionModel();
         $tipoPesquisaModel = new \App\Models\TipoPesquisaModel();
         $orgSesion         = session('organizacion_id');
@@ -253,9 +249,9 @@ class Jornadas extends BaseController
         ]);
     }
 
-    // ================================
+    // ════════════════════════════════════════════════
     // ACTUALIZAR — Procesar edición (POST)
-    // ================================
+    // ════════════════════════════════════════════════
     public function actualizar()
     {
         // ── Validar rol ──
@@ -272,6 +268,7 @@ class Jornadas extends BaseController
             'nombre_jornada'  => 'required|min_length[3]|max_length[45]',
             'fecha_inicio'    => 'required|valid_date[Y-m-d]',
             'organizacion_id' => 'required|integer',
+            'status_jor'      => 'required|in_list[1,2]',
             'pesquisas'       => 'required',
         ];
 
@@ -282,7 +279,7 @@ class Jornadas extends BaseController
         }
 
         // ── Verificar que la jornada existe ──
-        $jornada = $this->jornadaModel->find($id_jornada);
+        $jornada = $this->jornadaModel->getJornadaConDireccion($id_jornada);
 
         if (!$jornada) {
             return redirect()->to('/jornadas')->with('error', 'Jornada no encontrada.');
@@ -292,23 +289,65 @@ class Jornadas extends BaseController
         $db = \Config\Database::connect();
         $db->transStart();
 
-        // 1) Actualizar datos de la jornada
+        // ═══ 1) ACTUALIZAR DIRECCIÓN ═══
+        $direccionModel = new \App\Models\DireccionModel();
+
+        if (!empty($jornada['id_direccion'])) {
+            // Actualizar dirección existente
+            $direccionModel->update($jornada['id_direccion'], [
+                'pais'        => $this->request->getPost('pais'),
+                'estado'      => $this->request->getPost('estado'),
+                'ciudad'      => $this->request->getPost('ciudad'),
+                'coordenadas' => $this->request->getPost('coords'),
+                'detalle'     => $this->request->getPost('localidad'),
+            ]);
+        } else {
+            // Crear dirección nueva si no tenía
+            $nuevaDirId = $direccionModel->insert([
+                'pais'        => $this->request->getPost('pais'),
+                'estado'      => $this->request->getPost('estado'),
+                'ciudad'      => $this->request->getPost('ciudad'),
+                'municipio'   => null,
+                'parroquia'   => null,
+                'detalle'     => $this->request->getPost('localidad'),
+                'coordenadas' => $this->request->getPost('coords'),
+            ], true);
+
+            // Vincular a la institución
+            if (!empty($jornada['institucion_id'])) {
+                $db->table('instituciones')
+                   ->where('id_institucion', $jornada['institucion_id'])
+                   ->update(['direccion_id' => $nuevaDirId]);
+            }
+        }
+
+        // ═══ 2) ACTUALIZAR INSTITUCIÓN (localidad + tipo público/privado) ═══
+        if (!empty($jornada['institucion_id'])) {
+            $db->table('instituciones')
+               ->where('id_institucion', $jornada['institucion_id'])
+               ->update([
+                   'nombre_institucion' => $this->request->getPost('localidad'),
+                   'tipo'               => $this->request->getPost('tipo_jornada'),
+               ]);
+        }
+
+        // ═══ 3) ACTUALIZAR JORNADA (nombre, fecha, org, status, auditoría) ═══
         $this->jornadaModel->update($id_jornada, [
             'nombre_jornada'  => $this->request->getPost('nombre_jornada'),
             'fecha_inicio'    => $this->request->getPost('fecha_inicio'),
             'organizacion_id' => $this->request->getPost('organizacion_id'),
+            'status_jor'      => $this->request->getPost('status_jor'),
             'modificado_en'   => date('Y-m-d H:i:s'),
             'modificado_por'  => session('id_usuario'),
         ]);
 
-        // 2) Sincronizar pesquisas: LIMPIAR y REPONER
+        // ═══ 4) SINCRONIZAR PESQUISAS: limpiar y reponer ═══
         $db->table('tipo_pesquisa_actividad')
            ->where('id_jornada', $id_jornada)
            ->delete();
 
-        $pesquisasNuevas = $this->request->getPost('pesquisas'); // array de IDs
+        $pesquisasNuevas = $this->request->getPost('pesquisas');
         $batch = [];
-
         foreach ($pesquisasNuevas as $idPesquisa) {
             $batch[] = [
                 'idtipo_pesquisa' => $idPesquisa,
@@ -322,7 +361,7 @@ class Jornadas extends BaseController
             $db->table('tipo_pesquisa_actividad')->insertBatch($batch);
         }
 
-        // 3) Completar transacción
+        // ═══ 5) Completar transacción ═══
         $db->transComplete();
 
         if ($db->transStatus() === false) {

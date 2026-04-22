@@ -61,14 +61,25 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes) {
 // =====================================================
 
 // Acciones JORNADAS
+/**
+ * =====================================================
+ * ARCHIVO: app/Config/Routes.php
+ * =====================================================
+ * 
+ * INSTRUCCIÓN: Reemplazar el grupo 'jornadas' con filter auth.
+ */
+
+// Acciones JORNADAS
 $routes->group('jornadas', ['filter' => 'auth'], function($routes) {
-    $routes->get('/',            'Jornadas::index');          // Lista
-    $routes->get('listar',       'Jornadas::listar');         // DataTable
-    $routes->get('crear',        'Jornadas::crear');          // Form crear
-    $routes->post('guardar',     'Jornadas::guardar');        // Procesar crear
-    $routes->get('editar/(:num)','Jornadas::editar/$1');      // ← NUEVO: Form editar
-    $routes->post('actualizar',  'Jornadas::actualizar');     // ← NUEVO: Procesar editar
-    $routes->post('cambiar-status', 'Jornadas::cambiarStatus');
+    $routes->get('/',              'Jornadas::index');
+    $routes->get('listar',         'Jornadas::listar');
+    $routes->get('crear',          'Jornadas::crear');
+    $routes->post('guardar',       'Jornadas::guardar');
+    $routes->get('editar/(:num)',  'Jornadas::editar/$1');      // ← NUEVO
+    $routes->post('actualizar',    'Jornadas::actualizar');     // ← NUEVO
+    $routes->post('cambiar-status','Jornadas::cambiarStatus');
+     // NUEVA RUTA
+    $routes->get('(:num)/beneficiarios', 'BeneficiariosController::buscar/$1');
 });
  
 

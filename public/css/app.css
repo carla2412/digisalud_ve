@@ -145,10 +145,7 @@ background: linear-gradient(90deg,rgba(16, 26, 97, 1) 0%, rgba(16, 16, 133, 1) 3
        border:1px solid  #3695f5;
        margin-right: 0.2rem;
     }
-  .btnAgregarOrg ,.btnBloquear, .btnCorreo , .btnPass{
-    background-color:#3695f5 !important;
-  color:#fff ;
-    }
+   
  .btnCorreo:hover, .btnPass:hover ,
     .btnAgregarOrg:hover, .btnBloquear:hover {
       background-color: #88d8f8  !important;

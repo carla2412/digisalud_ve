@@ -2,264 +2,428 @@
 
 <?= $this->section('content') ?>
 
-<main class="container my-5">
+<main class="container-fluid py-4 diestra">
 
-  <h2 class="mb-4 fw-bold fondo_principal">Gestión de Usuarios</h2>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+        <div>
+            <h2 class="fw-bold mb-1 text-primary">Gestión de Usuarios</h2>
+            <p class="text-muted mb-0">Administración general de usuarios Digisalud</p>
+        </div>
 
-  <!-- BUSCADOR PERSONALIZADO (opcional, lo conectamos a DataTables) -->
-  <!-- <div class="row mb-4">
-    <div class="col-md-4">
-      <label class="form-label">Buscar usuario</label>
-      <input type="text" id="buscarUsuario" class="form-control" placeholder="Buscar nombre, correo u organización">
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <span class="text-muted small">
+                Mostrando <span id="totalUsuarios">0</span> usuarios
+            </span>
+
+            <div class="input-group shadow-sm buscador-usuarios">
+                <input type="text" class="form-control border-end-0" placeholder="Buscar usuario..." id="searchUser">
+                <span class="input-group-text bg-white border-start-0">
+                    <i class="fas fa-search text-muted"></i>
+                </span>
+            </div>
+        </div>
     </div>
-  </div> -->
 
-  <div class="table-responsive shadow-sm border rounded">
-    <table class="table table-hover align-middle mb-0" id="tablaUsuarios">
-      <thead >
-        <tr >
-          <th>Nombre</th>
-          <th>Apellido</th>
-          <th>Correo</th>
-          <th>Organización</th>
-          <th>Rol</th>
-          <th class="text-center">Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- SIN FOREACH: DataTables lo llenará por AJAX -->
-      </tbody>
-    </table>
-  </div>
+    <!-- contenedor de tarjetas -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" id="contenedorUsuarios">
+        <!-- Se llena por JS -->
+    </div>
+
+    <!-- mensaje sin resultados -->
+    <div id="sinResultados" class="text-center py-5 d-none">
+        <div class="card border-0 shadow-sm p-4">
+            <i class="fas fa-users-slash fs-1 text-muted mb-3"></i>
+            <h5 class="mb-1">No se encontraron usuarios</h5>
+            <p class="text-muted mb-0">Intenta con otro criterio de búsqueda.</p>
+        </div>
+    </div>
+
 </main>
 
-
-<?= $this->include('usuarios/modals/agregarOrg') ?>
 <?= $this->include('usuarios/modals/agregarOrg') ?>
 <?= $this->include('usuarios/modals/cambiarCorreo') ?>
 <?= $this->include('usuarios/modals/cambiarPassword') ?>
 <?= $this->include('usuarios/modals/confirmarBloqueo') ?>
 
 <?= $this->endSection() ?>
+
 <?= $this->section('scripts') ?>
 
+<style>
+    :root {
+        --ds-primary: #5c9cd8;
+        --ds-bg-light: #f8fafc;
+    }
+
+    body {
+        background-color: var(--ds-bg-light);
+    }
+
+    .buscador-usuarios {
+        max-width: 320px;
+    }
+
+     
+
+    .user-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+    }
+
+    .avatar-circle {
+        width: 48px;
+        height: 48px;
+        background-color: #e2e8f0;
+        color: #475569;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.9rem;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        text-transform: uppercase;
+    }
+
+    .bg-light-success {
+        background-color: #ecfdf5 !important;
+     }
+
+    .bg-light-danger {
+        background-color: #fef2f2 !important;
+    }
+
+    .input-group .form-control:focus {
+        box-shadow: none;
+        border-color: #dee2e6;
+    }
+
+    .dropdown-menu {
+        border-radius: 12px;
+    }
+
+    .dropdown-item i {
+        width: 18px;
+    }
+
+    .card-text-mail {
+        word-break: break-word;
+    }
+ 
+.user-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 16px;
+    background: #fff;
+    position: relative;
+    overflow: visible !important;
+    z-index: 1;
+    min-height: unset !important;
+}
+
+.user-card .card-body {
+    padding: 0.9rem 1rem !important;
+}
+
+.user-card .card-title {
+    font-size: 1rem;
+    line-height: 1.2;
+    margin-bottom: 0.15rem !important;
+}
+
+.user-card small,
+.user-card .card-text,
+.user-card .badge {
+    font-size: 0.82rem;
+}
+
+.user-card .mb-3 {
+    margin-bottom: 0.75rem !important;
+}
+
+.user-card .mb-4 {
+    margin-bottom: 0.9rem !important;
+}
+
+.user-card .pt-3 {
+    padding-top: 0.75rem !important;
+}
+
+.user-card .border-top {
+    margin-top: 0.5rem !important;
+}
+
+.user-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+    z-index: 5;
+}
+ .diestra {
+    position: relative;
+ 
+    width: 80%;
+    
+}
+
+
+#contenedorUsuarios .col {
+    position: relative;
+  
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #e2e8f0;
+    color: #475569;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-transform: uppercase;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    z-index: 9999 !important;
+    position: absolute;
+    border-radius: 12px;
+}
+</style>
+
 <script>
-$(document).ready(function() {
+$(document).ready(function () {
 
     // ==============================
     //   VARIABLES DE SESIÓN + CSRF
     // ==============================
     const orgSesion = <?= json_encode($orgSesion) ?>;
- 
-
-    const csrfName  = '<?= csrf_token() ?>';
-    const csrfToken = '<?= csrf_hash() ?>';
-
-    const urlListado          = "<?= base_url('usuarios/listado') ?>";
-    const urlAgregarOrgBase   = "<?= base_url('usuarios/agregar-organizacion') ?>";
-    const urlCambiarCorreoBase= "<?= base_url('usuarios/cambiar-correo') ?>";
-    const urlCambiarPassBase  = "<?= base_url('usuarios/cambiar-password') ?>";
-    const urlBloquearBase     = "<?= base_url('usuarios/bloquear') ?>";
- 
-    // lo convierto a entero, si falla queda 0
     const rolSesion = parseInt(<?= json_encode($rolSesion) ?>, 10) || 0;
 
-    // ==============================
-    //   INICIALIZAR DATATABLE
-    // ==============================
-window.tabla = $('#tablaUsuarios').DataTable({
+    const csrfName  = '<?= csrf_token() ?>';
+    let csrfToken   = '<?= csrf_hash() ?>';
 
-        processing: true,
-        serverSide: false,
-        responsive: true,
-        autoWidth: false,
-        ajax: {
+    const urlListado           = "<?= base_url('usuarios/listado') ?>";
+    const urlAgregarOrgBase    = "<?= base_url('usuarios/agregar-organizacion') ?>";
+    const urlCambiarCorreoBase = "<?= base_url('usuarios/cambiar-correo') ?>";
+    const urlCambiarPassBase   = "<?= base_url('usuarios/cambiar-password') ?>";
+    const urlBloquearBase      = "<?= base_url('usuarios/bloquear') ?>";
+
+    let usuariosData = [];
+
+    // ==============================
+    //   CARGAR USUARIOS
+    // ==============================
+    function cargarUsuarios() {
+        $.ajax({
             url: urlListado,
             type: "GET",
-            dataSrc: "data"
-        },
-        columns: [
-            { data: 'nombres' },
-            { data: 'apellidos' },
-            { data: 'email' },
-            
-            { 
-                data: 'nombre_organizacion',
-                render: d => d ?? 'Independiente'
+            dataType: "json",
+            success: function(response) {
+                usuariosData = response.data || [];
+                $('#totalUsuarios').text(usuariosData.length);
+                renderUsuarios(usuariosData);
             },
-            //aqui va el rol
-{ 
-    data: 'nombre_rol',
-    defaultContent: '', 
-    render: function(data, type, row) {
-        // Si no hay datos, mostramos "Sin rol"
-        if (!data) {
-            return '<span class="badge bg-danger text-dark border warning">Sin rol</span>';
-        }
+            error: function(xhr, status, error) {
+                console.error("Error cargando usuarios:", error);
 
-        // Lógica de reemplazo de nombres
-        let nombreMostrar = data; // Valor por defecto por si viene otro rol
-
-        if (data === 'ADMIN_DIGI') {
-            nombreMostrar = 'Digisalud';
-        } else if (data === 'ADMIN_ORG') {
-            nombreMostrar = 'Administrador';
-        }  else if (data === 'REGISTRO') {
-            nombreMostrar = 'Registro de Data';
-        } else if (data === 'ADMINISTRADOR') {
-            nombreMostrar = 'TI Digisalud';
-        } else if (data === 'COORDINADOR') {
-            nombreMostrar = 'Coordinador';
-        } else if (data === 'VIEWER') {
-            nombreMostrar = 'Ver Data';
-        }
-
-        // Retornamos el diseño con el nombre cambiado
-        return `<span class="badge bg-light text-dark border">${nombreMostrar}</span>`;
-    }
-},
-                
-            {
-                data: null,
-                orderable: false,
-                searchable: false,
-                render: function(data, type, row) {
-
-                    const esIndependiente = row.organizacion_id == 1;
-                    const puedeAgregarOrg = esIndependiente && [1,2,3].includes(rolSesion);
-                    // const puedeBloquear   = rolSesion == 1;
-                    const puedeBloquear   =  [1,2,3].includes(rolSesion);
-                    const puedeEditar     = [1,2].includes(rolSesion);
-
-                    let html = "";
-
-                    // ---------- AGREGAR A ORGANIZACIÓN ----------
-                    if (puedeAgregarOrg) {
-                        html += `
-                            <button class="btn btn-sm btnAgregarOrg  "
-                                data-id="${row.id_usuario}"
-                                title="Agregar a organización">
-                                <i class="bi bi-person-fill-add"></i>
-                            </button>
-                        `;
-                    } else {
-                        html += ``;
-                    }
-
-                    // ---------- BLOQUEAR ----------
-                    if (puedeBloquear && !puedeAgregarOrg  ) {
-                        html += `
-                            <button class="btn btn-sm btnBloquear  "
-                                data-id="${row.id_usuario}"
-                                title="Bloquear / desbloquear">
-                                <i class="bi bi-lock-fill"></i>
-                            </button>
-                        `;
-                    } else {
-                        html += `
-                            
-                        `;
-                    }
-
-                    // ---------- CAMBIAR CORREO ----------
-                   
-                    if (puedeBloquear && !puedeAgregarOrg) {
-                        html += `
-                            <button class="btn btn-sm btnCorreo"
-                                data-id="${row.id_usuario}"
-                                title="Cambiar correo">
-                                <i class="bi bi-envelope-fill"></i>
-                            </button>
-                        `;
-                    } else {
-                        html += `
-                            
-                        `;
-                    }
-
-
-                    // ---------- CAMBIAR CONTRASEÑA ----------
-                    if (puedeBloquear && !puedeAgregarOrg) {
-                        html += `
-                            <button class="btn btn-sm btnPass"
-                                data-id="${row.id_usuario}"
-                                title="Cambiar contraseña">
-                                <i class="bi bi-key-fill"></i>
-                            </button>
-                        `;
-                    } else {
-                        html += `
-                            
-                        `;
-                    }
-
-
-                    return html;
-                }
+                $('#contenedorUsuarios').html(`
+                    <div class="col-12">
+                        <div class="alert alert-danger shadow-sm">
+                            Ocurrió un error al cargar los usuarios.
+                        </div>
+                    </div>
+                `);
             }
-        ],
-        language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        });
+    }
+
+    // ==============================
+    //   RENDER TARJETAS
+    // ==============================
+    function renderUsuarios(data) {
+        const contenedor = $('#contenedorUsuarios');
+        const sinResultados = $('#sinResultados');
+
+        contenedor.html('');
+
+        if (!data.length) {
+            sinResultados.removeClass('d-none');
+            return;
+        }
+
+        sinResultados.addClass('d-none');
+
+        data.forEach(row => {
+            const nombre = row.nombres ?? '';
+            const apellido = row.apellidos ?? '';
+            const correo = row.email ?? '';
+            const organizacion = row.nombre_organizacion ?? 'Independiente';
+            const idUsuario = row.id_usuario ?? '';
+            const rolNombreOriginal = row.nombre_rol ?? '';
+            const organizacionId = parseInt(row.organizacion_id ?? 0, 10);
+
+            const inicialNombre = nombre ? nombre.charAt(0) : '';
+            const inicialApellido = apellido ? apellido.charAt(0) : '';
+            const iniciales = `${inicialNombre}${inicialApellido}`.toUpperCase();
+
+            // Mostrar nombre amigable del rol
+            let nombreMostrarRol = rolNombreOriginal;
+            if (!rolNombreOriginal) {
+                nombreMostrarRol = 'Sin rol';
+            } else if (rolNombreOriginal === 'ADMIN_DIGI') {
+                nombreMostrarRol = 'Digisalud';
+            } else if (rolNombreOriginal === 'ADMIN_ORG') {
+                nombreMostrarRol = 'Administrador';
+            } else if (rolNombreOriginal === 'REGISTRO') {
+                nombreMostrarRol = 'Registro de Data';
+            } else if (rolNombreOriginal === 'ADMINISTRADOR') {
+                nombreMostrarRol = 'TI Digisalud';
+            } else if (rolNombreOriginal === 'COORDINADOR') {
+                nombreMostrarRol = 'Coordinador';
+            } else if (rolNombreOriginal === 'VIEWER') {
+                nombreMostrarRol = 'Ver Data';
+            }
+
+            const badgeRol = rolNombreOriginal
+                ? `
+                    <span class="badge rounded-pill bg-light-success text-success px-3 py-2 border border-success border-opacity-25">
+                        <i class="fas fa-user-shield me-1 small"></i> ${nombreMostrarRol}
+                    </span>
+                  `
+                : `
+                    <span class="badge rounded-pill bg-light-danger text-danger px-3 py-2 border border-danger border-opacity-25">
+                        <i class="fas fa-exclamation-triangle me-1 small"></i> Sin rol
+                    </span>
+                  `;
+
+            // permisos
+            const esIndependiente = organizacionId === 1;
+            const puedeAgregarOrg = esIndependiente && [1,2,3].includes(rolSesion);
+            const puedeBloquear   = [1,2,3].includes(rolSesion);
+
+            let acciones = '';
+
+            if (puedeAgregarOrg) {
+                acciones += `
+                    <li>
+                        <a class="dropdown-item btnAgregarOrg" href="javascript:void(0)" data-id="${idUsuario}">
+                            <i class="bi bi-person-fill-add me-2"></i> Agregar organización
+                        </a>
+                    </li>
+                `;
+            }
+
+            if (puedeBloquear && !puedeAgregarOrg) {
+                acciones += `
+                    <li>
+                        <a class="dropdown-item btnCorreo" href="javascript:void(0)" data-id="${idUsuario}">
+                            <i class="bi bi-envelope-fill me-2"></i> Cambiar correo
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item btnPass" href="javascript:void(0)" data-id="${idUsuario}">
+                            <i class="bi bi-key-fill me-2"></i> Cambiar contraseña
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item text-danger btnBloquear" href="javascript:void(0)" data-id="${idUsuario}">
+                            <i class="bi bi-lock-fill me-2"></i> Bloquear / desbloquear
+                        </a>
+                    </li>
+                `;
+            }
+
+            if (acciones === '') {
+                acciones = `
+                    <li>
+                        <span class="dropdown-item-text text-muted small">Sin acciones disponibles</span>
+                    </li>
+                `;
+            }
+
+            const card = `
+                <div class="col user-item"
+                     data-search="${(nombre + ' ' + apellido + ' ' + correo + ' ' + organizacion + ' ' + nombreMostrarRol).toLowerCase()}">
+                    <div class="card border-0 shadow-sm user-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="avatar-circle me-3">
+                                    <span>${iniciales}</span>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0 fw-bold text-dark">
+                                        ${nombre} ${apellido}
+                                    </h5>
+                                    <small class="text-muted">${organizacion}</small>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                ${badgeRol}
+                            </div>
+
+                            <p class="card-text small text-muted mb-4 card-text-mail">
+                                <i class="far fa-envelope me-1"></i> ${correo}
+                            </p>
+
+                            <div class="d-flex justify-content-between align-items-center border-top pt-2">
+                              
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle px-3 rounded-pill"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                        Acciones <i class="fas fa-wrench ms-1 small"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                        ${acciones}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            contenedor.append(card);
+        });
+
+        activarEventos();
+    }
+
+    // ==============================
+    //   BUSCADOR LOCAL
+    // ==============================
+    $('#searchUser').on('keyup', function() {
+        const texto = $(this).val().toLowerCase().trim();
+        let visibles = 0;
+
+        $('.user-item').each(function() {
+            const contenido = $(this).data('search');
+
+            if (contenido.includes(texto)) {
+                $(this).removeClass('d-none');
+                visibles++;
+            } else {
+                $(this).addClass('d-none');
+            }
+        });
+
+        if (visibles === 0) {
+            $('#sinResultados').removeClass('d-none');
+        } else {
+            $('#sinResultados').addClass('d-none');
         }
     });
-
-
-    // =======================================================
-    //    EVENTOS DE BOTONES (SE REACTIVAN CON draw.dt)
-    // =======================================================
-    $('#tablaUsuarios').on('draw.dt', function () {
-
-        // ==========================
-        //   AGREGAR A ORGANIZACIÓN
-        // ==========================
-        $('.btnAgregarOrg').off().on('click', function () {
-            const id = $(this).data('id');
-            $('#agregarId').val(id);
-            const modal = new bootstrap.Modal(document.getElementById('modalAgregarOrg'));
-            modal.show();
-        });
-
-        // ==========================
-        //       BLOQUEAR
-        // ==========================
-        $('.btnBloquear').off().on('click', function () {
-            const id = $(this).data('id');
-
-            $('#bloqueoId').val(id);
-            $('#textoBloqueo').html("¿Deseas <b>cambiar el estado</b> de este usuario?");
-            const modal = new bootstrap.Modal(document.getElementById('modalBloqueo'));
-            modal.show();
-        });
-
-        // ==========================
-        //     CAMBIAR CORREO
-        // ==========================
-        $('.btnCorreo').off().on('click', function () {
-            const id = $(this).data('id');
-
-            $('#correoId').val(id);
-            $('#nuevoCorreo').val("");
-
-            const modal = new bootstrap.Modal(document.getElementById('modalCorreo'));
-            modal.show();
-        });
-
-        // ==========================
-        //   CAMBIAR CONTRASEÑA
-        // ==========================
-        $('.btnPass').off().on('click', function () {
-            const id = $(this).data('id');
-
-            $('#passId').val(id);
-            $('#nuevoPass').val("");
-            $('#confirmPass').val("");
-
-            const modal = new bootstrap.Modal(document.getElementById('modalPassword'));
-            modal.show();
-        });
-
-    });
-
 
     // Helper para cerrar modales por id
     function cerrarModal(idModal) {
@@ -268,6 +432,43 @@ window.tabla = $('#tablaUsuarios').DataTable({
         if (modal) modal.hide();
     }
 
+    // ==============================
+    //   ACTIVAR EVENTOS
+    // ==============================
+    function activarEventos() {
+
+        $('.btnAgregarOrg').off('click').on('click', function () {
+            const id = $(this).data('id');
+            $('#agregarId').val(id);
+            const modal = new bootstrap.Modal(document.getElementById('modalAgregarOrg'));
+            modal.show();
+        });
+
+        $('.btnBloquear').off('click').on('click', function () {
+            const id = $(this).data('id');
+            $('#bloqueoId').val(id);
+            $('#textoBloqueo').html("¿Deseas <b>cambiar el estado</b> de este usuario?");
+            const modal = new bootstrap.Modal(document.getElementById('modalBloqueo'));
+            modal.show();
+        });
+
+        $('.btnCorreo').off('click').on('click', function () {
+            const id = $(this).data('id');
+            $('#correoId').val(id);
+            $('#nuevoCorreo').val("");
+            const modal = new bootstrap.Modal(document.getElementById('modalCorreo'));
+            modal.show();
+        });
+
+        $('.btnPass').off('click').on('click', function () {
+            const id = $(this).data('id');
+            $('#passId').val(id);
+            $('#nuevoPass').val("");
+            $('#confirmPass').val("");
+            const modal = new bootstrap.Modal(document.getElementById('modalPassword'));
+            modal.show();
+        });
+    }
 
     // =======================================================
     //   FORMULARIO: AGREGAR ORGANIZACIÓN
@@ -286,16 +487,28 @@ window.tabla = $('#tablaUsuarios').DataTable({
         .then(r => r.json())
         .then(d => {
             if (d.error) {
-                alert(d.error);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atención',
+                    text: d.error,
+                    confirmButtonColor: '#00A86B'
+                });
                 return;
             }
 
             cerrarModal('modalAgregarOrg');
-            tabla.ajax.reload(null, false);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Usuario actualizado',
+                text: 'La organización fue asignada correctamente.',
+                confirmButtonColor: '#00A86B'
+            });
+
+            cargarUsuarios();
         })
         .catch(err => console.error(err));
     });
-
 
     // =======================================================
     //   FORMULARIO: CAMBIAR CORREO
@@ -313,16 +526,28 @@ window.tabla = $('#tablaUsuarios').DataTable({
         .then(r => r.json())
         .then(d => {
             if (d.error) {
-                alert(d.error);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atención',
+                    text: d.error,
+                    confirmButtonColor: '#00A86B'
+                });
                 return;
             }
 
             cerrarModal('modalCorreo');
-            tabla.ajax.reload(null, false);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Correo actualizado',
+                text: 'El correo se cambió correctamente.',
+                confirmButtonColor: '#00A86B'
+            });
+
+            cargarUsuarios();
         })
         .catch(err => console.error(err));
     });
-
 
     // =======================================================
     //   FORMULARIO: CAMBIAR CONTRASEÑA
@@ -332,12 +557,12 @@ window.tabla = $('#tablaUsuarios').DataTable({
 
         if ($('#nuevoPass').val() !== $('#confirmPass').val()) {
             Swal.fire({
-            icon: 'warning',
-            title: '¡Las Contraseñas no coinciden!',
-            text: 'Por favor revisar',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#00A86B'
-        });
+                icon: 'warning',
+                title: '¡Las contraseñas no coinciden!',
+                text: 'Por favor revisar.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#00A86B'
+            });
             return;
         }
 
@@ -351,23 +576,27 @@ window.tabla = $('#tablaUsuarios').DataTable({
         .then(r => r.json())
         .then(d => {
             if (d.error) {
-                alert(d.error);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atención',
+                    text: d.error,
+                    confirmButtonColor: '#00A86B'
+                });
                 return;
             }
 
             cerrarModal('modalPassword');
-            Swal.fire({
-            icon: 'success',
-            title: '¡Contraseña actualizada!',
-            text: 'La contraseña se cambió correctamente.',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#00A86B'
-        });
 
+            Swal.fire({
+                icon: 'success',
+                title: '¡Contraseña actualizada!',
+                text: 'La contraseña se cambió correctamente.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#00A86B'
+            });
         })
         .catch(err => console.error(err));
     });
-
 
     // =======================================================
     //   FORMULARIO: CONFIRMAR BLOQUEO
@@ -383,19 +612,33 @@ window.tabla = $('#tablaUsuarios').DataTable({
         .then(r => r.json())
         .then(d => {
             if (d.error) {
-                alert(d.error);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Atención',
+                    text: d.error,
+                    confirmButtonColor: '#00A86B'
+                });
                 return;
             }
 
             cerrarModal('modalBloqueo');
-            tabla.ajax.reload(null, false);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Estado actualizado',
+                text: 'El estado del usuario fue modificado correctamente.',
+                confirmButtonColor: '#00A86B'
+            });
+
+            cargarUsuarios();
         })
         .catch(err => console.error(err));
     });
+
+    // cargar al iniciar
+    cargarUsuarios();
 
 });
 </script>
 
 <?= $this->endSection() ?>
- 
- 

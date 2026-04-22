@@ -3,16 +3,19 @@
 
 <div class="container my-4">
 
-    <!-- BOTÓN CREAR (VA A LA PÁGINA) -->
+    <!-- BOTÓN CREAR -->
     <div class="d-flex justify-content-start mb-3">
-        <a href="<?= base_url('jornadas/crear') ?>" class="btn principal  ">
+        <a href="<?= base_url('jornadas/crear') ?>" class="btn principal">
             + Crear Jornada
         </a>
     </div>
 
     <!-- ALERTA -->
     <?php if (session('success')): ?>
-        <div class="alert alert-success"><?= session('success') ?></div>
+        <div class="alert alert-success auto-dismiss"><?= session('success') ?></div>
+    <?php endif; ?>
+    <?php if (session('error')): ?>
+        <div class="alert alert-danger auto-dismiss"><?= session('error') ?></div>
     <?php endif; ?>
 
     <!-- LISTADO DE JORNADAS -->
@@ -29,9 +32,14 @@
                     </div>
 
                     <div class="text-end">
-                        <span class="estado me-3">
-                            <?= $jor['status_jor'] == 1 ? 'ACTIVA' : ($jor['status_jor'] == 2 ? 'FINALIZADA' : 'INACTIVA') ?>
-                        </span>
+                        <?php
+    $estadoTexto = $jor['status_jor'] == 1 ? 'ACTIVA' : ($jor['status_jor'] == 2 ? 'FINALIZADA' : 'INACTIVA');
+    $estadoClase = $jor['status_jor'] == 1 ? 'text-success' : ($jor['status_jor'] == 2 ? 'text-danger' : 'text-secondary');
+?>
+
+<span class="estado me-3 <?= $estadoClase ?>">
+    <?= $estadoTexto ?>
+</span>
                         <div class="fw-bold">
                             <small class="text-muted">
                                 <?= date('d M Y', strtotime($jor['fecha_inicio'])) ?>
@@ -46,9 +54,9 @@
 
     <?php 
         $iconos = [
-            '1'   => 'antropometria2.svg',
-            '2'   => 'sanguinea2.svg',
-            '3'   => 'visual2.svg',
+            '1'  => 'antropometria2.svg',
+            '2'  => 'sanguinea2.svg',
+            '3'  => 'visual2.svg',
             '4'  => 'signosVitales2.svg',
             '5'  => 'medicinaGeneral2.svg',
             '6'  => 'vacunacion2.svg'
@@ -56,14 +64,12 @@
     ?>
 
     <?php foreach (explode(',', $jor['pesquisas']) as $p): ?>
-        
         <?php 
             $p = trim(strtoupper($p));
             if (isset($iconos[$p])): 
         ?>
             <img src="<?= base_url('img/' . $iconos[$p]) ?>" width="36">
         <?php endif; ?>
-
     <?php endforeach; ?>
 
 <?php endif; ?>
@@ -73,22 +79,26 @@
 
                 <div class="jornada-footer d-flex justify-content-between align-items-center px-3 pb-3 flex-wrap">
                   
-                    
-                    <p class="mb-2 small text-secondary  text-start">
+                    <p class="mb-2 small text-secondary text-start">
                         <img src="<?= base_url('img/ubicacion-azul.svg') ?>" width="15">
                         <?= esc($jor['nombre_institucion'] ?? 'Sin institución') ?> /
                         <?= esc($jor['ciudad'] ?? 'Sin ubicación') ?> 
                     </p>
                        
                     <div class="d-flex flex-wrap gap-2">
-                        <!-- Luego puedes cambiar esto a una página de edición -->
-                        <a href="<?= base_url('jornadas/editar/' . $jor['id_jornada']) ?>" 
-                        class="btn btn-outline-primary btn-sm">
-                            Editar
-                        </a>
+                        <?php if ($jor['status_jor'] != 2): ?>
+                            <a href="<?= base_url('jornadas/editar/' . $jor['id_jornada']) ?>" 
+                            class="btn btn-outline-primary btn-sm">
+                                Editar
+                            </a>
+                        <?php else: ?>
+                            <button class="btn btn-outline-secondary btn-sm" disabled>
+                                Editar
+                            </button>
+                        <?php endif; ?>
                         <button class="btn btn-outline-primary btn-sm" disabled>Usuarios</button>
                         <a href="<?= base_url('jornadas/'.$jor['id_jornada'].'/beneficiarios') ?>" 
-                        class="btn btn-outline-primary btn-sm">
+                           class="btn btn-outline-primary btn-sm">
                             Beneficiarios
                         </a>
                         <button class="btn btn-outline-primary btn-sm" disabled>Reportes</button>
@@ -106,5 +116,3 @@
 </div>
 
 <?= $this->endSection() ?>
-
-<?php // SIN modal_form, SIN sección scripts para editar ?>
