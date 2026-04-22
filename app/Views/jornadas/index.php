@@ -82,7 +82,10 @@
                        
                     <div class="d-flex flex-wrap gap-2">
                         <!-- Luego puedes cambiar esto a una página de edición -->
-                        <button class="btn btn-outline-primary btn-sm" disabled>Editar</button>
+                        <a href="<?= base_url('jornadas/editar/' . $jor['id_jornada']) ?>" 
+                        class="btn btn-outline-primary btn-sm">
+                            Editar
+                        </a>
                         <button class="btn btn-outline-primary btn-sm" disabled>Usuarios</button>
                         <a href="<?= base_url('jornadas/'.$jor['id_jornada'].'/beneficiarios') ?>" 
                         class="btn btn-outline-primary btn-sm">

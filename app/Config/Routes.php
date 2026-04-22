@@ -58,14 +58,19 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes) {
 
 // =====================================================
 // RUTAS MÓDULO BENEFICIARIOS — reemplazar en app/Config/Routes.php
-// (borrar las rutas viejas de jornadas/beneficiarios y beneficiarios)
 // =====================================================
 
-$routes->group('jornadas', function($routes){
-    $routes->get('(:num)/beneficiarios', 'JornadaBeneficiariosController::index/$1');
-    $routes->post('(:num)/asociar/(:num)', 'JornadaBeneficiariosController::asociar/$1/$2');
-    $routes->get('(:num)/desasociar/(:num)', 'JornadaBeneficiariosController::desasociar/$1/$2');
+// Acciones JORNADAS
+$routes->group('jornadas', ['filter' => 'auth'], function($routes) {
+    $routes->get('/',            'Jornadas::index');          // Lista
+    $routes->get('listar',       'Jornadas::listar');         // DataTable
+    $routes->get('crear',        'Jornadas::crear');          // Form crear
+    $routes->post('guardar',     'Jornadas::guardar');        // Procesar crear
+    $routes->get('editar/(:num)','Jornadas::editar/$1');      // ← NUEVO: Form editar
+    $routes->post('actualizar',  'Jornadas::actualizar');     // ← NUEVO: Procesar editar
+    $routes->post('cambiar-status', 'Jornadas::cambiarStatus');
 });
+ 
 
 // El group('beneficiarios') completo debe quedar así:
  
