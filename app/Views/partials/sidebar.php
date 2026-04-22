@@ -33,6 +33,36 @@
                     <span>Usuarios</span>
                 </a>
             </li>
+ 
+
+<?php
+// Obtener rol de la sesión activa icon_home_off.png
+$rolActual = (int) session()->get('id_rol');
+?>
+
+<?php if (in_array($rolActual, [1, 2, 3], true)) : ?>
+ 
+    <li class="nav-item <?= (uri_string() === 'organizaciones' || str_starts_with(uri_string(), 'organizaciones')) ? 'active' : '' ?>">
+        <a class="nav-link <?= str_starts_with(uri_string(), 'organizaciones') ? 'active' : '' ?>"
+           href="<?= base_url('organizaciones') ?>">
+            <img src="<?= base_url('img/icon_home_off.png') ?>" alt="Usuarios" width="30" height="30">
+            <span>Organizaciones</span>
+        </a>
+    </li>
+<?php endif; ?>
+
+ 
+
+<?php /*
+<?php if (in_array((int) session()->get('id_rol'), [1, 2, 3], true)) : ?>
+    <li class="<?= ($currentPage === 'organizaciones') ? 'active' : '' ?>">
+        <a href="<?= base_url('organizaciones') ?>">
+            <i class="fa fa-building"></i>
+            <span>Organizaciones</span>
+        </a>
+    </li>
+<?php endif; ?>
+*/ ?>
         
     </ul>
 </div>

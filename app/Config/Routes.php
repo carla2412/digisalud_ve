@@ -46,17 +46,7 @@ $routes->group('usuarios', ['filter' => 'auth'], function($routes) {
     $routes->post('bloquear/(:num)', 'UsuariosController::bloquear/$1');
     $routes->post('agregar-organizacion/(:num)', 'UsuariosController::agregarOrganizacion/$1');
 });
-
-    // Acciones JORNADAS
-$routes->group('jornadas', ['filter' => 'auth'], function($routes) {
-    $routes->get('/', 'Jornadas::index');                   // Lista
-    $routes->get('listar', 'Jornadas::listar');             // DataTable
-    $routes->post('guardar', 'Jornadas::guardar');          // Crear / Editar
-    $routes->get('crear', 'Jornadas::crear');
-    $routes->post('cambiar-status', 'Jornadas::cambiarStatus');
-});
-
-// =====================================================
+ // =====================================================
 // RUTAS MÓDULO BENEFICIARIOS — reemplazar en app/Config/Routes.php
 // =====================================================
 
@@ -79,7 +69,7 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes) {
     $routes->post('actualizar',    'Jornadas::actualizar');     // ← NUEVO
     $routes->post('cambiar-status','Jornadas::cambiarStatus');
      // NUEVA RUTA
-    $routes->get('(:num)/beneficiarios', 'BeneficiariosController::buscar/$1');
+    $routes->get('(:num)/beneficiarios', 'BeneficiariosController::listar/$1');
 });
  
 
@@ -96,4 +86,18 @@ $routes->group('beneficiarios', function($routes){
     $routes->get('editar/(:num)', 'BeneficiariosController::edit/$1');
     $routes->post('actualizar/(:num)', 'BeneficiariosController::update/$1');
 });
+
+
+// ================================================================
+// MÓDULO: Organizaciones
+// Acceso: roles 1, 2, 3 (verificado en controlador)
+// ================================================================
  
+$routes->get('organizaciones',              'Organizaciones::index',  ['as' => 'organizaciones.index']);
+$routes->get('organizaciones/crear',        'Organizaciones::create', ['as' => 'organizaciones.create']);
+$routes->post('organizaciones/guardar',     'Organizaciones::store',  ['as' => 'organizaciones.store']);
+$routes->get('organizaciones/editar/(:num)', 'Organizaciones::edit/$1',   ['as' => 'organizaciones.edit']);
+$routes->post('organizaciones/update/(:num)', 'Organizaciones::update/$1', ['as' => 'organizaciones.update']);
+ 
+// Endpoint seguro para servir logos (fuera del public root)
+$routes->get('organizaciones/logo/(:segment)', 'Organizaciones::logo/$1', ['as' => 'organizaciones.logo']);
