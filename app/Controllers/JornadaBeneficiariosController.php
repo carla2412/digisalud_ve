@@ -1,7 +1,6 @@
 <?php
 // ========================================================
 // ARCHIVO: app/Controllers/JornadaBeneficiariosController.php
-// REEMPLAZAR COMPLETO
 // ========================================================
 
 namespace App\Controllers;
@@ -51,31 +50,15 @@ class JornadaBeneficiariosController extends BaseController
             ->where('beneficiarios_jornadas.status_bc', 1)
             ->findAll();
 
-        // ═══ CONSULTAR EVALUACIONES POR BENEFICIARIO ═══
-        // Esto determinará qué íconos van en color y cuáles en gris
-        // TODO: cuando desarrolles el módulo de evaluaciones, aquí consultarás
-        //       la tabla de resultados de pesquisa por beneficiario.
-        //       Por ahora dejamos un array vacío — todos los íconos serán gris.
-        //
-        // Estructura esperada: $evaluaciones[id_beneficiario] = ['1','3','6'] (IDs de pesquisas evaluadas)
-        //
-        // Ejemplo futuro:
-        // $db = \Config\Database::connect();
-        // $evals = $db->table('evaluaciones_pesquisa')
-        //     ->select('id_beneficiario, idtipo_pesquisa')
-        //     ->where('jornada_id', $jornada_id)
-        //     ->get()->getResultArray();
-        // foreach ($evals as $e) {
-        //     $evaluaciones[$e['id_beneficiario']][] = $e['idtipo_pesquisa'];
-        // }
+        
 
        $evaluaciones = []; // vacío por ahora
 
         // --- LÓGICA DE REDIRECCIÓN AUTOMÁTICA ---
         // Si no hay beneficiarios asociados (status_bc = 1), mandamos al buscador
         if (count($beneficiarios) === 0) {
-            return redirect()->to(base_url("beneficiarios/buscar?jornada=$jornada_id"))
-                            ->with('info', 'Esta jornada aún no tiene beneficiarios. Use el buscador para añadir uno.');
+            return redirect()->to(base_url("beneficiarios/buscar/$jornada_id"))
+                ->with('info', 'Esta jornada aún no tiene beneficiarios. Use el buscador para añadir uno.');
         }
 
         // Si llegamos aquí, es porque sí hay beneficiarios, entonces mostramos la lista

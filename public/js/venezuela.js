@@ -197,7 +197,8 @@ const ubicaciones = {
     "Sucre": ["Petare"],
     "Baruta": ["Baruta"],
     "El Hatillo": ["El Hatillo"],
-    "Los Salias": ["San Antonio de los Altos"]
+    "Los Salias": ["San Antonio de los Altos"],
+    "Chacao": ["Chacao"]
   },
 
   "Zulia": {

@@ -69,7 +69,7 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes) {
     $routes->post('actualizar',    'Jornadas::actualizar');     // ← NUEVO
     $routes->post('cambiar-status','Jornadas::cambiarStatus');
      // NUEVA RUTA
-    $routes->get('(:num)/beneficiarios', 'BeneficiariosController::listar/$1');
+    $routes->get('(:num)/beneficiarios', 'JornadaBeneficiariosController::index/$1');
 });
  
 

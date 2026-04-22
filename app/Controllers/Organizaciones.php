@@ -12,9 +12,13 @@ use CodeIgniter\HTTP\ResponseInterface;
  * Gestiona el CRUD de la tabla `organizacion`.
  * Acceso restringido a roles: 1 (Admin TI), 2 (Admin Digisalud), 3 (Admin Org).
  *
+ * Vistas separadas:
+ *  - organizaciones/create_org  → formulario de creación
+ *  - organizaciones/editar_org  → formulario de edición
+ *
  * Gestión de logos:
- *  - Almacenamiento en WRITABLE_PATH . 'uploads/logos/' (fuera del public root)
- *  - Servido mediante método logo() con verificación de rol
+ *  - Almacenamiento en FCPATH . 'uploads/logos/'
+ *  - Servido mediante método logo() con verificación de sesión
  *  - Renombrado aleatorio con bin2hex(random_bytes(16))
  *  - Validación MIME real via getClientMimeType() + getImageType()
  */
@@ -23,8 +27,8 @@ class Organizaciones extends BaseController
     // Roles con acceso al módulo
     private const ROLES_PERMITIDOS = [1, 2, 3];
 
-    // Directorio de logos fuera del public root
-    private const LOGO_DIR = WRITEPATH . 'uploads/logos/';
+    // Directorio de logos
+    private const LOGO_DIR = FCPATH . 'uploads/logos/';
 
     // Extensiones permitidas (minúsculas)
     private const LOGO_EXTENSIONES = ['png', 'jpg', 'jpeg'];
@@ -50,11 +54,6 @@ class Organizaciones extends BaseController
     // Control de acceso centralizado
     // ----------------------------------------------------------------
 
-    /**
-     * Verifica que el usuario tenga sesión activa y rol autorizado.
-     * Redirige al login si no está autenticado.
-     * Redirige al dashboard con error si el rol no está permitido.
-     */
     private function verificarAcceso(): bool
     {
         $session = session();
@@ -107,10 +106,8 @@ class Organizaciones extends BaseController
             return $this->response;
         }
 
-        return view('organizaciones/form', [
-            'titulo'       => 'Nueva Organización',
-            'organizacion' => null,
-            'accion'       => 'store',
+        return view('organizaciones/create_org', [
+            'titulo' => 'Nueva Organización',
         ]);
     }
 
@@ -124,14 +121,13 @@ class Organizaciones extends BaseController
             return $this->response;
         }
 
-        // Validar campos del formulario
         $rules = [
-            'nombre_org'        => 'required|max_length[120]',
-            'tipo'              => 'required|max_length[50]',
-            'categoria'         => 'required|max_length[80]',
-            'telefono'          => 'required|max_length[30]',
-            'correo'            => 'required|valid_email|max_length[120]',
-            'nombre_responsable'=> 'permit_empty|max_length[120]',
+            'nombre_org'         => 'required|max_length[120]',
+            'tipo'               => 'required|max_length[50]',
+            'categoria'          => 'required|max_length[80]',
+            'telefono'           => 'required|max_length[30]',
+            'correo'             => 'required|valid_email|max_length[120]',
+            'nombre_responsable' => 'permit_empty|max_length[120]',
         ];
 
         if (! $this->validate($rules)) {
@@ -158,6 +154,9 @@ class Organizaciones extends BaseController
             $logoUrl = $resultado['filename'];
         }
 
+        // Procesar dirección si la sección fue activada
+        $direccionId = $this->procesarDireccion();
+
         // Preparar datos para inserción
         $datos = [
             'nombre_org'         => $this->request->getPost('nombre_org'),
@@ -166,7 +165,7 @@ class Organizaciones extends BaseController
             'telefono'           => $this->request->getPost('telefono'),
             'correo'             => $this->request->getPost('correo'),
             'nombre_responsable' => $this->request->getPost('nombre_responsable'),
-            'direccion_id'       => $this->request->getPost('direccion_id') ?: null,
+            'direccion_id'       => $direccionId,
             'logo_url'           => $logoUrl,
             'status_org'         => 1,
             'creado_en'          => date('Y-m-d H:i:s'),
@@ -196,10 +195,20 @@ class Organizaciones extends BaseController
             return redirect()->to(base_url('organizaciones'));
         }
 
-        return view('organizaciones/form', [
+        // Obtener datos de dirección si existe
+        $direccion = null;
+        if (! empty($organizacion['direccion_id'])) {
+            $db = \Config\Database::connect();
+            $direccion = $db->table('direcciones')
+                ->where('id_direccion', $organizacion['direccion_id'])
+                ->get()
+                ->getRowArray();
+        }
+
+        return view('organizaciones/editar_org', [
             'titulo'       => 'Editar Organización',
             'organizacion' => $organizacion,
-            'accion'       => 'update/' . $id,
+            'direccion'    => $direccion,
         ]);
     }
 
@@ -220,7 +229,6 @@ class Organizaciones extends BaseController
             return redirect()->to(base_url('organizaciones'));
         }
 
-        // Validar campos del formulario
         $rules = [
             'nombre_org'         => 'required|max_length[120]',
             'tipo'               => 'required|max_length[50]',
@@ -237,8 +245,8 @@ class Organizaciones extends BaseController
                 ->with('errors', $this->validator->getErrors());
         }
 
-        // Manejar el logo — conservar el anterior si no se sube uno nuevo
-        $logoUrl = $organizacion['logo_url']; // valor actual por defecto
+        // Manejar el logo
+        $logoUrl = $organizacion['logo_url'];
         $archivo = $this->request->getFile('logo');
 
         if ($archivo && $archivo->isValid() && ! $archivo->hasMoved()) {
@@ -251,13 +259,15 @@ class Organizaciones extends BaseController
                     ->with('errors', ['logo' => $resultado['mensaje']]);
             }
 
-            // Eliminar logo anterior del servidor si existe
             if (! empty($organizacion['logo_url'])) {
                 $this->eliminarLogo($organizacion['logo_url']);
             }
 
             $logoUrl = $resultado['filename'];
         }
+
+        // Procesar dirección
+        $direccionId = $this->procesarDireccion($organizacion['direccion_id']);
 
         $datos = [
             'nombre_org'         => $this->request->getPost('nombre_org'),
@@ -266,7 +276,7 @@ class Organizaciones extends BaseController
             'telefono'           => $this->request->getPost('telefono'),
             'correo'             => $this->request->getPost('correo'),
             'nombre_responsable' => $this->request->getPost('nombre_responsable'),
-            'direccion_id'       => $this->request->getPost('direccion_id') ?: null,
+            'direccion_id'       => $direccionId,
             'logo_url'           => $logoUrl,
         ];
 
@@ -277,27 +287,17 @@ class Organizaciones extends BaseController
     }
 
     // ----------------------------------------------------------------
-    // logo — Servir el archivo de logo fuera del public root
+    // logo — Servir el archivo de logo
     // ----------------------------------------------------------------
 
-    /**
-     * Endpoint seguro para visualizar logos.
-     * URL: /organizaciones/logo/{filename}
-     *
-     * Verifica sesión activa antes de servir el archivo.
-     * No expone rutas absolutas del servidor.
-     */
     public function logo(string $filename): ResponseInterface
     {
-        // Solo usuarios autenticados pueden ver logos
         if (! session()->has('id_usuario') || ! session()->get('id_usuario')) {
             return $this->response->setStatusCode(403)->setBody('Acceso denegado.');
         }
 
-        // Sanitizar: solo nombre de archivo, sin path traversal
         $filename = basename($filename);
 
-        // Validar extensión
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         if (! in_array($ext, self::LOGO_EXTENSIONES, true)) {
             return $this->response->setStatusCode(400)->setBody('Tipo de archivo no permitido.');
@@ -309,7 +309,6 @@ class Organizaciones extends BaseController
             return $this->response->setStatusCode(404)->setBody('Logo no encontrado.');
         }
 
-        // Determinar Content-Type real desde el archivo
         $finfo    = new \finfo(FILEINFO_MIME_TYPE);
         $mimeReal = $finfo->file($ruta);
 
@@ -326,62 +325,96 @@ class Organizaciones extends BaseController
     }
 
     // ----------------------------------------------------------------
-    // Métodos privados de gestión de archivos
+    // Métodos privados
     // ----------------------------------------------------------------
 
     /**
-     * Procesa y guarda el archivo de logo de forma segura.
+     * Procesa la sección de dirección del formulario.
+     * Inserta o actualiza en la tabla `direcciones`.
      *
-     * @return array{error: bool, mensaje: string, filename: string}
+     * @param int|null $direccionIdExistente ID de dirección existente (para update)
+     * @return int|null ID de la dirección o null si no se activó la sección
+     */
+    private function procesarDireccion(?int $direccionIdExistente = null): ?int
+    {
+        // Si la sección de dirección no fue activada, conservar valor anterior
+        if (! $this->request->getPost('direccion_activa')) {
+            return $direccionIdExistente;
+        }
+
+        $estado    = $this->request->getPost('estado');
+        $municipio = $this->request->getPost('municipio');
+
+        // Si no hay estado seleccionado, no guardar dirección
+        if (empty($estado)) {
+            return $direccionIdExistente;
+        }
+
+        $datosDireccion = [
+            'pais'      => $this->request->getPost('pais') ?: 'Venezuela',
+            'estado'    => $estado,
+            'municipio' => $municipio,
+            'parroquia' => $this->request->getPost('parroquia'),
+            'ciudad'    => $this->request->getPost('ciudad'),
+        ];
+
+        $db = \Config\Database::connect();
+
+        if ($direccionIdExistente) {
+            // Actualizar dirección existente
+            $db->table('direcciones')
+                ->where('id_direccion', $direccionIdExistente)
+                ->update($datosDireccion);
+            return $direccionIdExistente;
+        }
+
+        // Insertar nueva dirección
+        $db->table('direcciones')->insert($datosDireccion);
+        return $db->insertID();
+    }
+
+    /**
+     * Procesa y guarda el archivo de logo de forma segura.
      */
     private function procesarLogo(\CodeIgniter\HTTP\Files\UploadedFile $archivo): array
     {
-        // 1. Verificar que fue cargado correctamente
         if (! $archivo->isValid()) {
             return ['error' => true, 'mensaje' => 'El archivo no se cargó correctamente.', 'filename' => ''];
         }
 
-        // 2. Validar extensión del nombre original
         $extOriginal = strtolower($archivo->getClientExtension());
         if (! in_array($extOriginal, self::LOGO_EXTENSIONES, true)) {
             return ['error' => true, 'mensaje' => 'Solo se permiten imágenes PNG, JPG o JPEG.', 'filename' => ''];
         }
 
-        // 3. Validar MIME real reportado por el cliente
         $mimeCliente = $archivo->getClientMimeType();
         if (! array_key_exists($mimeCliente, self::LOGO_MIMES)) {
             return ['error' => true, 'mensaje' => 'El tipo de archivo no está permitido.', 'filename' => ''];
         }
 
-        // 4. Validar que sea realmente una imagen con getimagesize()
         $tmpPath = $archivo->getTempName();
         $imgInfo = @getimagesize($tmpPath);
         if ($imgInfo === false) {
             return ['error' => true, 'mensaje' => 'El archivo no es una imagen válida.', 'filename' => ''];
         }
 
-        // 5. Validar MIME real del binario (segunda capa)
         $finfo    = new \finfo(FILEINFO_MIME_TYPE);
         $mimeReal = $finfo->file($tmpPath);
         if (! array_key_exists($mimeReal, self::LOGO_MIMES)) {
             return ['error' => true, 'mensaje' => 'El contenido del archivo no corresponde a una imagen permitida.', 'filename' => ''];
         }
 
-        // 6. Crear directorio si no existe
         if (! is_dir(self::LOGO_DIR)) {
             mkdir(self::LOGO_DIR, 0755, true);
         }
 
-        // 7. Generar nombre aleatorio seguro (sin colisiones)
         $ext         = self::LOGO_MIMES[$mimeReal];
         $nuevoNombre = bin2hex(random_bytes(16)) . '.' . $ext;
 
-        // Evitar colisión (improbable pero seguro)
         while (file_exists(self::LOGO_DIR . $nuevoNombre)) {
             $nuevoNombre = bin2hex(random_bytes(16)) . '.' . $ext;
         }
 
-        // 8. Mover el archivo al directorio seguro
         if (! $archivo->move(self::LOGO_DIR, $nuevoNombre)) {
             return ['error' => true, 'mensaje' => 'Error al guardar el archivo en el servidor.', 'filename' => ''];
         }
@@ -391,11 +424,10 @@ class Organizaciones extends BaseController
 
     /**
      * Elimina el archivo de logo del servidor si existe.
-     * Valida que sea un nombre de archivo simple (sin path traversal).
      */
     private function eliminarLogo(string $filename): void
     {
-        $filename = basename($filename); // prevenir path traversal
+        $filename = basename($filename);
         $ruta     = self::LOGO_DIR . $filename;
 
         if (is_file($ruta)) {
