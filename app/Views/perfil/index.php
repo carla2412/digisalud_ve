@@ -539,7 +539,7 @@
         <div class="hist-card">
             <div class="hist-header">
                 <div class="hist-icon centros"><i class="bi bi-clock-history"></i></div>
-                <h6>Historial de Centros</h6>
+                <h6>Última conexión</h6>
             </div>
             <?php if (!empty($estadisticas['detalle_centros'])): ?>
                 <table class="table hist-table">

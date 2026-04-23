@@ -47,6 +47,8 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes) {
     $routes->get('listar', 'Jornadas::listar');
     $routes->post('guardar', 'Jornadas::guardar');
     $routes->get('crear', 'Jornadas::crear');
+    $routes->get('editar/(:num)',  'Jornadas::editar/$1');      // ← NUEVO
+    $routes->post('actualizar',    'Jornadas::actualizar');     // ← NUEVO
     $routes->post('cambiar-status', 'Jornadas::cambiarStatus');
 });
 
