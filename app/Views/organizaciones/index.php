@@ -1,9 +1,10 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+ 
+<?= $this->section('css') ?>
 <style>
+ 
+/*index organizacion*/
   * {
     box-sizing: border-box;
   }
@@ -34,7 +35,7 @@
   }
 
   .org-breadcrumb span {
-    color: #2563eb;
+    color: #3695f5;
     font-weight: 600;
   }
 
@@ -50,7 +51,7 @@
     font-size: 56px;
     line-height: 1.1;
     margin-bottom: 8px;
-    color: #1b2a52;
+    color: #101a61;
   }
 
   .title p {
@@ -63,7 +64,7 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: #1f6fff;
+    background: #3695f5;
     color: #fff;
     border: none;
     border-radius: 14px;
@@ -78,7 +79,7 @@
 
   .btn-primary-custom:hover {
     transform: translateY(-1px);
-    background: #185fe0;
+    background: #3695f5;
     color: #fff;
     text-decoration: none;
   }
@@ -172,7 +173,7 @@
     border-radius: 50%;
   }
 
-  .blue { background: #dce8ff; color: #2563eb; }
+  .blue { background: #dce8ff; color: #3695f5; }
   .green { background: #dff4e7; color: #22c55e; }
   .purple { background: #eedfff; color: #7c3aed; }
 
@@ -195,7 +196,7 @@
     z-index: 2;
   }
 
-  .tag.blue { background: #e7f0ff; color: #2563eb; }
+  .tag.blue { background: #e7f0ff; color: #3695f5; }
   .tag.green { background: #e8f8ee; color: #16a34a; }
   .tag.purple { background: #f1e8ff; color: #7c3aed; }
   .tag.gray { background: #eef2f7; color: #64748b; }
@@ -370,8 +371,9 @@
       width: 100%;
     }
   }
-</style>
 
+</style>
+<?= $this->endSection() ?>
 <div class="org-page">
   <div class="org-container">
     <div class="org-breadcrumb">

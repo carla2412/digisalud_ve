@@ -1,182 +1,280 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
+<?= $this->section('css') ?>
+<style>
+ /* Colores y Variables de DigiSalud (Friendly Palette) */
+:root {
+    --ds-primary: #5c9cd8;
+    --ds-teal: #1dbfb5;
+    --ds-teal-light: #ecfdf5;
+    --ds-bg-light: #f8fafc;
+    --ds-card-friendly-shadow: rgba(0,0,0,0.03);
+}
 
-<div class="container py-4">
+/* Base de la vista de Perfil */
+.ds-profile-view {
+    background-color: var(--ds-bg-light);
+}
 
-    <!-- Mensaje de éxito -->
-    <?php if (session('success')): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?= session('success') ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+.text-primary-ds {
+    color: var(--ds-primary) !important;
+}
+
+.text-teal {
+    color: var(--ds-teal) !important;
+}
+
+/* Tarjetas Amigables */
+.user-profile-card {
+    border-radius: 18px;
+    background-color: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-profile-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 18px var(--ds-card-friendly-shadow) !important;
+}
+
+/* Tarjetas de Estadística Compactas */
+.ds-stat-card-friendly .card-title {
+    font-size: 2.8rem;
+    letter-spacing: -2px;
+}
+
+.ds-stat-card-friendly .card-text {
+    line-height: 1.4;
+    color: #8e9db0;
+}
+
+/* Avatar */
+.avatar-refiled {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.avatar-refiled img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Badges */
+.bg-teal-light {
+    background-color: var(--ds-teal-light) !important;
+}
+
+/* Tamaños */
+.fs-7 { font-size: 0.95rem; }
+.fs-8 { font-size: 0.88rem; }
+.fs-9 { font-size: 0.78rem; }
+
+/* Botones */
+.btn-primary-ds {
+    background-color: var(--ds-primary);
+    color: #fff;
+    border: none;
+}
+
+.btn-primary-ds:hover {
+    background-color: #4b8cc7;
+    color: #fff;
+}
+
+.btn-outline-light-ds {
+    color: var(--ds-primary);
+    border-color: #dee2e6;
+}
+
+.btn-outline-light-ds:hover {
+    color: var(--ds-teal);
+    border-color: var(--ds-teal);
+    background-color: var(--ds-teal-light);
+}
+
+/* Utilidades */
+.shadow-xs {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+}
+</style>
+<?= $this->endSection() ?>
+ <div class="container-fluid py-4 ds-profile-view">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h2 class="text-primary-ds fw-bold m-0">Tu Perfil</h2>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill shadow-sm">
+                <i class="fas fa-bell"></i>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill shadow-sm">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
     </div>
-    <?php endif; ?>
 
+    <!-- IMPORTANTE:
+         enctype="multipart/form-data" para permitir subir archivos
+         action => deja la ruta que ya uses en tu controlador -->
+    <form action="<?= base_url('perfil/actualizar') ?>" method="post" enctype="multipart/form-data">
+        <?= csrf_field() ?>
 
-    <!-- CARD PRINCIPAL DEL PERFIL -->
-    <div class="card shadow-lg mb-4 rounded-4 border-0">
-        <div class="card-body">
+        <div class="row g-4 mb-4">
+            <div class="col-xl-5 col-lg-6">
+                <div class="card h-100 border-0 shadow-sm user-profile-card p-4">
+                    <div class="d-flex align-items-center mb-4">
 
-            <div class="d-flex align-items-center mb-4">
-                <img src="https://ui-avatars.com/api/?name=<?= urlencode($perfil['nombres'].' '.$perfil['apellidos']) ?>&size=120"
-                     class="rounded-circle shadow-sm me-3">
+                        <div class="avatar-refiled me-4 shadow-sm border border-light">
+                            <?php
+                                $foto = !empty($perfil['foto_usr'])
+                                    ? base_url('uploads/foto_usr/'.$perfil['foto_usr'])
+                                    : base_url('assets/images/placeholder-user.png');
+                                ?>
 
-                <div>
-                    <h3 class="mb-0"><?= $perfil['nombres'] . ' ' . $perfil['apellidos'] ?></h3>
-                    <h6 class="text-muted mb-1"><?= $perfil['descripcion_rol'] ?></h6>
-                    <h3>  <span class="badge secundaria"><?= $perfil['nombre_org'] ?></span></h3>
-                   
+                            <img src="<?= $foto ?>" class="img-fluid rounded-circle">
+                          
+                             
+                        </div>
+
+                        <div class="flex-grow-1">
+                            <h4 class="card-title mb-0 fw-bold text-dark">
+                                <?= esc($usuario['nombre'] ?? 'Usuario') ?>
+                            </h4>
+
+                            <small class="text-muted fs-7">
+                                <?= esc($usuario['cargo'] ?? 'Sin cargo asignado') ?>
+                            </small>
+
+                            <div class="mt-2">
+                                <span class="badge rounded-pill bg-teal-light text-teal px-3 py-2 border border-teal border-opacity-25 fs-8">
+                                    <i class="fas fa-id-card me-1 small"></i>
+                                    <?= esc($usuario['organizacion'] ?? 'Digisalud') ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Campo para subir foto -->
+                    <div class="mb-3">
+                        <label for="foto_usr" class="form-label fw-semibold fs-8 text-muted">
+                            Foto de perfil
+                        </label>
+                        <input type="file" name="foto_usr" class="form-control" accept=".jpg,.jpeg,.png">
+                        <small class="text-muted fs-9">
+                            Formatos permitidos: JPG, JPEG, PNG
+                        </small>
+
+                        <?php if (session('errors.foto_usr')): ?>
+                            <div class="text-danger fs-9 mt-1">
+                                <?= session('errors.foto_usr') ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="mt-auto d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary-ds">
+                            Actualizar Foto de perfil
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <hr>
-
-            <!-- FORMULARIO -->
-            <form action="<?= site_url('perfil/actualizar') ?>" method="post" class="mt-3">
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Nombres</label>
-                        <input type="text" name="nombres" class="form-control" value="<?= $perfil['nombres'] ?>">
+            <div class="col-xl-7 col-lg-6">
+                <div class="card h-100 border-0 shadow-sm user-profile-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="card-subtitle fs-8 fw-semibold text-muted text-uppercase m-0">
+                            Mis Datos Principales
+                        </h6>
+                        <button type="button" class="btn btn-sm btn-light rounded-pill px-3 shadow-xs fs-8 text-teal">
+                            <i class="fas fa-pencil ms-1 fs-9"></i> Editar
+                        </button>
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Apellidos</label>
-                        <input type="text" name="apellidos" class="form-control" value="<?= $perfil['apellidos'] ?>">
-                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <p class="mb-0 fs-8 text-muted">Nombre</p>
+                            <p class="mb-0 fw-bold fs-7 text-dark">
+                                <?= esc($usuario['nombre'] ?? '') ?>
+                            </p>
+                        </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Sexo</label>
-                        <select name="genero" class="form-select">
-                            <option value="M" <?= $perfil['genero']=='M'?'selected':'' ?>>Masculino</option>
-                            <option value="F" <?= $perfil['genero']=='F'?'selected':'' ?>>Femenino</option>
-                        </select>
-                    </div>
+                        <div class="col-md-6">
+                            <p class="mb-0 fs-8 text-muted">Correo</p>
+                            <p class="mb-0 fw-bold fs-7 text-dark text-break">
+                                <?= esc($usuario['correo'] ?? '') ?>
+                            </p>
+                        </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Fecha de nacimiento</label>
-                        <input type="date" name="fecha_nacimiento" class="form-control" value="<?= $perfil['fecha_nacimiento'] ?>">
-                    </div>
+                        <div class="col-md-6 mt-4">
+                            <p class="mb-0 fs-8 text-muted">Teléfono</p>
+                            <p class="mb-0 fw-bold fs-7 text-dark text-break">
+                                <?= esc($usuario['telefono'] ?? '') ?>
+                            </p>
+                        </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Profesión</label>
-                        <select id="profesion" name="profesion" class=" form-control">
-                            <?php if (!empty($perfil['profesion'])): ?>
-                                <option value="<?= $perfil['profesion'] ?>" selected>
-                                    <?= $perfil['profesion'] ?>
-                                </option>
-                            <?php endif; ?>
-                        </select>
-
-
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Correo electrónico</label>
-                        <input type="email" name="email" class="form-control" value="<?= $perfil['email'] ?>">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Teléfono</label>
-                        <input type="text" name="telefono" class="form-control" value="<?= $perfil['telefono'] ?>">
+                        <div class="col-md-12 mt-4">
+                            <p class="mb-0 fs-8 text-muted">Profesión</p>
+                            <span class="badge rounded-pill bg-light text-dark fs-8 px-3 py-2 mt-1 border">
+                                <i class="fas fa-code me-1 fs-9 text-muted"></i>
+                                <?= esc($usuario['profesion'] ?? 'No especificada') ?>
+                            </span>
+                        </div>
                     </div>
                 </div>
-
-                <div class="mt-4">
-                    <button class="btn principal px-4">Actualizar perfil</button>
-                </div>
-
-            </form>
-        </div>
-    </div>
-
- <div class="card-header principal text-white rounded-top-4">
-            <h5 class="mb-0 text-center">Has Participado en:  </h5>
-        </div>
-    <!-- ESTADÍSTICAS -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-6">
-            <div class="card shadow-sm rounded-4 border-0 text-center p-4">
-                 
-                <h2 class="fondo_principal"><?= $estadisticas['jornadas'] ?></h2>Jornadas
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="card shadow-sm rounded-4 border-0 text-center p-4">
-                
-                <h2 class="fondo_secundaria"><?= $estadisticas['centros'] ?></h2>Centros
+        <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-4">
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm user-profile-card p-3 ds-stat-card-friendly">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fs-8 fw-semibold text-dark m-0">Jornadas Participadas</span>
+                        <i class="fas fa-clipboard-list text-muted fs-8"></i>
+                    </div>
+                    <h1 class="card-title fw-bolder text-teal m-0">
+                        <?= esc($estadisticas['jornadas'] ?? 0) ?>
+                    </h1>
+                    <p class="card-text fs-8 text-muted mt-2">Resumen de tus jornadas registradas.</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm user-profile-card p-3 ds-stat-card-friendly">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fs-8 fw-semibold text-dark m-0">Centros Asociados</span>
+                        <i class="fas fa-hospital text-muted fs-8"></i>
+                    </div>
+                    <h1 class="card-title fw-bolder text-primary-ds m-0">
+                        <?= esc($estadisticas['centros'] ?? 0) ?>
+                    </h1>
+                    <p class="card-text fs-8 text-muted mt-2">Centros vinculados a tu actividad.</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm user-profile-card p-3 ds-stat-card-friendly">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fs-8 fw-semibold text-dark m-0">Historial Jornadas</span>
+                        <i class="fas fa-history text-muted fs-8"></i>
+                    </div>
+                    <p class="card-text fs-8 text-muted mt-2">Consulta de actividad reciente.</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm user-profile-card p-3 ds-stat-card-friendly">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fs-8 fw-semibold text-dark m-0">Historial Centros</span>
+                        <i class="fas fa-history text-muted fs-8"></i>
+                    </div>
+                    <p class="card-text fs-8 text-muted mt-2">Seguimiento de centros asociados.</p>
+                </div>
             </div>
         </div>
-    </div>
-
-
-    <!-- HISTORIAL DE JORNADAS -->
-    <div class="card shadow-sm rounded-4 border-0 mb-4">
-        <div class="card-header principal text-white rounded-top-4">
-            <h5 class="mb-0  text-center ">Historial de Jornadas</h5>
-        </div>
-
-        <div class="card-body">
-            <?php if ($estadisticas['detalle_jornadas']): ?>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Jornada</th>
-                        <th>Rol</th>
-                        <th>Fecha</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($estadisticas['detalle_jornadas'] as $j): ?>
-                    <tr>
-                        <td><?= $j['nombre_jornada'] ?></td>
-                        <td><span class="badge bg-info text-dark"><?= $j['nombre_rol'] ?></span></td>
-                        <td><?= date("d/m/Y", strtotime($j['fecha_asignacion'])) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-            <?php else: ?>
-                <p class="text-muted">No ha participado en jornadas.</p>
-            <?php endif; ?>
-        </div>
-    </div>
-
-
-    <!-- HISTORIAL DE CENTROS -->
-    <div class="card shadow-sm rounded-4 border-0 mb-5">
-        <div class="card-header principal text-white rounded-top-4">
-            <h5 class="mb-0  text-center ">Historial de Centros</h5>
-        </div>
-
-        <div class="card-body">
-            <?php if ($estadisticas['detalle_centros']): ?>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Centro</th>
-                        <th>Rol</th>
-                        <th>Fecha</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($estadisticas['detalle_centros'] as $c): ?>
-                    <tr>
-                        <td><?= $c['nombre_centro'] ?></td>
-                        <td><span class="badge bg-warning text-dark"><?= $c['nombre_rol'] ?></span></td>
-                        <td><?= date("d/m/Y", strtotime($c['fecha_asignacion'])) ?></td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-            <?php else: ?>
-                <p class="text-muted">No ha participado en centros.</p>
-            <?php endif; ?>
-        </div>
-    </div>
-
+    </form>
 </div>
- 
 <?= $this->endSection() ?>
  
  <?= $this->section('scripts') ?>

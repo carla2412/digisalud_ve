@@ -12,7 +12,7 @@ class UsuarioModel extends Model
     
     protected $allowedFields    = [
         'nombres', 'apellidos','genero','fecha_nacimiento', 'email', 'username', 'password_hash',
-        'telefono', 'direccion_id', 'organizacion_id', 'status_usu', 'profesion', 'creado',
+        'telefono', 'direccion_id', 'organizacion_id', 'status_usu','foto_usr', 'profesion', 'creado',
         'actualizado' 
     ];
 

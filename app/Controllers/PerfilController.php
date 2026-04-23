@@ -40,18 +40,46 @@ class PerfilController extends BaseController
     {
         $id = session('id_usuario');
 
+        $usuarioModel = new UsuarioModel();
+
         $data = [
             'nombres'          => $this->request->getPost('nombres'),
             'apellidos'        => $this->request->getPost('apellidos'),
             'genero'           => $this->request->getPost('genero'),
             'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento'),
             'email'            => $this->request->getPost('email'),
-            'username'       => explode('@', $this->request->getPost('email'))[0],
+            'username'         => explode('@', $this->request->getPost('email'))[0],
             'profesion'        => $this->request->getPost('profesion'),
             'telefono'         => $this->request->getPost('telefono')
         ];
 
-        $usuarioModel = new UsuarioModel();
+        // 🔥 MANEJO DE FOTO
+        $foto = $this->request->getFile('foto_usr');
+
+        if ($foto && $foto->isValid() && ! $foto->hasMoved()) {
+
+            // validar tipo
+            $ext = $foto->getExtension();
+            if (!in_array($ext, ['jpg','jpeg','png'])) {
+                return redirect()->back()->with('error','Formato de imagen inválido');
+            }
+
+            // nombre aleatorio
+            $nuevoNombre = $foto->getRandomName();
+
+            // mover archivo
+            $foto->move(FCPATH . 'uploads/foto_usr', $nuevoNombre);
+
+            // eliminar anterior
+            $usuario = $usuarioModel->find($id);
+            if (!empty($usuario['foto_usr']) && file_exists(FCPATH.'uploads/foto_usr/'.$usuario['foto_usr'])) {
+                unlink(FCPATH.'uploads/foto_usr/'.$usuario['foto_usr']);
+            }
+
+            // guardar nueva foto
+            $data['foto_usr'] = $nuevoNombre;
+        }
+
         $usuarioModel->update($id, $data);
 
         return redirect()->to('perfil')->with('success','Perfil actualizado correctamente');

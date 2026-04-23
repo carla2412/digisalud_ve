@@ -1,6 +1,8 @@
 <?= $this->extend('layouts/main') ?>
+ 
 <?= $this->section('css') ?>
 <style>
+ /*crear organizacion*/
 .create-container { max-width: 900px; margin: 0 auto; }
 .breadcrumb-digi { font-size: .82rem; color: #6c757d; margin-bottom: 1rem; }
 .breadcrumb-digi a { color: #6c757d; text-decoration: none; }
@@ -8,24 +10,24 @@
 .breadcrumb-digi .active { font-weight: 600; color: #0b1b3f; }
 .create-title { font-size: 1.2rem; font-weight: 600; color: #0b1b3f; margin-bottom: 4px; }
 .create-sub { font-size: .82rem; color: #6c757d; margin-bottom: 1.5rem; }
-.section-header { display: flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 600; color: #101a61; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #00D4FF; }
+.section-header { display: flex; align-items: center; gap: 8px; font-size: .9rem; font-weight: 600; color: #101a61; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #3695f5  ; }
 .toggle-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #f8f9fa; border-radius: 10px; cursor: pointer; margin-bottom: 8px; border: 1px solid #e9ecef; user-select: none; transition: border-color .2s; }
 .toggle-bar:hover { border-color: #101a61; }
-.toggle-bar.active { border-color: #00D4FF; background: #f0f9ff; }
+.toggle-bar.active { border-color: #3695f5  ; background: #f0f9ff; }
 .toggle-bar .toggle-label { font-size: .85rem; font-weight: 600; color: #0b1b3f; }
 .toggle-bar .toggle-desc { font-size: .72rem; color: #888; }
 .toggle-content { max-height: 0; overflow: hidden; transition: max-height .3s ease; padding: 0 4px; }
 .toggle-content.open { max-height: 800px; }
 .btn-guardar { background: #101a61; color: #fff; border: none; padding: 12px 28px; border-radius: 10px; font-size: .9rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
-.btn-guardar:hover { background: #1a2a8a; color: #fff; }
+.btn-guardar:hover { background: #101a61; color: #fff; }
 .btn-cancelar { background: transparent; color: #6c757d; border: 1px solid #dee2e6; padding: 12px 24px; border-radius: 10px; font-size: .9rem; text-decoration: none; }
 .btn-cancelar:hover { background: #f8f9fa; color: #333; }
 
 .logo-dropzone { border: 2px dashed #d1d3e2; cursor: pointer; transition: background-color .2s, border-color .2s; border-radius: 12px; }
 .logo-dropzone:hover { background-color: #eaecf4; border-color: #101a61; }
+
 </style>
 <?= $this->endSection() ?>
-
 <?= $this->section('content') ?>
 <div class="create-container px-3 mt-3">
 
@@ -191,7 +193,7 @@
         <!-- ═══ BOTONES ═══ -->
         <div class="d-flex justify-content-between align-items-center mt-4 mb-5">
             <a href="<?= base_url('organizaciones') ?>" class="btn-cancelar">Cancelar</a>
-            <button type="submit" class="btn-guardar">
+            <button type="submit" class="btn-primary-custom">
                 <i class="bi bi-check-lg"></i> Guardar Organización
             </button>
         </div>
