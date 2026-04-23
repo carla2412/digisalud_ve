@@ -63,18 +63,15 @@
         max-width: 320px;
     }
 
-     
-
     .user-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
     }
 
+    /* Avatar: soporta foto o iniciales */
     .avatar-circle {
         width: 48px;
         height: 48px;
-        background-color: #e2e8f0;
-        color: #475569;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -84,6 +81,27 @@
         border: 2px solid #fff;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         text-transform: uppercase;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+    .avatar-circle.has-foto {
+        background: transparent;
+        padding: 0;
+    }
+    .avatar-circle.has-foto img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .avatar-circle:not(.has-foto) {
+        background-color: #e2e8f0;
+        color: #475569;
+    }
+    .avatar-circle svg {
+        width: 100%;
+        height: 100%;
+        display: block;
     }
 
     .bg-light-success {
@@ -111,91 +129,72 @@
         word-break: break-word;
     }
  
-.user-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border-radius: 16px;
-    background: #fff;
-    position: relative;
-    overflow: visible !important;
-    z-index: 1;
-    min-height: unset !important;
-}
+    .user-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        border-radius: 16px;
+        background: #fff;
+        position: relative;
+        overflow: visible !important;
+        z-index: 1;
+        min-height: unset !important;
+    }
 
-.user-card .card-body {
-    padding: 0.9rem 1rem !important;
-}
+    .user-card .card-body {
+        padding: 0.9rem 1rem !important;
+    }
 
-.user-card .card-title {
-    font-size: 1rem;
-    line-height: 1.2;
-    margin-bottom: 0.15rem !important;
-}
+    .user-card .card-title {
+        font-size: 1rem;
+        line-height: 1.2;
+        margin-bottom: 0.15rem !important;
+    }
 
-.user-card small,
-.user-card .card-text,
-.user-card .badge {
-    font-size: 0.82rem;
-}
+    .user-card small,
+    .user-card .card-text,
+    .user-card .badge {
+        font-size: 0.82rem;
+    }
 
-.user-card .mb-3 {
-    margin-bottom: 0.75rem !important;
-}
+    .user-card .mb-3 {
+        margin-bottom: 0.75rem !important;
+    }
 
-.user-card .mb-4 {
-    margin-bottom: 0.9rem !important;
-}
+    .user-card .mb-4 {
+        margin-bottom: 0.9rem !important;
+    }
 
-.user-card .pt-3 {
-    padding-top: 0.75rem !important;
-}
+    .user-card .pt-3 {
+        padding-top: 0.75rem !important;
+    }
 
-.user-card .border-top {
-    margin-top: 0.5rem !important;
-}
+    .user-card .border-top {
+        margin-top: 0.5rem !important;
+    }
 
-.user-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
-    z-index: 5;
-}
- .diestra {
-    position: relative;
- 
-    width: 80%;
-    
-}
+    .user-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+        z-index: 5;
+    }
 
+    .diestra {
+        position: relative;
+        width: 80%;
+    }
 
-#contenedorUsuarios .col {
-    position: relative;
-  
-}
+    #contenedorUsuarios .col {
+        position: relative;
+    }
 
-.avatar-circle {
-    width: 40px;
-    height: 40px;
-    background-color: #e2e8f0;
-    color: #475569;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 0.8rem;
-    border: 2px solid #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    text-transform: uppercase;
-}
+    .dropdown {
+        position: relative;
+    }
 
-.dropdown {
-    position: relative;
-}
-
-.dropdown-menu {
-    z-index: 9999 !important;
-    position: absolute;
-    border-radius: 12px;
-}
+    .dropdown-menu {
+        z-index: 9999 !important;
+        position: absolute;
+        border-radius: 12px;
+    }
 </style>
 
 <script>
@@ -206,6 +205,7 @@ $(document).ready(function () {
     // ==============================
     const orgSesion = <?= json_encode($orgSesion) ?>;
     const rolSesion = parseInt(<?= json_encode($rolSesion) ?>, 10) || 0;
+    const baseUrl   = '<?= rtrim(base_url(), "/") ?>/';
 
     const csrfName  = '<?= csrf_token() ?>';
     let csrfToken   = '<?= csrf_hash() ?>';
@@ -246,6 +246,55 @@ $(document).ready(function () {
     }
 
     // ==============================
+    //   GENERAR AVATAR HTML
+    // ==============================
+    function generarAvatar(row) {
+        const nombre   = row.nombres   ?? '';
+        const apellido = row.apellidos ?? '';
+        const fotoUrl  = row.foto_url  ?? '';
+
+        // Si tiene foto → mostrar imagen
+        if (fotoUrl) {
+            const src = baseUrl + fotoUrl;
+            return `
+                <div class="avatar-circle has-foto me-3">
+                    <img src="${src}" alt="${nombre}" onerror="this.parentElement.outerHTML=generarAvatarSvg('${nombre}','${apellido}')">
+                </div>
+            `;
+        }
+
+        // Sin foto → SVG con iniciales
+        return generarAvatarSvgHtml(nombre, apellido);
+    }
+
+    function generarAvatarSvgHtml(nombre, apellido) {
+        const inicialN = nombre ? nombre.charAt(0).toUpperCase() : '';
+        const inicialA = apellido ? apellido.charAt(0).toUpperCase() : '';
+        const iniciales = inicialN + inicialA || '?';
+
+        return `
+            <div class="avatar-circle me-3">
+                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="#3695f5"/>
+                    <text x="24" y="24" text-anchor="middle" dominant-baseline="central"
+                          font-family="Roboto, Arial, sans-serif" font-size="17" font-weight="700" fill="#fff">
+                        ${iniciales}
+                    </text>
+                </svg>
+            </div>
+        `;
+    }
+
+    // Fallback global para onerror en fotos rotas
+    window.generarAvatarSvg = function(nombre, apellido) {
+        const inicialN = nombre ? nombre.charAt(0).toUpperCase() : '';
+        const inicialA = apellido ? apellido.charAt(0).toUpperCase() : '';
+        const iniciales = inicialN + inicialA || '?';
+
+        return `<div class="avatar-circle me-3"><svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="#3695f5"/><text x="24" y="24" text-anchor="middle" dominant-baseline="central" font-family="Roboto,Arial,sans-serif" font-size="17" font-weight="700" fill="#fff">${iniciales}</text></svg></div>`;
+    };
+
+    // ==============================
     //   RENDER TARJETAS
     // ==============================
     function renderUsuarios(data) {
@@ -270,10 +319,6 @@ $(document).ready(function () {
             const rolNombreOriginal = row.nombre_rol ?? '';
             const organizacionId = parseInt(row.organizacion_id ?? 0, 10);
 
-            const inicialNombre = nombre ? nombre.charAt(0) : '';
-            const inicialApellido = apellido ? apellido.charAt(0) : '';
-            const iniciales = `${inicialNombre}${inicialApellido}`.toUpperCase();
-
             // Mostrar nombre amigable del rol
             let nombreMostrarRol = rolNombreOriginal;
             if (!rolNombreOriginal) {
@@ -281,13 +326,13 @@ $(document).ready(function () {
             } else if (rolNombreOriginal === 'ADMIN_DIGI') {
                 nombreMostrarRol = 'Digisalud';
             } else if (rolNombreOriginal === 'ADMIN_ORG') {
-                nombreMostrarRol = 'Administrador';
+                nombreMostrarRol = 'Administrador Org';
             } else if (rolNombreOriginal === 'REGISTRO') {
                 nombreMostrarRol = 'Registro de Data';
             } else if (rolNombreOriginal === 'ADMINISTRADOR') {
                 nombreMostrarRol = 'TI Digisalud';
             } else if (rolNombreOriginal === 'COORDINADOR') {
-                nombreMostrarRol = 'Coordinador';
+                nombreMostrarRol = 'Coordinador Org';
             } else if (rolNombreOriginal === 'VIEWER') {
                 nombreMostrarRol = 'Ver Data';
             }
@@ -350,15 +395,16 @@ $(document).ready(function () {
                 `;
             }
 
+            // ✅ AVATAR: foto real o SVG con iniciales
+            const avatarHtml = generarAvatar(row);
+
             const card = `
                 <div class="col user-item"
                      data-search="${(nombre + ' ' + apellido + ' ' + correo + ' ' + organizacion + ' ' + nombreMostrarRol).toLowerCase()}">
                     <div class="card border-0 shadow-sm user-card">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="avatar-circle me-3">
-                                    <span>${iniciales}</span>
-                                </div>
+                                ${avatarHtml}
                                 <div>
                                     <h5 class="card-title mb-0 fw-bold text-dark">
                                         ${nombre} ${apellido}
