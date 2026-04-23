@@ -33,13 +33,13 @@
 
                     <div class="text-end">
                         <?php
-    $estadoTexto = $jor['status_jor'] == 1 ? 'ACTIVA' : ($jor['status_jor'] == 2 ? 'FINALIZADA' : 'INACTIVA');
-    $estadoClase = $jor['status_jor'] == 1 ? 'text-success' : ($jor['status_jor'] == 2 ? 'text-danger' : 'text-secondary');
-?>
+                            $estadoTexto = $jor['status_jor'] == 1 ? 'ACTIVA' : ($jor['status_jor'] == 2 ? 'FINALIZADA' : 'INACTIVA');
+                            $estadoClase = $jor['status_jor'] == 1 ? 'text-success' : ($jor['status_jor'] == 2 ? 'text-danger' : 'text-secondary');
+                        ?>
 
-<span class="estado me-3 <?= $estadoClase ?>">
-    <?= $estadoTexto ?>
-</span>
+                        <span class="estado me-3 <?= $estadoClase ?>">
+                            <?= $estadoTexto ?>
+                        </span>
                         <div class="fw-bold">
                             <small class="text-muted">
                                 <?= date('d M Y', strtotime($jor['fecha_inicio'])) ?>
@@ -96,7 +96,14 @@
                                 Editar
                             </button>
                         <?php endif; ?>
-                        <button class="btn btn-outline-primary btn-sm" disabled>Usuarios</button>
+                        <?php if (in_array(session('id_rol'), [1,2,3,4])): ?>
+                            <a href="<?= base_url('jornadas/'.$jor['id_jornada'].'/usuarios') ?>" 
+                            class="btn btn-outline-primary btn-sm">
+                                Usuarios
+                            </a>
+                        <?php else: ?>
+                            <button class="btn btn-outline-primary btn-sm" disabled>Usuarios</button>
+                        <?php endif; ?>
                         <a href="<?= base_url('jornadas/'.$jor['id_jornada'].'/beneficiarios') ?>" 
                            class="btn btn-outline-primary btn-sm">
                             Beneficiarios

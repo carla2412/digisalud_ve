@@ -51,7 +51,23 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes) {
     $routes->post('actualizar',    'Jornadas::actualizar');     // ← NUEVO
     $routes->post('cambiar-status', 'Jornadas::cambiarStatus');
 });
+// =====================================================
+// RUTAS MÓDULO USUARIOS EN JORNADAS
+// Agregar al final de app/Config/Routes.php
+// =====================================================
 
+$routes->group('jornadas', ['filter' => 'auth'], function($routes){
+    // Vista principal de usuarios de una jornada
+    $routes->get('(:num)/usuarios', 'JornadaUsuariosController::index/$1');
+    // Buscar usuarios AJAX
+    $routes->get('usuarios/buscar-ajax', 'JornadaUsuariosController::buscarUsuarioAjax');
+    // Asignar usuario a jornada (POST)
+    $routes->post('(:num)/usuarios/asignar', 'JornadaUsuariosController::asignar/$1');
+    // Eliminar usuario de jornada (POST)
+    $routes->post('(:num)/usuarios/eliminar', 'JornadaUsuariosController::eliminar/$1');
+    // Listar asignados AJAX
+    $routes->get('(:num)/usuarios/listar', 'JornadaUsuariosController::listarAsignados/$1');
+});
 // BENEFICIARIOS
 $routes->group('jornadas', function($routes){
     $routes->get('(:num)/beneficiarios', 'JornadaBeneficiariosController::index/$1');
