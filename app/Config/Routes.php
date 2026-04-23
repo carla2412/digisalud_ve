@@ -21,6 +21,8 @@ $routes->post('registro/individual', 'Registro::guardarIndividual');
 $routes->get('registro/organizacion', 'Registro::organizacion');
 $routes->post('registro/organizacion', 'Registro::guardarOrganizacion');
 
+
+
 // DASHBOARD
 $routes->get('dashboard', 'Dashboard::index');
 
@@ -64,3 +66,14 @@ $routes->group('beneficiarios', function($routes){
     $routes->get('editar/(:num)', 'BeneficiariosController::edit/$1');
     $routes->post('actualizar/(:num)', 'BeneficiariosController::update/$1');
 });
+
+// ================================================================
+// MÓDULO: Organizaciones
+// Acceso: roles 1, 2, 3 (verificado en controlador)
+// ================================================================
+
+$routes->get('organizaciones',              'Organizaciones::index',  ['as' => 'organizaciones.index']);
+$routes->get('organizaciones/crear',        'Organizaciones::create', ['as' => 'organizaciones.create']);
+$routes->post('organizaciones/guardar',     'Organizaciones::store',  ['as' => 'organizaciones.store']);
+$routes->get('organizaciones/editar/(:num)', 'Organizaciones::edit/$1',   ['as' => 'organizaciones.edit']);
+$routes->post('organizaciones/update/(:num)', 'Organizaciones::update/$1', ['as' => 'organizaciones.update']);
