@@ -5,7 +5,7 @@
 
     <!-- BOTÓN CREAR -->
     <div class="d-flex justify-content-start mb-3">
-        <a href="<?= base_url('jornadas/crear') ?>" class="btn principal">
+        <a href="<?= base_url('jornadas/crear') ?>" class="btn-primary-custom">
             + Crear Jornada
         </a>
     </div>

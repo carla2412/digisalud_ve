@@ -11,7 +11,7 @@ use CodeIgniter\Model;
  * Motor: MyISAM — no soporta transacciones ni FK nativas.
  *
  * Columnas reales confirmadas en el dump SQL:
- *   id_organizacion, nombre_org, tipo, categoria, telefono, correo,
+ *   id_organizacion, nombre_org, tipo, categoria, telefono, email,
  *   nombre_responsable, direccion_id, logo_url (agregada vía migración),
  *   status_org, creado_en, creado_por
  */
@@ -29,7 +29,7 @@ class OrganizacionModel extends Model
         'tipo',
         'categoria',
         'telefono',
-        'correo',
+        'email',
         'nombre_responsable',
         'direccion_id',
         'logo_url',
@@ -64,8 +64,8 @@ class OrganizacionModel extends Model
             'label' => 'Teléfono',
             'rules' => 'required|max_length[30]|regex_match[/^\+?[\d\s\-\(\)]{7,30}$/]',
         ],
-        'correo' => [
-            'label' => 'Correo electrónico',
+        'email' => [
+            'label' => 'email electrónico',
             'rules' => 'required|valid_email|max_length[120]',
         ],
         'nombre_responsable' => [
@@ -79,9 +79,9 @@ class OrganizacionModel extends Model
             'required'   => 'El nombre de la organización es obligatorio.',
             'max_length' => 'El nombre no puede exceder 120 caracteres.',
         ],
-        'correo' => [
-            'required'    => 'El correo electrónico es obligatorio.',
-            'valid_email' => 'El correo electrónico no tiene un formato válido.',
+        'email' => [
+            'required'    => 'El email electrónico es obligatorio.',
+            'valid_email' => 'El email electrónico no tiene un formato válido.',
         ],
         'telefono' => [
             'required'     => 'El teléfono es obligatorio.',

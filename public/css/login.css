@@ -15,9 +15,7 @@ body {
     position: relative;
     min-height: 100vh;
 
-    background: 
-        linear-gradient(rgba(255,255,255,0.55), rgba(255,255,255,0.55)),
-        url("../img/Reportes.png") center center / cover no-repeat fixed;
+    background-color: #e8e8e8;
 }
 
 
@@ -63,7 +61,7 @@ background: linear-gradient(90deg,rgba(16, 26, 97, 1) 0%, rgba(16, 16, 133, 1) 3
     }
 
     .extra-links a {
-      color: #4949be;
+      color: #3695f5;
       text-decoration: none;
       font-weight: 500;
     }
@@ -73,9 +71,7 @@ background: linear-gradient(90deg,rgba(16, 26, 97, 1) 0%, rgba(16, 16, 133, 1) 3
 }
   
     footer {
-      /*background: #2D008A;
-      background: linear-gradient(90deg, rgba(45, 0, 138, 1) 0%, rgba(5, 173, 67, 1) 50%, rgba(17, 212, 134, 1) 100%);
-*/
+
 background: #101a61;
 background: linear-gradient(90deg,rgba(16, 26, 97, 1) 0%, rgba(16, 16, 133, 1) 35%, rgba(0, 212, 255, 1) 100%);
       color: white;
@@ -91,13 +87,22 @@ background: linear-gradient(90deg,rgba(16, 26, 97, 1) 0%, rgba(16, 16, 133, 1) 3
     }
     /*botones primary enter*/
 .btn-primary {
-  background-color: #101a61;
+  background: linear-gradient(135deg, #3695f5 0%, #004dbb 100%);
   border-color: #101a61;
 }
 
+.btn-primary {
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 12px 30px;
+    
+    border: none;
+}
+
+
 .btn-primary:hover {
-  background-color: #4949be;
-  border-color: #4949be;
+  background-color: #3695f5;
+  border-color: #3695f5;
 }
 
 .btn-secondary {

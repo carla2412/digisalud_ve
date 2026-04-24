@@ -79,7 +79,7 @@
 
   .btn-primary-custom:hover {
     transform: translateY(-1px);
-    background: #3695f5;
+    background: #1b7ae2;
     color: #fff;
     text-decoration: none;
   }

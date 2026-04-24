@@ -127,7 +127,7 @@ class Registro extends BaseController
         'tipo'               => $this->request->getPost('tipoOrg'),
         'categoria'          => $this->request->getPost('categoriaOrg'),
         'telefono'           => $this->request->getPost('telefono'),
-        'correo'             => $this->request->getPost('email'),
+        'email'             => $this->request->getPost('email'),
         'nombre_responsable' => $this->request->getPost('nombres') . ' ' . $this->request->getPost('apellidos'),
         'direccion_id'       => $direccionId,
         'status_org'         => '1'
@@ -145,12 +145,12 @@ class Registro extends BaseController
         'apellidos'      => $this->request->getPost('apellidos'),
         'genero'         => $this->request->getPost('genero'),
         'email'          => $this->request->getPost('email'),
-          'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento'),
+        'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento'),
         'username'       => explode('@', $this->request->getPost('email'))[0],
         'password_hash'  => password_hash($this->request->getPost('contrasena'), PASSWORD_DEFAULT),
         'telefono'       => $this->request->getPost('telefono'),
         'profesion'      => $this->request->getPost('profesion'),
-        'direccion_id'   => $direccionId,       // 👈 AHORA SÍ TIENE DIRECCIÓN
+        'direccion_id'   => $direccionId,  
         'organizacion_id'=> $organizacionId,
         'status_usu'     => '1'
     ];

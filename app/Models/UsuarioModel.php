@@ -106,7 +106,7 @@ class UsuarioModel extends Model
                 organizacion.tipo,
                 organizacion.categoria,
                 organizacion.telefono AS telefono_org,
-                organizacion.correo AS correo_org
+                organizacion.email AS email_org
             ")
             ->join('organizacion', 'organizacion.id_organizacion = usuarios.organizacion_id', 'left')
             ->where('usuarios.id_usuario', $id_usuario)

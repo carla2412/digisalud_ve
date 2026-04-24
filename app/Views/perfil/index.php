@@ -100,7 +100,7 @@
 }
 .badge-org {
     display: inline-block;
-    background: #00D4FF;
+    background: #1b7ae2;
     color: #fff;
     font-weight: 600;
     font-size: .82rem;
@@ -137,7 +137,7 @@
     transition: all .2s;
 }
 .btn-edit-pill:hover {
-    background: #3695f5;
+    background: #1b7ae2;
     color: #fff;
 }
 .dato-row { margin-bottom: 14px; }
@@ -169,7 +169,7 @@
 }
 .dato-icon-btn:hover {
     background: #eef5ff;
-    border-color: #3695f5;
+    border-color: #1b7ae2;
 }
 
 /* — Stats cards — */
@@ -561,7 +561,7 @@
 
         <!-- ━━━ BOTÓN ACTUALIZAR ━━━ -->
         <div class="span-2 text-end pb-2">
-            <button type="button" class="btn-actualizar" id="btnActualizarBottom">
+            <button type="button" class="btn-primary-custom" id="btnActualizarBottom">
                 Actualizar perfil
             </button>
         </div>
