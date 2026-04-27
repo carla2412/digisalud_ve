@@ -338,7 +338,7 @@ $iconos_color = [
 <div class="page">
   <div class="shell">
 
-    <header class="topbar">
+    <div class="topbar">
       <div class="topbar-left">
         <a href="<?= base_url('jornadas') ?>" class="back-btn">←</a>
         <div class="title">
@@ -346,7 +346,7 @@ $iconos_color = [
           <p>Registra una nueva jornada y selecciona sus servicios</p>
         </div>
       </div>
-    </header>
+</div>
 
     <form id="formJornada" method="post" action="<?= base_url('jornadas/guardar') ?>" novalidate>
       <?= csrf_field() ?>

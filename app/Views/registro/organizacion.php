@@ -1,148 +1,15 @@
 <?= view('templates/head', ['title' => 'Cuenta Institucional | Digisalud']) ?>
+<link rel="stylesheet" href="<?= base_url('css/login.css') ?>">
 
-<style>
-:root {
-    --ds-primary: #0d6efd;
-    --ds-dark: #11186f;
-    --ds-bg: #f5f8fc;
-    --ds-border: #e0e6ed;
-}
-
-body {
-    background: var(--ds-bg);
-}
-
-.registro-wrapper {
-    max-width: 980px;
-    margin: auto;
-}
-
-.registro-header {
-    text-align: center;
-    margin-bottom: 28px;
-}
-
-.registro-header h2 {
-    font-weight: 800;
-    color: var(--ds-primary);
-}
-
-.registro-header p {
-    color: #6c757d;
-    margin-bottom: 12px;
-}
-
-.progress {
-    height: 10px;
-    border-radius: 20px;
-}
-
-.card {
-    border: 0;
-    border-radius: 18px;
-    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
-    margin-bottom: 24px;
-    overflow: hidden;
-}
-
-.card-header {
-    background: #fff;
-    border-bottom: 1px solid #edf1f7;
-    padding: 18px 22px;
-}
-
-.card-header h5 {
-    margin: 0;
-    color: #495057;
-    font-weight: 700;
-}
-
-.card-body {
-    padding: 24px;
-}
-
-.form-label {
-    font-weight: 600;
-    color: #344054;
-    font-size: 0.92rem;
-}
-
-.form-control,
-.form-select,
-.input-group-text,
-.select2-container--default .select2-selection--single {
-    border-radius: 12px !important;
-    border: 1px solid var(--ds-border) !important;
-    min-height: 45px;
-}
-
-.form-control,
-.form-select,
-.input-group-text {
-    padding: 0.65rem 1rem;
-}
-
-.form-control:focus,
-.form-select:focus {
-    border-color: var(--ds-primary);
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.10);
-}
-
-.input-group-text {
-    background: #f8fafc;
-    color: var(--ds-primary);
-}
-
- 
-
-.btn-outline-secondary {
-    border-radius: 14px;
-    font-weight: 700;
-    padding: 12px 28px;
-}
-
-.select2-container {
-    width: 100% !important;
-}
-
-.select2-selection__rendered {
-    line-height: 43px !important;
-    padding-left: 1rem !important;
-}
-
-.select2-selection__arrow {
-    height: 43px !important;
-}
-
-.section-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 12px;
-    background: rgba(13, 110, 253, 0.1);
-    color: var(--ds-primary);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-}
-
-footer {
-    text-align: center;
-    color: #6c757d;
-    padding: 24px;
-}
-</style>
 
 <div class="container py-5">
     <div class="registro-wrapper">
 
         <div class="registro-header">
-            <h2>Cuenta Institucional</h2>
+             <a href="<?= base_url('jornadas') ?>" class="back-btn">←</a>
+            <h2 class="fw-bold text-secondary">Cuenta Institucional</h2>
             <p>Paso 1 de 2: Datos de la organización, ubicación y persona de contacto</p>
-
-            <div class="progress">
-                <div class="progress-bar bg-primary" style="width: 50%;"></div>
-            </div>
+ 
         </div>
 
         <form method="post" action="<?= site_url('registro/organizacion') ?>" id="formOrganizacion" class="needs-validation" novalidate>
@@ -371,9 +238,9 @@ footer {
                     <i class="fa-solid fa-eraser me-2"></i> Limpiar
                 </button>
 
-                <button type="submit" class="btn btn-primary shadow">
-                    Guardar <i class="fa-solid fa-arrow-right ms-2"></i>
-                </button>
+                 <button type="submit" class="btn btn-2-primary">
+                        Guardar <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
             </div>
 
         </form>

@@ -1,89 +1,18 @@
 <?= view('templates/head', ['title' => 'Crear Usuario | Digisalud']) ?>
+<link rel="stylesheet" href="<?= base_url('css/login.css') ?>">
 
-<style>
-/* Custom Friendly Style para DigiSalud */
-.card {
-    border-radius: 15px;
-    transition: transform 0.2s ease;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-}
-
-.form-control,
-.form-select,
-.input-group-text,
-.select2-container--default .select2-selection--single {
-    border-radius: 10px !important;
-    border: 1px solid #e0e6ed !important;
-    min-height: 44px;
-}
-
-.form-control,
-.form-select,
-.input-group-text {
-    padding: 0.6rem 1rem;
-}
-
-.form-control:focus,
-.form-select:focus {
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
-    border-color: #3695f5;
-}
-
-
-.btn-outline-secondary {
-    border-radius: 12px;
-    font-weight: 600;
-    padding: 12px 24px;
-}
-
-.progress {
-    border-radius: 10px;
-    background-color: #e9ecef;
-}
-
-.text-primary {
-    color: #3695f5 !important;
-}
-
-.card-header {
-    border-bottom: 1px solid #eef2f6;
-    border-radius: 15px 15px 0 0 !important;
-}
-
-.select2-container {
-    width: 100% !important;
-}
-
-.select2-selection__rendered {
-    line-height: 42px !important;
-    padding-left: 1rem !important;
-}
-
-.select2-selection__arrow {
-    height: 42px !important;
-}
-
-footer {
-    text-align: center;
-    padding: 20px;
-   
-}
-</style>
 
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-10 col-lg-8">
 
             <div class="text-center mb-4">
-                <h2 class="fw-bold text-primary">Crear Cuenta Individual</h2>
+                 <a href="<?= base_url('jornadas') ?>" class="back-btn">←</a>
+                <h2 class="fw-bold text-secondary">Crear Cuenta Individual</h2>
                 <p class="text-muted">Paso 1 de 2: Información Personal, Profesional y Acceso</p>
-                <div class="progress" style="height: 10px;">
-                    <div class="progress-bar bg-primary" role="progressbar" style="width: 50%;"></div>
-                </div>
+                 
             </div>
+             
 
             <form method="post" action="<?= site_url('registro/individual') ?>" id="formUsuario" class="needs-validation" novalidate>
                 <?= csrf_field() ?>
@@ -271,7 +200,7 @@ footer {
                         <i class="fas fa-eraser me-2"></i> Limpiar
                     </button>
 
-                    <button type="submit" class="btn btn-primary btn-lg px-5 shadow">
+                    <button type="submit" class="btn btn-2-primary">
                         Guardar <i class="fas fa-arrow-right ms-2"></i>
                     </button>
                 </div>

@@ -1,138 +1,369 @@
-    html, body {
-      height: 100%;
-      margin: 0;
-      background-color: #f8f9fa;
-      display: flex;
-      flex-direction: column;
-      font-family: "Roboto", sans-serif;
-      font-optical-sizing: auto;
-      font-weight: weight;
-      font-style: normal;
-      font-variation-settings:
-      "wdth" 100;
-    }
+/* =========================================================
+   DigiSalud - Login y Registro
+   Archivo unico para: login.php, individual.php, organizacion.php
+   Ubicacion sugerida: public/css/login.css
+   ========================================================= */
+
+:root {
+    --ds-primary: #3695f5;
+    --ds-primary-dark: #1b7ae2;
+    --ds-dark: #101a61;
+    --ds-bg: #f5f8fc;
+    --ds-light: #f8f9fa;
+    --ds-border: #e0e6ed;
+    --ds-muted: #6c757d;
+    --line: #e0e6ed;
+    --footer-height: 46px;
+}
+
+html,
 body {
-    position: relative;
-    min-height: 100vh;
-
-    background-color: #e8e8e8;
+  height: 100%;
+  margin: 0;
 }
 
-
-    /* Header */
-    .digisalud-header {
-      /*background: #2D008A;
-      background: linear-gradient(90deg, rgba(45, 0, 138, 1) 0%, rgba(5, 173, 67, 1) 50%, rgba(17, 212, 134, 1) 100%);
-      */ 
-      background: #101a61;
-background: linear-gradient(90deg,rgba(16, 26, 97, 1) 0%, rgba(16, 16, 133, 1) 35%, rgba(0, 212, 255, 1) 100%);
-      color: white;
-      padding: 10px 0;
-      text-align: center;
-    }
-
-    .logo {
-      height: 3rem;
-    }
-
-    /* Centrado del formulario */
-    .login-container {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
-
-    .login-card {
-      background: white;
-      padding: 2rem;
-      border-radius: 1rem;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    /* Sección inferior (crear cuenta / políticas) */
-    .extra-links {
-      text-align: center;
-      margin-top: 1.5rem;
-      font-size: 0.9rem;
-    }
-
-    .extra-links a {
-      color: #3695f5;
-      text-decoration: none;
-      font-weight: 500;
-    }
-
-.extra-links a:hover {
-  text-decoration: underline;
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
 }
-  
-    footer {
-
-background: #101a61;
-background: linear-gradient(90deg,rgba(16, 26, 97, 1) 0%, rgba(16, 16, 133, 1) 35%, rgba(0, 212, 255, 1) 100%);
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-    }
-
-    @media (max-width: 576px) {
-      .login-card {
-        padding: 1.5rem;
-        max-width: 95%;
-      }
-    }
-    /*botones primary enter*/
-.btn-primary {
-  background: linear-gradient(135deg, #3695f5 0%, #004dbb 100%);
-  border-color: #101a61;
+.digisalud-header {
+  flex-shrink: 0;
+  height: 72px;
+  background: linear-gradient(
+    90deg,
+    rgba(16, 26, 97, 1) 0%,
+    rgba(16, 16, 133, 1) 35%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn-primary {
-    border-radius: 12px;
+.logo {
+ 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo>img{
+ height: 3.2rem;
+}
+.login-container {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: .75rem 1rem;
+}
+
+.login-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+footer {
+  flex-shrink: 0;
+  height: 56px;
+  background: linear-gradient(
+    90deg,
+    rgba(16, 26, 97, 1) 0%,
+    rgba(16, 16, 133, 1) 35%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  width: 100%;
+  text-align: center;
+  font-size: .8rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+
+.login-wrapper {
+    min-height: calc(100vh - var(--footer-height));
+    width: 100%;
+}
+
+.login-wrapper > .row {
+    min-height: calc(100vh - var(--footer-height));
+    margin: 0;
+}
+
+.login-side {
+    background:
+        linear-gradient(rgba(218, 234, 253, 0.82), rgba(178, 212, 249, 0.9)),
+        url('/img/uno.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
+}
+
+.login-side-content {
+    max-width: 540px;
+}
+
+ 
+
+.ds-primary-text,
+.text-primary {
+    color: var(--ds-primary) !important;
+}
+
+.ds-primary-icon {
+    color: var(--ds-primary);
+}
+
+.ds-link,
+.extra-links a {
+    color: var(--ds-primary);
     font-weight: 600;
-    padding: 12px 30px;
-    
-    border: none;
+    text-decoration: none;
 }
 
+.ds-link:hover,
+.extra-links a:hover {
+    color: var(--ds-primary-dark);
+    text-decoration: underline;
+}
 
-.btn-primary:hover {
-  background-color: #3695f5;
-  border-color: #3695f5;
+.extra-links {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: .9rem;
+}
+
+.password-toggle {
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.registro-wrapper {
+    max-width: 980px;
+    margin: auto;
+}
+
+.registro-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.registro-header h2 {
+    font-weight: 800;
+}
+
+.registro-header p {
+    color: var(--ds-muted);
+    margin-bottom: 12px;
+}
+
+.progress {
+    height: 10px;
+    border-radius: 20px;
+}
+
+.card {
+    border: 0;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, .08);
+    margin-bottom: 24px;
+    overflow: hidden;
+    transition: transform .2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background: #fff;
+    border-bottom: 1px solid #edf1f7;
+    padding: 18px 22px;
+    border-radius: 18px 18px 0 0 !important;
+}
+
+.card-header h5 {
+    margin: 0;
+    color: #495057;
+    font-weight: 700;
+}
+
+.card-body {
+    padding: 24px;
+}
+
+.section-title {
+    background-color: var(--ds-dark);
+    color: #fff;
+    padding: .5rem 1rem;
+    border-radius: .5rem;
+    font-weight: 500;
+}
+
+.section-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: rgba(54, 149, 245, .10);
+    color: var(--ds-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #344054;
+    font-size: .92rem;
+}
+
+.form-control,
+.form-select,
+.input-group-text,
+.select2-container--default .select2-selection--single {
+    border-radius: 12px !important;
+    border: 1px solid var(--ds-border) !important;
+    min-height: 45px;
+}
+
+.form-control,
+.form-select,
+.input-group-text {
+    padding: .65rem 1rem;
+}
+
+.form-control {
+    background-color: #f1f3f5;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #fff;
+    border-color: var(--ds-primary) !important;
+    box-shadow: 0 0 0 .25rem rgba(54, 149, 245, .12);
+}
+
+.input-group-text {
+    background: #f8fafc;
+    color: var(--ds-primary);
+}
+
+.input-group .input-group-text:first-child {
+    border-radius: 12px 0 0 12px !important;
+}
+
+.input-group .form-control {
+    border-radius: 0 12px 12px 0 !important;
+}
+
+.input-group.password-group .form-control {
+    border-radius: 0 !important;
+}
+
+.input-group.password-group .input-group-text:last-child {
+    border-radius: 0 12px 12px 0 !important;
+}
+
+.select2-container {
+    width: 100% !important;
+}
+
+.select2-container .select2-selection--single {
+    height: calc(2.5rem + 2px);
+    padding: .375rem .75rem;
+}
+
+.select2-selection__rendered {
+    line-height: 43px !important;
+    padding-left: 1rem !important;
+}
+
+.select2-selection__arrow,
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 43px !important;
+    right: .5rem;
+}
+
+.btn-ds-primary,
+.btn-2-primary {
+    background-color: var(--ds-primary);
+    color: #fff;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all .2s ease;
+}
+
+.btn-ds-primary:hover,
+.btn-2-primary:hover {
+    background-color: var(--ds-primary-dark);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(54, 149, 245, .3);
+}
+
+.btn-outline-secondary {
+    border-radius: 14px;
+    font-weight: 700;
+    padding: 12px 28px;
 }
 
 .btn-secondary {
-  background-color: #cacaca;
-   border-color: #cacaca;
+    background-color: #cacaca;
+    border-color: #cacaca;
 }
 
 .btn-secondary:hover {
-  background-color: #686869;
- 
-}
-.card {
-  border-radius: 1rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-.section-title {
-  background-color: #101A61;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
+    background-color: #686869;
+    border-color: #686869;
 }
 
-  .select2-container .select2-selection--single {
-  height: calc(2.5rem + 2px);
-  padding: 0.375rem 0.75rem;
-  border: 1px solid #ced4da;
-  border-radius: 0.375rem;
+.back-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 22px;
+    color: #31415f;
+    margin-bottom: 12px;
 }
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-  height: 2.5rem;
-  right: 0.5rem;
+
+.back-btn:hover {
+    color: var(--ds-primary);
+    border-color: var(--ds-primary);
+}
+
+@media (max-width: 991px) {
+    .login-wrapper,
+    .login-wrapper > .row {
+        min-height: calc(100vh - var(--footer-height));
+    }
+}
+
+@media (max-width: 576px) {
+    .login-card {
+        padding: 1.5rem;
+        max-width: 95%;
+    }
+
+    .card-body {
+        padding: 18px;
+    }
 }
