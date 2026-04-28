@@ -85,21 +85,33 @@ $routes->group('beneficiarios', function($routes){
     $routes->post('actualizar/(:num)', 'BeneficiariosController::update/$1');
 }); */
 
+// =====================================================
+// FRAGMENTO PARA app/Config/Routes.php
+// REEMPLAZAR el group('beneficiarios') existente con este:
+// =====================================================
+
 $routes->group('beneficiarios', function($routes){
+    // === LISTA PRINCIPAL (sidebar) ===
     $routes->get('/', 'BeneficiariosController::index');
 
+    // === EXPORTAR EXCEL ===
+    $routes->get('exportar', 'BeneficiariosController::exportar');
+
+    // === HISTORIAL DE UN BENEFICIARIO ===
+    $routes->get('historial/(:num)', 'BeneficiariosController::historial/$1');
+
+    // === BUSCAR (para asociar a jornada) ===
     $routes->get('buscar/(:num)', 'BeneficiariosController::buscar/$1');
     $routes->get('buscarAjax', 'BeneficiariosController::buscarAjax');
     $routes->get('buscarAntecedentesAjax', 'BeneficiariosController::buscarAntecedentesAjax');
 
+    // === CREAR BENEFICIARIO ===
     $routes->get('create/(:num)', 'BeneficiariosController::create/$1');
     $routes->post('store/(:num)', 'BeneficiariosController::store/$1');
 
+    // === EDITAR BENEFICIARIO ===
     $routes->get('editar/(:num)', 'BeneficiariosController::edit/$1');
     $routes->post('actualizar/(:num)', 'BeneficiariosController::update/$1');
-
-    $routes->get('exportar', 'BeneficiariosController::exportar');
-    $routes->get('historial/(:num)', 'BeneficiariosController::historial/$1');
 });
 // ================================================================
 // MÓDULO: Organizaciones

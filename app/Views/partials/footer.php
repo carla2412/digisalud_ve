@@ -28,3 +28,41 @@
 
     
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebar = document.getElementById('sidebar');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const overlay = document.getElementById('overlay');
+
+    const openSidebar =
+        document.getElementById('openSidebar') ||
+        document.querySelector('.menu-toggle') ||
+        document.querySelector('.navbar-toggler') ||
+        document.querySelector('[data-open-sidebar]');
+
+    function abrirSidebar() {
+        sidebar.classList.add('open');
+        overlay.classList.add('show');
+    }
+
+    function cerrarSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+    }
+
+    if (openSidebar) {
+        openSidebar.addEventListener('click', function (e) {
+            e.preventDefault();
+            abrirSidebar();
+        });
+    }
+
+    if (closeSidebar) {
+        closeSidebar.addEventListener('click', cerrarSidebar);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', cerrarSidebar);
+    }
+});
+</script>

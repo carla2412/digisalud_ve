@@ -2,11 +2,13 @@
 
 <?= $this->section('css') ?>
 <style>
+/* ═══════════════════════════════════════════
+   BENEFICIARIOS — INDEX
+   ═══════════════════════════════════════════ */
 .beneficiarios-page{
-    background:#f6f7fb;
-    min-height:calc(100vh - 70px);
-    padding:22px;
-    color:#26345d;
+    max-width:1280px;
+    margin:0 auto;
+    padding:0 16px;
 }
 
 .beneficiarios-top{
@@ -14,86 +16,92 @@
     justify-content:space-between;
     align-items:center;
     gap:16px;
-    margin-bottom:18px;
+    margin-bottom:24px;
+    flex-wrap:wrap;
 }
 
 .org-chip{
-    min-width:260px;
-    height:52px;
-    border:1px solid #d9deea;
-    border-radius:8px;
-    background:#fff;
     display:flex;
     align-items:center;
-    gap:12px;
-    padding:0 16px;
-    color:#34427a;
+    gap:10px;
+    background:#eef0ff;
+    color:#1f2f78;
+    border-radius:999px;
+    padding:10px 20px;
     font-weight:700;
+    font-size:.92rem;
 }
 
 .top-actions{
     display:flex;
     align-items:center;
-    gap:22px;
+    gap:14px;
 }
 
 .btn-export{
-    border:1px solid #356df0;
-    color:#356df0;
-    background:#fff;
-    border-radius:7px;
-    padding:12px 22px;
-    font-weight:700;
-    text-decoration:none;
-    display:inline-flex;
-    gap:8px;
+    display:flex;
     align-items:center;
+    gap:6px;
+    background:#10b981;
+    color:#fff;
+    border:0;
+    border-radius:8px;
+    padding:10px 18px;
+    font-weight:700;
+    font-size:.85rem;
+    text-decoration:none;
+    transition:background .2s;
+}
+.btn-export:hover{
+    background:#059669;
+    color:#fff;
 }
 
 .total-beneficiarios{
     display:flex;
     align-items:center;
-    gap:10px;
-    color:#8c50a7;
-    font-size:1.8rem;
+    gap:6px;
+    background:#f0f4ff;
+    color:#101a61;
+    border-radius:999px;
+    padding:10px 18px;
     font-weight:800;
+    font-size:1rem;
 }
 
+/* LAYOUT 2 COLUMNAS */
 .beneficiarios-layout{
     display:grid;
-    grid-template-columns:300px 1fr;
+    grid-template-columns:280px 1fr;
     gap:24px;
 }
 
-.filters-panel,
-.list-panel{
-    background:#fff;
-    border:1px solid #dde2ee;
-    border-radius:10px;
-    box-shadow:0 8px 24px rgba(15,23,42,.04);
-}
-
+/* PANEL FILTROS */
 .filters-panel{
-    padding:22px;
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:20px;
+    height:fit-content;
+    position:sticky;
+    top:20px;
 }
 
 .filters-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:20px;
+    margin-bottom:18px;
 }
 
 .filters-header h5{
     margin:0;
-    color:#243473;
+    color:#1f2f78;
     font-weight:800;
-    text-transform:uppercase;
-    font-size:.92rem;
 }
 
 .filters-header a{
-    color:#2563eb;
+    color:#6366f1;
     text-decoration:none;
     font-size:.85rem;
 }
@@ -136,38 +144,24 @@
     color:#64748b;
 }
 
-.status-buttons{
-    display:flex;
-    gap:8px;
-}
-
-.status-buttons button{
-    border:1px solid #dde2ee;
-    background:#fff;
-    border-radius:999px;
-    padding:9px 14px;
-    color:#64748b;
-    font-weight:600;
-}
-
-.status-buttons .active{
-    background:#673ab7;
-    color:#fff;
-    border-color:#673ab7;
-}
-
 .btn-filter{
     width:100%;
     height:46px;
     border:0;
-    background:#673ab7;
+    background:#101a61;
     color:#fff;
     border-radius:8px;
     font-weight:800;
+    cursor:pointer;
+    transition:background .2s;
+}
+.btn-filter:hover{
+    background:#1e3a8a;
 }
 
+/* PANEL LISTA */
 .list-panel{
-    padding:24px;
+    padding:0;
 }
 
 .list-header{
@@ -200,95 +194,62 @@
     font-size:.85rem;
 }
 
-.order-box{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.order-box label{
-    color:#6b7280;
-    font-size:.85rem;
-}
-
-.order-box select{
-    height:42px;
-    border:1px solid #d9deea;
-    border-radius:7px;
-    padding:0 12px;
-    background:#fff;
-}
-
+/* TARJETAS */
 .beneficiario-card{
     display:grid;
-    grid-template-columns:72px 1fr 190px 170px;
-    gap:20px;
+    grid-template-columns:60px 1fr auto auto;
+    gap:16px;
     align-items:center;
-    border:1px solid #e1e6f0;
-    border-radius:10px;
-    padding:18px;
-    margin-bottom:12px;
     background:#fff;
-    transition:.2s ease;
+    border:1px solid #e5e7eb;
+    border-radius:12px;
+    padding:18px 20px;
+    margin-bottom:12px;
+    transition:box-shadow .2s;
 }
-
 .beneficiario-card:hover{
-    transform:translateY(-2px);
-    box-shadow:0 10px 25px rgba(15,23,42,.08);
+    box-shadow:0 4px 16px rgba(0,0,0,.06);
 }
 
-.avatar{
-    width:58px;
-    height:58px;
+.avatar-circle{
+    width:52px;
+    height:52px;
     border-radius:50%;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:1.35rem;
     font-weight:800;
-}
-
-.avatar-purple{background:#e8ddff;color:#5b38c2;}
-.avatar-green{background:#d8f5e8;color:#18765c;}
-.avatar-yellow{background:#fff0c8;color:#a56b00;}
-.avatar-pink{background:#ffddeb;color:#a61b57;}
-.avatar-blue{background:#dcecff;color:#2563eb;}
-
-.beneficiario-info h4{
-    margin:0 0 6px;
-    color:#1f2f78;
     font-size:1rem;
-    font-weight:800;
-    text-transform:uppercase;
+    color:#fff;
 }
+.avatar-m{ background:#3b82f6; }
+.avatar-f{ background:#ec4899; }
 
-.beneficiario-info p{
-    margin:3px 0;
-    color:#6b7280;
-    font-size:.9rem;
+.benef-info h3{
+    margin:0 0 4px;
+    font-size:1rem;
+    font-weight:700;
+    color:#1e293b;
 }
-
-.beneficiario-info strong,
-.beneficiario-info .label-blue{
-    color:#2563eb;
+.benef-info small{
+    color:#64748b;
+    font-size:.82rem;
+}
+.benef-info .org-tag{
+    display:inline-block;
+    background:#f0f4ff;
+    color:#3b5998;
+    border-radius:4px;
+    padding:2px 8px;
+    font-size:.75rem;
+    font-weight:600;
+    margin-top:4px;
 }
 
 .status-box{
+    text-align:center;
+    padding:0 16px;
     border-left:1px solid #e5e7eb;
-    padding-left:20px;
-}
-
-.status-box span{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    background:#dcfce7;
-    color:#16803a;
-    border-radius:6px;
-    padding:7px 10px;
-    font-size:.78rem;
-    font-weight:800;
-    margin-bottom:8px;
 }
 
 .status-box small{
@@ -313,6 +274,11 @@
     font-size:.78rem;
     text-decoration:none;
     text-transform:uppercase;
+    transition:all .2s;
+}
+.btn-history:hover{
+    background:#2563eb;
+    color:#fff;
 }
 
 .empty-state{
@@ -323,6 +289,7 @@
     border-radius:10px;
 }
 
+/* PAGINACIÓN */
 .pagination-footer{
     display:flex;
     justify-content:space-between;
@@ -332,20 +299,55 @@
     color:#64748b;
 }
 
-.pagination-wrapper{
+.pagination-nav{
     display:flex;
+    gap:4px;
+}
+
+.pagination-nav a,
+.pagination-nav span{
+    display:inline-flex;
+    align-items:center;
     justify-content:center;
+    min-width:38px;
+    height:38px;
+    border-radius:8px;
+    border:1px solid #d9deea;
+    text-decoration:none;
+    font-weight:600;
+    font-size:.88rem;
+    color:#334155;
+    background:#fff;
+    transition:all .2s;
+}
+
+.pagination-nav a:hover{
+    background:#eef0ff;
+    border-color:#6366f1;
+    color:#4f46e5;
+}
+
+.pagination-nav .pg-active{
+    background:#101a61;
+    color:#fff;
+    border-color:#101a61;
+}
+
+.pagination-nav .pg-disabled{
+    opacity:.4;
+    pointer-events:none;
 }
 
 @media(max-width:992px){
     .beneficiarios-layout{
         grid-template-columns:1fr;
     }
-
-    .beneficiario-card{
-        grid-template-columns:60px 1fr;
+    .filters-panel{
+        position:static;
     }
-
+    .beneficiario-card{
+        grid-template-columns:50px 1fr;
+    }
     .status-box,
     .card-actions{
         grid-column:2;
@@ -362,7 +364,6 @@
         flex-direction:column;
         align-items:flex-start;
     }
-
     .org-chip{
         width:100%;
     }
@@ -372,26 +373,37 @@
 
 <?= $this->section('content') ?>
 
+<?php
+    $rolActual = (int) session()->get('id_rol');
+    $page      = $page ?? 1;
+    $perPage   = $perPage ?? 15;
+    $totalPages = $totalPages ?? 1;
+?>
+
 <div class="beneficiarios-page">
 
+    <!-- ═══ BARRA SUPERIOR ═══ -->
     <div class="beneficiarios-top">
         <div class="org-chip">
             <i class="bi bi-bank"></i>
             <span>
-                <?= in_array(session('id_rol'), [1, 2])
-                    ? 'Todas las organizaciones'
-                    : esc(session('nombre_org') ?? 'Mi organización') ?>
+                <?php if (in_array($rolActual, [1, 2])): ?>
+                    <?= !empty($organizacion_id)
+                        ? esc(array_column(array_filter($organizaciones, fn($o) => $o['id_organizacion'] == $organizacion_id), 'nombre_org')[0] ?? 'Organización')
+                        : 'Todas las organizaciones' ?>
+                <?php else: ?>
+                    <?= esc(session('nombre_org') ?? 'Mi organización') ?>
+                <?php endif; ?>
             </span>
-            <i class="bi bi-chevron-down ms-auto"></i>
         </div>
 
         <div class="top-actions">
-            <a href="<?= base_url('beneficiarios/exportar?' . http_build_query([
+            <a href="<?= base_url('beneficiarios/exportar?' . http_build_query(array_filter([
                 'q' => $q ?? '',
                 'organizacion_id' => $organizacion_id ?? ''
-            ])) ?>" class="btn-export">
-                <i class="bi bi-cloud-arrow-down"></i>
-                Exportar
+            ]))) ?>" class="btn-export">
+                <i class="bi bi-file-earmark-excel"></i>
+                Exportar Excel
             </a>
 
             <div class="total-beneficiarios">
@@ -401,8 +413,10 @@
         </div>
     </div>
 
+    <!-- ═══ LAYOUT 2 COLUMNAS ═══ -->
     <div class="beneficiarios-layout">
 
+        <!-- FILTROS -->
         <aside class="filters-panel">
             <form method="get" action="<?= base_url('beneficiarios') ?>">
 
@@ -419,12 +433,12 @@
                             name="q"
                             value="<?= esc($q ?? '') ?>"
                             class="filter-control"
-                            placeholder="Buscar por nombre o ID...">
+                            placeholder="Nombre, apellido o ID...">
                         <i class="bi bi-search"></i>
                     </div>
                 </div>
 
-                <?php if (in_array(session('id_rol'), [1, 2])): ?>
+                <?php if (in_array($rolActual, [1, 2])): ?>
                     <div class="filter-group">
                         <label>Organización</label>
                         <select name="organizacion_id" class="filter-control">
@@ -440,133 +454,175 @@
                     </div>
                 <?php endif; ?>
 
-                <div class="filter-group">
-                    <label>Estado</label>
-                    <div class="status-buttons">
-                        <button type="button" class="active">Todos</button>
-                        <button type="button">Activos</button>
-                    </div>
-                </div>
-
                 <button type="submit" class="btn-filter">
-                    Aplicar filtros
+                    <i class="bi bi-funnel me-1"></i> Aplicar filtros
                 </button>
 
             </form>
         </aside>
 
+        <!-- LISTA -->
         <main class="list-panel">
 
             <div class="list-header">
                 <div class="list-title">
                     <h1>Beneficiarios</h1>
                     <span class="result-badge">
-                        <?= count($beneficiarios ?? []) ?> resultados
+                        <?= esc($totalBeneficiarios ?? 0) ?> resultados
                     </span>
-                </div>
-
-                <div class="order-box">
-                    <label>Ordenar por</label>
-                    <select>
-                        <option>Nombre (A - Z)</option>
-                    </select>
                 </div>
             </div>
 
             <?php if (!empty($beneficiarios)): ?>
-                <?php foreach ($beneficiarios as $index => $b): ?>
-
+                <?php foreach ($beneficiarios as $b): ?>
                     <?php
-                        $nombreCompleto = trim(($b['apellidos'] ?? '') . ', ' . ($b['nombres'] ?? ''));
+                        $nombreCompleto = esc(strtoupper(trim(($b['apellidos'] ?? '') . ', ' . ($b['nombres'] ?? ''))));
                         $iniciales = strtoupper(
                             mb_substr($b['nombres'] ?? 'B', 0, 1) .
                             mb_substr($b['apellidos'] ?? 'N', 0, 1)
                         );
+                        $sexoClass = ($b['sexo'] ?? 'M') === 'F' ? 'avatar-f' : 'avatar-m';
 
-                        $avatarClasses = [
-                            'avatar-purple',
-                            'avatar-green',
-                            'avatar-yellow',
-                            'avatar-pink',
-                            'avatar-blue'
-                        ];
-
-                        $avatarClass = $avatarClasses[$index % count($avatarClasses)];
+                        // Edad
+                        $edad = '—';
+                        if (!empty($b['fecha_nacimiento'])) {
+                            try {
+                                $nac  = new \DateTime($b['fecha_nacimiento']);
+                                $diff = (new \DateTime())->diff($nac);
+                                $edad = $diff->y > 0
+                                    ? $diff->y . ' año' . ($diff->y > 1 ? 's' : '')
+                                    : ($diff->m > 0 ? $diff->m . ' mes' . ($diff->m > 1 ? 'es' : '') : $diff->d . ' días');
+                            } catch (\Exception $e) { $edad = '—'; }
+                        }
                     ?>
 
                     <div class="beneficiario-card">
-
-                        <div class="avatar <?= esc($avatarClass) ?>">
-                            <?= esc($iniciales) ?>
+                        <div class="avatar-circle <?= $sexoClass ?>">
+                            <?= $iniciales ?>
                         </div>
 
-                        <div class="beneficiario-info">
-                            <h4><?= esc($nombreCompleto ?: 'Beneficiario sin nombre') ?></h4>
-
-                            <p>
-                                <span class="label-blue">ID:</span>
-                                <?= esc($b['identificacion'] ?? 'N/D') ?>
-
-                                <span class="label-blue ms-2">FN:</span>
-                                <?= esc($b['fecha_nacimiento'] ?? $b['fn'] ?? 'N/D') ?>
-                            </p>
-
-                            <p>
-                                <i class="bi bi-calendar3"></i>
-                                <?= esc($b['edad_texto'] ?? '-') ?>
-
-                                <i class="bi bi-geo-alt ms-2"></i>
-                                <?= esc($b['ubicacion'] ?? 'Venezuela') ?>
-                            </p>
-
-                            <p>
-                                <span class="label-blue">Centro / Jornada:</span>
-                                <strong>
-                                    <?= esc($b['nombre_jornada'] ?? $b['centro'] ?? 'Sin jornada') ?>
-                                </strong>
-                            </p>
+                        <div class="benef-info">
+                            <h3><?= $nombreCompleto ?></h3>
+                            <small>
+                                <strong>ID:</strong> <?= esc($b['id_digisalud'] ?? '—') ?>
+                                &nbsp;|&nbsp;
+                                <strong>FN:</strong> <?= !empty($b['fecha_nacimiento']) ? date('d/m/Y', strtotime($b['fecha_nacimiento'])) : '—' ?>
+                                (<?= $edad ?>)
+                                &nbsp;|&nbsp;
+                                <strong>Sexo:</strong> <?= esc($b['sexo'] ?? '—') ?>
+                            </small>
+                            <?php if (!empty($b['nombre_org'])): ?>
+                                <div>
+                                    <span class="org-tag">
+                                        <i class="bi bi-building"></i>
+                                        <?= esc($b['nombre_org']) ?>
+                                    </span>
+                                    <?php if (!empty($b['nombre_jornada'])): ?>
+                                        <span class="org-tag">
+                                            <i class="bi bi-calendar-event"></i>
+                                            <?= esc($b['nombre_jornada']) ?>
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="status-box">
-                            <span>
-                                <i class="bi bi-calendar-check"></i>
-                                Registro activo
-                            </span>
                             <small>
-                                Creado:
-                                <?= esc($b['fecha_nacimiento'] ?? $b['fn'] ?? '-') ?>
+                                <?php if (!empty($b['nombre_escuela'])): ?>
+                                    <i class="bi bi-mortarboard"></i>
+                                    <?= esc($b['nombre_escuela']) ?>
+                                <?php else: ?>
+                                    —
+                                <?php endif; ?>
                             </small>
                         </div>
 
                         <div class="card-actions">
-                            <a
-                                href="<?= base_url('beneficiarios/' . $b['id_beneficiario'] . '/historial') ?>"
-                                class="btn-history">
+                            <a href="<?= base_url('beneficiarios/historial/' . $b['id_beneficiario']) ?>"
+                               class="btn-history">
                                 Ver historial
                             </a>
-
-                            <i class="bi bi-three-dots-vertical"></i>
                         </div>
-
                     </div>
 
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="empty-state">
+                    <i class="bi bi-search" style="font-size:2rem;display:block;margin-bottom:12px;"></i>
                     No se encontraron beneficiarios con los filtros aplicados.
                 </div>
             <?php endif; ?>
 
-            <div class="pagination-footer">
-                <p>
-                    Mostrando <?= count($beneficiarios ?? []) ?> de
-                    <?= esc($totalBeneficiarios ?? 0) ?> resultados
-                </p>
+            <!-- ═══ PAGINACIÓN ═══ -->
+            <?php if ($totalPages > 1): ?>
+                <div class="pagination-footer">
+                    <p>
+                        Mostrando
+                        <?= (($page - 1) * $perPage) + 1 ?>
+                        a
+                        <?= min($page * $perPage, $totalBeneficiarios) ?>
+                        de
+                        <?= esc($totalBeneficiarios) ?> resultados
+                    </p>
 
-                <div class="pagination-wrapper">
-                    <?= $pager->links('beneficiarios', 'default_full') ?>
+                    <div class="pagination-nav">
+                        <?php
+                            // Construir query string base
+                            $qsBase = array_filter([
+                                'q'               => $q ?? '',
+                                'organizacion_id' => $organizacion_id ?? '',
+                            ]);
+
+                            $linkPage = function($p) use ($qsBase) {
+                                $qs = array_merge($qsBase, ['page' => $p]);
+                                return base_url('beneficiarios?' . http_build_query($qs));
+                            };
+                        ?>
+
+                        <!-- Anterior -->
+                        <?php if ($page > 1): ?>
+                            <a href="<?= $linkPage($page - 1) ?>">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        <?php else: ?>
+                            <span class="pg-disabled"><i class="bi bi-chevron-left"></i></span>
+                        <?php endif; ?>
+
+                        <!-- Números -->
+                        <?php
+                            $start = max(1, $page - 2);
+                            $end   = min($totalPages, $page + 2);
+                            if ($start > 1) echo '<a href="' . $linkPage(1) . '">1</a>';
+                            if ($start > 2) echo '<span class="pg-disabled">…</span>';
+                            for ($i = $start; $i <= $end; $i++):
+                        ?>
+                            <?php if ($i == $page): ?>
+                                <span class="pg-active"><?= $i ?></span>
+                            <?php else: ?>
+                                <a href="<?= $linkPage($i) ?>"><?= $i ?></a>
+                            <?php endif; ?>
+                        <?php
+                            endfor;
+                            if ($end < $totalPages - 1) echo '<span class="pg-disabled">…</span>';
+                            if ($end < $totalPages) echo '<a href="' . $linkPage($totalPages) . '">' . $totalPages . '</a>';
+                        ?>
+
+                        <!-- Siguiente -->
+                        <?php if ($page < $totalPages): ?>
+                            <a href="<?= $linkPage($page + 1) ?>">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        <?php else: ?>
+                            <span class="pg-disabled"><i class="bi bi-chevron-right"></i></span>
+                        <?php endif; ?>
+                    </div>
                 </div>
-            </div>
+            <?php else: ?>
+                <div class="pagination-footer">
+                    <p>Mostrando <?= count($beneficiarios ?? []) ?> de <?= esc($totalBeneficiarios ?? 0) ?> resultados</p>
+                </div>
+            <?php endif; ?>
 
         </main>
 

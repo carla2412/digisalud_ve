@@ -3,10 +3,12 @@
 
         <div class="d-flex align-items-center gap-2">
 
-            <button class="btn" id="menuToggle">
+            <!--  <button class="btn" id="menuToggle">
                 <img src="<?= base_url('img/icon/icon_menu.png') ?>" width="22">
+            </button>-->
+            <button id="openSidebar" type="button" class="btn btn-outline-light">
+                ☰
             </button>
-
             <button class="btn" onclick="window.history.back();">
                 <img src="<?= base_url('img/icon/icon_back.png') ?>" width="22">
             </button>

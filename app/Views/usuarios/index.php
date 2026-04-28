@@ -1,44 +1,377 @@
 <?= $this->extend('layouts/main') ?>
 
+<?= $this->section('css') ?>
+<style>
+  * { box-sizing: border-box; }
+
+  .org-page {
+    background: #eef2f7;
+    padding: 20px;
+  }
+
+  .org-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    background: #f9fbff;
+    border-radius: 24px;
+    padding: 28px 32px 34px;
+    box-shadow: 0 8px 30px rgba(31, 42, 68, 0.08);
+  }
+
+  .org-breadcrumb {
+    font-size: 14px;
+    color: #6d7890;
+    margin-bottom: 18px;
+  }
+
+  .org-breadcrumb a {
+    color: #6d7890;
+    text-decoration: none;
+  }
+
+  .org-breadcrumb span {
+    color: #3695f5;
+    font-weight: 600;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .title h1 {
+    font-size: 56px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    color: #101a61;
+  }
+
+  .title p {
+    font-size: 18px;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .filters {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+
+  .input-custom {
+    background: #fff;
+    border: 1px solid #dbe3f0;
+    border-radius: 16px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    color: #667085;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+  }
+
+  .input-custom input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 16px;
+    margin-left: 12px;
+    background: transparent;
+    color: #334155;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    margin-bottom: 26px;
+     overflow: visible !important;
+  }
+.user-item {
+  position: relative;
+  overflow: visible !important;
+  z-index: 1;
+}
+  .user-card {
+  position: relative;
+  background: #fff;
+  border-radius: 24px;
+  padding: 26px;
+  min-height: 320px;
+  box-shadow: 0 10px 28px rgba(31, 42, 68, 0.08);
+  overflow: visible !important;
+  border: 1px solid #eef2f8;
+  transition: all 0.25s ease;
+  z-index: 1;
+}
+
+  .user-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 34px rgba(31, 42, 68, 0.12);
+  }
+
+  .user-card.inactivo {
+    opacity: 0.75;
+    background: #f8fafc;
+  }
+
+  .menu {
+    position: absolute;
+    right: 20px;
+    top: 18px;
+    font-size: 24px;
+    color: #667085;
+    z-index: 10;
+  }
+
+  .avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 22px;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+  }
+
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .blue { background: #dce8ff; color: #3695f5; }
+  .green { background: #dff4e7; color: #22c55e; }
+  .purple { background: #eedfff; color: #7c3aed; }
+
+  .user-card h3 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #14213d;
+    position: relative;
+    z-index: 2;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .tag.blue { background: #e7f0ff; color: #3695f5; }
+  .tag.green { background: #e8f8ee; color: #16a34a; }
+  .tag.purple { background: #f1e8ff; color: #7c3aed; }
+  .tag.red { background: #fee2e2; color: #dc2626; }
+  .tag.gray { background: #eef2f7; color: #64748b; }
+
+  .email,
+  .org-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #5b6478;
+    font-size: 16px;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
+    word-break: break-word;
+  }
+
+  .divider {
+    height: 1px;
+    background: #e8edf5;
+    margin: 22px 0;
+    position: relative;
+    z-index: 2;
+  }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+    position: relative;
+    z-index: 20;
+    flex-wrap: wrap;
+  }
+
+  .btn-action-custom {
+    border-radius: 14px;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    border: 1px solid #dbe3f0;
+    background: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #3695f5;
+  }
+
+  .btn-action-custom:hover {
+    transform: translateY(-1px);
+    text-decoration: none;
+    background: #f8fbff;
+    color: #1b7ae2;
+  }
+
+  .dropdown-menu {
+    border: 0;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(31, 42, 68, 0.15);
+    z-index: 9999;
+  }
+
+  .dropdown-item {
+    font-weight: 600;
+    padding: 10px 16px;
+  }
+
+  .dropdown-item i {
+    width: 18px;
+  }
+
+  .bg-shape {
+    position: absolute;
+    right: -40px;
+    bottom: -50px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    opacity: 0.18;
+    z-index: 0;
+  }
+
+  .shape-blue { background: #bcd3ff; }
+  .shape-green { background: #b9ebc9; }
+  .shape-purple { background: #dec5ff; }
+  .shape-red { background: #ffc5d3; }
+
+  .shape-icon {
+    position: absolute;
+    right: 34px;
+    bottom: 40px;
+    font-size: 64px;
+    opacity: 0.18;
+    z-index: 1;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #667085;
+    margin-top: 10px;
+    font-size: 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .empty-state {
+    grid-column: 1 / -1;
+    background: #fff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 20px;
+    padding: 40px 20px;
+    text-align: center;
+    color: #64748b;
+  }
+.user-item:has(.dropdown-menu.show) {
+  z-index: 99999;
+}
+
+.user-card:has(.dropdown-menu.show) {
+  z-index: 99999;
+}
+
+.dropdown {
+  position: relative;
+  z-index: 100000;
+}
+
+
+.dropdown-menu {
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(31, 42, 68, 0.15);
+  z-index: 100001 !important;
+}
+  @media (max-width: 1200px) {
+    .cards { grid-template-columns: 1fr 1fr; }
+    .topbar { flex-direction: column; align-items: stretch; }
+    .title h1 { font-size: 40px; }
+  }
+
+  @media (max-width: 768px) {
+    .org-page { padding: 12px; }
+    .org-container { padding: 20px; border-radius: 18px; }
+    .cards { grid-template-columns: 1fr; gap: 20px; }
+    .title h1 { font-size: 32px; }
+    .actions { flex-direction: column; }
+    .btn-action-custom { justify-content: center; width: 100%; }
+  }
+</style>
+<?= $this->endSection() ?>
+
 <?= $this->section('content') ?>
 
-<main class="container-fluid py-4 diestra">
+<div class="org-page">
+  <div class="org-container">
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
-        <div>
-            <h2 class="fw-bold mb-1 text-primary">Gestión de Usuarios</h2>
-            <p class="text-muted mb-0">Administración general de usuarios Digisalud</p>
-        </div>
-
-        <div class="d-flex align-items-center gap-3 flex-wrap">
-            <span class="text-muted small">
-                Mostrando <span id="totalUsuarios">0</span> usuarios
-            </span>
-
-            <div class="input-group shadow-sm buscador-usuarios">
-                <input type="text" class="form-control border-end-0" placeholder="Buscar usuario..." id="searchUser">
-                <span class="input-group-text bg-white border-start-0">
-                    <i class="fas fa-search text-muted"></i>
-                </span>
-            </div>
-        </div>
+    <div class="org-breadcrumb">
+      <a href="<?= base_url('inicio') ?>">Inicio</a> &nbsp;›&nbsp; <span>Usuarios</span>
     </div>
 
-    <!-- contenedor de tarjetas -->
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" id="contenedorUsuarios">
-        <!-- Se llena por JS -->
+    <div class="topbar">
+      <div class="title">
+        <h1>Usuarios</h1>
+        <p>Gestiona los usuarios registrados en Digisalud.</p>
+      </div>
     </div>
 
-    <!-- mensaje sin resultados -->
-    <div id="sinResultados" class="text-center py-5 d-none">
-        <div class="card border-0 shadow-sm p-4">
-            <i class="fas fa-users-slash fs-1 text-muted mb-3"></i>
-            <h5 class="mb-1">No se encontraron usuarios</h5>
-            <p class="text-muted mb-0">Intenta con otro criterio de búsqueda.</p>
-        </div>
+    <div class="filters">
+      <div class="input-custom">
+        <i class="fas fa-search"></i>
+        <input
+          type="text"
+          id="searchUser"
+          placeholder="Buscar usuario por nombre, correo, rol u organización..."
+        >
+      </div>
     </div>
 
-</main>
+    <div class="cards" id="contenedorUsuarios"></div>
+
+    <div id="sinResultados" class="empty-state d-none">
+      <i class="fas fa-users-slash fa-2x mb-3"></i>
+      <h4 class="mb-2">No se encontraron usuarios</h4>
+      <p class="mb-0">Intenta con otro criterio de búsqueda.</p>
+    </div>
+
+    <div class="meta-row">
+      <div>
+        Mostrando <span id="totalUsuarios">0</span> usuario<span id="pluralUsuarios">s</span>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <?= $this->include('usuarios/modals/agregarOrg') ?>
 <?= $this->include('usuarios/modals/cambiarCorreo') ?>
@@ -49,160 +382,9 @@
 
 <?= $this->section('scripts') ?>
 
-<style>
-    :root {
-        --ds-primary: #5c9cd8;
-        --ds-bg-light: #f8fafc;
-    }
-
-    body {
-        background-color: var(--ds-bg-light);
-    }
-
-    .buscador-usuarios {
-        max-width: 320px;
-    }
-
-    .user-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
-    }
-
-    /* Avatar: soporta foto o iniciales */
-    .avatar-circle {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 0.9rem;
-        border: 2px solid #fff;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        text-transform: uppercase;
-        overflow: hidden;
-        flex-shrink: 0;
-    }
-    .avatar-circle.has-foto {
-        background: transparent;
-        padding: 0;
-    }
-    .avatar-circle.has-foto img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-    .avatar-circle:not(.has-foto) {
-        background-color: #e2e8f0;
-        color: #475569;
-    }
-    .avatar-circle svg {
-        width: 100%;
-        height: 100%;
-        display: block;
-    }
-
-    .bg-light-success {
-        background-color: #ecfdf5 !important;
-     }
-
-    .bg-light-danger {
-        background-color: #fef2f2 !important;
-    }
-
-    .input-group .form-control:focus {
-        box-shadow: none;
-        border-color: #dee2e6;
-    }
-
-    .dropdown-menu {
-        border-radius: 12px;
-    }
-
-    .dropdown-item i {
-        width: 18px;
-    }
-
-    .card-text-mail {
-        word-break: break-word;
-    }
- 
-    .user-card {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        border-radius: 16px;
-        background: #fff;
-        position: relative;
-        overflow: visible !important;
-        z-index: 1;
-        min-height: unset !important;
-    }
-
-    .user-card .card-body {
-        padding: 0.9rem 1rem !important;
-    }
-
-    .user-card .card-title {
-        font-size: 1rem;
-        line-height: 1.2;
-        margin-bottom: 0.15rem !important;
-    }
-
-    .user-card small,
-    .user-card .card-text,
-    .user-card .badge {
-        font-size: 0.82rem;
-    }
-
-    .user-card .mb-3 {
-        margin-bottom: 0.75rem !important;
-    }
-
-    .user-card .mb-4 {
-        margin-bottom: 0.9rem !important;
-    }
-
-    .user-card .pt-3 {
-        padding-top: 0.75rem !important;
-    }
-
-    .user-card .border-top {
-        margin-top: 0.5rem !important;
-    }
-
-    .user-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
-        z-index: 5;
-    }
-
-    .diestra {
-        position: relative;
-        width: 80%;
-    }
-
-    #contenedorUsuarios .col {
-        position: relative;
-    }
-
-    .dropdown {
-        position: relative;
-    }
-
-    .dropdown-menu {
-        z-index: 9999 !important;
-        position: absolute;
-        border-radius: 12px;
-    }
-</style>
-
 <script>
 $(document).ready(function () {
 
-    // ==============================
-    //   VARIABLES DE SESIÓN + CSRF
-    // ==============================
     const orgSesion = <?= json_encode($orgSesion) ?>;
     const rolSesion = parseInt(<?= json_encode($rolSesion) ?>, 10) || 0;
     const baseUrl   = '<?= rtrim(base_url(), "/") ?>/';
@@ -218,9 +400,15 @@ $(document).ready(function () {
 
     let usuariosData = [];
 
-    // ==============================
-    //   CARGAR USUARIOS
-    // ==============================
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     function cargarUsuarios() {
         $.ajax({
             url: urlListado,
@@ -229,74 +417,62 @@ $(document).ready(function () {
             success: function(response) {
                 usuariosData = response.data || [];
                 $('#totalUsuarios').text(usuariosData.length);
+                $('#pluralUsuarios').text(usuariosData.length === 1 ? '' : 's');
                 renderUsuarios(usuariosData);
             },
             error: function(xhr, status, error) {
                 console.error("Error cargando usuarios:", error);
 
                 $('#contenedorUsuarios').html(`
-                    <div class="col-12">
-                        <div class="alert alert-danger shadow-sm">
-                            Ocurrió un error al cargar los usuarios.
-                        </div>
+                    <div class="empty-state">
+                        <i class="fas fa-triangle-exclamation fa-2x mb-3"></i>
+                        <h4 class="mb-2">Error al cargar usuarios</h4>
+                        <p class="mb-0">Ocurrió un problema al consultar el listado.</p>
                     </div>
                 `);
             }
         });
     }
 
-    // ==============================
-    //   GENERAR AVATAR HTML
-    // ==============================
-    function generarAvatar(row) {
-        const nombre   = row.nombres   ?? '';
-        const apellido = row.apellidos ?? '';
-        const fotoUrl  = row.foto_url  ?? '';
+    function nombreRolAmigable(rolNombreOriginal) {
+        if (!rolNombreOriginal) return 'Sin rol';
 
-        // Si tiene foto → mostrar imagen
+        const roles = {
+            'ADMIN_DIGI': 'Digisalud',
+            'ADMIN_ORG': 'Administrador Org',
+            'REGISTRO': 'Registro de Data',
+            'ADMINISTRADOR': 'TI Digisalud',
+            'COORDINADOR': 'Coordinador Org',
+            'VIEWER': 'Ver Data'
+        };
+
+        return roles[rolNombreOriginal] || rolNombreOriginal;
+    }
+
+    function generarAvatar(row, color) {
+        const nombre = row.nombres ?? '';
+        const apellido = row.apellidos ?? '';
+        const fotoUrl = row.foto_url ?? '';
+
         if (fotoUrl) {
-            const src = baseUrl + fotoUrl;
             return `
-                <div class="avatar-circle has-foto me-3">
-                    <img src="${src}" alt="${nombre}" onerror="this.parentElement.outerHTML=generarAvatarSvg('${nombre}','${apellido}')">
+                <div class="avatar ${color}">
+                    <img 
+                        src="${baseUrl}${escapeHtml(fotoUrl)}" 
+                        alt="${escapeHtml(nombre)}"
+                        onerror="this.remove(); this.parentElement.innerHTML='${escapeHtml((nombre.charAt(0) || '?').toUpperCase())}'"
+                    >
                 </div>
             `;
         }
 
-        // Sin foto → SVG con iniciales
-        return generarAvatarSvgHtml(nombre, apellido);
-    }
-
-    function generarAvatarSvgHtml(nombre, apellido) {
         const inicialN = nombre ? nombre.charAt(0).toUpperCase() : '';
         const inicialA = apellido ? apellido.charAt(0).toUpperCase() : '';
         const iniciales = inicialN + inicialA || '?';
 
-        return `
-            <div class="avatar-circle me-3">
-                <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="48" height="48" fill="#3695f5"/>
-                    <text x="24" y="24" text-anchor="middle" dominant-baseline="central"
-                          font-family="Roboto, Arial, sans-serif" font-size="17" font-weight="700" fill="#fff">
-                        ${iniciales}
-                    </text>
-                </svg>
-            </div>
-        `;
+        return `<div class="avatar ${color}">${escapeHtml(iniciales)}</div>`;
     }
 
-    // Fallback global para onerror en fotos rotas
-    window.generarAvatarSvg = function(nombre, apellido) {
-        const inicialN = nombre ? nombre.charAt(0).toUpperCase() : '';
-        const inicialA = apellido ? apellido.charAt(0).toUpperCase() : '';
-        const iniciales = inicialN + inicialA || '?';
-
-        return `<div class="avatar-circle me-3"><svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="#3695f5"/><text x="24" y="24" text-anchor="middle" dominant-baseline="central" font-family="Roboto,Arial,sans-serif" font-size="17" font-weight="700" fill="#fff">${iniciales}</text></svg></div>`;
-    };
-
-    // ==============================
-    //   RENDER TARJETAS
-    // ==============================
     function renderUsuarios(data) {
         const contenedor = $('#contenedorUsuarios');
         const sinResultados = $('#sinResultados');
@@ -310,49 +486,30 @@ $(document).ready(function () {
 
         sinResultados.addClass('d-none');
 
-        data.forEach(row => {
+        const colores = ['blue', 'green', 'purple'];
+        const shapes = ['shape-blue', 'shape-green', 'shape-purple', 'shape-red'];
+
+        data.forEach((row, index) => {
+            const color = colores[index % colores.length];
+            const shapeColor = shapes[index % shapes.length];
+
             const nombre = row.nombres ?? '';
             const apellido = row.apellidos ?? '';
             const correo = row.email ?? '';
             const organizacion = row.nombre_organizacion ?? 'Independiente';
             const idUsuario = row.id_usuario ?? '';
             const rolNombreOriginal = row.nombre_rol ?? '';
+            const nombreMostrarRol = nombreRolAmigable(rolNombreOriginal);
             const organizacionId = parseInt(row.organizacion_id ?? 0, 10);
+            const statusUsu = parseInt(row.status_usu ?? 1, 10);
 
-            // Mostrar nombre amigable del rol
-            let nombreMostrarRol = rolNombreOriginal;
-            if (!rolNombreOriginal) {
-                nombreMostrarRol = 'Sin rol';
-            } else if (rolNombreOriginal === 'ADMIN_DIGI') {
-                nombreMostrarRol = 'Digisalud';
-            } else if (rolNombreOriginal === 'ADMIN_ORG') {
-                nombreMostrarRol = 'Administrador Org';
-            } else if (rolNombreOriginal === 'REGISTRO') {
-                nombreMostrarRol = 'Registro de Data';
-            } else if (rolNombreOriginal === 'ADMINISTRADOR') {
-                nombreMostrarRol = 'TI Digisalud';
-            } else if (rolNombreOriginal === 'COORDINADOR') {
-                nombreMostrarRol = 'Coordinador Org';
-            } else if (rolNombreOriginal === 'VIEWER') {
-                nombreMostrarRol = 'Ver Data';
-            }
-
-            const badgeRol = rolNombreOriginal
-                ? `
-                    <span class="badge rounded-pill bg-light-success text-success px-3 py-2 border border-success border-opacity-25">
-                        <i class="fas fa-user-shield me-1 small"></i> ${nombreMostrarRol}
-                    </span>
-                  `
-                : `
-                    <span class="badge rounded-pill bg-light-danger text-danger px-3 py-2 border border-danger border-opacity-25">
-                        <i class="fas fa-exclamation-triangle me-1 small"></i> Sin rol
-                    </span>
-                  `;
-
-            // permisos
             const esIndependiente = organizacionId === 1;
             const puedeAgregarOrg = esIndependiente && [1,2,3].includes(rolSesion);
             const puedeBloquear   = [1,2,3].includes(rolSesion);
+
+            const tagRol = rolNombreOriginal
+                ? `<span class="tag ${color}"><i class="fas fa-user-shield me-1"></i>${escapeHtml(nombreMostrarRol)}</span>`
+                : `<span class="tag red"><i class="fas fa-exclamation-triangle me-1"></i>Sin rol</span>`;
 
             let acciones = '';
 
@@ -388,54 +545,58 @@ $(document).ready(function () {
             }
 
             if (acciones === '') {
-                acciones = `
-                    <li>
-                        <span class="dropdown-item-text text-muted small">Sin acciones disponibles</span>
-                    </li>
-                `;
+                acciones = `<li><span class="dropdown-item-text text-muted small px-3">Sin acciones disponibles</span></li>`;
             }
 
-            // ✅ AVATAR: foto real o SVG con iniciales
-            const avatarHtml = generarAvatar(row);
+            const avatarHtml = generarAvatar(row, color);
+
+            const searchText = `${nombre} ${apellido} ${correo} ${organizacion} ${nombreMostrarRol}`.toLowerCase();
 
             const card = `
-                <div class="col user-item"
-                     data-search="${(nombre + ' ' + apellido + ' ' + correo + ' ' + organizacion + ' ' + nombreMostrarRol).toLowerCase()}">
-                    <div class="card border-0 shadow-sm user-card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                ${avatarHtml}
-                                <div>
-                                    <h5 class="card-title mb-0 fw-bold text-dark">
-                                        ${nombre} ${apellido}
-                                    </h5>
-                                    <small class="text-muted">${organizacion}</small>
-                                </div>
-                            </div>
+                <div class="user-item" data-search="${escapeHtml(searchText)}">
+                    <div class="user-card ${statusUsu !== 1 ? 'inactivo' : ''}">
+                        <div class="menu">
+                            <i class="fas fa-user"></i>
+                        </div>
 
-                            <div class="mb-3">
-                                ${badgeRol}
-                            </div>
+                        ${avatarHtml}
 
-                            <p class="card-text small text-muted mb-4 card-text-mail">
-                                <i class="far fa-envelope me-1"></i> ${correo}
-                            </p>
+                        <h3>${escapeHtml(nombre)} ${escapeHtml(apellido)}</h3>
 
-                            <div class="d-flex justify-content-between align-items-center border-top pt-2">
-                              
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle px-3 rounded-pill"
-                                            type="button"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                        Acciones <i class="fas fa-wrench ms-1 small"></i>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                                        ${acciones}
-                                    </ul>
-                                </div>
+                        ${tagRol}
+
+                        <div class="org-info">
+                            <i class="fas fa-building"></i>
+                            <span>${escapeHtml(organizacion)}</span>
+                        </div>
+
+                        <div class="email">
+                            <i class="fas fa-envelope"></i>
+                            <span>${escapeHtml(correo || '—')}</span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="actions">
+                            <div class="dropdown">
+                                <button 
+                                    class="btn-action-custom dropdown-toggle"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                >
+                                    <i class="fas fa-wrench"></i>
+                                    Acciones
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    ${acciones}
+                                </ul>
                             </div>
                         </div>
+
+                        <div class="bg-shape ${shapeColor}"></div>
+                        <div class="shape-icon"><i class="fas fa-user"></i></div>
                     </div>
                 </div>
             `;
@@ -446,23 +607,23 @@ $(document).ready(function () {
         activarEventos();
     }
 
-    // ==============================
-    //   BUSCADOR LOCAL
-    // ==============================
     $('#searchUser').on('keyup', function() {
         const texto = $(this).val().toLowerCase().trim();
         let visibles = 0;
 
         $('.user-item').each(function() {
-            const contenido = $(this).data('search');
+            const contenido = String($(this).data('search') || '');
 
             if (contenido.includes(texto)) {
-                $(this).removeClass('d-none');
+                $(this).show();
                 visibles++;
             } else {
-                $(this).addClass('d-none');
+                $(this).hide();
             }
         });
+
+        $('#totalUsuarios').text(visibles);
+        $('#pluralUsuarios').text(visibles === 1 ? '' : 's');
 
         if (visibles === 0) {
             $('#sinResultados').removeClass('d-none');
@@ -471,54 +632,38 @@ $(document).ready(function () {
         }
     });
 
-    // Helper para cerrar modales por id
     function cerrarModal(idModal) {
         const el = document.getElementById(idModal);
         const modal = bootstrap.Modal.getInstance(el);
         if (modal) modal.hide();
     }
 
-    // ==============================
-    //   ACTIVAR EVENTOS
-    // ==============================
     function activarEventos() {
-
         $('.btnAgregarOrg').off('click').on('click', function () {
-            const id = $(this).data('id');
-            $('#agregarId').val(id);
-            const modal = new bootstrap.Modal(document.getElementById('modalAgregarOrg'));
-            modal.show();
+            $('#agregarId').val($(this).data('id'));
+            new bootstrap.Modal(document.getElementById('modalAgregarOrg')).show();
         });
 
         $('.btnBloquear').off('click').on('click', function () {
-            const id = $(this).data('id');
-            $('#bloqueoId').val(id);
+            $('#bloqueoId').val($(this).data('id'));
             $('#textoBloqueo').html("¿Deseas <b>cambiar el estado</b> de este usuario?");
-            const modal = new bootstrap.Modal(document.getElementById('modalBloqueo'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('modalBloqueo')).show();
         });
 
         $('.btnCorreo').off('click').on('click', function () {
-            const id = $(this).data('id');
-            $('#correoId').val(id);
+            $('#correoId').val($(this).data('id'));
             $('#nuevoCorreo').val("");
-            const modal = new bootstrap.Modal(document.getElementById('modalCorreo'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('modalCorreo')).show();
         });
 
         $('.btnPass').off('click').on('click', function () {
-            const id = $(this).data('id');
-            $('#passId').val(id);
+            $('#passId').val($(this).data('id'));
             $('#nuevoPass').val("");
             $('#confirmPass').val("");
-            const modal = new bootstrap.Modal(document.getElementById('modalPassword'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('modalPassword')).show();
         });
     }
 
-    // =======================================================
-    //   FORMULARIO: AGREGAR ORGANIZACIÓN
-    // =======================================================
     $('#formAgregarOrg').on('submit', function(e) {
         e.preventDefault();
 
@@ -533,12 +678,7 @@ $(document).ready(function () {
         .then(r => r.json())
         .then(d => {
             if (d.error) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Atención',
-                    text: d.error,
-                    confirmButtonColor: '#00A86B'
-                });
+                Swal.fire({ icon: 'warning', title: 'Atención', text: d.error, confirmButtonColor: '#00A86B' });
                 return;
             }
 
@@ -556,9 +696,6 @@ $(document).ready(function () {
         .catch(err => console.error(err));
     });
 
-    // =======================================================
-    //   FORMULARIO: CAMBIAR CORREO
-    // =======================================================
     $('#formCorreo').on('submit', function(e) {
         e.preventDefault();
 
@@ -572,12 +709,7 @@ $(document).ready(function () {
         .then(r => r.json())
         .then(d => {
             if (d.error) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Atención',
-                    text: d.error,
-                    confirmButtonColor: '#00A86B'
-                });
+                Swal.fire({ icon: 'warning', title: 'Atención', text: d.error, confirmButtonColor: '#00A86B' });
                 return;
             }
 
@@ -595,9 +727,6 @@ $(document).ready(function () {
         .catch(err => console.error(err));
     });
 
-    // =======================================================
-    //   FORMULARIO: CAMBIAR CONTRASEÑA
-    // =======================================================
     $('#formPassword').on('submit', function(e) {
         e.preventDefault();
 
@@ -622,12 +751,7 @@ $(document).ready(function () {
         .then(r => r.json())
         .then(d => {
             if (d.error) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Atención',
-                    text: d.error,
-                    confirmButtonColor: '#00A86B'
-                });
+                Swal.fire({ icon: 'warning', title: 'Atención', text: d.error, confirmButtonColor: '#00A86B' });
                 return;
             }
 
@@ -644,11 +768,7 @@ $(document).ready(function () {
         .catch(err => console.error(err));
     });
 
-    // =======================================================
-    //   FORMULARIO: CONFIRMAR BLOQUEO
-    // =======================================================
     $('#btnConfirmBloqueo').on('click', function() {
-
         fetch(`${urlBloquearBase}/${$('#bloqueoId').val()}`, {
             method: "POST",
             body: new URLSearchParams({
@@ -658,12 +778,7 @@ $(document).ready(function () {
         .then(r => r.json())
         .then(d => {
             if (d.error) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Atención',
-                    text: d.error,
-                    confirmButtonColor: '#00A86B'
-                });
+                Swal.fire({ icon: 'warning', title: 'Atención', text: d.error, confirmButtonColor: '#00A86B' });
                 return;
             }
 
@@ -681,9 +796,7 @@ $(document).ready(function () {
         .catch(err => console.error(err));
     });
 
-    // cargar al iniciar
     cargarUsuarios();
-
 });
 </script>
 
