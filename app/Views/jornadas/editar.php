@@ -73,7 +73,7 @@
   .title h1{
     margin:0;
     font-size:40px;
-    font-weight:800;
+    font-weight:600;
     letter-spacing:-0.02em;
   }
 

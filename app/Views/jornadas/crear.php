@@ -6,14 +6,14 @@
 
 <style>
 :root{
-  --bg:#f4f7fb;
-  --card:#fff;
-  --line:#e6ebf3;
-  --text:#1f2a44;
-  --muted:#7c8aa5;
-  --primary:#2563eb;
-  --primary-2:#1d4ed8;
-  --shadow:0 10px 30px rgba(31,42,68,.08);
+  --bg: #f4f7fb;
+  --card: #fff;
+  --line: #e6ebf3;
+  --text: #1f2a44;
+  --muted: #7c8aa5;
+  --primary: #3695f5;
+  --primary-2: #1b7ae2;
+  --shadow: 0 10px 30px rgba(31,42,68,.08);
 }
 
 body{background:var(--bg);color:var(--text);}
@@ -40,11 +40,11 @@ body{background:var(--bg);color:var(--text);}
   align-items:center;
   justify-content:center;
   text-decoration:none;
-  font-size:22px;
+  font-size:22px;font-weight:900;
   color:#31415f;
 }
 
-.title h1{margin:0;font-size:40px;font-weight:800;}
+.title h1{margin:0;font-size:40px;font-weight:600;}
 .title p{margin:8px 0 0;color:var(--muted);font-size:18px;}
 
 .content{
@@ -357,11 +357,11 @@ $iconos_color = [
           <div class="card-modern">
             <div class="card-title-modern">
              
-              <span>Fecha</span>
+               <label for="fecha_inicio">Fecha de la Jornada</label>
             </div>
 
             <div class="field">
-              <label for="fecha_inicio">Fecha de la Jornada</label>
+             
               <input type="date" class="input" id="fecha_inicio" name="fecha_inicio" required>
             </div>
           </div>
