@@ -6,13 +6,16 @@
     <div class="row justify-content-center">
         <div class="col-md-10 col-lg-8">
 
-            <div class="text-center mb-4">
-                 <a href="<?= base_url('jornadas') ?>" class="back-btn">←</a>
-                <h2 class="fw-bold text-secondary">Crear Cuenta Individual</h2>
-                <p class="text-muted">Paso 1 de 2: Información Personal, Profesional y Acceso</p>
-                 
-            </div>
              
+              <div class="registro-header">
+            <a href="<?= base_url('jornadas') ?>" class="back-btn">←</a>
+
+            <div class="header-content">
+                <h2 class="fw-bold">Crear Cuenta Individual</h2>
+                <p>Datos de Información Personal, Profesional y Acceso</p>
+            </div>
+        </div>
+<br>
 
             <form method="post" action="<?= site_url('registro/individual') ?>" id="formUsuario" class="needs-validation" novalidate>
                 <?= csrf_field() ?>

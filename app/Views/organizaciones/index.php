@@ -293,7 +293,7 @@
   .shape-blue { background: #bcd3ff; }
   .shape-green { background: #b9ebc9; }
   .shape-purple { background: #dec5ff; }
-
+  .shape-red { background: #ffc5d3; }
   .shape-icon {
     position: absolute;
     right: 34px;
@@ -407,7 +407,7 @@
       <?php if (!empty($organizaciones)): ?>
         <?php
           $colores = ['blue', 'green', 'purple'];
-          $shapeColores = ['shape-blue', 'shape-green', 'shape-purple'];
+          $shapeColores = ['shape-blue', 'shape-green', 'shape-purple', 'shape-red'];
         ?>
 
         <?php foreach ($organizaciones as $i => $org): ?>
@@ -416,7 +416,7 @@
             $shapeColor = $shapeColores[$i % count($shapeColores)];
             $nombre = $org['nombre_org'] ?? 'Sin nombre';
             $tipo = !empty($org['tipo']) ? $org['tipo'] : 'ONG';
-            $correo = !empty($org['correo']) ? $org['correo'] : '—';
+            $email = !empty($org['email']) ? $org['email'] : '—';
             $logo = $org['logo_url'] ?? '';
             $inactiva = ((int)($org['status_org'] ?? 1) === 2);
           ?>
@@ -442,7 +442,7 @@
 
               <div class="email">
                 <i class="fas fa-envelope"></i>
-                <span><?= esc($correo) ?></span>
+                <span><?= esc($email) ?></span>
               </div>
 
               <div class="divider"></div>
@@ -458,7 +458,7 @@
                 </a>
 
                 <?php if ((int)$org['status_org'] === 1): ?>
-                  <button
+                  <!-- <button
                     type="button"
                     onclick="cambiarStatus(<?= $org['id_organizacion'] ?>, 2)"
                     class="btn-action-custom btn-block"
@@ -466,7 +466,7 @@
                   >
                     <i class="fas fa-ban"></i>
                     Bloquear
-                  </button>
+                  </button> -->
                 <?php else: ?>
                   <button
                     type="button"

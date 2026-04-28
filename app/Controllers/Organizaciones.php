@@ -126,7 +126,7 @@ class Organizaciones extends BaseController
             'tipo'               => 'required|max_length[50]',
             'categoria'          => 'required|max_length[80]',
             'telefono'           => 'required|max_length[30]',
-            'correo'             => 'required|valid_email|max_length[120]',
+            'email'             => 'required|valid_email|max_length[120]',
             'nombre_responsable' => 'permit_empty|max_length[120]',
         ];
 
@@ -163,7 +163,7 @@ class Organizaciones extends BaseController
             'tipo'               => $this->request->getPost('tipo'),
             'categoria'          => $this->request->getPost('categoria'),
             'telefono'           => $this->request->getPost('telefono'),
-            'correo'             => $this->request->getPost('correo'),
+            'email'             => $this->request->getPost('email'),
             'nombre_responsable' => $this->request->getPost('nombre_responsable'),
             'direccion_id'       => $direccionId,
             'logo_url'           => $logoUrl,
@@ -234,7 +234,7 @@ class Organizaciones extends BaseController
             'tipo'               => 'required|max_length[50]',
             'categoria'          => 'required|max_length[80]',
             'telefono'           => 'required|max_length[30]',
-            'correo'             => 'required|valid_email|max_length[120]',
+            'email'             => 'required|valid_email|max_length[120]',
             'nombre_responsable' => 'permit_empty|max_length[120]',
         ];
 
@@ -274,7 +274,7 @@ class Organizaciones extends BaseController
             'tipo'               => $this->request->getPost('tipo'),
             'categoria'          => $this->request->getPost('categoria'),
             'telefono'           => $this->request->getPost('telefono'),
-            'correo'             => $this->request->getPost('correo'),
+            'email'             => $this->request->getPost('email'),
             'nombre_responsable' => $this->request->getPost('nombre_responsable'),
             'direccion_id'       => $direccionId,
             'logo_url'           => $logoUrl,

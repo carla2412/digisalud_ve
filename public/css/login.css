@@ -11,94 +11,107 @@
     --ds-bg: #f5f8fc;
     --ds-light: #f8f9fa;
     --ds-border: #e0e6ed;
-    --ds-muted: #6c757d;
+    --ds-muted: #38393a;
     --line: #e0e6ed;
+    --header-height: 72px;
     --footer-height: 46px;
 }
 
-html,
-body {
-  height: 100%;
-  margin: 0;
+/* ===========================================
+   BASE — se aplica a TODAS las páginas
+   =========================================== */
+html, body {
+    margin: 0;
+    background-color: #f8f9fa;
+    font-family: "Roboto", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings: "wdth" 100;
 }
 
 body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.98)),
+        url("../img/uno.jpg") center center / cover no-repeat fixed;
 }
+
+/* ===========================================
+   PAGE-LOGIN — solo para login.php
+   Fuerza height exacto al viewport, sin scroll
+   =========================================== */
+body.page-login {
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Header fijo 72px, nunca se encoge */
 .digisalud-header {
-  flex-shrink: 0;
-  height: 72px;
-  background: linear-gradient(
-    90deg,
-    rgba(16, 26, 97, 1) 0%,
-    rgba(16, 16, 133, 1) 35%,
-    rgba(0, 212, 255, 1) 100%
-  );
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    flex-shrink: 0;
+    height: var(--header-height);
+    background: linear-gradient(
+        90deg,
+        rgba(16, 26, 97, 1) 0%,
+        rgba(16, 16, 133, 1) 35%,
+        rgba(0, 212, 255, 1) 100%
+    );
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .logo {
- 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.logo>img{
- height: 3.2rem;
-}
-.login-container {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: .75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.login-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 400px;
+.logo > img {
+    height: 3.2rem;
 }
 
+/* Footer fijo 56px, nunca se encoge */
 footer {
-  flex-shrink: 0;
-  height: 56px;
-  background: linear-gradient(
-    90deg,
-    rgba(16, 26, 97, 1) 0%,
-    rgba(16, 16, 133, 1) 35%,
-    rgba(0, 212, 255, 1) 100%
-  );
-  width: 100%;
-  text-align: center;
-  font-size: .8rem;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
- 
-
-.login-wrapper {
-    min-height: calc(100vh - var(--footer-height));
+    flex-shrink: 0;
+    height: 56px;
+    background: linear-gradient(
+        90deg,
+        rgba(16, 26, 97, 1) 0%,
+        rgba(16, 16, 133, 1) 35%,
+        rgba(0, 212, 255, 1) 100%
+    );
     width: 100%;
+    text-align: center;
+    font-size: .8rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* ===========================================
+   LOGIN WRAPPER — toma el espacio restante
+   entre header y footer
+   =========================================== */
+.login-wrapper {
+    flex: 1;
+    min-height: 0;   /* CLAVE: permite que flex shrink funcione */
+    width: 100%;
+    overflow: hidden;
+}
+
+/* El row interno llena el wrapper, NO 100vh */
 .login-wrapper > .row {
-    min-height: calc(100vh - var(--footer-height));
+    height: 100%;
     margin: 0;
 }
 
+/* Panel izquierdo con imagen */
 .login-side {
     background:
         linear-gradient(rgba(218, 234, 253, 0.82), rgba(178, 212, 249, 0.9)),
@@ -113,8 +126,35 @@ footer {
     max-width: 540px;
 }
 
- 
+/* Panel derecho con formulario — scroll interno si no cabe */
+.login-wrapper > .row > .col-lg-5 {
+    overflow-y: auto;
+}
 
+/* ===========================================
+   LOGIN CARD
+   =========================================== */
+.login-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .75rem 1rem;
+}
+
+.login-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* ===========================================
+   TEXTOS, LINKS, EXTRAS
+   =========================================== */
 .ds-primary-text,
 .text-primary {
     color: var(--ds-primary) !important;
@@ -148,25 +188,59 @@ footer {
     color: #6c757d;
 }
 
+/* ===========================================
+   REGISTRO — individual.php / organizacion.php
+   =========================================== */
 .registro-wrapper {
     max-width: 980px;
     margin: auto;
 }
 
 .registro-header {
+    position: relative;
+    background: #fff;
+    padding: 28px 40px;
     text-align: center;
-    margin-bottom: 28px;
+    border-radius: 18px  ;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+.registro-header .back-btn {
+    position: absolute;
+    left: 32px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f1f5f9;
+    color: #0f172a;
+    text-decoration: none;
+    font-size: 1.4rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.registro-header .back-btn:hover {
+    background: #e2e8f0;
+    color: #0d6efd;
 }
 
 .registro-header h2 {
-    font-weight: 800;
+    margin-bottom: 8px;
+    color: #0f172a;
 }
 
 .registro-header p {
-    color: var(--ds-muted);
-    margin-bottom: 12px;
+    margin: 0;
+    color: #334155;
 }
-
 .progress {
     height: 10px;
     border-radius: 20px;
@@ -222,6 +296,9 @@ footer {
     margin-right: 10px;
 }
 
+/* ===========================================
+   FORM CONTROLS
+   =========================================== */
 .form-label {
     font-weight: 600;
     color: #344054;
@@ -275,6 +352,7 @@ footer {
     border-radius: 0 12px 12px 0 !important;
 }
 
+/* Select2 */
 .select2-container {
     width: 100% !important;
 }
@@ -295,6 +373,9 @@ footer {
     right: .5rem;
 }
 
+/* ===========================================
+   BUTTONS
+   =========================================== */
 .btn-ds-primary,
 .btn-2-primary {
     background-color: var(--ds-primary);
@@ -350,17 +431,87 @@ footer {
     border-color: var(--ds-primary);
 }
 
+/* ===========================================
+   RESPONSIVE
+   =========================================== */
+
+/* ---- Tablet y mobile: < 992px ---- */
 @media (max-width: 991px) {
-    .login-wrapper,
+
+    /* En mobile el panel izquierdo se oculta (d-none d-lg-flex),
+       el form ocupa todo. Permitir scroll si contenido excede */
+    body.page-login {
+       height: auto;          /* ya no forzar 100vh */
+        min-height: 100vh;
+        overflow-y: auto;  
+    }
+
     .login-wrapper > .row {
-        min-height: calc(100vh - var(--footer-height));
+        height: auto;
+    }
+
+    /* Centrar la card en mobile */
+    .login-wrapper > .row > .col-lg-5 {
+        min-height: calc(100vh - var(--header-height) - 56px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .login-card {
+        max-width: 420px;
+        width: 100%;
+    }
+
+    /* Logo en mobile: centrado y tamaño adecuado */
+    .login-card .text-center.d-lg-none {
+        margin-bottom: 1rem !important;
+    }
+
+    .login-card .text-center.d-lg-none img {
+        height: 3rem;
+        max-width: 200px;
+        object-fit: contain;
     }
 }
 
+  /* ---- Mobile pequeño: < 576px ---- */
+ /* ---- Mobile pequeño: < 576px ---- */
 @media (max-width: 576px) {
     .login-card {
-        padding: 1.5rem;
-        max-width: 95%;
+        padding: 1.2rem;
+        max-width: 90%;
+        box-shadow: none;
+        border-radius: .75rem;
+    }
+
+    .login-card h2 {
+        font-size: 1.25rem;
+    }
+
+    .login-card p.text-muted {
+        font-size: .85rem;
+    }
+
+    .login-card .mb-4 {
+        margin-bottom: .70rem !important;
+    }
+
+    .login-card .mt-4 {
+        margin-top: .70rem !important;
+    }
+
+    .login-card .mt-5 {
+        margin-top: 1.20rem !important;
+    }
+
+    .login-card .my-4 {
+        margin-top: .5rem !important;
+        margin-bottom: .5rem !important;
+    }
+
+    .btn-ds-primary {
+        padding: 12px;
     }
 
     .card-body {

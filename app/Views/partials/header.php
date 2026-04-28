@@ -35,8 +35,23 @@
 
             <div class="dropdown">
                 <a class="d-flex align-items-center dropdown-toggle text-white" data-bs-toggle="dropdown">
-                    <img src="<?= base_url('img/img_usuario.png') ?>" width="36" class="rounded-circle">
+<?php
+$fotoUrl = session('foto_url');
+
+$avatar = !empty($fotoUrl)
+    ? base_url($fotoUrl)
+    : base_url('img/avatar-default.jpg');
+?>
+
+<img 
+    src="<?= esc($avatar) ?>" 
+    width="36" 
+    height="36"
+    class="rounded-circle object-fit-cover"
+    alt="Foto de perfil"
+>
                 </a>
+                
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
                         <a class="dropdown-item" href="<?= site_url('perfil') ?>">

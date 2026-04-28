@@ -76,7 +76,8 @@ class Auth extends BaseController
         'nombre_completo' => $user['nombres'] . ' ' . $user['apellidos'],
         'id_rol'          => $contexto['id_rol'],
         'organizacion_id' => $contexto['organizacion_id'],
-        'nombre_org'      => $nombreOrg   // 👈 Ahora sí guardado
+        'nombre_org'      => $nombreOrg,
+        'foto_url'        => $user['foto_url'] ?? null
     ]);
 
     return redirect()->to('/dashboard');

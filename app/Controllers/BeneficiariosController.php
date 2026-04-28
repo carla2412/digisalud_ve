@@ -14,6 +14,26 @@ use App\Models\JornadaBeneficiariosModel;
 
 class BeneficiariosController extends BaseController
 {
+    public function index()
+    {
+        $rolActual = (int) session()->get('id_rol');
+
+        if (!in_array($rolActual, [1, 2, 3], true)) {
+            return redirect()->to(site_url('dashboard'))
+                ->with('error', 'No tienes permisos para acceder a beneficiarios.');
+        }
+
+        $data = [
+            'beneficiarios'       => [],
+            'organizaciones'      => [],
+            'totalBeneficiarios'  => 0,
+            'q'                   => $this->request->getGet('q'),
+            'organizacion_id'     => $this->request->getGet('organizacion_id'),
+            'pager'               => service('pager'),
+        ];
+
+        return view('beneficiarios/index', $data);
+    }
 
     public function buscar($jornada_id)
     {

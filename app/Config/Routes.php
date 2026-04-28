@@ -74,7 +74,7 @@ $routes->group('jornadas', function($routes){
     $routes->post('(:num)/asociar/(:num)', 'JornadaBeneficiariosController::asociar/$1/$2');
     $routes->get('(:num)/desasociar/(:num)', 'JornadaBeneficiariosController::desasociar/$1/$2');
 });
-
+/* 
 $routes->group('beneficiarios', function($routes){
     $routes->get('buscar/(:num)', 'BeneficiariosController::buscar/$1');
     $routes->get('buscarAjax', 'BeneficiariosController::buscarAjax');
@@ -83,8 +83,24 @@ $routes->group('beneficiarios', function($routes){
     $routes->post('store/(:num)', 'BeneficiariosController::store/$1');
     $routes->get('editar/(:num)', 'BeneficiariosController::edit/$1');
     $routes->post('actualizar/(:num)', 'BeneficiariosController::update/$1');
-});
+}); */
 
+$routes->group('beneficiarios', function($routes){
+    $routes->get('/', 'BeneficiariosController::index');
+
+    $routes->get('buscar/(:num)', 'BeneficiariosController::buscar/$1');
+    $routes->get('buscarAjax', 'BeneficiariosController::buscarAjax');
+    $routes->get('buscarAntecedentesAjax', 'BeneficiariosController::buscarAntecedentesAjax');
+
+    $routes->get('create/(:num)', 'BeneficiariosController::create/$1');
+    $routes->post('store/(:num)', 'BeneficiariosController::store/$1');
+
+    $routes->get('editar/(:num)', 'BeneficiariosController::edit/$1');
+    $routes->post('actualizar/(:num)', 'BeneficiariosController::update/$1');
+
+    $routes->get('exportar', 'BeneficiariosController::exportar');
+    $routes->get('historial/(:num)', 'BeneficiariosController::historial/$1');
+});
 // ================================================================
 // MÓDULO: Organizaciones
 // Acceso: roles 1, 2, 3 (verificado en controlador)

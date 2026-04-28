@@ -6,12 +6,14 @@
     <div class="registro-wrapper">
 
         <div class="registro-header">
-             <a href="<?= base_url('jornadas') ?>" class="back-btn">←</a>
-            <h2 class="fw-bold text-secondary">Cuenta Institucional</h2>
-            <p>Paso 1 de 2: Datos de la organización, ubicación y persona de contacto</p>
- 
-        </div>
+            <a href="<?= base_url('jornadas') ?>" class="back-btn">←</a>
 
+            <div class="header-content">
+                <h2 class="fw-bold">Cuenta Institucional</h2>
+                <p>Datos de la organización, ubicación y persona de contacto</p>
+            </div>
+        </div>
+<br>
         <form method="post" action="<?= site_url('registro/organizacion') ?>" id="formOrganizacion" class="needs-validation" novalidate>
             <?= csrf_field() ?>
 
@@ -46,13 +48,13 @@
 
                         <div class="col-md-6">
                             <label for="tipoOrg" class="form-label">Tipo *</label>
-                            <select class="form-select" id="tipoOrg" name="tipoOrg" required>
+                            <select class="form-select form-select-sm" id="tipoOrg" name="tipoOrg" required>
                                 <option value="">Selecciona un tipo...</option>
                                 <option>Escolar</option>
                                 <option>Comedor</option>
                                 <option>Empresa Privada</option>
                                 <option>Casa hogar</option>
-                                <option>ONG</option>
+                                <option>ONG</option> 
                                 <option>Alcaldía</option>
                                 <option>Gobernación</option>
                                 <option>Mixto</option>
@@ -62,8 +64,8 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="categoriaOrg" class="form-label">Categoría *</label>
-                            <select class="form-select" id="categoriaOrg" name="categoriaOrg" required>
+                            <label for="categoriaOrg" class="form-label ">Categoría *</label>
+                            <select class="form-select form-select-sm" id="categoriaOrg" name="categoriaOrg" required>
                                 <option value="">Selecciona una categoría...</option>
                                 <option>Pública</option>
                                 <option>Privada</option>
@@ -71,7 +73,7 @@
                                 <option>Educativa</option>
                                 <option>Salud</option>
                                 <option>Comunitaria</option>
-                                <option>Otra</option>
+                                
                             </select>
                             <div class="invalid-feedback">Selecciona una categoría.</div>
                         </div>

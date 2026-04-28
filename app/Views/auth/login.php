@@ -1,6 +1,7 @@
 <?= view('templates/head', ['title' => 'Login | Digisalud']) ?>
-<link rel="stylesheet" href="<?= base_url('css/login.css') ?>">
 
+ 
+<script>document.body.classList.add('page-login');</script>
 
 <main class="container-fluid p-0 login-wrapper">
     <div class="row g-0 min-vh-100">
