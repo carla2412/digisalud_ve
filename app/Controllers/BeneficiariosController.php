@@ -15,6 +15,8 @@ use App\Models\JornadaBeneficiariosModel;
 use App\Models\OrganizacionModel;
 use App\Models\JornadaModel;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class BeneficiariosController extends BaseController
 {
     // ════════════════════════════════════════
@@ -206,7 +208,7 @@ class BeneficiariosController extends BaseController
 
     private function exportarXlsx(array $rows, string $filename)
     {
-        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet = new Spreadsheet();
         $sheet       = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Beneficiarios');
 
@@ -247,7 +249,7 @@ class BeneficiariosController extends BaseController
             $rowNum++;
         }
 
-        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer = new Xlsx($spreadsheet);
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');

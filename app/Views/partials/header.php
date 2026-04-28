@@ -10,7 +10,7 @@
                 ☰
             </button>
             <button class="btn" onclick="window.history.back();">
-                <img src="<?= base_url('img/icon/icon_back.png') ?>" width="22">
+                <img src="<?= base_url('img/icon/icon_back.png') ?>" width="35">
             </button>
 
             <!-- <div class="input-group input-group-sm ms-2" style="width:180px;">
@@ -22,17 +22,17 @@
 
         </div>
 
-        <img src="<?= base_url('img/isotipo_digisalud.png') ?>" height="36">
+        <img src="<?= base_url('img/isotipo_digisalud.png') ?>" height="60">
 
         <div class="d-flex align-items-center gap-3">
 
             <button class="btn position-relative">
-                <img src="<?= base_url('img/icon/icon_notification.png') ?>" width="22">
+                <img src="<?= base_url('img/icon/icon_notification.png') ?>" width="35">
             </button>
 
             <div class="text-end d-none d-sm-block">
-                <h5 class="mb-0 text-white"><?= session('nombre_completo') ?></h5>
-                <small class="text-light opacity-75"><?= session('nombre_org') ?></small>
+                <h4 class="mb-0 text-white"><?= session('nombre_completo') ?></h4>
+                <h6 class="text-light opacity-75"><?= session('nombre_org') ?></h6>
             </div>
 
             <div class="dropdown">

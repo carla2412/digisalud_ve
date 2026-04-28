@@ -53,7 +53,7 @@
     transition:background .2s;
 }
 .btn-export:hover{
-    background:#059669;
+    background: #059669;
     color:#fff;
 }
 
@@ -148,7 +148,7 @@
     width:100%;
     height:46px;
     border:0;
-    background:#101a61;
+    background:#3695f5;
     color:#fff;
     border-radius:8px;
     font-weight:800;
@@ -156,7 +156,7 @@
     transition:background .2s;
 }
 .btn-filter:hover{
-    background:#1e3a8a;
+    background: #1b7ae2;
 }
 
 /* PANEL LISTA */
@@ -265,7 +265,7 @@
 }
 
 .btn-history{
-    border:1px solid #2563eb;
+    border:1px solid #3695f5;
     color:#2563eb;
     background:#fff;
     border-radius:7px;
@@ -273,11 +273,11 @@
     font-weight:800;
     font-size:.78rem;
     text-decoration:none;
-    text-transform:uppercase;
+     
     transition:all .2s;
 }
 .btn-history:hover{
-    background:#2563eb;
+    background: #1b7ae2;
     color:#fff;
 }
 
@@ -322,8 +322,8 @@
 }
 
 .pagination-nav a:hover{
-    background:#eef0ff;
-    border-color:#6366f1;
+    background: #eef0ff;
+    border-color: #3695f5;
     color:#4f46e5;
 }
 
@@ -406,10 +406,7 @@
                 Exportar Excel
             </a>
 
-            <div class="total-beneficiarios">
-                <i class="bi bi-person-check"></i>
-                <span><?= esc($totalBeneficiarios ?? 0) ?></span>
-            </div>
+            
         </div>
     </div>
 
@@ -466,10 +463,12 @@
 
             <div class="list-header">
                 <div class="list-title">
-                    <h1>Beneficiarios</h1>
-                    <span class="result-badge">
-                        <?= esc($totalBeneficiarios ?? 0) ?> resultados
-                    </span>
+                    <h2>Beneficiarios</h2>
+                     
+                </div>
+                <div class="total-beneficiarios">
+                    <i class="bi bi-person-check"></i>
+                    <span><?= esc($totalBeneficiarios ?? 0) ?></span>
                 </div>
             </div>
 
@@ -541,7 +540,7 @@
                         <div class="card-actions">
                             <a href="<?= base_url('beneficiarios/historial/' . $b['id_beneficiario']) ?>"
                                class="btn-history">
-                                Ver historial
+                                Historial
                             </a>
                         </div>
                     </div>
