@@ -26,77 +26,40 @@ class Jornadas extends BaseController
     // INDEX — Listado con filtros y paginación
     // ================================
     public function index()
-    {
-        $rol       = (int) session('id_rol');
-        $orgSesion = (int) session('organizacion_id');
+{
+    $orgSesion = session('organizacion_id');
+    $perPage   = 5;
 
-        // Parámetros de filtros (GET)
-        $busqueda = trim($this->request->getGet('q') ?? '');
-        $status   = $this->request->getGet('status');
-        $orden    = $this->request->getGet('orden');
-        $page     = max(1, (int) ($this->request->getGet('page') ?? 1));
-        $perPage  = 5;
+    $builder = $this->jornadaModel
+        ->select("jornadas.*, 
+                  organizaciones.nombre_org,
+                  instituciones.nombre_institucion,
+                  dir.ciudad,
+                  GROUP_CONCAT(tpa.idtipo_pesquisa SEPARATOR ',') AS pesquisas")
+        ->join('organizacion AS organizaciones', 'organizaciones.id_organizacion = jornadas.organizacion_id', 'left')
+        ->join('instituciones', 'instituciones.id_institucion = jornadas.institucion_id', 'left')
+        ->join('tipo_pesquisa_actividad AS tpa', 'tpa.id_jornada = jornadas.id_jornada', 'left')
+        ->join('tipo_pesquisa AS tp', 'tp.idtipo_pesquisa = tpa.idtipo_pesquisa', 'left')
+        ->join('direcciones AS dir', 'dir.id_direccion = instituciones.direccion_id', 'left')
+        ->where('jornadas.status_jor !=', 0)
+        ->groupBy('jornadas.id_jornada')
+        ->orderBy('jornadas.fecha_inicio', 'DESC');
 
-        $builder = $this->jornadaModel
-            ->select("jornadas.*, 
-                      organizaciones.nombre_org,
-                      instituciones.nombre_institucion, dir.ciudad,
-                      GROUP_CONCAT(tpa.idtipo_pesquisa SEPARATOR ',') AS pesquisas")
-            ->join('organizacion AS organizaciones', 'organizaciones.id_organizacion = jornadas.organizacion_id', 'left')
-            ->join('instituciones', 'instituciones.id_institucion = jornadas.institucion_id', 'left')
-            ->join('tipo_pesquisa_actividad AS tpa', 'tpa.id_jornada = jornadas.id_jornada', 'left')
-            ->join('tipo_pesquisa AS tp', 'tp.idtipo_pesquisa = tpa.idtipo_pesquisa', 'left')
-            ->join('direcciones AS dir', 'dir.id_direccion = instituciones.direccion_id', 'left')
-            ->where('jornadas.status_jor !=', 0)
-            ->groupBy('jornadas.id_jornada');
-
-        // FIX: Roles 3,4,5,6,7 solo su organización
-        if (!in_array($rol, [1, 2])) {
-            $builder->where('jornadas.organizacion_id', $orgSesion);
-        }
-
-        // Filtro búsqueda
-        if ($busqueda !== '') {
-            $builder->groupStart()
-                ->like('jornadas.nombre_jornada', $busqueda)
-                ->orLike('organizaciones.nombre_org', $busqueda)
-                ->orLike('instituciones.nombre_institucion', $busqueda)
-                ->orLike('dir.ciudad', $busqueda)
-            ->groupEnd();
-        }
-
-        // Filtro status
-        if ($status !== null && $status !== '') {
-            $builder->where('jornadas.status_jor', (int) $status);
-        }
-
-        // Orden
-        $ordenDir = ($orden === 'asc') ? 'ASC' : 'DESC';
-        $builder->orderBy('jornadas.fecha_inicio', $ordenDir);
-
-        // Contar total
-        $builderCount  = clone $builder;
-        $totalJornadas = $builderCount->countAllResults(false);
-
-        // Paginar de 5 en 5
-        $offset   = ($page - 1) * $perPage;
-        $jornadas = $builder->limit($perPage, $offset)->findAll();
-
-        $totalPages    = max(1, (int) ceil($totalJornadas / $perPage));
-        $instituciones = (new InstitucionesModel())->findAll();
-
-        return view('jornadas/index', [
-            'jornadas'       => $jornadas,
-            'instituciones'  => $instituciones,
-            'busqueda'       => $busqueda,
-            'status'         => $status,
-            'orden'          => $orden ?? 'desc',
-            'page'           => $page,
-            'perPage'        => $perPage,
-            'totalJornadas'  => $totalJornadas,
-            'totalPages'     => $totalPages,
-        ]);
+    if ($orgSesion != 2) {
+        $builder->where('jornadas.organizacion_id', $orgSesion);
     }
+
+    $jornadas      = $builder->paginate($perPage, 'jornadas');
+    $pager         = $this->jornadaModel->pager;
+    $instituciones = (new InstitucionesModel())->findAll();
+
+    return view('jornadas/index', [
+        'jornadas'      => $jornadas,
+        'instituciones' => $instituciones,
+        'pager'         => $pager,
+        'perPage'       => $perPage,
+    ]);
+}
 
     // ================================
     // LISTAR (AJAX) — mantener compatibilidad

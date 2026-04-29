@@ -108,7 +108,98 @@
 .alert-success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
 .alert-danger  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 .alert-info    { background: #dbeafe; color: #1e40af; border: 1px solid #93bbfd; }
+.ds-pager-links nav {
+    margin: 0;
+}
 
+ /* ═══ PAGINACIÓN ═══ */
+.ds-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 22px;
+    color: #475569;
+}
+
+.ds-pager-links nav {
+    margin: 0;
+}
+
+.ds-pager-links ul,
+.ds-pager-links .pagination {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ds-pager-links li {
+    list-style: none;
+}
+
+.ds-pager-links a,
+.ds-pager-links span {
+    min-width: 42px;
+    height: 42px;
+    border: 1px solid #dbe4ef;
+    background: #fff;
+    border-radius: 9px;
+    color: #64748b;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 0 12px;
+    position: relative;
+    transition: all .2s ease;
+}
+
+.ds-pager-links a:hover {
+    background: #eef6ff;
+    color: #126dff;
+    border-color: #126dff;
+}
+
+/* ACTIVO PARA TEMPLATE default_full DE CODEIGNITER */
+.ds-pager-links li.active a,
+.ds-pager-links li.active span,
+.ds-pager-links .active a,
+.ds-pager-links .active span,
+.ds-pager-links a.active,
+.ds-pager-links span.active {
+    background: #126dff !important;
+    color: #fff !important;
+    border-color: #126dff !important;
+    box-shadow: 0 8px 18px rgba(18, 109, 255, 0.28);
+    transform: translateY(-1px);
+}
+
+/* Punto inferior en el número activo */
+.ds-pager-links li.active a::after,
+.ds-pager-links li.active span::after,
+.ds-pager-links .active a::after,
+.ds-pager-links .active span::after,
+.ds-pager-links a.active::after,
+.ds-pager-links span.active::after {
+    
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 5px;
+}
+
+/* Deshabilitados */
+.ds-pager-links li.disabled a,
+.ds-pager-links li.disabled span,
+.ds-pager-links .disabled a,
+.ds-pager-links .disabled span {
+    opacity: .45;
+    pointer-events: none;
+}
 @media (max-width: 992px) {
     .ds-layout { flex-direction: column; }
     .ds-filters { grid-template-columns: 1fr; }
@@ -177,10 +268,10 @@ $totalPages     = $totalPages ?? 1;
 
         <!-- ═══ ALERTAS ═══ -->
         <?php if (session('success')): ?>
-            <div class="alert alert-success"><?= esc(session('success')) ?></div>
+            <div class="alert alert-success auto-dismiss"><?= session('success') ?></div>
         <?php endif; ?>
         <?php if (session('error')): ?>
-            <div class="alert alert-danger"><?= esc(session('error')) ?></div>
+            <div class="alert alert-danger auto-dismiss"><?= session('error') ?></div>
         <?php endif; ?>
 
         <!-- ═══ LISTADO ═══ -->
@@ -246,31 +337,24 @@ $totalPages     = $totalPages ?? 1;
             </section>
 
             <!-- ═══ PAGINACIÓN ═══ -->
+            
             <?php
-                $qsBase = array_filter([
-                    'q' => $busqueda, 'status' => $status, 'orden' => $orden,
-                ], fn($v) => $v !== '' && $v !== null);
+                $total       = $pager->getTotal('jornadas');
+                $currentPage = $pager->getCurrentPage('jornadas');
+                $perPageView = $pager->getPerPage('jornadas');
 
-                $linkPage = function($p) use ($qsBase) {
-                    return base_url('jornadas?' . http_build_query(array_merge($qsBase, ['page' => $p])));
-                };
+                $desde = $total > 0 ? (($currentPage - 1) * $perPageView) + 1 : 0;
+                $hasta = min($currentPage * $perPageView, $total);
             ?>
-            <footer class="ds-pagination">
-                <span>Mostrando <?= (($page-1)*$perPage)+1 ?> a <?= min($page*$perPage, $totalJornadas) ?> de <?= $totalJornadas ?> jornadas</span>
 
-                <?php if ($totalPages > 1): ?>
-                <div class="ds-pagination-nav">
-                    <a href="<?= $page > 1 ? $linkPage($page-1) : '#' ?>" class="<?= $page <= 1 ? 'disabled' : '' ?>">&#8249;</a>
-                    <?php
-                        $start = max(1, $page - 2);
-                        $end   = min($totalPages, $page + 2);
-                    ?>
-                    <?php for ($i = $start; $i <= $end; $i++): ?>
-                        <a href="<?= $linkPage($i) ?>" class="<?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
-                    <?php endfor; ?>
-                    <a href="<?= $page < $totalPages ? $linkPage($page+1) : '#' ?>" class="<?= $page >= $totalPages ? 'disabled' : '' ?>">&#8250;</a>
+            <footer class="ds-pagination">
+                <span>
+                    Mostrando <?= $desde ?> a <?= $hasta ?> de <?= $total ?> jornadas
+                </span>
+
+                <div class="ds-pager-links">
+                    <?= $pager->links('jornadas', 'default_full') ?>
                 </div>
-                <?php endif; ?>
             </footer>
 
         <?php else: ?>
@@ -280,5 +364,25 @@ $totalPages     = $totalPages ?? 1;
         <?php endif; ?>
     </main>
 </div>
+ 
+<?= $this->endSection() ?>
 
+<?= $this->section('scripts') ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const alerts = document.querySelectorAll('.auto-dismiss');
+
+    alerts.forEach(function (alert) {
+        setTimeout(function () {
+            alert.style.transition = 'opacity .35s ease, transform .35s ease';
+            alert.style.opacity = '0';
+            alert.style.transform = 'translateY(-8px)';
+
+            setTimeout(function () {
+                alert.remove();
+            }, 350);
+        }, 3000);
+    });
+});
+</script>
 <?= $this->endSection() ?>
