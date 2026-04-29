@@ -4,6 +4,7 @@
  * ARCHIVO: app/Models/JornadaModel.php
  * REEMPLAZAR COMPLETO
  * =====================================================
+ * FIX: getJornadaConDireccion() ahora incluye municipio, parroquia, detalle
  */
 
 namespace App\Models;
@@ -14,8 +15,10 @@ class JornadaModel extends Model
 {
     protected $table            = 'jornadas';
     protected $primaryKey       = 'id_jornada';
-    protected $returnType       = 'array';
     protected $useAutoIncrement = true;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
+    protected $useTimestamps    = false;
 
     protected $allowedFields = [
         'nombre_jornada',
@@ -26,41 +29,48 @@ class JornadaModel extends Model
         'creado_en',
         'creado_por',
         'modificado_en',
-        'modificado_por'
+        'modificado_por',
     ];
 
     /**
-     * Retorna un array simple con los IDs de las pesquisas
-     * vinculadas a una jornada.
-     * Ejemplo: [1, 2, 6]
+     * Obtener jornada con datos de institución y dirección completa
+     * FIX: Ahora incluye municipio, parroquia y detalle
      */
-    public function getPesquisasPorJornada(int $id_jornada): array
+    public function getJornadaConDireccion($id_jornada)
     {
-        $db = \Config\Database::connect();
-
-        $rows = $db->table('tipo_pesquisa_actividad')
-                   ->select('idtipo_pesquisa')
-                   ->where('id_jornada', $id_jornada)
-                   ->where('status_pesq_act', 1)
-                   ->get()
-                   ->getResultArray();
-
-        return array_column($rows, 'idtipo_pesquisa');
+        return $this
+            ->select('jornadas.*, 
+                      instituciones.nombre_institucion, 
+                      instituciones.tipo AS tipo_jornada,
+                      dir.id_direccion, 
+                      dir.pais, 
+                      dir.estado, 
+                      dir.municipio, 
+                      dir.parroquia, 
+                      dir.ciudad, 
+                      dir.detalle, 
+                      dir.coordenadas,
+                      organizaciones.nombre_org')
+            ->join('instituciones', 'instituciones.id_institucion = jornadas.institucion_id', 'left')
+            ->join('direcciones AS dir', 'dir.id_direccion = instituciones.direccion_id', 'left')
+            ->join('organizacion AS organizaciones', 'organizaciones.id_organizacion = jornadas.organizacion_id', 'left')
+            ->where('jornadas.id_jornada', $id_jornada)
+            ->first();
     }
 
     /**
-     * Retorna la jornada con datos de institución y dirección
-     * para precargar el formulario de edición.
+     * Obtener IDs de pesquisas vinculadas a una jornada
      */
-    public function getJornadaConDireccion(int $id_jornada): ?array
+    public function getPesquisasPorJornada($id_jornada)
     {
-        return $this->select("jornadas.*, 
-                    instituciones.nombre_institucion, 
-                    instituciones.tipo AS tipo_jornada,
-                    dir.id_direccion, dir.pais, dir.estado, dir.ciudad, dir.coordenadas")
-            ->join('instituciones', 'instituciones.id_institucion = jornadas.institucion_id', 'left')
-            ->join('direcciones AS dir', 'dir.id_direccion = instituciones.direccion_id', 'left')
-            ->where('jornadas.id_jornada', $id_jornada)
-            ->first();
+        $db = \Config\Database::connect();
+        $result = $db->table('tipo_pesquisa_actividad')
+            ->select('idtipo_pesquisa')
+            ->where('id_jornada', $id_jornada)
+            ->where('status_pesq_act', 1)
+            ->get()
+            ->getResultArray();
+
+        return array_column($result, 'idtipo_pesquisa');
     }
 }
