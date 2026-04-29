@@ -17,10 +17,9 @@ class JornadaBeneficiariosController extends BaseController
         $jorBenefModel = new JornadaBeneficiariosModel();
         $jornadaModel  = new JornadaModel();
 
-        // Datos de la jornada con pesquisas asociadas
         $jornada = $jornadaModel
             ->select("jornadas.*, instituciones.nombre_institucion, dir.ciudad,
-                      GROUP_CONCAT(DISTINCT tpa.idtipo_pesquisa ORDER BY tpa.idtipo_pesquisa SEPARATOR ',') AS pesquisas")
+                  GROUP_CONCAT(DISTINCT tpa.idtipo_pesquisa ORDER BY tpa.idtipo_pesquisa SEPARATOR ',') AS pesquisas")
             ->join('instituciones', 'instituciones.id_institucion = jornadas.institucion_id', 'left')
             ->join('direcciones AS dir', 'dir.id_direccion = instituciones.direccion_id', 'left')
             ->join('tipo_pesquisa_actividad AS tpa', 'tpa.id_jornada = jornadas.id_jornada', 'left')
@@ -32,17 +31,15 @@ class JornadaBeneficiariosController extends BaseController
             return redirect()->to('/jornadas')->with('error', 'Jornada no encontrada');
         }
 
-        // Pesquisas activas de esta jornada
         $pesquisas_jornada = [];
         if (!empty($jornada['pesquisas'])) {
             $pesquisas_jornada = array_map('trim', explode(',', $jornada['pesquisas']));
         }
 
-        // Beneficiarios con representante
         $beneficiarios = $jorBenefModel
             ->select('beneficiarios.*, beneficiarios_jornadas.id_benef_jor, beneficiarios_jornadas.status_bc,
-                      fam.relacion AS rep_relacion,
-                      rep.nombres AS rep_nombres, rep.apellidos AS rep_apellidos')
+                  fam.relacion AS rep_relacion,
+                  rep.nombres AS rep_nombres, rep.apellidos AS rep_apellidos')
             ->join('beneficiarios', 'beneficiarios.id_beneficiario = beneficiarios_jornadas.id_beneficiario')
             ->join('familiares AS fam', 'fam.beneficiario_id = beneficiarios.id_beneficiario', 'left')
             ->join('beneficiarios AS rep', 'rep.id_beneficiario = fam.beneficiario_id_representante', 'left')
@@ -50,17 +47,13 @@ class JornadaBeneficiariosController extends BaseController
             ->where('beneficiarios_jornadas.status_bc', 1)
             ->findAll();
 
-        
-
-       $evaluaciones = []; // vacío por ahora
-
-        // --- LÓGICA DE REDIRECCIÓN AUTOMÁTICA ---
         if (count($beneficiarios) === 0) {
             return redirect()->to(base_url("jornadas/$jornada_id/beneficiarios/buscar"))
                 ->with('info', 'Esta jornada aún no tiene beneficiarios. Use el buscador para añadir uno.');
         }
 
-        // Si llegamos aquí, es porque sí hay beneficiarios, entonces mostramos la lista
+        $evaluaciones = [];
+
         return view('jornadas/beneficiarios', [
             'beneficiarios'     => $beneficiarios,
             'jornada'           => $jornada,
@@ -76,7 +69,7 @@ class JornadaBeneficiariosController extends BaseController
         $model = new JornadaBeneficiariosModel();
 
         $existe = $model->where('id_beneficiario', $beneficiario_id)
-                        ->where('jornada_id', $jornada_id)->first();
+            ->where('jornada_id', $jornada_id)->first();
         if ($existe) {
             return redirect()->back()->with('error', 'El beneficiario ya está asociado a esta jornada');
         }
@@ -90,17 +83,58 @@ class JornadaBeneficiariosController extends BaseController
         ]);
 
         return redirect()->to("/jornadas/$jornada_id/beneficiarios")
-                         ->with('success', 'Beneficiario asociado correctamente');
+            ->with('success', 'Beneficiario asociado correctamente');
     }
 
     public function desasociar($jornada_id, $beneficiario_id)
     {
         $model = new JornadaBeneficiariosModel();
         $model->where('id_beneficiario', $beneficiario_id)
-              ->where('jornada_id', $jornada_id)
-              ->set(['status_bc' => 0])->update();
+            ->where('jornada_id', $jornada_id)
+            ->set(['status_bc' => 0])->update();
 
         return redirect()->to("/jornadas/$jornada_id/beneficiarios")
-                         ->with('success', 'Beneficiario removido de la jornada');
+            ->with('success', 'Beneficiario removido de la jornada');
+    }
+
+    public function buscar($jornada_id)
+    {
+        $jorBenefModel = new JornadaBeneficiariosModel();
+        $jornadaModel  = new JornadaModel();
+
+        $jornada = $jornadaModel
+            ->select("jornadas.*, instituciones.nombre_institucion, dir.ciudad,
+                  GROUP_CONCAT(DISTINCT tpa.idtipo_pesquisa ORDER BY tpa.idtipo_pesquisa SEPARATOR ',') AS pesquisas")
+            ->join('instituciones', 'instituciones.id_institucion = jornadas.institucion_id', 'left')
+            ->join('direcciones AS dir', 'dir.id_direccion = instituciones.direccion_id', 'left')
+            ->join('tipo_pesquisa_actividad AS tpa', 'tpa.id_jornada = jornadas.id_jornada', 'left')
+            ->where('jornadas.id_jornada', $jornada_id)
+            ->groupBy('jornadas.id_jornada')
+            ->first();
+
+        if (!$jornada) {
+            return redirect()->to('/jornadas')->with('error', 'Jornada no encontrada');
+        }
+
+        $pesquisas_jornada = [];
+
+        if (!empty($jornada['pesquisas'])) {
+            $pesquisas_jornada = array_map('trim', explode(',', $jornada['pesquisas']));
+        }
+
+        $beneficiariosAsignados = $jorBenefModel
+            ->select('beneficiarios.*, beneficiarios_jornadas.id_benef_jor, beneficiarios_jornadas.status_bc')
+            ->join('beneficiarios', 'beneficiarios.id_beneficiario = beneficiarios_jornadas.id_beneficiario')
+            ->where('beneficiarios_jornadas.jornada_id', $jornada_id)
+            ->where('beneficiarios_jornadas.status_bc', 1)
+            ->findAll();
+
+        return view('beneficiarios/buscar', [
+            'jornada_id'                  => $jornada_id,
+            'jornada'                     => $jornada,
+            'beneficiariosAsignados'      => $beneficiariosAsignados,
+            'totalBeneficiariosAsignados' => count($beneficiariosAsignados),
+            'pesquisas_jornada'           => $pesquisas_jornada,
+        ]);
     }
 }

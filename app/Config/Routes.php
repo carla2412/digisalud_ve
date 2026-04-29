@@ -72,23 +72,18 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes){
     // Listar asignados AJAX
     $routes->get('(:num)/usuarios/listar', 'JornadaUsuariosController::listarAsignados/$1');
 });
-// BENEFICIARIOS
-$routes->group('jornadas', function($routes){
+// BENEFICIARIOS jorndas
+$routes->group('jornadas', function($routes) {
     $routes->get('(:num)/beneficiarios', 'JornadaBeneficiariosController::index/$1');
+
+    // Vista buscar beneficiarios dentro de una jornada
+    $routes->get('(:num)/beneficiarios/buscar', 'JornadaBeneficiariosController::buscar/$1');
+
+    // Asociar / desasociar beneficiarios
     $routes->post('(:num)/asociar/(:num)', 'JornadaBeneficiariosController::asociar/$1/$2');
     $routes->get('(:num)/desasociar/(:num)', 'JornadaBeneficiariosController::desasociar/$1/$2');
 });
-/* 
-$routes->group('beneficiarios', function($routes){
-    $routes->get('buscar/(:num)', 'BeneficiariosController::buscar/$1');
-    $routes->get('buscarAjax', 'BeneficiariosController::buscarAjax');
-    $routes->get('buscarAntecedentesAjax', 'BeneficiariosController::buscarAntecedentesAjax');
-    $routes->get('create/(:num)', 'BeneficiariosController::create/$1');
-    $routes->post('store/(:num)', 'BeneficiariosController::store/$1');
-    $routes->get('editar/(:num)', 'BeneficiariosController::edit/$1');
-    $routes->post('actualizar/(:num)', 'BeneficiariosController::update/$1');
-}); */
-
+ 
 // =====================================================
 // FRAGMENTO PARA app/Config/Routes.php
 // REEMPLAZAR el group('beneficiarios') existente con este:
@@ -113,6 +108,7 @@ $routes->get('jornadas/(:num)/beneficiarios/buscar', 'BeneficiariosController::b
 // AJAX
 $routes->get('beneficiarios/buscar-ajax', 'BeneficiariosController::buscarAjax');
 $routes->get('beneficiarios/antecedentes-ajax', 'BeneficiariosController::buscarAntecedentesAjax');
+$routes->get('beneficiarios/antecedentes-ajax', 'BeneficiariosController::antecedentesAjax');
 
 // EDITAR BENEFICIARIO
 $routes->get('beneficiarios/editar/(:num)', 'BeneficiariosController::edit/$1');

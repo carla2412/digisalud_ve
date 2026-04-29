@@ -347,7 +347,18 @@ class BeneficiariosController extends BaseController
 
         return $this->response->setJSON($data);
     }
+public function antecedentesAjax()
+{
+    $db = \Config\Database::connect();
 
+    $data = $db->table('antecedentes')
+        ->select('id_antecedente, nombre, tipo, descripcion')
+        ->limit(20)
+        ->get()
+        ->getResultArray();
+
+    return $this->response->setJSON($data);
+}
     public function buscarAntecedentesAjax()
     {
         $beneficiarioId = $this->request->getGet('id');

@@ -216,8 +216,8 @@
 $pesquisaMap = [
   '1' => ['nombre'=>'Antropometría','emoji'=>'antropometria2.svg','clase'=>'yellow'],
   '2' => ['nombre'=>'Laboratorio','emoji'=>'sanguinea2.svg','clase'=>'red'],
-  '3' => ['nombre'=>'Visual','emoji'=>'visual2.svg','clase'=>'purple'],
-  '4' => ['nombre'=>'Signos vitales','emoji'=>'signosVitales2.svg','clase'=>'red'],
+  '3' => ['nombre'=>'Visual','emoji'=>'visual2.svg','clase'=>'violet'],
+  '4' => ['nombre'=>'Signos vitales','emoji'=>'signosVitales2.svg','clase'=>'orange'],
   '5' => ['nombre'=>'Medicina general','emoji'=>'medicinaGeneral2.svg','clase'=>'purple'],
   '6' => ['nombre'=>'Vacunación','emoji'=>'vacunacion2.svg','clase'=>'blue'],
 ];
