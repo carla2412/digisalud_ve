@@ -349,10 +349,27 @@ class BeneficiariosController extends BaseController
     }
 public function antecedentesAjax()
 {
-    $db = \Config\Database::connect();
+    $q    = $this->request->getGet('q');
+    $tipo = $this->request->getGet('tipo');
 
-    $data = $db->table('antecedentes')
-        ->select('id_antecedente, nombre, tipo, descripcion')
+    $db      = \Config\Database::connect();
+    $builder = $db->table('antecedentes')
+        ->select('id_antecedente, nombre, tipo, descripcion');
+
+    // Filtrar por tipo si viene (Antecedentes Clínicos / Datos Socioeconómicos)
+    if (!empty($tipo)) {
+        $builder->where('tipo', $tipo);
+    }
+
+    // Filtrar por texto de búsqueda
+    if (!empty($q) && strlen($q) >= 2) {
+        $builder->groupStart()
+            ->like('descripcion', $q)
+            ->orLike('nombre', $q)
+        ->groupEnd();
+    }
+
+    $data = $builder->orderBy('descripcion', 'ASC')
         ->limit(20)
         ->get()
         ->getResultArray();

@@ -107,8 +107,8 @@ $routes->get('jornadas/(:num)/beneficiarios/buscar', 'BeneficiariosController::b
 
 // AJAX
 $routes->get('beneficiarios/buscar-ajax', 'BeneficiariosController::buscarAjax');
-$routes->get('beneficiarios/antecedentes-ajax', 'BeneficiariosController::buscarAntecedentesAjax');
 $routes->get('beneficiarios/antecedentes-ajax', 'BeneficiariosController::antecedentesAjax');
+$routes->get('beneficiarios/buscar-antecedentes-ajax', 'BeneficiariosController::buscarAntecedentesAjax');
 
 // EDITAR BENEFICIARIO
 $routes->get('beneficiarios/editar/(:num)', 'BeneficiariosController::edit/$1');
