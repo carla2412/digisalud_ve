@@ -14,7 +14,7 @@
     <div class="d-flex align-items-center gap-3 mb-3 flex-wrap">
         <div class="benef-count"><img src="<?= base_url('img/beneficiario-evaluado-azul.svg') ?>" alt=""><span><?= $total ?? 0 ?></span></div>
         <span style="color:#ccc;font-size:1.5rem;">|</span>
-        <a href="<?= base_url("beneficiarios/buscar/$jornada_id") ?>" class="btn-registrar">+ Registrar</a>
+        <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/buscar") ?>" class="btn-registrar">+ Registrar</a>
     </div>
 
     <?php if (!empty($beneficiarios) && count($beneficiarios) > 5): ?>
@@ -97,7 +97,8 @@
         <div class="text-center py-5">
             <img src="<?= base_url('img/beneficiario-evaluado-azul.svg') ?>" width="60" class="mb-3 opacity-25">
             <p class="text-muted">No hay beneficiarios en esta jornada</p>
-            <a href="<?= base_url("beneficiarios/buscar/$jornada_id") ?>" class="btn-registrar">+ Registrar primer beneficiario</a>
+            <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/buscar") ?>" class="btn-registrar">+ Registrar primer beneficiario</a>
+            
         </div>
     <?php endif; ?>
 </div>

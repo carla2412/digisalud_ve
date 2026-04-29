@@ -55,9 +55,8 @@ class JornadaBeneficiariosController extends BaseController
        $evaluaciones = []; // vacío por ahora
 
         // --- LÓGICA DE REDIRECCIÓN AUTOMÁTICA ---
-        // Si no hay beneficiarios asociados (status_bc = 1), mandamos al buscador
         if (count($beneficiarios) === 0) {
-            return redirect()->to(base_url("beneficiarios/buscar/$jornada_id"))
+            return redirect()->to(base_url("jornadas/$jornada_id/beneficiarios/buscar"))
                 ->with('info', 'Esta jornada aún no tiene beneficiarios. Use el buscador para añadir uno.');
         }
 
