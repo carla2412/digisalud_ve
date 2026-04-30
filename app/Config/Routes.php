@@ -95,13 +95,7 @@ $routes->get('beneficiarios/exportar', 'BeneficiariosController::exportar');
 // HISTORIAL BENEFICIARIO
 $routes->get('beneficiarios/(:num)/historial', 'BeneficiariosController::historial/$1');
 
-// CREAR BENEFICIARIO DESDE JORNADA
-$routes->get('jornadas/(:num)/beneficiarios/create', 'BeneficiariosController::create/$1');
-$routes->post('jornadas/(:num)/beneficiarios/store', 'BeneficiariosController::store/$1');
-
-// BUSCAR BENEFICIARIO DESDE JORNADA
-$routes->get('jornadas/(:num)/beneficiarios/buscar', 'BeneficiariosController::buscar/$1');
-
+ 
 // AJAX
 $routes->get('beneficiarios/buscar-ajax', 'BeneficiariosController::buscarAjax');
 $routes->get('beneficiarios/antecedentes-ajax', 'BeneficiariosController::antecedentesAjax');
