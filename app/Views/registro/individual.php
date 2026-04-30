@@ -335,7 +335,7 @@ document.getElementById("telefono").addEventListener("input", function(e) {
 <script>
 window.addEventListener('DOMContentLoaded', function () {
     Swal.fire({
-        title: "✅ Registro exitoso",
+        title: "Registro exitoso",
         text: <?= json_encode($flashSuccess) ?>,
         icon: "success",
         confirmButtonText: "Continuar"

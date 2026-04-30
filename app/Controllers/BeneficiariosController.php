@@ -17,6 +17,7 @@ use App\Models\JornadaModel;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class BeneficiariosController extends BaseController
 {
     // ════════════════════════════════════════
@@ -95,7 +96,7 @@ class BeneficiariosController extends BaseController
                 ->like('b.nombres', $q)
                 ->orLike('b.apellidos', $q)
                 ->orLike('b.id_digisalud', $q)
-            ->groupEnd();
+                ->groupEnd();
         }
 
         // Agrupar por beneficiario para evitar duplicados
@@ -185,7 +186,7 @@ class BeneficiariosController extends BaseController
                 ->like('b.nombres', $q)
                 ->orLike('b.apellidos', $q)
                 ->orLike('b.id_digisalud', $q)
-            ->groupEnd();
+                ->groupEnd();
         }
 
         $builder->groupBy('b.id_beneficiario');
@@ -214,10 +215,21 @@ class BeneficiariosController extends BaseController
 
         // Encabezados
         $headers = [
-            'IDENTIFICACION', 'NOMBRES', 'APELLIDOS', 'GENERO',
-            'FECHA DE NACIMIENTO', 'PAIS DE NACIMIENTO', 'ORGANIZACION',
-            'CENTRO - JORNADA', 'NOMBRE ESCUELA', 'GRADO', 'SECCION',
-            'TURNO', 'ESTADO', 'MUNICIPIO', 'PARROQUIA'
+            'IDENTIFICACION',
+            'NOMBRES',
+            'APELLIDOS',
+            'GENERO',
+            'FECHA DE NACIMIENTO',
+            'PAIS DE NACIMIENTO',
+            'ORGANIZACION',
+            'CENTRO - JORNADA',
+            'NOMBRE ESCUELA',
+            'GRADO',
+            'SECCION',
+            'TURNO',
+            'ESTADO',
+            'MUNICIPIO',
+            'PARROQUIA'
         ];
 
         $col = 'A';
@@ -271,10 +283,21 @@ class BeneficiariosController extends BaseController
 
         // Encabezados
         fputcsv($output, [
-            'IDENTIFICACION', 'NOMBRES', 'APELLIDOS', 'GENERO',
-            'FECHA DE NACIMIENTO', 'PAIS DE NACIMIENTO', 'ORGANIZACION',
-            'CENTRO - JORNADA', 'NOMBRE ESCUELA', 'GRADO', 'SECCION',
-            'TURNO', 'ESTADO', 'MUNICIPIO', 'PARROQUIA'
+            'IDENTIFICACION',
+            'NOMBRES',
+            'APELLIDOS',
+            'GENERO',
+            'FECHA DE NACIMIENTO',
+            'PAIS DE NACIMIENTO',
+            'ORGANIZACION',
+            'CENTRO - JORNADA',
+            'NOMBRE ESCUELA',
+            'GRADO',
+            'SECCION',
+            'TURNO',
+            'ESTADO',
+            'MUNICIPIO',
+            'PARROQUIA'
         ], ';');
 
         foreach ($rows as $r) {
@@ -319,9 +342,9 @@ class BeneficiariosController extends BaseController
         $data = $model
             ->select('id_beneficiario, id_digisalud, nombres, apellidos, fecha_nacimiento, sexo, pais_nacimiento')
             ->groupStart()
-                ->like('nombres', $term)
-                ->orLike('apellidos', $term)
-                ->orLike('id_digisalud', $term)
+            ->like('nombres', $term)
+            ->orLike('apellidos', $term)
+            ->orLike('id_digisalud', $term)
             ->groupEnd()
             ->limit(15)->findAll();
 
@@ -347,35 +370,35 @@ class BeneficiariosController extends BaseController
 
         return $this->response->setJSON($data);
     }
-public function antecedentesAjax()
-{
-    $q    = $this->request->getGet('q');
-    $tipo = $this->request->getGet('tipo');
+    public function antecedentesAjax()
+    {
+        $q    = $this->request->getGet('q');
+        $tipo = $this->request->getGet('tipo');
 
-    $db      = \Config\Database::connect();
-    $builder = $db->table('antecedentes')
-        ->select('id_antecedente, nombre, tipo, descripcion');
+        $db      = \Config\Database::connect();
+        $builder = $db->table('antecedentes')
+            ->select('id_antecedente, nombre, tipo, descripcion');
 
-    // Filtrar por tipo si viene (Antecedentes Clínicos / Datos Socioeconómicos)
-    if (!empty($tipo)) {
-        $builder->where('tipo', $tipo);
+        // Filtrar por tipo si viene (Antecedentes Clínicos / Datos Socioeconómicos)
+        if (!empty($tipo)) {
+            $builder->where('tipo', $tipo);
+        }
+
+        // Filtrar por texto de búsqueda
+        if (!empty($q) && strlen($q) >= 2) {
+            $builder->groupStart()
+                ->like('descripcion', $q)
+                ->orLike('nombre', $q)
+                ->groupEnd();
+        }
+
+        $data = $builder->orderBy('descripcion', 'ASC')
+            ->limit(20)
+            ->get()
+            ->getResultArray();
+
+        return $this->response->setJSON($data);
     }
-
-    // Filtrar por texto de búsqueda
-    if (!empty($q) && strlen($q) >= 2) {
-        $builder->groupStart()
-            ->like('descripcion', $q)
-            ->orLike('nombre', $q)
-        ->groupEnd();
-    }
-
-    $data = $builder->orderBy('descripcion', 'ASC')
-        ->limit(20)
-        ->get()
-        ->getResultArray();
-
-    return $this->response->setJSON($data);
-}
     public function buscarAntecedentesAjax()
     {
         $beneficiarioId = $this->request->getGet('id');
@@ -399,6 +422,19 @@ public function antecedentesAjax()
         return view('beneficiarios/create', ['jornada_id' => $jornada_id]);
     }
 
+    /**
+     * ════════════════════════════════════════════════════════════════
+     * STORE — Guardar nuevo beneficiario y asociarlo a la jornada
+     * ════════════════════════════════════════════════════════════════
+     *
+     * CORREGIDO:
+     *  - Escenario A: Representante existente (seleccionado del buscador)
+     *  - Escenario B: Representante nuevo (formulario repNuevoBox)
+     *  - Checkbox "Evaluar representante en esta jornada"
+     *  - Antecedentes clínicos y socioeconómicos unificados
+     *  - Usa lentes (id_antecedente = 38) sin duplicar
+     *  - Observación general (id_antecedente = 15) sin duplicar
+     */
     public function store($jornada_id)
     {
         $benefModel = new BeneficiariosModel();
@@ -410,8 +446,11 @@ public function antecedentesAjax()
 
         $post      = $this->request->getPost();
         $usuarioId = session('id_usuario');
+        $ahora     = date('Y-m-d H:i:s');
 
-        // ══ 1) DIRECCIÓN ══
+        // ══════════════════════════════════════
+        // 1) DIRECCIÓN (opcional)
+        // ══════════════════════════════════════
         $direccion_id = null;
         if (!empty($post['estado'])) {
             $direccion_id = $dirModel->insert([
@@ -422,7 +461,9 @@ public function antecedentesAjax()
             ]);
         }
 
-        // ══ 2) BENEFICIARIO ══
+        // ══════════════════════════════════════
+        // 2) BENEFICIARIO
+        // ══════════════════════════════════════
         $sexo   = strtoupper(substr($post['sexo'] ?? 'M', 0, 1));
         $nombre = strtoupper(substr($post['nombres'] ?? '', 0, 3));
         $apell  = strtoupper(substr($post['apellidos'] ?? '', 0, 3));
@@ -440,11 +481,13 @@ public function antecedentesAjax()
             'telefono'         => $post['telefono'] ?? null,
             'correo'           => $post['correo'] ?? null,
             'direccion_id'     => $direccion_id,
-            'creado_en'        => date('Y-m-d H:i:s'),
+            'creado_en'        => $ahora,
             'creado_por'       => $usuarioId ?? 1,
         ]);
 
-        // ══ 3) ESCOLARIDAD ══
+        // ══════════════════════════════════════
+        // 3) ESCOLARIDAD (opcional)
+        // ══════════════════════════════════════
         if (!empty($post['nombre_escuela'])) {
             $escModel->insert([
                 'id_beneficiario' => $id_beneficiario,
@@ -453,75 +496,144 @@ public function antecedentesAjax()
                 'seccion'         => $post['seccion'] ?? null,
                 'turno'           => $post['turno'] ?? null,
                 'status_esc'      => 1,
-                'creado_en'       => date('Y-m-d H:i:s'),
+                'creado_en'       => $ahora,
                 'creado_por'      => $usuarioId ?? 1,
             ]);
         }
 
-        // ══ 4) REPRESENTANTE (FAMILIAR) ══
+        // ══════════════════════════════════════
+        // 4) REPRESENTANTE (FAMILIAR)
+        //    Escenario A: existente → representante_id viene lleno
+        //    Escenario B: nuevo    → representante_id vacío,
+        //                            pero rep_nombres + rep_apellidos vienen llenos
+        // ══════════════════════════════════════
         $repId = $post['representante_id'] ?? null;
-        if (!empty($repId)) {
-            $famModel->insert([
-                'beneficiario_id'              => $id_beneficiario,
-                'beneficiario_id_representante' => $repId,
-                'relacion'                      => $post['relacion'] ?? '',
-                'telefono'                      => $post['telefono_representante'] ?? '',
-            ]);
-        }
 
-        // ══ 5) ANTECEDENTES CLÍNICOS ══
-        $antecedentes = $post['antecedentes'] ?? [];
-        if (is_array($antecedentes)) {
-            foreach ($antecedentes as $idAnt) {
-                $antModel->insert([
-                    'id_beneficiario' => $id_beneficiario,
-                    'id_antecedente'  => $idAnt,
+        // ── Escenario B: crear representante como beneficiario nuevo ──
+        if (empty($repId) && !empty(trim($post['rep_nombres'] ?? '')) && !empty(trim($post['rep_apellidos'] ?? ''))) {
+
+            $repSexo   = strtoupper(substr($post['rep_sexo'] ?? 'M', 0, 1));
+            $repNombre = strtoupper(substr(trim($post['rep_nombres']), 0, 3));
+            $repApell  = strtoupper(substr(trim($post['rep_apellidos']), 0, 3));
+            $repFn     = !empty($post['rep_fecha_nacimiento']) ? $post['rep_fecha_nacimiento'] : '1980-01-01';
+            $repPais   = strtoupper(substr($post['pais_nacimiento'] ?? 'VE', 0, 2));
+            $repIdDigi = $repPais . $repSexo . $repNombre . $repApell . str_replace('-', '', $repFn);
+
+            $repId = $benefModel->insert([
+                'id_digisalud'     => $repIdDigi,
+                'nombres'          => trim($post['rep_nombres']),
+                'apellidos'        => trim($post['rep_apellidos']),
+                'fecha_nacimiento' => $repFn,
+                'sexo'             => $repSexo === 'F' ? 'F' : 'M',
+                'pais_nacimiento'  => $post['pais_nacimiento'] ?? 'Venezuela',
+                'telefono'         => $post['rep_telefono_nuevo'] ?? null,
+                'direccion_id'     => $direccion_id, // misma dirección del beneficiario
+                'creado_en'        => $ahora,
+                'creado_por'       => $usuarioId ?? 1,
+            ]);
+
+            // Si marcó "Evaluar al representante en esta jornada"
+            if (!empty($post['evaluar_representante']) && !empty($repId)) {
+                $jorModel->insert([
+                    'id_beneficiario' => $repId,
                     'jornada_id'      => $jornada_id,
-                    'creado_en'       => date('Y-m-d H:i:s'),
+                    'status_bc'       => 1,
+                    'creado_en'       => $ahora,
                     'creado_por'      => $usuarioId ?? 1,
                 ]);
             }
         }
 
-        // Checkbox "Usa lentes"
-        if (!empty($post['usa_lentes'])) {
+        // ── Insertar relación familiar (aplica a ambos escenarios) ──
+        if (!empty($repId)) {
+            $famModel->insert([
+                'beneficiario_id'               => $id_beneficiario,
+                'beneficiario_id_representante'  => $repId,
+                'relacion'                       => $post['relacion'] ?? '',
+                'telefono'                       => $post['telefono_representante'] ?? '',
+            ]);
+        }
+
+        // ══════════════════════════════════════
+        // 5) ANTECEDENTES CLÍNICOS Y SOCIOECONÓMICOS
+        //    Ambos llegan en el mismo array antecedentes[]
+        // ══════════════════════════════════════
+        $antecedentes  = $post['antecedentes'] ?? [];
+        $idsInsertados = []; // Para evitar duplicados con usa_lentes (38) y observación (15)
+
+        if (is_array($antecedentes)) {
+            foreach ($antecedentes as $idAnt) {
+                $idAnt = (int) $idAnt;
+                if ($idAnt <= 0 || in_array($idAnt, $idsInsertados, true)) {
+                    continue;
+                }
+
+                $antModel->insert([
+                    'id_beneficiario' => $id_beneficiario,
+                    'id_antecedente'  => $idAnt,
+                    'jornada_id'      => $jornada_id,
+                    'creado_en'       => $ahora,
+                    'creado_por'      => $usuarioId ?? 1,
+                ]);
+
+                $idsInsertados[] = $idAnt;
+            }
+        }
+
+        // ── Checkbox "Usa lentes" (id_antecedente = 38) ──
+        if (!empty($post['usa_lentes']) && !in_array(38, $idsInsertados, true)) {
             $antModel->insert([
                 'id_beneficiario' => $id_beneficiario,
                 'id_antecedente'  => 38,
                 'jornada_id'      => $jornada_id,
-                'creado_en'       => date('Y-m-d H:i:s'),
+                'creado_en'       => $ahora,
                 'creado_por'      => $usuarioId ?? 1,
             ]);
+            $idsInsertados[] = 38;
         }
 
-        // Observación general
-        $obs = $post['observacion_antecedentes'] ?? '';
-        if (!empty($obs)) {
-            $antModel->insert([
-                'id_beneficiario' => $id_beneficiario,
-                'id_antecedente'  => 15,
-                'jornada_id'      => $jornada_id,
-                'observacion'     => $obs,
-                'creado_en'       => date('Y-m-d H:i:s'),
-                'creado_por'      => $usuarioId ?? 1,
-            ]);
+        // ── Observación general (id_antecedente = 15 "OTRO") ──
+        $obs = trim($post['observacion_antecedentes'] ?? '');
+        if ($obs !== '') {
+            // Si ya se insertó el 15 desde el array de antecedentes,
+            // actualizar ese registro con la observación
+            if (in_array(15, $idsInsertados, true)) {
+                $antModel
+                    ->where('id_beneficiario', $id_beneficiario)
+                    ->where('id_antecedente', 15)
+                    ->where('jornada_id', $jornada_id)
+                    ->set(['observacion' => $obs])
+                    ->update();
+            } else {
+                // Si no estaba en el array, crear registro nuevo
+                $antModel->insert([
+                    'id_beneficiario' => $id_beneficiario,
+                    'id_antecedente'  => 15,
+                    'jornada_id'      => $jornada_id,
+                    'observacion'     => $obs,
+                    'creado_en'       => $ahora,
+                    'creado_por'      => $usuarioId ?? 1,
+                ]);
+            }
         }
 
-        // ══ 6) ASOCIAR A JORNADA ══
+        // ══════════════════════════════════════
+        // 6) ASOCIAR BENEFICIARIO A JORNADA
+        // ══════════════════════════════════════
         $jorModel->insert([
             'id_beneficiario' => $id_beneficiario,
             'jornada_id'      => $jornada_id,
             'status_bc'       => 1,
-            'creado_en'       => date('Y-m-d H:i:s'),
+            'creado_en'       => $ahora,
             'creado_por'      => $usuarioId ?? 1,
         ]);
 
         return redirect()->to("/jornadas/$jornada_id/beneficiarios")
-                         ->with('success', 'Beneficiario registrado y asociado correctamente');
+            ->with('success', 'Beneficiario registrado y asociado correctamente');
     }
 
     // ════════════════════════════════════════
-    // EDITAR
+    // EDITAR — Cargar datos del beneficiario
     // ════════════════════════════════════════
     public function edit($id_beneficiario)
     {
@@ -531,42 +643,84 @@ public function antecedentesAjax()
         $famModel   = new FamiliaresModel();
         $antModel   = new AntecedentesBeneficiariosModel();
 
+        // ── Beneficiario ──
         $beneficiario = $benefModel->find($id_beneficiario);
         if (!$beneficiario) {
             return redirect()->back()->with('error', 'Beneficiario no encontrado');
         }
 
+        // ── Dirección ──
         $direccion = null;
         if (!empty($beneficiario['direccion_id'])) {
             $direccion = $dirModel->find($beneficiario['direccion_id']);
         }
 
+        // ── Escolaridad activa ──
         $escolaridad = $escModel
             ->where('id_beneficiario', $id_beneficiario)
             ->where('status_esc', 1)
             ->first();
 
+        // ── Familiar / Representante ──
         $familiar = $famModel
             ->select('familiares.*, rep.nombres AS rep_nombres, rep.apellidos AS rep_apellidos, rep.id_digisalud AS rep_id_digisalud')
             ->join('beneficiarios AS rep', 'rep.id_beneficiario = familiares.beneficiario_id_representante', 'left')
             ->where('familiares.beneficiario_id', $id_beneficiario)
             ->first();
 
+        // ── Antecedentes (todos) ──
         $antecedentes = $antModel
             ->select('antecedentes_beneficiarios.*, antecedentes.nombre, antecedentes.tipo, antecedentes.descripcion')
             ->join('antecedentes', 'antecedentes.id_antecedente = antecedentes_beneficiarios.id_antecedente')
             ->where('antecedentes_beneficiarios.id_beneficiario', $id_beneficiario)
             ->findAll();
 
+        // ══════════════════════════════════════════════════
+        // Clasificar antecedentes en las variables que
+        // la vista edit.php necesita:
+        //   $antClinico  → tipo "Antecedentes Clínicos" (sin id 38)
+        //   $antSocio    → tipo "Datos Socioeconómicos"
+        //   $usaLentes   → true si existe id_antecedente = 38
+        //   $observacion → texto del id_antecedente = 15
+        // ══════════════════════════════════════════════════
+        $antClinico  = [];
+        $antSocio    = [];
+        $usaLentes   = false;
+        $observacion = '';
+
+        foreach ($antecedentes as $a) {
+            $idAnt = (int) $a['id_antecedente'];
+
+            if ($idAnt === 38) {
+                $usaLentes = true;
+                continue;
+            }
+
+            if ($idAnt === 15) {
+                $observacion = $a['observacion'] ?? '';
+                continue;
+            }
+
+            if (($a['tipo'] ?? '') === 'Datos Socioeconómicos') {
+                $antSocio[] = $a;
+            } else {
+                $antClinico[] = $a;
+            }
+        }
+
+        // ── Enviar a la vista ──
         return view('beneficiarios/edit', [
             'beneficiario' => $beneficiario,
             'direccion'    => $direccion,
             'escolaridad'  => $escolaridad,
             'familiar'     => $familiar,
-            'antecedentes' => $antecedentes,
+            'antecedentes' => $antecedentes,   // array completo (por si se necesita)
+            'antClinico'   => $antClinico,      // ← NUEVO: vista lo necesita
+            'antSocio'     => $antSocio,        // ← NUEVO: vista lo necesita
+            'usaLentes'    => $usaLentes,       // ← NUEVO: vista lo necesita
+            'observacion'  => $observacion,     // ← NUEVO: vista lo necesita
         ]);
     }
-
     public function update($id_beneficiario)
     {
         $benefModel = new BeneficiariosModel();
@@ -646,8 +800,8 @@ public function antecedentesAjax()
 
         // Antecedentes: eliminar anteriores sin jornada y reinsertar
         $antModel->where('id_beneficiario', $id_beneficiario)
-                 ->where('jornada_id', null)
-                 ->delete();
+            ->where('jornada_id', null)
+            ->delete();
 
         $antecedentes = $post['antecedentes'] ?? [];
         if (is_array($antecedentes)) {

@@ -3,10 +3,17 @@
 
 <?= $this->endSection() ?>
 <?= $this->section('content') ?>
-<?php $b = $beneficiario;
-$dir = $direccion;
-$esc = $escolaridad;
-$fam = $familiar; ?>
+<?php
+$b   = $beneficiario ?? [];
+$dir = $direccion ?? null;
+$esc = $escolaridad ?? null;
+$fam = $familiar ?? null;
+
+$antClinico  = $antClinico ?? [];
+$antSocio    = $antSocio ?? [];
+$usaLentes   = $usaLentes ?? false;
+$observacion = $observacion ?? '';
+?>
 <div class="container my-4">
     <div class="create-container">
         <div class="breadcrumb-digi"><a href="<?= base_url('jornadas') ?>">Jornadas</a> &gt; <span class="active">Editar beneficiario</span></div>
@@ -164,6 +171,12 @@ $fam = $familiar; ?>
 
 <script src="<?= base_url('js/venezuela.js') ?>"></script>
 <script>
+    // ═══════════════════════════════════════════════════════
+    // URLs AJAX — deben coincidir EXACTAMENTE con Routes.php
+    // ═══════════════════════════════════════════════════════
+    const URL_BUSCAR_REP   = <?= json_encode(base_url('beneficiarios/buscar-ajax')) ?>;
+    const URL_ANTECEDENTES = <?= json_encode(base_url('beneficiarios/antecedentes-ajax')) ?>;
+
     function toggleSeccion(bar, id) {
         const s = document.getElementById(id);
         const o = s.classList.contains('open');
@@ -193,6 +206,9 @@ $fam = $familiar; ?>
         document.getElementById('idPreview').textContent = `${p}${s}${p1}${p2}${a1}${a2}${fd}`;
     }
 
+    // ═══════════════════════════════════════════════════════
+    // DIRECCIÓN — cascading selects con venezuela.js
+    // ═══════════════════════════════════════════════════════
     $(document).ready(function() {
         const $e = $('#estado'),
             $m = $('#municipio'),
@@ -205,15 +221,9 @@ $fam = $familiar; ?>
                 $e.append(`<option value="${e}" ${e===vE?'selected':''}>${e}</option>`);
             });
         }
-        $e.select2({
-            placeholder: 'Selecciona...'
-        });
-        $m.select2({
-            placeholder: 'Selecciona...'
-        });
-        $p.select2({
-            placeholder: 'Selecciona...'
-        });
+        $e.select2({ placeholder: 'Selecciona...' });
+        $m.select2({ placeholder: 'Selecciona...' });
+        $p.select2({ placeholder: 'Selecciona...' });
         if (vE && ubicaciones[vE]) {
             Object.keys(ubicaciones[vE]).forEach(m => {
                 $m.append(`<option value="${m}" ${m===vM?'selected':''}>${m}</option>`);
@@ -248,6 +258,10 @@ $fam = $familiar; ?>
         });
     });
 
+    // ═══════════════════════════════════════════════════════
+    // REPRESENTANTE — buscar existente o registrar nuevo
+    // FIX: usa URL_BUSCAR_REP (beneficiarios/buscar-ajax)
+    // ═══════════════════════════════════════════════════════
     let repTimer;
     document.getElementById('buscarRep').addEventListener('input', function() {
         clearTimeout(repTimer);
@@ -260,19 +274,31 @@ $fam = $familiar; ?>
             return;
         }
         repTimer = setTimeout(() => {
-            fetch(`/beneficiarios/buscarAjax?q=${encodeURIComponent(q)}`).then(r => r.json()).then(data => {
-                if (data.length === 0) {
-                    c.innerHTML = '<p style="font-size:.78rem;color:#888;">No encontrado</p>';
-                    n.style.display = 'block';
-                    return;
-                }
-                n.style.display = 'none';
-                let h = '';
-                data.forEach(b => {
-                    h += `<div class="rep-result" onclick="seleccionarRep(${b.id_beneficiario},'${b.nombres} ${b.apellidos}','${b.id_digisalud||''}')"><strong>${b.apellidos.toUpperCase()}, ${b.nombres.toUpperCase()}</strong> <span style="color:#888;font-size:.72rem;">— ${b.id_digisalud||''}</span></div>`;
+            // ── FIX: URL correcta con kebab-case ──
+            fetch(`${URL_BUSCAR_REP}?q=${encodeURIComponent(q)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        c.innerHTML = `
+                            <p style="font-size:.78rem;color:#888;">No encontrado</p>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="habilitarNuevoRep()">
+                                <i class="bi bi-person-plus"></i> Registrar nuevo
+                            </button>`;
+                        return;
+                    }
+                    n.style.display = 'none';
+                    let h = '';
+                    data.forEach(b => {
+                        const nom = `${(b.nombres||'')} ${(b.apellidos||'')}`.trim();
+                        const digi = b.id_digisalud || '';
+                        h += `<div class="rep-result" onclick="seleccionarRep(${b.id_beneficiario},'${nom.replace(/'/g,"\\'")}','${digi}')"><strong>${(b.apellidos||'').toUpperCase()}, ${(b.nombres||'').toUpperCase()}</strong> <span style="color:#888;font-size:.72rem;">— ${digi}</span></div>`;
+                    });
+                    c.innerHTML = h;
+                })
+                .catch(err => {
+                    console.error('Error buscando representante:', err);
+                    c.innerHTML = '<p class="text-danger small">Error de conexión</p>';
                 });
-                c.innerHTML = h;
-            });
         }, 300);
     });
 
@@ -290,8 +316,20 @@ $fam = $familiar; ?>
         document.getElementById('buscarRep').value = '';
         document.getElementById('repSeleccionado').style.display = 'none';
         document.getElementById('repSeleccionado').innerHTML = '';
+        document.getElementById('repNuevoBox').style.display = 'none';
     }
 
+    function habilitarNuevoRep() {
+        document.getElementById('representanteId').value = '';
+        document.getElementById('repResultados').innerHTML = '';
+        document.getElementById('repNuevoBox').style.display = 'block';
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // ANTECEDENTES — buscar clínicos y socioeconómicos
+    // FIX: usa URL_ANTECEDENTES (beneficiarios/antecedentes-ajax)
+    //       con parámetros q y tipo
+    // ═══════════════════════════════════════════════════════
     const antSet = new Set();
     document.querySelectorAll('#antSeleccionados input[name="antecedentes[]"],#socSeleccionados input[name="antecedentes[]"]').forEach(i => {
         antSet.add(parseInt(i.value));
@@ -308,14 +346,21 @@ $fam = $familiar; ?>
                 return;
             }
             t = setTimeout(() => {
-                fetch(`/beneficiarios/buscar-antecedentes-ajax?q=${encodeURIComponent(q)}&tipo=${encodeURIComponent(tipo)}`).then(r => r.json()).then(data => {
-                    let h = '';
-                    data.forEach(a => {
-                        if (antSet.has(a.id_antecedente)) return;
-                        h += `<div class="rep-result" onclick="addAnt(${a.id_antecedente},'${a.descripcion.replace(/'/g,"\\'")}','${cId}')">${a.descripcion} <span style="color:#888;font-size:.72rem;">(${a.tipo})</span></div>`;
+                // ── FIX: URL correcta + parámetros q y tipo ──
+                fetch(`${URL_ANTECEDENTES}?q=${encodeURIComponent(q)}&tipo=${encodeURIComponent(tipo)}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        let h = '';
+                        data.forEach(a => {
+                            if (antSet.has(a.id_antecedente)) return;
+                            h += `<div class="rep-result" onclick="addAnt(${a.id_antecedente},'${(a.descripcion||'').replace(/'/g,"\\'")}','${cId}')">${a.descripcion} <span style="color:#888;font-size:.72rem;">(${a.tipo})</span></div>`;
+                        });
+                        c.innerHTML = h || '<p style="font-size:.78rem;color:#888;">Sin resultados</p>';
+                    })
+                    .catch(err => {
+                        console.error('Error buscando antecedentes:', err);
+                        c.innerHTML = '<p class="text-danger small">Error de conexión</p>';
                     });
-                    c.innerHTML = h || '<p style="font-size:.78rem;color:#888;">Sin resultados</p>';
-                });
             }, 300);
         });
     }
@@ -336,6 +381,7 @@ $fam = $familiar; ?>
         antSet.delete(id);
         el.parentElement.remove();
     }
+
     initBuscAnt('buscarAntecedente', 'antResultados', 'antSeleccionados', 'Antecedentes Clínicos');
     initBuscAnt('buscarSocioeconomico', 'socResultados', 'socSeleccionados', 'Datos Socioeconómicos');
 </script>

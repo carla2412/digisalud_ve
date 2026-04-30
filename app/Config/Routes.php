@@ -21,15 +21,13 @@ $routes->post('registro/individual', 'Registro::guardarIndividual');
 $routes->get('registro/organizacion', 'Registro::organizacion');
 $routes->post('registro/organizacion', 'Registro::guardarOrganizacion');
 
-
-
 // DASHBOARD
 $routes->get('dashboard', 'Dashboard::index');
 
 // ═══ PERFIL DE USUARIO ═══
 $routes->get('perfil', 'PerfilController::index');
 $routes->post('perfil/actualizar', 'PerfilController::actualizar');
-$routes->post('perfil/subir-foto', 'PerfilController::subirFoto');  // ← NUEVA RUTA
+$routes->post('perfil/subir-foto', 'PerfilController::subirFoto');
 
 // usuarios
 $routes->group('usuarios', ['filter' => 'auth'], function($routes) {
@@ -51,10 +49,8 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes) {
     $routes->post('actualizar',    'Jornadas::actualizar');      
     $routes->post('cambiar-status', 'Jornadas::cambiarStatus');
     $routes->get('buscar-instituciones', 'Jornadas::buscarInstituciones');
-
-    // ── AGREGAR ESTA LÍNEA ──
-    $routes->get('buscar-instituciones', 'Jornadas::buscarInstituciones');
 });
+
 // =====================================================
 // RUTAS MÓDULO USUARIOS EN JORNADAS
 // Agregar al final de app/Config/Routes.php
@@ -72,7 +68,8 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes){
     // Listar asignados AJAX
     $routes->get('(:num)/usuarios/listar', 'JornadaUsuariosController::listarAsignados/$1');
 });
-// BENEFICIARIOS jorndas
+
+// BENEFICIARIOS jornadas
 $routes->group('jornadas', function($routes) {
     $routes->get('(:num)/beneficiarios', 'JornadaBeneficiariosController::index/$1');
 
@@ -113,13 +110,14 @@ $routes->get('beneficiarios/buscar-antecedentes-ajax', 'BeneficiariosController:
 // EDITAR BENEFICIARIO
 $routes->get('beneficiarios/editar/(:num)', 'BeneficiariosController::edit/$1');
 $routes->post('beneficiarios/actualizar/(:num)', 'BeneficiariosController::update/$1');
+
 // ================================================================
 // MÓDULO: Organizaciones
 // Acceso: roles 1, 2, 3 (verificado en controlador)
 // ================================================================
 
-$routes->get('organizaciones',              'Organizaciones::index',  ['as' => 'organizaciones.index']);
-$routes->get('organizaciones/crear',        'Organizaciones::create', ['as' => 'organizaciones.create']);
-$routes->post('organizaciones/guardar',     'Organizaciones::store',  ['as' => 'organizaciones.store']);
+$routes->get('organizaciones',               'Organizaciones::index',     ['as' => 'organizaciones.index']);
+$routes->get('organizaciones/crear',         'Organizaciones::create',    ['as' => 'organizaciones.create']);
+$routes->post('organizaciones/guardar',      'Organizaciones::store',     ['as' => 'organizaciones.store']);
 $routes->get('organizaciones/editar/(:num)', 'Organizaciones::edit/$1',   ['as' => 'organizaciones.edit']);
 $routes->post('organizaciones/update/(:num)', 'Organizaciones::update/$1', ['as' => 'organizaciones.update']);
