@@ -48,12 +48,17 @@ class UsuarioModel extends Model
     }
 
     public function usuariosConOrganizacionFiltrado($orgId)
-    {
-        return $this->select('usuarios.*, organizacion.nombre_org AS nombre_organizacion')
-                    ->join('organizacion', 'organizacion.id_organizacion = usuarios.organizacion_id', 'left')
-                    ->where('usuarios.organizacion_id', $orgId)
-                    ->findAll();
-    }
+{
+    return $this->select('usuarios.*, 
+                          organizacion.nombre_org AS nombre_organizacion,
+                          roles.nombre_rol AS nombre_rol')
+                ->join('organizacion', 'organizacion.id_organizacion = usuarios.organizacion_id', 'left')
+                ->join('roles_usuarios_contexto', 'roles_usuarios_contexto.id_usuario = usuarios.id_usuario', 'left')
+                ->join('roles', 'roles.id_rol = roles_usuarios_contexto.id_rol', 'left')
+                ->where('usuarios.organizacion_id', $orgId)
+                ->groupBy('usuarios.id_usuario')
+                ->findAll();
+}
 
     public function buscarUsuariosPorOrg($texto, $orgId)
     {

@@ -12,7 +12,7 @@ class UsuariosController extends BaseController
     
     private function puedeEditarUsuarios(): bool
     {
-        return in_array(session()->get('id_rol'), [1,2,3,4]);
+        return in_array(session()->get('id_rol'), [1,2,3,4,5]);
     }
     private function esAdmin(): bool
     {

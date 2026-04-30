@@ -55,7 +55,7 @@ $currentUri = uri_string();
             </a>
         </li>
 
-        <?php if (in_array($rolActual, [1, 2], true)) : ?>
+        <?php if (in_array($rolActual, [1, 2, 3, 4, 5, 6, 7], true)) : ?>
             <li class="ds-menu-item <?= str_starts_with($currentUri, 'usuarios') ? 'active' : '' ?>">
                 <a href="<?= site_url('usuarios') ?>">
                     <span class="ds-icon ds-icon-violet">
