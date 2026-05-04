@@ -25,7 +25,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 class Organizaciones extends BaseController
 {
     // Roles con acceso al módulo
-    private const ROLES_PERMITIDOS = [1, 2, 3];
+    private const ROLES_PERMITIDOS = [1, 2, 3, 4, 5, 6, 7];
 
     // Directorio de logos
     private const LOGO_DIR = FCPATH . 'uploads/logos/';
@@ -83,10 +83,20 @@ class Organizaciones extends BaseController
             return $this->response;
         }
 
-        $organizaciones = $this->model
+        $idRol = (int) session()->get('id_rol');
+        $organizacionSesion = (int) session()->get('organizacion_id');
+
+        $builder = $this->model
             ->select('organizacion.*, direcciones.estado, direcciones.ciudad')
             ->join('direcciones', 'direcciones.id_direccion = organizacion.direccion_id', 'left')
-            ->where('organizacion.status_org', 1)
+            ->where('organizacion.status_org', 1);
+
+        // Roles 3 al 7: solo ven la organización a la que pertenecen
+        if (in_array($idRol, [3, 4, 5, 6, 7], true)) {
+            $builder->where('organizacion.id_organizacion', $organizacionSesion);
+        }
+
+        $organizaciones = $builder
             ->orderBy('organizacion.nombre_org', 'ASC')
             ->findAll();
 
@@ -95,13 +105,21 @@ class Organizaciones extends BaseController
             'organizaciones' => $organizaciones,
         ]);
     }
-
+    private function esAdminGeneral(): bool
+    {
+        return in_array((int) session()->get('id_rol'), [1, 2], true);
+    }
     // ----------------------------------------------------------------
     // create — Mostrar formulario de creación
     // ----------------------------------------------------------------
 
     public function create(): string|ResponseInterface
     {
+        if (! $this->esAdminGeneral()) {
+            session()->setFlashdata('error', 'No tienes permisos para crear organizaciones.');
+            return redirect()->to(base_url('organizaciones'));
+        }
+
         if (! $this->verificarAcceso()) {
             return $this->response;
         }
@@ -117,6 +135,10 @@ class Organizaciones extends BaseController
 
     public function store(): ResponseInterface
     {
+        if (! $this->esAdminGeneral()) {
+            session()->setFlashdata('error', 'No tienes permisos para crear organizaciones.');
+            return redirect()->to(base_url('organizaciones'));
+        }
         if (! $this->verificarAcceso()) {
             return $this->response;
         }
@@ -356,6 +378,7 @@ class Organizaciones extends BaseController
             'municipio' => $municipio,
             'parroquia' => $this->request->getPost('parroquia'),
             'ciudad'    => $this->request->getPost('ciudad'),
+            'detalle'   => $this->request->getPost('detalle'),
         ];
 
         $db = \Config\Database::connect();

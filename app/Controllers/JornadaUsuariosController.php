@@ -44,6 +44,7 @@ class JornadaUsuariosController extends BaseController
             ->join('roles', 'roles.id_rol = roles_usuarios_contexto.id_rol')
             ->join('organizacion', 'organizacion.id_organizacion = usuarios.organizacion_id', 'left')
             ->where('roles_usuarios_contexto.jornada_id', $jornada_id)
+            ->where('roles_usuarios_contexto.tipo_contexto', 'JORNADA')
             ->where('roles_usuarios_contexto.status_urc', 1)
             ->findAll();
 
@@ -129,6 +130,7 @@ class JornadaUsuariosController extends BaseController
         $existe = $rucModel
             ->where('id_usuario', $id_usuario)
             ->where('jornada_id', $jornada_id)
+            ->where('tipo_contexto', 'JORNADA')
             ->where('status_urc', 1)
             ->first();
 
@@ -140,6 +142,7 @@ class JornadaUsuariosController extends BaseController
         $inactivo = $rucModel
             ->where('id_usuario', $id_usuario)
             ->where('jornada_id', $jornada_id)
+            ->where('tipo_contexto', 'JORNADA')
             ->where('status_urc', 0)
             ->first();
 
@@ -160,6 +163,7 @@ class JornadaUsuariosController extends BaseController
                 'organizacion_id'  => $jornada['organizacion_id'] ?? null,
                 'jornada_id'       => $jornada_id,
                 'centro_id'        => null,
+                'tipo_contexto'    => 'JORNADA',
                 'fecha_asignacion' => date('Y-m-d H:i:s'),
                 'status_urc'       => 1,
             ]);
@@ -211,6 +215,7 @@ class JornadaUsuariosController extends BaseController
             ->join('roles', 'roles.id_rol = roles_usuarios_contexto.id_rol')
             ->join('organizacion', 'organizacion.id_organizacion = usuarios.organizacion_id', 'left')
             ->where('roles_usuarios_contexto.jornada_id', $jornada_id)
+            ->where('roles_usuarios_contexto.tipo_contexto', 'JORNADA')
             ->where('roles_usuarios_contexto.status_urc', 1)
             ->findAll();
 

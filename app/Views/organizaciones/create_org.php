@@ -595,6 +595,14 @@
                                        value="<?= old('ciudad') ?>"
                                        placeholder="Se carga automático o escribe manualmente">
                             </div>
+                            <div class="form-group">
+                                <label for="detalle">Detalle de dirección</label>
+                                <input type="text"
+                                    name="detalle"
+                                    id="detalle"
+                                    value="<?= old('detalle') ?>"
+                                    placeholder="Ej: Calle, avenida, edificio, punto de referencia">
+                            </div>
                         </div>
                     </div>
                 </div>

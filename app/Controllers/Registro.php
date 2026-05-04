@@ -74,8 +74,9 @@ class Registro extends BaseController
         // 3️⃣ ASIGNAR ROL POR DEFECTO (id_rol = 6)
         $rolesContexto->insert([
             'usuario_id'      => $usuarioId,
-            'id_rol'          => 6,   // 👈 Rol por defecto
-            'organizacion_id' => 1,   // 👈 Independiente
+            'id_rol'          => 8,   //   INDIVIDUAL
+            'organizacion_id' => 1,   //   Independiente
+            'tipo_contexto'    => 'GLOBAL',
             'status_urc'      => '1',
         ]);
 
@@ -102,9 +103,9 @@ class Registro extends BaseController
     $rolesContexto     = new \App\Models\RolesUsuariosContextoModel();
 
     $db = \Config\Database::connect();
-    $db->transStart(); // 🔒 Iniciar transacción segura
+    $db->transStart(); //   Iniciar transacción segura
 
-    // ====== 1️⃣ Insertar la dirección ======
+    // ======  Insertar la dirección ======
     $direccionData = [
         'pais'        => $this->request->getPost('pais'),
         'estado'      => $this->request->getPost('estado'),
@@ -166,6 +167,7 @@ class Registro extends BaseController
         'id_usuario'      => $usuarioId,
         'id_rol'          => 3,             // Rol administrativo de la organización
         'organizacion_id' => $organizacionId,
+        'tipo_contexto'    => 'GLOBAL',
         'status_urc'      => '1'
     ]);
 

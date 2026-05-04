@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 use CodeIgniter\Model;
 
 class RolesUsuariosContextoModel extends Model
@@ -15,6 +16,7 @@ class RolesUsuariosContextoModel extends Model
         'organizacion_id',
         'jornada_id',
         'centro_id',
+        'tipo_contexto',
         'fecha_asignacion',
         'status_urc'
     ];
@@ -26,12 +28,12 @@ class RolesUsuariosContextoModel extends Model
                     roles.nombre_rol,
                     fecha_asignacion
                 ")
-                ->join('jornadas','jornadas.id_jornada = roles_usuarios_contexto.jornada_id','left')
-                ->join('roles','roles.id_rol = roles_usuarios_contexto.id_rol','left')
-                ->where('id_usuario', $id)
-                ->where('jornada_id IS NOT NULL')
-                ->orderBy('fecha_asignacion','DESC')
-                ->findAll();
+            ->join('jornadas', 'jornadas.id_jornada = roles_usuarios_contexto.jornada_id', 'left')
+            ->join('roles', 'roles.id_rol = roles_usuarios_contexto.id_rol', 'left')
+            ->where('id_usuario', $id)
+            ->where('jornada_id IS NOT NULL')
+            ->orderBy('fecha_asignacion', 'DESC')
+            ->findAll();
     }
 
     // CENTROS PARTICIPADOS
@@ -42,27 +44,26 @@ class RolesUsuariosContextoModel extends Model
                     roles.nombre_rol,
                     fecha_asignacion
                 ")
-                ->join('centros','centros.id_centro = roles_usuarios_contexto.centro_id','left')
-                ->join('roles','roles.id_rol = roles_usuarios_contexto.id_rol','left')
-                ->where('id_usuario', $id)
-                ->where('centro_id IS NOT NULL')
-                ->orderBy('fecha_asignacion','DESC')
-                ->findAll();
+            ->join('centros', 'centros.id_centro = roles_usuarios_contexto.centro_id', 'left')
+            ->join('roles', 'roles.id_rol = roles_usuarios_contexto.id_rol', 'left')
+            ->where('id_usuario', $id)
+            ->where('centro_id IS NOT NULL')
+            ->orderBy('fecha_asignacion', 'DESC')
+            ->findAll();
     }
 
     // CONTADORES
     public function contarJornadas($id)
     {
         return $this->where('id_usuario', $id)
-                    ->where('jornada_id IS NOT NULL')
-                    ->countAllResults();
+            ->where('jornada_id IS NOT NULL')
+            ->countAllResults();
     }
 
     public function contarCentros($id)
     {
         return $this->where('id_usuario', $id)
-                    ->where('centro_id IS NOT NULL')
-                    ->countAllResults();
+            ->where('centro_id IS NOT NULL')
+            ->countAllResults();
     }
 }// llave clase
-

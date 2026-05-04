@@ -1,7 +1,11 @@
 <?= $this->extend('layouts/main') ?>
 <?= $this->section('content') ?>
- 
+ <?php
+$organizaciones = $organizaciones ?? [];
+$idRol = (int) session()->get('id_rol');
+?>
 <?= $this->section('css') ?>
+
 <style>
  
 /*index organizacion*/
@@ -386,10 +390,12 @@
         <p>Gestiona y administra las organizaciones registradas. </p>
       </div>
 
-      <a href="<?= base_url('organizaciones/crear') ?>" class="btn-primary-custom">
-        <i class="fas fa-plus"></i>
-        Nueva Organización
-      </a>
+<?php if (in_array($idRol, [1, 2], true)) : ?>
+  <a href="<?= base_url('organizaciones/crear') ?>" class="btn-primary-custom">
+    <i class="fas fa-plus"></i>
+    Nueva Organización
+  </a>
+<?php endif; ?>
     </div>
 
     <div class="filters">
