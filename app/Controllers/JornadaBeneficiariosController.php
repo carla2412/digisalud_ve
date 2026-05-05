@@ -96,6 +96,7 @@ class JornadaBeneficiariosController extends BaseController
         return redirect()->to("/jornadas/$jornada_id/beneficiarios")
             ->with('success', 'Beneficiario removido de la jornada');
     }
+    
 
     public function buscar($jornada_id)
     {

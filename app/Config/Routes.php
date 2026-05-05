@@ -30,7 +30,7 @@ $routes->post('perfil/actualizar', 'PerfilController::actualizar');
 $routes->post('perfil/subir-foto', 'PerfilController::subirFoto');
 
 // usuarios
-$routes->group('usuarios', ['filter' => 'auth'], function($routes) {
+$routes->group('usuarios', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'UsuariosController::index');
     $routes->get('listado', 'UsuariosController::listadoAjax');
     $routes->post('cambiar-correo/(:num)', 'UsuariosController::cambiarCorreo/$1');
@@ -40,13 +40,13 @@ $routes->group('usuarios', ['filter' => 'auth'], function($routes) {
 });
 
 // Acciones JORNADAS
-$routes->group('jornadas', ['filter' => 'auth'], function($routes) {
+$routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Jornadas::index');
     $routes->get('listar', 'Jornadas::listar');
     $routes->post('guardar', 'Jornadas::guardar');
     $routes->get('crear', 'Jornadas::crear');
-    $routes->get('editar/(:num)',  'Jornadas::editar/$1');       
-    $routes->post('actualizar',    'Jornadas::actualizar');      
+    $routes->get('editar/(:num)',  'Jornadas::editar/$1');
+    $routes->post('actualizar',    'Jornadas::actualizar');
     $routes->post('cambiar-status', 'Jornadas::cambiarStatus');
     $routes->get('buscar-instituciones', 'Jornadas::buscarInstituciones');
 });
@@ -56,7 +56,7 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes) {
 // Agregar al final de app/Config/Routes.php
 // =====================================================
 
-$routes->group('jornadas', ['filter' => 'auth'], function($routes){
+$routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
     // Vista principal de usuarios de una jornada
     $routes->get('(:num)/usuarios', 'JornadaUsuariosController::index/$1');
     // Buscar usuarios AJAX
@@ -70,17 +70,18 @@ $routes->group('jornadas', ['filter' => 'auth'], function($routes){
 });
 
 // BENEFICIARIOS jornadas
-$routes->group('jornadas', function($routes) {
+$routes->group('jornadas', function ($routes) {
     $routes->get('(:num)/beneficiarios', 'JornadaBeneficiariosController::index/$1');
 
-    // Vista buscar beneficiarios dentro de una jornada
+    $routes->get('(:num)/beneficiarios/create', 'BeneficiariosController::create/$1');
+    $routes->post('(:num)/beneficiarios/store', 'BeneficiariosController::store/$1');
+
     $routes->get('(:num)/beneficiarios/buscar', 'JornadaBeneficiariosController::buscar/$1');
 
-    // Asociar / desasociar beneficiarios
     $routes->post('(:num)/asociar/(:num)', 'JornadaBeneficiariosController::asociar/$1/$2');
     $routes->get('(:num)/desasociar/(:num)', 'JornadaBeneficiariosController::desasociar/$1/$2');
 });
- 
+
 // =====================================================
 // FRAGMENTO PARA app/Config/Routes.php
 // REEMPLAZAR el group('beneficiarios') existente con este:
@@ -88,14 +89,10 @@ $routes->group('jornadas', function($routes) {
 
 // BENEFICIARIOS - LISTADO GENERAL
 $routes->get('beneficiarios', 'BeneficiariosController::index');
-
 // EXPORTAR BENEFICIARIOS
 $routes->get('beneficiarios/exportar', 'BeneficiariosController::exportar');
-
 // HISTORIAL BENEFICIARIO
 $routes->get('beneficiarios/(:num)/historial', 'BeneficiariosController::historial/$1');
-
- 
 // AJAX
 $routes->get('beneficiarios/buscar-ajax', 'BeneficiariosController::buscarAjax');
 $routes->get('beneficiarios/antecedentes-ajax', 'BeneficiariosController::antecedentesAjax');

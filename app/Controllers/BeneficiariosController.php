@@ -417,10 +417,13 @@ class BeneficiariosController extends BaseController
     // ════════════════════════════════════════
     // CREAR BENEFICIARIO
     // ════════════════════════════════════════
-    public function create($jornada_id)
-    {
-        return view('beneficiarios/create', ['jornada_id' => $jornada_id]);
-    }
+   public function create($jornada_id)
+{
+    return view('beneficiarios/create', [
+        'jornada_id' => $jornada_id,
+        'errors'     => session('errors') ?? [],
+    ]);
+}
 
     /**
      * ════════════════════════════════════════════════════════════════
@@ -628,8 +631,9 @@ class BeneficiariosController extends BaseController
             'creado_por'      => $usuarioId ?? 1,
         ]);
 
-        return redirect()->to("/jornadas/$jornada_id/beneficiarios")
-            ->with('success', 'Beneficiario registrado y asociado correctamente');
+        return redirect()
+        ->to(base_url("jornadas/$jornada_id/beneficiarios"))
+        ->with('success', 'Beneficiario registrado y asociado correctamente.');
     }
 
     // ════════════════════════════════════════
