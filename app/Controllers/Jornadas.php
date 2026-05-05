@@ -1,17 +1,12 @@
 <?php
 
-/**
- * =====================================================
- * ARCHIVO: app/Controllers/Jornadas.php
- * REEMPLAZAR COMPLETO
- * =====================================================
- */
 
 namespace App\Controllers;
 
 use App\Models\JornadaModel;
 use App\Models\OrganizacionModel;
 use App\Models\InstitucionesModel;
+use App\Models\RolesUsuariosContextoModel;
 
 class Jornadas extends BaseController
 {
@@ -27,67 +22,95 @@ class Jornadas extends BaseController
     // INDEX — Listado con filtros y paginación
     // ================================
     public function index()
-{
-    $orgSesion = session('organizacion_id');
-    $perPage   = 5;
+    {
+        
+        $idUsuario = (int) session('id_usuario');
+        $rolSesion = (int) session('id_rol');
+        $orgSesion = (int) session('organizacion_id');
+        $perPage   = 5;
 
-    // ═══ LEER PARÁMETROS GET ═══
-    $busqueda = trim($this->request->getGet('q') ?? '');
-    $status   = $this->request->getGet('status') ?? '';
-    $orden    = $this->request->getGet('orden') ?? 'desc';
+        // ═══ LEER PARÁMETROS GET ═══
+        $busqueda = trim($this->request->getGet('q') ?? '');
+        $status   = $this->request->getGet('status') ?? '';
+        $orden    = $this->request->getGet('orden') ?? 'desc';
 
-    $builder = $this->jornadaModel
-        ->select("jornadas.*, 
+        $builder = $this->jornadaModel
+            ->select("jornadas.*, 
                   organizaciones.nombre_org,
                   instituciones.nombre_institucion,
                   dir.ciudad,
                   GROUP_CONCAT(tpa.idtipo_pesquisa SEPARATOR ',') AS pesquisas")
-        ->join('organizacion AS organizaciones', 'organizaciones.id_organizacion = jornadas.organizacion_id', 'left')
-        ->join('instituciones', 'instituciones.id_institucion = jornadas.institucion_id', 'left')
-        ->join('tipo_pesquisa_actividad AS tpa', 'tpa.id_jornada = jornadas.id_jornada', 'left')
-        ->join('tipo_pesquisa AS tp', 'tp.idtipo_pesquisa = tpa.idtipo_pesquisa', 'left')
-        ->join('direcciones AS dir', 'dir.id_direccion = instituciones.direccion_id', 'left')
-        ->where('jornadas.status_jor !=', 0)
-        ->groupBy('jornadas.id_jornada');
+            ->join('organizacion AS organizaciones', 'organizaciones.id_organizacion = jornadas.organizacion_id', 'left')
+            ->join('instituciones', 'instituciones.id_institucion = jornadas.institucion_id', 'left')
+            ->join('tipo_pesquisa_actividad AS tpa', 'tpa.id_jornada = jornadas.id_jornada', 'left')
+            ->join('tipo_pesquisa AS tp', 'tp.idtipo_pesquisa = tpa.idtipo_pesquisa', 'left')
+            ->join('direcciones AS dir', 'dir.id_direccion = instituciones.direccion_id', 'left')
+            ->where('jornadas.status_jor !=', 0)
+            ->groupBy('jornadas.id_jornada');
 
-    // ═══ FILTRO POR ORGANIZACIÓN (según sesión) ═══
-    if ($orgSesion != 2) {
-        $builder->where('jornadas.organizacion_id', $orgSesion);
+        // ═══ FILTRO POR ORGANIZACIÓN (según sesión) ═══
+        // ═══ FILTRO POR ORGANIZACIÓN + JORNADAS ASIGNADAS ═══
+        // Admin global / Admin Digi ven todas
+        if (!in_array($rolSesion, [1, 2], true)) {
+
+            $rolesContextoModel = new RolesUsuariosContextoModel();
+
+            $jornadasAsignadas = $rolesContextoModel
+                ->select('jornada_id')
+                ->where('id_usuario', $idUsuario)
+                ->where('tipo_contexto', 'JORNADA')
+                ->where('status_urc', 1)
+                ->where('jornada_id IS NOT NULL')
+                ->findAll();
+
+            $idsJornadasAsignadas = array_values(array_filter(array_map(
+                static fn($row) => (int) $row['jornada_id'],
+                $jornadasAsignadas
+            )));
+
+            $builder->groupStart()
+                ->where('jornadas.organizacion_id', $orgSesion);
+
+            if (!empty($idsJornadasAsignadas)) {
+                $builder->orWhereIn('jornadas.id_jornada', $idsJornadasAsignadas);
+            }
+
+            $builder->groupEnd();
+        }
+
+        // ═══ FILTRO POR BÚSQUEDA DE TEXTO ═══
+        if ($busqueda !== '') {
+            $builder->groupStart()
+                ->like('jornadas.nombre_jornada', $busqueda)
+                ->orLike('instituciones.nombre_institucion', $busqueda)
+                ->orLike('dir.ciudad', $busqueda)
+                ->orLike('organizaciones.nombre_org', $busqueda)
+                ->groupEnd();
+        }
+
+        // ═══ FILTRO POR STATUS ═══
+        if ($status !== '') {
+            $builder->where('jornadas.status_jor', (int) $status);
+        }
+
+        // ═══ ORDEN ═══
+        $direccion = ($orden === 'asc') ? 'ASC' : 'DESC';
+        $builder->orderBy('jornadas.fecha_inicio', $direccion);
+
+        $jornadas      = $builder->paginate($perPage, 'jornadas');
+        $pager         = $this->jornadaModel->pager;
+        $instituciones = (new InstitucionesModel())->findAll();
+
+        return view('jornadas/index', [
+            'jornadas'      => $jornadas,
+            'instituciones' => $instituciones,
+            'pager'         => $pager,
+            'perPage'       => $perPage,
+            'busqueda'      => $busqueda,
+            'status'        => $status,
+            'orden'         => $orden,
+        ]);
     }
-
-    // ═══ FILTRO POR BÚSQUEDA DE TEXTO ═══
-    if ($busqueda !== '') {
-        $builder->groupStart()
-            ->like('jornadas.nombre_jornada', $busqueda)
-            ->orLike('instituciones.nombre_institucion', $busqueda)
-            ->orLike('dir.ciudad', $busqueda)
-            ->orLike('organizaciones.nombre_org', $busqueda)
-        ->groupEnd();
-    }
-
-    // ═══ FILTRO POR STATUS ═══
-    if ($status !== '') {
-        $builder->where('jornadas.status_jor', (int) $status);
-    }
-
-    // ═══ ORDEN ═══
-    $direccion = ($orden === 'asc') ? 'ASC' : 'DESC';
-    $builder->orderBy('jornadas.fecha_inicio', $direccion);
-
-    $jornadas      = $builder->paginate($perPage, 'jornadas');
-    $pager         = $this->jornadaModel->pager;
-    $instituciones = (new InstitucionesModel())->findAll();
-
-    return view('jornadas/index', [
-        'jornadas'      => $jornadas,
-        'instituciones' => $instituciones,
-        'pager'         => $pager,
-        'perPage'       => $perPage,
-        'busqueda'      => $busqueda,
-        'status'        => $status,
-        'orden'         => $orden,
-    ]);
-}
 
     // ================================
     // LISTAR (AJAX) — mantener compatibilidad
@@ -109,8 +132,31 @@ class Jornadas extends BaseController
             ->where('jornadas.status_jor !=', 0)
             ->groupBy('jornadas.id_jornada');
 
-        if (!in_array($rol, [1, 2])) {
-            $builder->where('jornadas.organizacion_id', $orgSesion);
+        if (!in_array($rol, [1, 2], true)) {
+
+            $rolesContextoModel = new RolesUsuariosContextoModel();
+
+            $jornadasAsignadas = $rolesContextoModel
+                ->select('jornada_id')
+                ->where('id_usuario', (int) session('id_usuario'))
+                ->where('tipo_contexto', 'JORNADA')
+                ->where('status_urc', 1)
+                ->where('jornada_id IS NOT NULL')
+                ->findAll();
+
+            $idsJornadasAsignadas = array_values(array_filter(array_map(
+                static fn($row) => (int) $row['jornada_id'],
+                $jornadasAsignadas
+            )));
+
+            $builder->groupStart()
+                ->where('jornadas.organizacion_id', $orgSesion);
+
+            if (!empty($idsJornadasAsignadas)) {
+                $builder->orWhereIn('jornadas.id_jornada', $idsJornadasAsignadas);
+            }
+
+            $builder->groupEnd();
         }
 
         $jornadas = $builder->findAll();

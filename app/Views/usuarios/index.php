@@ -2,375 +2,450 @@
 
 <?= $this->section('css') ?>
 <style>
-  * { box-sizing: border-box; }
+    * {
+        box-sizing: border-box;
+    }
 
-  .org-page {
-    background: #eef2f7;
-    padding: 20px;
-  }
+    .org-page {
+        background: #eef2f7;
+        padding: 20px;
+    }
 
-  .org-container {
-    max-width: 1600px;
-    margin: 0 auto;
-    background: #f9fbff;
-    border-radius: 24px;
-    padding: 28px 32px 34px;
-    box-shadow: 0 8px 30px rgba(31, 42, 68, 0.08);
-  }
+    .org-container {
+        max-width: 1600px;
+        margin: 0 auto;
+        background: #f9fbff;
+        border-radius: 24px;
+        padding: 28px 32px 34px;
+        box-shadow: 0 8px 30px rgba(31, 42, 68, 0.08);
+    }
 
-  .org-breadcrumb {
-    font-size: 14px;
-    color: #6d7890;
-    margin-bottom: 18px;
-  }
+    .org-breadcrumb {
+        font-size: 14px;
+        color: #6d7890;
+        margin-bottom: 18px;
+    }
 
-  .org-breadcrumb a {
-    color: #6d7890;
-    text-decoration: none;
-  }
+    .org-breadcrumb a {
+        color: #6d7890;
+        text-decoration: none;
+    }
 
-  .org-breadcrumb span {
-    color: #3695f5;
-    font-weight: 600;
-  }
+    .org-breadcrumb span {
+        color: #3695f5;
+        font-weight: 600;
+    }
 
-  .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 20px;
-    margin-bottom: 24px;
-  }
+    .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 24px;
+    }
 
-  .title h1 {
-    font-size: 56px;
-    line-height: 1.1;
-    margin-bottom: 8px;
-    color: #101a61;
-  }
+    .title h1 {
+        font-size: 56px;
+        line-height: 1.1;
+        margin-bottom: 8px;
+        color: #101a61;
+    }
 
-  .title p {
-    font-size: 18px;
-    color: #6b7280;
-    margin: 0;
-  }
+    .title p {
+        font-size: 18px;
+        color: #6b7280;
+        margin: 0;
+    }
 
-  .filters {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 36px;
-  }
+    .filters {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+        margin-bottom: 36px;
+    }
 
-  .input-custom {
-    background: #fff;
-    border: 1px solid #dbe3f0;
-    border-radius: 16px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    padding: 0 18px;
-    color: #667085;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
-  }
+    .input-custom {
+        background: #fff;
+        border: 1px solid #dbe3f0;
+        border-radius: 16px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        padding: 0 18px;
+        color: #667085;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+    }
 
-  .input-custom input {
-    border: none;
-    outline: none;
-    width: 100%;
-    font-size: 16px;
-    margin-left: 12px;
-    background: transparent;
-    color: #334155;
-  }
+    .input-custom input {
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 16px;
+        margin-left: 12px;
+        background: transparent;
+        color: #334155;
+    }
 
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 28px;
-    margin-bottom: 26px;
-     overflow: visible !important;
-  }
-.user-item {
-  position: relative;
-  overflow: visible !important;
-  z-index: 1;
-}
-  .user-card {
-  position: relative;
-  background: #fff;
-  border-radius: 24px;
-  padding: 26px;
-  min-height: 320px;
-  box-shadow: 0 10px 28px rgba(31, 42, 68, 0.08);
-  overflow: visible !important;
-  border: 1px solid #eef2f8;
-  transition: all 0.25s ease;
-  z-index: 1;
-}
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+        margin-bottom: 26px;
+        overflow: visible !important;
+    }
 
-  .user-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 14px 34px rgba(31, 42, 68, 0.12);
-  }
+    .user-item {
+        position: relative;
+        overflow: visible !important;
+        z-index: 1;
+    }
 
-  .user-card.inactivo {
-    opacity: 0.75;
-    background: #f8fafc;
-  }
+    .user-card {
+        position: relative;
+        background: #fff;
+        border-radius: 24px;
+        padding: 26px;
+        min-height: 320px;
+        box-shadow: 0 10px 28px rgba(31, 42, 68, 0.08);
+        overflow: visible !important;
+        border: 1px solid #eef2f8;
+        transition: all 0.25s ease;
+        z-index: 1;
+    }
 
-  .menu {
-    position: absolute;
-    right: 20px;
-    top: 18px;
-    font-size: 24px;
-    color: #667085;
-    z-index: 10;
-  }
+    .user-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 14px 34px rgba(31, 42, 68, 0.12);
+    }
 
-  .avatar {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 22px;
-    overflow: hidden;
-    position: relative;
-    z-index: 2;
-  }
+    .user-card.inactivo {
+        opacity: 0.75;
+        background: #f8fafc;
+    }
 
-  .avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-  }
+    .menu {
+        position: absolute;
+        right: 20px;
+        top: 18px;
+        font-size: 24px;
+        color: #667085;
+        z-index: 10;
+    }
 
-  .blue { background: #dce8ff; color: #3695f5; }
-  .green { background: #dff4e7; color: #22c55e; }
-  .purple { background: #eedfff; color: #7c3aed; }
+    .avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 22px;
+        overflow: hidden;
+        position: relative;
+        z-index: 2;
+    }
 
-  .user-card h3 {
-    font-size: 22px;
-    margin-bottom: 10px;
-    color: #14213d;
-    position: relative;
-    z-index: 2;
-  }
+    .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
 
-  .tag {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 700;
-    margin-bottom: 18px;
-    position: relative;
-    z-index: 2;
-  }
+    .blue {
+        background: #dce8ff;
+        color: #3695f5;
+    }
 
-  .tag.blue { background: #e7f0ff; color: #3695f5; }
-  .tag.green { background: #e8f8ee; color: #16a34a; }
-  .tag.purple { background: #f1e8ff; color: #7c3aed; }
-  .tag.red { background: #fee2e2; color: #dc2626; }
-  .tag.gray { background: #eef2f7; color: #64748b; }
+    .green {
+        background: #dff4e7;
+        color: #22c55e;
+    }
 
-  .email,
-  .org-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #5b6478;
-    font-size: 16px;
-    margin-bottom: 12px;
-    position: relative;
-    z-index: 2;
-    word-break: break-word;
-  }
+    .purple {
+        background: #eedfff;
+        color: #7c3aed;
+    }
 
-  .divider {
-    height: 1px;
-    background: #e8edf5;
-    margin: 22px 0;
-    position: relative;
-    z-index: 2;
-  }
+    .user-card h3 {
+        font-size: 22px;
+        margin-bottom: 10px;
+        color: #14213d;
+        position: relative;
+        z-index: 2;
+    }
 
-  .actions {
-    display: flex;
-    gap: 12px;
-    position: relative;
-    z-index: 20;
-    flex-wrap: wrap;
-  }
+    .tag {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 18px;
+        position: relative;
+        z-index: 2;
+    }
 
-  .btn-action-custom {
-    border-radius: 14px;
-    padding: 12px 20px;
-    font-size: 15px;
-    font-weight: 700;
-    border: 1px solid #dbe3f0;
-    background: #fff;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all .2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: #3695f5;
-  }
+    .tag.blue {
+        background: #e7f0ff;
+        color: #3695f5;
+    }
 
-  .btn-action-custom:hover {
-    transform: translateY(-1px);
-    text-decoration: none;
-    background: #f8fbff;
-    color: #1b7ae2;
-  }
+    .tag.green {
+        background: #e8f8ee;
+        color: #16a34a;
+    }
 
-  .dropdown-menu {
-    border: 0;
-    border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(31, 42, 68, 0.15);
-    z-index: 9999;
-  }
+    .tag.purple {
+        background: #f1e8ff;
+        color: #7c3aed;
+    }
 
-  .dropdown-item {
-    font-weight: 600;
-    padding: 10px 16px;
-  }
+    .tag.red {
+        background: #fee2e2;
+        color: #dc2626;
+    }
 
-  .dropdown-item i {
-    width: 18px;
-  }
+    .tag.gray {
+        background: #eef2f7;
+        color: #64748b;
+    }
 
-  .bg-shape {
-    position: absolute;
-    right: -40px;
-    bottom: -50px;
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    opacity: 0.18;
-    z-index: 0;
-  }
+    .email,
+    .org-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #5b6478;
+        font-size: 16px;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 2;
+        word-break: break-word;
+    }
 
-  .shape-blue { background: #bcd3ff; }
-  .shape-green { background: #b9ebc9; }
-  .shape-purple { background: #dec5ff; }
-  .shape-red { background: #ffc5d3; }
+    .divider {
+        height: 1px;
+        background: #e8edf5;
+        margin: 22px 0;
+        position: relative;
+        z-index: 2;
+    }
 
-  .shape-icon {
-    position: absolute;
-    right: 34px;
-    bottom: 40px;
-    font-size: 64px;
-    opacity: 0.18;
-    z-index: 1;
-  }
+    .actions {
+        display: flex;
+        gap: 12px;
+        position: relative;
+        z-index: 20;
+        flex-wrap: wrap;
+    }
 
-  .meta-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #667085;
-    margin-top: 10px;
-    font-size: 16px;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
+    .btn-action-custom {
+        border-radius: 14px;
+        padding: 12px 20px;
+        font-size: 15px;
+        font-weight: 600;
+        border: 1px solid #dbe3f0;
+        background: #fff;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all .2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #3695f5;
+    }
 
-  .empty-state {
-    grid-column: 1 / -1;
-    background: #fff;
-    border: 1px dashed #cbd5e1;
-    border-radius: 20px;
-    padding: 40px 20px;
-    text-align: center;
-    color: #64748b;
-  }
-.user-item:has(.dropdown-menu.show) {
-  z-index: 99999;
-}
+    .btn-action-custom:hover {
+        transform: translateY(-1px);
+        text-decoration: none;
+        background: #f8fbff;
+        color: #1b7ae2;
+    }
 
-.user-card:has(.dropdown-menu.show) {
-  z-index: 99999;
-}
+    .dropdown-menu {
+        border: 0;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(31, 42, 68, 0.15);
+        z-index: 9999;
+    }
 
-.dropdown {
-  position: relative;
-  z-index: 100000;
-}
+    .dropdown-item {
+        
+        padding: 10px 16px;
+    }
+
+    .dropdown-item i {
+        width: 18px;
+    }
+
+    .bg-shape {
+        position: absolute;
+        right: -40px;
+        bottom: -50px;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        opacity: 0.18;
+        z-index: 0;
+    }
+
+    .shape-blue {
+        background: #bcd3ff;
+    }
+
+    .shape-green {
+        background: #b9ebc9;
+    }
+
+    .shape-purple {
+        background: #dec5ff;
+    }
+
+    .shape-red {
+        background: #ffc5d3;
+    }
+
+    .shape-icon {
+        position: absolute;
+        right: 34px;
+        bottom: 40px;
+        font-size: 64px;
+        opacity: 0.18;
+        z-index: 1;
+    }
+
+    .meta-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #667085;
+        margin-top: 10px;
+        font-size: 16px;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .empty-state {
+        grid-column: 1 / -1;
+        background: #fff;
+        border: 1px dashed #cbd5e1;
+        border-radius: 20px;
+        padding: 40px 20px;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .user-item:has(.dropdown-menu.show) {
+        z-index: 99999;
+    }
+
+    .user-card:has(.dropdown-menu.show) {
+        z-index: 99999;
+    }
+
+    .dropdown {
+        position: relative;
+        z-index: 100000;
+    }
 
 
-.dropdown-menu {
-  border: 0;
-  border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(31, 42, 68, 0.15);
-  z-index: 100001 !important;
-}
-  @media (max-width: 1200px) {
-    .cards { grid-template-columns: 1fr 1fr; }
-    .topbar { flex-direction: column; align-items: stretch; }
-    .title h1 { font-size: 40px; }
-  }
+    .dropdown-menu {
+        border: 0;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(31, 42, 68, 0.15);
+        z-index: 100001 !important;
+    }
 
-  @media (max-width: 768px) {
-    .org-page { padding: 12px; }
-    .org-container { padding: 20px; border-radius: 18px; }
-    .cards { grid-template-columns: 1fr; gap: 20px; }
-    .title h1 { font-size: 32px; }
-    .actions { flex-direction: column; }
-    .btn-action-custom { justify-content: center; width: 100%; }
-  }
+    @media (max-width: 1200px) {
+        .cards {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .topbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .title h1 {
+            font-size: 40px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .org-page {
+            padding: 12px;
+        }
+
+        .org-container {
+            padding: 20px;
+            border-radius: 18px;
+        }
+
+        .cards {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .title h1 {
+            font-size: 32px;
+        }
+
+        .actions {
+            flex-direction: column;
+        }
+
+        .btn-action-custom {
+            justify-content: center;
+            width: 100%;
+        }
+    }
 </style>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
 <div class="org-page">
-  <div class="org-container">
+    <div class="org-container">
 
-    <div class="org-breadcrumb">
-      <a href="<?= base_url('inicio') ?>">Inicio</a> &nbsp;›&nbsp; <span>Usuarios</span>
+        <div class="org-breadcrumb">
+            <a href="<?= base_url('inicio') ?>">Inicio</a> &nbsp;›&nbsp; <span>Usuarios</span>
+        </div>
+
+        <div class="topbar">
+            <div class="title">
+                <h1>Usuarios</h1>
+                <p>Gestiona los usuarios registrados en Digisalud.</p>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="input-custom">
+                <i class="fas fa-search"></i>
+                <input
+                    type="text"
+                    id="searchUser"
+                    placeholder="Buscar usuario por nombre, correo, rol u organización...">
+            </div>
+        </div>
+
+        <div class="cards" id="contenedorUsuarios"></div>
+
+        <div id="sinResultados" class="empty-state d-none">
+            <i class="fas fa-users-slash fa-2x mb-3"></i>
+            <h4 class="mb-2">No se encontraron usuarios</h4>
+            <p class="mb-0">Intenta con otro criterio de búsqueda.</p>
+        </div>
+
+        <div class="meta-row">
+            <div>
+                Mostrando <span id="totalUsuarios">0</span> usuario<span id="pluralUsuarios">s</span>
+            </div>
+        </div>
+
     </div>
-
-    <div class="topbar">
-      <div class="title">
-        <h1>Usuarios</h1>
-        <p>Gestiona los usuarios registrados en Digisalud.</p>
-      </div>
-    </div>
-
-    <div class="filters">
-      <div class="input-custom">
-        <i class="fas fa-search"></i>
-        <input
-          type="text"
-          id="searchUser"
-          placeholder="Buscar usuario por nombre, correo, rol u organización..."
-        >
-      </div>
-    </div>
-
-    <div class="cards" id="contenedorUsuarios"></div>
-
-    <div id="sinResultados" class="empty-state d-none">
-      <i class="fas fa-users-slash fa-2x mb-3"></i>
-      <h4 class="mb-2">No se encontraron usuarios</h4>
-      <p class="mb-0">Intenta con otro criterio de búsqueda.</p>
-    </div>
-
-    <div class="meta-row">
-      <div>
-        Mostrando <span id="totalUsuarios">0</span> usuario<span id="pluralUsuarios">s</span>
-      </div>
-    </div>
-
-  </div>
 </div>
 
 <?= $this->include('usuarios/modals/agregarOrg') ?>
@@ -383,79 +458,79 @@
 <?= $this->section('scripts') ?>
 
 <script>
-$(document).ready(function () {
+    $(document).ready(function() {
 
-    const orgSesion = <?= json_encode($orgSesion) ?>;
-    const rolSesion = parseInt(<?= json_encode($rolSesion) ?>, 10) || 0;
-    const baseUrl   = '<?= rtrim(base_url(), "/") ?>/';
+        const orgSesion = <?= json_encode($orgSesion ?? null) ?>;
+        const rolSesion = parseInt(<?= json_encode($rolSesion ?? 0) ?>, 10) || 0;
+        const baseUrl = '<?= rtrim(base_url(), "/") ?>/';
 
-    const csrfName  = '<?= csrf_token() ?>';
-    let csrfToken   = '<?= csrf_hash() ?>';
+        const csrfName = '<?= csrf_token() ?>';
+        let csrfToken = '<?= csrf_hash() ?>';
 
-    const urlListado           = "<?= base_url('usuarios/listado') ?>";
-    const urlAgregarOrgBase    = "<?= base_url('usuarios/agregar-organizacion') ?>";
-    const urlCambiarCorreoBase = "<?= base_url('usuarios/cambiar-correo') ?>";
-    const urlCambiarPassBase   = "<?= base_url('usuarios/cambiar-password') ?>";
-    const urlBloquearBase      = "<?= base_url('usuarios/bloquear') ?>";
+        const urlListado = "<?= base_url('usuarios/listado') ?>";
+        const urlAgregarOrgBase = "<?= base_url('usuarios/agregar-organizacion') ?>";
+        const urlCambiarCorreoBase = "<?= base_url('usuarios/cambiar-correo') ?>";
+        const urlCambiarPassBase = "<?= base_url('usuarios/cambiar-password') ?>";
+        const urlBloquearBase = "<?= base_url('usuarios/bloquear') ?>";
 
-    let usuariosData = [];
+        let usuariosData = [];
 
-    function escapeHtml(value) {
-        return String(value ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
 
-    function cargarUsuarios() {
-        $.ajax({
-            url: urlListado,
-            type: "GET",
-            dataType: "json",
-            success: function(response) {
-                usuariosData = response.data || [];
-                $('#totalUsuarios').text(usuariosData.length);
-                $('#pluralUsuarios').text(usuariosData.length === 1 ? '' : 's');
-                renderUsuarios(usuariosData);
-            },
-            error: function(xhr, status, error) {
-                console.error("Error cargando usuarios:", error);
+        function cargarUsuarios() {
+            $.ajax({
+                url: urlListado,
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    usuariosData = response.data || [];
+                    $('#totalUsuarios').text(usuariosData.length);
+                    $('#pluralUsuarios').text(usuariosData.length === 1 ? '' : 's');
+                    renderUsuarios(usuariosData);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error cargando usuarios:", error);
 
-                $('#contenedorUsuarios').html(`
+                    $('#contenedorUsuarios').html(`
                     <div class="empty-state">
                         <i class="fas fa-triangle-exclamation fa-2x mb-3"></i>
                         <h4 class="mb-2">Error al cargar usuarios</h4>
                         <p class="mb-0">Ocurrió un problema al consultar el listado.</p>
                     </div>
                 `);
-            }
-        });
-    }
+                }
+            });
+        }
 
-    function nombreRolAmigable(rolNombreOriginal) {
-        if (!rolNombreOriginal) return 'Sin rol';
+        function nombreRolAmigable(rolNombreOriginal) {
+            if (!rolNombreOriginal) return 'Sin rol';
 
-        const roles = {
-            'ADMIN_DIGI': 'Digisalud',
-            'ADMIN_ORG': 'Administrador Org',
-            'REGISTRO': 'Registro de Data',
-            'ADMINISTRADOR': 'TI Digisalud',
-            'COORDINADOR': 'Coordinador Org',
-            'VIEWER': 'Ver Data'
-        };
+            const roles = {
+                'ADMIN_DIGI': 'Digisalud',
+                'ADMIN_ORG': 'Administrador Org',
+                'REGISTRO': 'Registro de Data',
+                'ADMINISTRADOR': 'TI Digisalud',
+                'COORDINADOR': 'Coordinador Org',
+                'VIEWER': 'Ver Data'
+            };
 
-        return roles[rolNombreOriginal] || rolNombreOriginal;
-    }
+            return roles[rolNombreOriginal] || rolNombreOriginal;
+        }
 
-    function generarAvatar(row, color) {
-        const nombre = row.nombres ?? '';
-        const apellido = row.apellidos ?? '';
-        const fotoUrl = row.foto_url ?? '';
+        function generarAvatar(row, color) {
+            const nombre = row.nombres ?? '';
+            const apellido = row.apellidos ?? '';
+            const fotoUrl = row.foto_url ?? '';
 
-        if (fotoUrl) {
-            return `
+            if (fotoUrl) {
+                return `
                 <div class="avatar ${color}">
                     <img 
                         src="${baseUrl}${escapeHtml(fotoUrl)}" 
@@ -464,67 +539,67 @@ $(document).ready(function () {
                     >
                 </div>
             `;
+            }
+
+            const inicialN = nombre ? nombre.charAt(0).toUpperCase() : '';
+            const inicialA = apellido ? apellido.charAt(0).toUpperCase() : '';
+            const iniciales = inicialN + inicialA || '?';
+
+            return `<div class="avatar ${color}">${escapeHtml(iniciales)}</div>`;
         }
 
-        const inicialN = nombre ? nombre.charAt(0).toUpperCase() : '';
-        const inicialA = apellido ? apellido.charAt(0).toUpperCase() : '';
-        const iniciales = inicialN + inicialA || '?';
+        function renderUsuarios(data) {
+            const contenedor = $('#contenedorUsuarios');
+            const sinResultados = $('#sinResultados');
 
-        return `<div class="avatar ${color}">${escapeHtml(iniciales)}</div>`;
-    }
+            contenedor.html('');
 
-    function renderUsuarios(data) {
-        const contenedor = $('#contenedorUsuarios');
-        const sinResultados = $('#sinResultados');
+            if (!data.length) {
+                sinResultados.removeClass('d-none');
+                return;
+            }
 
-        contenedor.html('');
+            sinResultados.addClass('d-none');
 
-        if (!data.length) {
-            sinResultados.removeClass('d-none');
-            return;
-        }
+            const colores = ['blue', 'green', 'purple'];
+            const shapes = ['shape-blue', 'shape-green', 'shape-purple', 'shape-red'];
 
-        sinResultados.addClass('d-none');
+            data.forEach((row, index) => {
+                const color = colores[index % colores.length];
+                const shapeColor = shapes[index % shapes.length];
 
-        const colores = ['blue', 'green', 'purple'];
-        const shapes = ['shape-blue', 'shape-green', 'shape-purple', 'shape-red'];
+                const nombre = row.nombres ?? '';
+                const apellido = row.apellidos ?? '';
+                const correo = row.email ?? '';
+                const organizacion = row.nombre_organizacion ?? 'Independiente';
+                const idUsuario = row.id_usuario ?? '';
+                const rolNombreOriginal = row.nombre_rol ?? '';
+                const nombreMostrarRol = nombreRolAmigable(rolNombreOriginal);
+                const organizacionId = parseInt(row.organizacion_id ?? 0, 10);
+                const statusUsu = parseInt(row.status_usu ?? 1, 10);
 
-        data.forEach((row, index) => {
-            const color = colores[index % colores.length];
-            const shapeColor = shapes[index % shapes.length];
+                const esIndependiente = organizacionId === 1;
+                const puedeAgregarOrg = esIndependiente && [1, 2, 3].includes(rolSesion);
+                const puedeBloquear = [1, 2, 3].includes(rolSesion);
 
-            const nombre = row.nombres ?? '';
-            const apellido = row.apellidos ?? '';
-            const correo = row.email ?? '';
-            const organizacion = row.nombre_organizacion ?? 'Independiente';
-            const idUsuario = row.id_usuario ?? '';
-            const rolNombreOriginal = row.nombre_rol ?? '';
-            const nombreMostrarRol = nombreRolAmigable(rolNombreOriginal);
-            const organizacionId = parseInt(row.organizacion_id ?? 0, 10);
-            const statusUsu = parseInt(row.status_usu ?? 1, 10);
+                const tagRol = rolNombreOriginal ?
+                    `<span class="tag ${color}"><i class="fas fa-user-shield me-1"></i>${escapeHtml(nombreMostrarRol)}</span>` :
+                    `<span class="tag red"><i class="fas fa-exclamation-triangle me-1"></i>Sin rol</span>`;
 
-            const esIndependiente = organizacionId === 1;
-            const puedeAgregarOrg = esIndependiente && [1,2,3].includes(rolSesion);
-            const puedeBloquear   = [1,2,3].includes(rolSesion);
+                let acciones = '';
 
-            const tagRol = rolNombreOriginal
-                ? `<span class="tag ${color}"><i class="fas fa-user-shield me-1"></i>${escapeHtml(nombreMostrarRol)}</span>`
-                : `<span class="tag red"><i class="fas fa-exclamation-triangle me-1"></i>Sin rol</span>`;
-
-            let acciones = '';
-
-            if (puedeAgregarOrg) {
-                acciones += `
+                if (puedeAgregarOrg) {
+                    acciones += `
                     <li>
                         <a class="dropdown-item btnAgregarOrg" href="javascript:void(0)" data-id="${idUsuario}">
                             <i class="bi bi-person-fill-add me-2"></i> Agregar organización
                         </a>
                     </li>
                 `;
-            }
+                }
 
-            if (puedeBloquear && !puedeAgregarOrg) {
-                acciones += `
+                if (puedeBloquear && !puedeAgregarOrg) {
+                    acciones += `
                     <li>
                         <a class="dropdown-item btnCorreo" href="javascript:void(0)" data-id="${idUsuario}">
                             <i class="bi bi-envelope-fill me-2"></i> Cambiar correo
@@ -542,17 +617,17 @@ $(document).ready(function () {
                         </a>
                     </li>
                 `;
-            }
+                }
 
-            if (acciones === '') {
-                acciones = `<li><span class="dropdown-item-text text-muted small px-3">Sin acciones disponibles</span></li>`;
-            }
+                if (acciones === '') {
+                    acciones = `<li><span class="dropdown-item-text text-muted small px-3">Sin acciones disponibles</span></li>`;
+                }
 
-            const avatarHtml = generarAvatar(row, color);
+                const avatarHtml = generarAvatar(row, color);
 
-            const searchText = `${nombre} ${apellido} ${correo} ${organizacion} ${nombreMostrarRol}`.toLowerCase();
+                const searchText = `${nombre} ${apellido} ${correo} ${organizacion} ${nombreMostrarRol}`.toLowerCase();
 
-            const card = `
+                const card = `
                 <div class="user-item" data-search="${escapeHtml(searchText)}">
                     <div class="user-card ${statusUsu !== 1 ? 'inactivo' : ''}">
                         <div class="menu">
@@ -601,203 +676,223 @@ $(document).ready(function () {
                 </div>
             `;
 
-            contenedor.append(card);
-        });
+                contenedor.append(card);
+            });
 
-        activarEventos();
-    }
+            activarEventos();
+        }
 
-    $('#searchUser').on('keyup', function() {
-        const texto = $(this).val().toLowerCase().trim();
-        let visibles = 0;
+        $('#searchUser').on('keyup', function() {
+            const texto = $(this).val().toLowerCase().trim();
+            let visibles = 0;
 
-        $('.user-item').each(function() {
-            const contenido = String($(this).data('search') || '');
+            $('.user-item').each(function() {
+                const contenido = String($(this).data('search') || '');
 
-            if (contenido.includes(texto)) {
-                $(this).show();
-                visibles++;
+                if (contenido.includes(texto)) {
+                    $(this).show();
+                    visibles++;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            $('#totalUsuarios').text(visibles);
+            $('#pluralUsuarios').text(visibles === 1 ? '' : 's');
+
+            if (visibles === 0) {
+                $('#sinResultados').removeClass('d-none');
             } else {
-                $(this).hide();
+                $('#sinResultados').addClass('d-none');
             }
         });
 
-        $('#totalUsuarios').text(visibles);
-        $('#pluralUsuarios').text(visibles === 1 ? '' : 's');
-
-        if (visibles === 0) {
-            $('#sinResultados').removeClass('d-none');
-        } else {
-            $('#sinResultados').addClass('d-none');
-        }
-    });
-
-    function cerrarModal(idModal) {
-        const el = document.getElementById(idModal);
-        const modal = bootstrap.Modal.getInstance(el);
-        if (modal) modal.hide();
-    }
-
-    function activarEventos() {
-        $('.btnAgregarOrg').off('click').on('click', function () {
-            $('#agregarId').val($(this).data('id'));
-            new bootstrap.Modal(document.getElementById('modalAgregarOrg')).show();
-        });
-
-        $('.btnBloquear').off('click').on('click', function () {
-            $('#bloqueoId').val($(this).data('id'));
-            $('#textoBloqueo').html("¿Deseas <b>cambiar el estado</b> de este usuario?");
-            new bootstrap.Modal(document.getElementById('modalBloqueo')).show();
-        });
-
-        $('.btnCorreo').off('click').on('click', function () {
-            $('#correoId').val($(this).data('id'));
-            $('#nuevoCorreo').val("");
-            new bootstrap.Modal(document.getElementById('modalCorreo')).show();
-        });
-
-        $('.btnPass').off('click').on('click', function () {
-            $('#passId').val($(this).data('id'));
-            $('#nuevoPass').val("");
-            $('#confirmPass').val("");
-            new bootstrap.Modal(document.getElementById('modalPassword')).show();
-        });
-    }
-
-    $('#formAgregarOrg').on('submit', function(e) {
-        e.preventDefault();
-
-        fetch(`${urlAgregarOrgBase}/${$('#agregarId').val()}`, {
-            method: "POST",
-            body: new URLSearchParams({
-                [csrfName]: csrfToken,
-                organizacion_id: $('#selectOrg').val(),
-                rol_id: $('#selectRol').val()
-            })
-        })
-        .then(r => r.json())
-        .then(d => {
-            if (d.error) {
-                Swal.fire({ icon: 'warning', title: 'Atención', text: d.error, confirmButtonColor: '#00A86B' });
-                return;
-            }
-
-            cerrarModal('modalAgregarOrg');
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Usuario actualizado',
-                text: 'La organización fue asignada correctamente.',
-                confirmButtonColor: '#00A86B'
-            });
-
-            cargarUsuarios();
-        })
-        .catch(err => console.error(err));
-    });
-
-    $('#formCorreo').on('submit', function(e) {
-        e.preventDefault();
-
-        fetch(`${urlCambiarCorreoBase}/${$('#correoId').val()}`, {
-            method: "POST",
-            body: new URLSearchParams({
-                [csrfName]: csrfToken,
-                email: $('#nuevoCorreo').val()
-            })
-        })
-        .then(r => r.json())
-        .then(d => {
-            if (d.error) {
-                Swal.fire({ icon: 'warning', title: 'Atención', text: d.error, confirmButtonColor: '#00A86B' });
-                return;
-            }
-
-            cerrarModal('modalCorreo');
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Correo actualizado',
-                text: 'El correo se cambió correctamente.',
-                confirmButtonColor: '#00A86B'
-            });
-
-            cargarUsuarios();
-        })
-        .catch(err => console.error(err));
-    });
-
-    $('#formPassword').on('submit', function(e) {
-        e.preventDefault();
-
-        if ($('#nuevoPass').val() !== $('#confirmPass').val()) {
-            Swal.fire({
-                icon: 'warning',
-                title: '¡Las contraseñas no coinciden!',
-                text: 'Por favor revisar.',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#00A86B'
-            });
-            return;
+        function cerrarModal(idModal) {
+            const el = document.getElementById(idModal);
+            const modal = bootstrap.Modal.getInstance(el);
+            if (modal) modal.hide();
         }
 
-        fetch(`${urlCambiarPassBase}/${$('#passId').val()}`, {
-            method: "POST",
-            body: new URLSearchParams({
-                [csrfName]: csrfToken,
-                password: $('#nuevoPass').val()
-            })
-        })
-        .then(r => r.json())
-        .then(d => {
-            if (d.error) {
-                Swal.fire({ icon: 'warning', title: 'Atención', text: d.error, confirmButtonColor: '#00A86B' });
+        function activarEventos() {
+            $('.btnAgregarOrg').off('click').on('click', function() {
+                $('#agregarId').val($(this).data('id'));
+                new bootstrap.Modal(document.getElementById('modalAgregarOrg')).show();
+            });
+
+            $('.btnBloquear').off('click').on('click', function() {
+                $('#bloqueoId').val($(this).data('id'));
+                $('#textoBloqueo').html("¿Deseas <b>cambiar el estado</b> de este usuario?");
+                new bootstrap.Modal(document.getElementById('modalBloqueo')).show();
+            });
+
+            $('.btnCorreo').off('click').on('click', function() {
+                $('#correoId').val($(this).data('id'));
+                $('#nuevoCorreo').val("");
+                new bootstrap.Modal(document.getElementById('modalCorreo')).show();
+            });
+
+            $('.btnPass').off('click').on('click', function() {
+                $('#passId').val($(this).data('id'));
+                $('#nuevoPass').val("");
+                $('#confirmPass').val("");
+                new bootstrap.Modal(document.getElementById('modalPassword')).show();
+            });
+        }
+
+        $('#formAgregarOrg').on('submit', function(e) {
+            e.preventDefault();
+
+            fetch(`${urlAgregarOrgBase}/${$('#agregarId').val()}`, {
+                    method: "POST",
+                    body: new URLSearchParams({
+                        [csrfName]: csrfToken,
+                        organizacion_id: $('#selectOrg').val(),
+                        id_rol: $('#selectRol').val()
+                    })
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.error) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atención',
+                            text: d.error,
+                            confirmButtonColor: '#00A86B'
+                        });
+                        return;
+                    }
+
+                    cerrarModal('modalAgregarOrg');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Usuario actualizado',
+                        text: 'La organización fue asignada correctamente.',
+                        confirmButtonColor: '#00A86B'
+                    });
+
+                    cargarUsuarios();
+                })
+                .catch(err => console.error(err));
+        });
+
+        $('#formCorreo').on('submit', function(e) {
+            e.preventDefault();
+
+            fetch(`${urlCambiarCorreoBase}/${$('#correoId').val()}`, {
+                    method: "POST",
+                    body: new URLSearchParams({
+                        [csrfName]: csrfToken,
+                        email: $('#nuevoCorreo').val()
+                    })
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.error) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atención',
+                            text: d.error,
+                            confirmButtonColor: '#00A86B'
+                        });
+                        return;
+                    }
+
+                    cerrarModal('modalCorreo');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Correo actualizado',
+                        text: 'El correo se cambió correctamente.',
+                        confirmButtonColor: '#00A86B'
+                    });
+
+                    cargarUsuarios();
+                })
+                .catch(err => console.error(err));
+        });
+
+        $('#formPassword').on('submit', function(e) {
+            e.preventDefault();
+
+            if ($('#nuevoPass').val() !== $('#confirmPass').val()) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: '¡Las contraseñas no coinciden!',
+                    text: 'Por favor revisar.',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#00A86B'
+                });
                 return;
             }
 
-            cerrarModal('modalPassword');
+            fetch(`${urlCambiarPassBase}/${$('#passId').val()}`, {
+                    method: "POST",
+                    body: new URLSearchParams({
+                        [csrfName]: csrfToken,
+                        password: $('#nuevoPass').val()
+                    })
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.error) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atención',
+                            text: d.error,
+                            confirmButtonColor: '#00A86B'
+                        });
+                        return;
+                    }
 
-            Swal.fire({
-                icon: 'success',
-                title: '¡Contraseña actualizada!',
-                text: 'La contraseña se cambió correctamente.',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#00A86B'
-            });
-        })
-        .catch(err => console.error(err));
+                    cerrarModal('modalPassword');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Contraseña actualizada!',
+                        text: 'La contraseña se cambió correctamente.',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#00A86B'
+                    });
+                })
+                .catch(err => console.error(err));
+        });
+
+        $('#btnConfirmBloqueo').on('click', function() {
+            fetch(`${urlBloquearBase}/${$('#bloqueoId').val()}`, {
+                    method: "POST",
+                    body: new URLSearchParams({
+                        [csrfName]: csrfToken
+                    })
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.error) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Atención',
+                            text: d.error,
+                            confirmButtonColor: '#00A86B'
+                        });
+                        return;
+                    }
+
+                    cerrarModal('modalBloqueo');
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Estado actualizado',
+                        text: 'El estado del usuario fue modificado correctamente.',
+                        confirmButtonColor: '#00A86B'
+                    });
+
+                    cargarUsuarios();
+                })
+                .catch(err => console.error(err));
+        });
+
+        cargarUsuarios();
     });
-
-    $('#btnConfirmBloqueo').on('click', function() {
-        fetch(`${urlBloquearBase}/${$('#bloqueoId').val()}`, {
-            method: "POST",
-            body: new URLSearchParams({
-                [csrfName]: csrfToken
-            })
-        })
-        .then(r => r.json())
-        .then(d => {
-            if (d.error) {
-                Swal.fire({ icon: 'warning', title: 'Atención', text: d.error, confirmButtonColor: '#00A86B' });
-                return;
-            }
-
-            cerrarModal('modalBloqueo');
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Estado actualizado',
-                text: 'El estado del usuario fue modificado correctamente.',
-                confirmButtonColor: '#00A86B'
-            });
-
-            cargarUsuarios();
-        })
-        .catch(err => console.error(err));
-    });
-
-    cargarUsuarios();
-});
 </script>
 
 <?= $this->endSection() ?>

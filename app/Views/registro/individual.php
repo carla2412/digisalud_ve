@@ -99,7 +99,7 @@
                                     <span class="input-group-text bg-light">
                                         <i class="fas fa-phone"></i>
                                     </span>
-                                    <input type="tel" class="form-control" id="telefono" name="telefono" pattern="[0-9+ ]{6,15}" placeholder="+58 412 1234567" required>
+                                    <input type="tel" class="form-control" id="telefono" name="telefono" pattern="[0-9+ ]{6,15}" placeholder="412 1234567" required>
                                     <div class="invalid-feedback">Ingresa un número de teléfono válido.</div>
                                 </div>
                             </div>

@@ -37,16 +37,24 @@ class JornadaUsuariosController extends BaseController
         // Usuarios ya asignados a esta jornada
         $rucModel = new RolesUsuariosContextoModel();
         $usuariosAsignados = $rucModel
-            ->select('roles_usuarios_contexto.*, usuarios.nombres, usuarios.apellidos, 
-                      usuarios.profesion, usuarios.organizacion_id,
-                      roles.nombre_rol, organizacion.nombre_org')
-            ->join('usuarios', 'usuarios.id_usuario = roles_usuarios_contexto.id_usuario')
-            ->join('roles', 'roles.id_rol = roles_usuarios_contexto.id_rol')
-            ->join('organizacion', 'organizacion.id_organizacion = usuarios.organizacion_id', 'left')
-            ->where('roles_usuarios_contexto.jornada_id', $jornada_id)
-            ->where('roles_usuarios_contexto.tipo_contexto', 'JORNADA')
-            ->where('roles_usuarios_contexto.status_urc', 1)
-            ->findAll();
+    ->select('
+        roles_usuarios_contexto.*,
+        usuarios.nombres,
+        usuarios.apellidos,
+        usuarios.profesion,
+        usuarios.organizacion_id AS organizacion_principal_id,
+        org_principal.nombre_org AS nombre_org_principal,
+        org_contexto.nombre_org AS nombre_org_contexto,
+        roles.nombre_rol
+    ')
+    ->join('usuarios', 'usuarios.id_usuario = roles_usuarios_contexto.id_usuario')
+    ->join('roles', 'roles.id_rol = roles_usuarios_contexto.id_rol')
+    ->join('organizacion AS org_principal', 'org_principal.id_organizacion = usuarios.organizacion_id', 'left')
+    ->join('organizacion AS org_contexto', 'org_contexto.id_organizacion = roles_usuarios_contexto.organizacion_id', 'left')
+    ->where('roles_usuarios_contexto.jornada_id', $jornada_id)
+    ->where('roles_usuarios_contexto.tipo_contexto', 'JORNADA')
+    ->where('roles_usuarios_contexto.status_urc', 1)
+    ->findAll();
 
         // Rol del usuario en sesión para controlar permisos en la vista
         $rolSesion = session('id_rol');
@@ -206,18 +214,28 @@ class JornadaUsuariosController extends BaseController
         $rucModel = new RolesUsuariosContextoModel();
 
         $usuarios = $rucModel
-            ->select('roles_usuarios_contexto.id_ruc, roles_usuarios_contexto.id_rol,
-                      roles_usuarios_contexto.fecha_asignacion,
-                      usuarios.id_usuario, usuarios.nombres, usuarios.apellidos, 
-                      usuarios.profesion, usuarios.organizacion_id,
-                      roles.nombre_rol, organizacion.nombre_org')
-            ->join('usuarios', 'usuarios.id_usuario = roles_usuarios_contexto.id_usuario')
-            ->join('roles', 'roles.id_rol = roles_usuarios_contexto.id_rol')
-            ->join('organizacion', 'organizacion.id_organizacion = usuarios.organizacion_id', 'left')
-            ->where('roles_usuarios_contexto.jornada_id', $jornada_id)
-            ->where('roles_usuarios_contexto.tipo_contexto', 'JORNADA')
-            ->where('roles_usuarios_contexto.status_urc', 1)
-            ->findAll();
+    ->select('
+        roles_usuarios_contexto.id_ruc,
+        roles_usuarios_contexto.id_rol,
+        roles_usuarios_contexto.organizacion_id AS organizacion_contexto_id,
+        roles_usuarios_contexto.fecha_asignacion,
+        usuarios.id_usuario,
+        usuarios.nombres,
+        usuarios.apellidos,
+        usuarios.profesion,
+        usuarios.organizacion_id AS organizacion_principal_id,
+        org_principal.nombre_org AS nombre_org_principal,
+        org_contexto.nombre_org AS nombre_org_contexto,
+        roles.nombre_rol
+    ')
+    ->join('usuarios', 'usuarios.id_usuario = roles_usuarios_contexto.id_usuario')
+    ->join('roles', 'roles.id_rol = roles_usuarios_contexto.id_rol')
+    ->join('organizacion AS org_principal', 'org_principal.id_organizacion = usuarios.organizacion_id', 'left')
+    ->join('organizacion AS org_contexto', 'org_contexto.id_organizacion = roles_usuarios_contexto.organizacion_id', 'left')
+    ->where('roles_usuarios_contexto.jornada_id', $jornada_id)
+    ->where('roles_usuarios_contexto.tipo_contexto', 'JORNADA')
+    ->where('roles_usuarios_contexto.status_urc', 1)
+    ->findAll();
 
         return $this->response->setJSON(['data' => $usuarios]);
     }

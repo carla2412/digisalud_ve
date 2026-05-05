@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
@@ -9,7 +10,7 @@ class Registro extends BaseController
 {
     public function __construct()
     {
-        helper('url');  
+        helper('url');
     }
     public function individual()
     {
@@ -18,21 +19,20 @@ class Registro extends BaseController
 
     public function organizacion()
     {
-        
+
         return view('registro/organizacion');
-        
     }
 
- public function guardarIndividual()
+    public function guardarIndividual()
     {
         $usuarios       = new UsuarioModel();
         $direcciones    = new DireccionModel();
-        $rolesContexto  = new \App\Models\RolesUsuariosContextoModel(); // 👈 Modelo nuevo
+        $rolesContexto  = new \App\Models\RolesUsuariosContextoModel(); //  
 
         $db = \Config\Database::connect();
-        $db->transStart(); // 🔒 Iniciar transacción segura
+        $db->transStart(); //   Iniciar transacción segura
 
-        // 1️⃣ Guardar dirección
+        // 1 Guardar dirección
         $direccionData = [
             'pais'        => $this->request->getPost('pais'),
             'estado'      => $this->request->getPost('estado'),
@@ -49,7 +49,7 @@ class Registro extends BaseController
 
         $direccionId = $direcciones->getInsertID();
 
-        // 2️⃣ Guardar usuario — AHORA INCLUYE PROFESIÓN
+        // 2 Guardar usuario — AHORA INCLUYE PROFESIÓN
         $data = [
             'nombres'        => $this->request->getPost('nombres'),
             'apellidos'      => $this->request->getPost('apellidos'),
@@ -61,7 +61,7 @@ class Registro extends BaseController
             'telefono'       => $this->request->getPost('telefono'),
             'profesion'      => $this->request->getPost('profesion'),    // 👈 NUEVO
             'direccion_id'   => $direccionId,
-            'organizacion_id'=> 1,
+            'organizacion_id' => 1,
             'status_usu'     => '1'
         ];
 
@@ -71,16 +71,16 @@ class Registro extends BaseController
 
         $usuarioId = $usuarios->getInsertID();
 
-        // 3️⃣ ASIGNAR ROL POR DEFECTO (id_rol = 6)
+        // 3 ASIGNAR ROL POR DEFECTO (id_rol = 6)
         $rolesContexto->insert([
-            'usuario_id'      => $usuarioId,
+            'id_usuario'      => $usuarioId,
             'id_rol'          => 8,   //   INDIVIDUAL
             'organizacion_id' => 1,   //   Independiente
             'tipo_contexto'    => 'GLOBAL',
             'status_urc'      => '1',
         ]);
 
-        $db->transComplete(); // 🔓 Ejecutar transacción
+        $db->transComplete(); //   Ejecutar transacción
 
         if (!$db->transStatus()) {
             dd('❌ Error en la transacción completa');
@@ -93,95 +93,92 @@ class Registro extends BaseController
 
 
     public function guardarOrganizacion()
-{
-    helper('url');
+    {
+        helper('url');
 
-    // Modelos
-    $organizacionModel = new \App\Models\OrganizacionModel();
-    $usuarioModel      = new \App\Models\UsuarioModel();
-    $direccionModel    = new \App\Models\DireccionModel();
-    $rolesContexto     = new \App\Models\RolesUsuariosContextoModel();
+        // Modelos
+        $organizacionModel = new \App\Models\OrganizacionModel();
+        $usuarioModel      = new \App\Models\UsuarioModel();
+        $direccionModel    = new \App\Models\DireccionModel();
+        $rolesContexto     = new \App\Models\RolesUsuariosContextoModel();
 
-    $db = \Config\Database::connect();
-    $db->transStart(); //   Iniciar transacción segura
+        $db = \Config\Database::connect();
+        $db->transStart(); //   Iniciar transacción segura
 
-    // ======  Insertar la dirección ======
-    $direccionData = [
-        'pais'        => $this->request->getPost('pais'),
-        'estado'      => $this->request->getPost('estado'),
-        'municipio'   => $this->request->getPost('municipio'),
-        'parroquia'   => $this->request->getPost('parroquia'),
-        'ciudad'      => $this->request->getPost('ciudad'),
-        'detalle'     => $this->request->getPost('detalle'),
-        'coordenadas' => null,
-    ];
+        // ======  1 Insertar la dirección ======
+        $direccionData = [
+            'pais'        => $this->request->getPost('pais'),
+            'estado'      => $this->request->getPost('estado'),
+            'municipio'   => $this->request->getPost('municipio'),
+            'parroquia'   => $this->request->getPost('parroquia'),
+            'ciudad'      => $this->request->getPost('ciudad'),
+            'detalle'     => $this->request->getPost('detalle'),
+            'coordenadas' => null,
+        ];
 
-    if (!$direccionModel->insert($direccionData)) {
-        dd('❌ Error insertando dirección:', $direccionModel->errors());
+        if (!$direccionModel->insert($direccionData)) {
+            dd('❌ Error insertando dirección:', $direccionModel->errors());
+        }
+
+        $direccionId = $direccionModel->getInsertID();
+
+        // ====== 2 Insertar la organización ======
+        $orgData = [
+            'nombre_org'         => $this->request->getPost('nombreOrg'),
+            'tipo'               => $this->request->getPost('tipoOrg'),
+            'categoria'          => $this->request->getPost('categoriaOrg'),
+            'telefono'           => $this->request->getPost('telefono'),
+            'email'             => $this->request->getPost('email'),
+            'nombre_responsable' => $this->request->getPost('nombres') . ' ' . $this->request->getPost('apellidos'),
+            'direccion_id'       => $direccionId,
+            'status_org'         => '1'
+        ];
+
+        if (!$organizacionModel->insert($orgData)) {
+            dd('❌ Error insertando organización:', $organizacionModel->errors());
+        }
+
+        $organizacionId = $organizacionModel->getInsertID();
+
+        // ====== 3 Insertar el usuario vinculado ======
+        $userData = [
+            'nombres'        => $this->request->getPost('nombres'),
+            'apellidos'      => $this->request->getPost('apellidos'),
+            'genero'         => $this->request->getPost('genero'),
+            'email'          => $this->request->getPost('email'),
+            'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento'),
+            'username'       => explode('@', $this->request->getPost('email'))[0],
+            'password_hash'  => password_hash($this->request->getPost('contrasena'), PASSWORD_DEFAULT),
+            'telefono'       => $this->request->getPost('telefono'),
+            'profesion'      => $this->request->getPost('profesion'),
+            'direccion_id'   => $direccionId,
+            'organizacion_id' => $organizacionId,
+            'status_usu'     => '1'
+        ];
+
+        if (!$usuarioModel->insert($userData)) {
+            dd('❌ Error insertando usuario:', $usuarioModel->errors());
+        }
+
+        $usuarioId = $usuarioModel->getInsertID();
+
+        // ====== 4 Asignar rol por defecto (3) al usuario ======
+        $rolesContexto->insert([
+            'id_usuario'      => $usuarioId,
+            'id_rol'          => 3,             // Rol administrativo de la organización
+            'organizacion_id' => $organizacionId,
+            'tipo_contexto'    => 'GLOBAL',
+            'status_urc'      => '1'
+        ]);
+
+        $db->transComplete(); //  Ejecutar transacción
+
+        if (!$db->transStatus()) {
+            dd('❌ Error en la transacción completa');
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', 'Organización y usuario creados correctamente.');
     }
-
-    $direccionId = $direccionModel->getInsertID();
-
-    // ====== 2️⃣ Insertar la organización ======
-    $orgData = [
-        'nombre_org'         => $this->request->getPost('nombreOrg'),
-        'tipo'               => $this->request->getPost('tipoOrg'),
-        'categoria'          => $this->request->getPost('categoriaOrg'),
-        'telefono'           => $this->request->getPost('telefono'),
-        'email'             => $this->request->getPost('email'),
-        'nombre_responsable' => $this->request->getPost('nombres') . ' ' . $this->request->getPost('apellidos'),
-        'direccion_id'       => $direccionId,
-        'status_org'         => '1'
-    ];
-
-    if (!$organizacionModel->insert($orgData)) {
-        dd('❌ Error insertando organización:', $organizacionModel->errors());
-    }
-
-    $organizacionId = $organizacionModel->getInsertID();
-
-    // ====== 3️⃣ Insertar el usuario vinculado ======
-    $userData = [
-        'nombres'        => $this->request->getPost('nombres'),
-        'apellidos'      => $this->request->getPost('apellidos'),
-        'genero'         => $this->request->getPost('genero'),
-        'email'          => $this->request->getPost('email'),
-        'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento'),
-        'username'       => explode('@', $this->request->getPost('email'))[0],
-        'password_hash'  => password_hash($this->request->getPost('contrasena'), PASSWORD_DEFAULT),
-        'telefono'       => $this->request->getPost('telefono'),
-        'profesion'      => $this->request->getPost('profesion'),
-        'direccion_id'   => $direccionId,  
-        'organizacion_id'=> $organizacionId,
-        'status_usu'     => '1'
-    ];
-
-    if (!$usuarioModel->insert($userData)) {
-        dd('❌ Error insertando usuario:', $usuarioModel->errors());
-    }
-
-    $usuarioId = $usuarioModel->getInsertID();
-
-    // ====== 4️⃣ Asignar rol por defecto (3) al usuario ======
-    $rolesContexto->insert([
-        'id_usuario'      => $usuarioId,
-        'id_rol'          => 3,             // Rol administrativo de la organización
-        'organizacion_id' => $organizacionId,
-        'tipo_contexto'    => 'GLOBAL',
-        'status_urc'      => '1'
-    ]);
-
-    $db->transComplete(); // 🔓 Ejecutar transacción
-
-    if (!$db->transStatus()) {
-        dd('❌ Error en la transacción completa');
-    }
-
-    return redirect()
-        ->back()
-        ->with('success', '✅ Organización y usuario creados correctamente.');
-}
-
-
-
 }

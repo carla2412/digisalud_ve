@@ -63,7 +63,7 @@
     width: 40px; height: 40px; border-radius: 50%; color: #fff;
     display: grid; place-items: center; font-size: .9rem;
 }
-.blue { background: #2478df; }
+.blue { background: #3695f5; }
 .purple { background: #341092; }
 .orange { background: #ff4817; }
 .violet { background: #5f539e; }
@@ -78,13 +78,13 @@
 .ds-status {
     padding: 8px 18px; border-radius: 999px; font-weight: 800; font-size: .85rem;
 }
-.ds-status.active { background: #dcfce7; color: #079445; }
+.ds-status.active { background: #dcfce7; color: #28a745; }
 .ds-status.finished { background: #fee2e2; color: #dc2626; }
 .ds-card-side small { margin-top: 12px; color: #475569; font-weight: 600; }
 
 .ds-actions { margin-top: auto; display: flex; align-items: center; gap: 14px; }
 .ds-actions a {
-    border: 1px solid #8bb7ff; color: #0066ff; background: #fff;
+    border: 1px solid #8bb7ff; color: #3695f5; background: #fff;
     padding: 12px 18px; border-radius: 9px; text-decoration: none; font-weight: 600;
 }
 .ds-actions a.disabled {
@@ -105,7 +105,7 @@
 .ds-pagination a.disabled { opacity: .4; pointer-events: none; }
 
 .alert { padding: 14px 20px; border-radius: 10px; margin-bottom: 16px; font-weight: 600; }
-.alert-success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+.alert-success { background: #dcfce7; color: #28a745; border: 1px solid #86efac; }
 .alert-danger  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 .alert-info    { background: #dbeafe; color: #1e40af; border: 1px solid #93bbfd; }
 .ds-pager-links nav {
@@ -158,8 +158,8 @@
 
 .ds-pager-links a:hover {
     background: #eef6ff;
-    color: #126dff;
-    border-color: #126dff;
+    color: #3695f5;
+    border-color: #3695f5;
 }
 
 /* ACTIVO PARA TEMPLATE default_full DE CODEIGNITER */
@@ -169,9 +169,9 @@
 .ds-pager-links .active span,
 .ds-pager-links a.active,
 .ds-pager-links span.active {
-    background: #126dff !important;
+    background: #3695f5 !important;
     color: #fff !important;
-    border-color: #126dff !important;
+    border-color: #3695f5 !important;
     box-shadow: 0 8px 18px rgba(18, 109, 255, 0.28);
     transform: translateY(-1px);
 }

@@ -52,8 +52,10 @@ class Auth extends BaseController
         // Obtener rol y organización del usuario
         $contexto = $rolesContextoModel
             ->where('id_usuario', $user['id_usuario'])
-            ->where('tipo_contexto', 'GLOBAL') //
+            ->where('tipo_contexto', 'GLOBAL')
             ->where('status_urc', 1)
+            ->orderBy('fecha_asignacion', 'DESC')
+            ->orderBy('id_ruc', 'DESC')
             ->first();
 
         /*if (!$contexto) {
