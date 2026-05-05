@@ -220,7 +220,7 @@ footer {
     justify-content: center;
 
     background: #f1f5f9;
-    color: #0f172a;
+    color:var(--ds-dark);
     text-decoration: none;
     font-size: 1.4rem;
     font-weight: 600;
@@ -229,17 +229,17 @@ footer {
 
 .registro-header .back-btn:hover {
     background: #e2e8f0;
-    color: #0d6efd;
+    color:var(--ds-primary);;
 }
 
 .registro-header h2 {
     margin-bottom: 8px;
-    color: #0f172a;
+    color: var(--ds-dark);
 }
 
 .registro-header p {
     margin: 0;
-    color: #334155;
+    color: var(--ds-dark);
 }
 .progress {
     height: 10px;
@@ -268,7 +268,7 @@ footer {
 
 .card-header h5 {
     margin: 0;
-    color: #495057;
+    color: var(--ds-dark);
     font-weight: 700;
 }
 
@@ -301,7 +301,7 @@ footer {
    =========================================== */
 .form-label {
     font-weight: 600;
-    color: #344054;
+    color:var(--ds-dark);
     font-size: .92rem;
 }
 
@@ -422,7 +422,7 @@ footer {
     justify-content: center;
     text-decoration: none;
     font-size: 22px;
-    color: #31415f;
+    color:var(--ds-dark);
     margin-bottom: 12px;
 }
 

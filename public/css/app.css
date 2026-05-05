@@ -1,8 +1,23 @@
-    html,
+   :root {
+    --ds-primary: #3695f5;
+    --ds-primary-dark: #1b7ae2;
+    --ds-dark: #101a61;
+    --ds-bg: #f5f8fc;
+    --ds-light: #f8f9fa;
+    --ds-border: #e0e6ed;
+    --ds-muted: #38393a;
+    --line: #e0e6ed;
+    --header-height: 72px;
+    --footer-height: 46px;
+}
+   /*EJEMPLO DE USAR VRIBLES  
+    var(--ds-primary)
+   var(--header-height)*/
+   html,
     body {
       height: 100%;
       margin: 0;
-      background-color: #f8f9fa;
+      background-color: var(--ds-light);
       display: flex;
       flex-direction: column;
       font-family: "Roboto", sans-serif;
@@ -59,11 +74,11 @@
 
     .input-group .form-control {
       background-color: rgba(255, 255, 255, 0.2);
-      color: white;
+      color:  var(--ds-light);
     }
 
     .input-group .form-control::placeholder {
-      color: #e0e0e0;
+      color: var(--ds-light);
     }
 
     .input-group-text {
@@ -78,8 +93,8 @@
 
 
     .btnalgo {
-      color: #3695f5 !important;
-      border: 1px solid #3695f5;
+      color: var(--ds-primary) !important;
+      border: 1px solid var(--ds-primary);
       margin-right: 0.2rem;
     }
 
@@ -92,20 +107,20 @@
     }
 
     .fondo_principal {
-      color: #3695f5 !important;
+      color: var(--ds-primary) !important;
     }
 
     .fondo_secundaria {
-      color: #3695f5 !important;
+      color:var(--ds-primary) !important;
     }
 
     .principal {
-      background-color: #3695f5 !important;
+      background-color: var(--ds-primary) !important;
       color: #fff !important;
     }
 
     .secundaria {
-      background-color: #3695f5 !important;
+      background-color: var(--ds-primary)!important;
       color: #fff !important;
     }
 
@@ -117,7 +132,7 @@
     /* Botón activo */
     .page-link {
 
-      color: #3695f5 !important;
+      color: var(--ds-primary)!important;
 
     }
 
@@ -129,7 +144,7 @@
 
     thead,
     th {
-      background-color: #3695f5 !important;
+      background-color:var(--ds-primary)!important;
       color: #fff !important;
 
     }
@@ -145,8 +160,8 @@
       border-radius: 25px;
       font-size: 0.85rem;
       font-weight: 500;
-      color: #3695f5;
-      border: 1px solid #3695f5;
+      color: var(--ds-primary);
+      border: 1px solidvar(--ds-primary);
       background: #fff;
       padding: 0.3rem 1rem;
       margin-left: 0.4rem;
@@ -192,13 +207,13 @@
     .benef-count span {
       font-size: 1.4rem;
       font-weight: 700;
-      color: #3695f5
+      color: var(--ds-primary)
     }
 
     .btn-registrar {
       background: transparent;
-      color: #3695f5;
-      border: 2px solid #3695f5;
+      color: var(--ds-primary);
+      border: 2px solid var(--ds-primary);
       border-radius: 25px;
       padding: 6px 20px;
       font-size: .85rem;
@@ -244,12 +259,12 @@
     }
 
     .benef-card-meta .label-id {
-      color: #3695f5;
+      color:var(--ds-primary);
       font-weight: 600
     }
 
     .benef-card-meta .label-fn {
-      color: #3695f5;
+      color: var(--ds-primary);
       font-weight: 600
     }
 
@@ -393,7 +408,7 @@
 
     .search-inline input:focus {
       outline: none;
-      border-color: #3695f5;
+      border-color:var(--ds-primary);
       box-shadow: 0 0 0 3px rgba(16, 26, 97, .1)
     }
 
@@ -460,14 +475,14 @@
 
     .search-row input:focus {
       outline: none;
-      border-color: #3695f5;
+      border-color: var(--ds-primary);
       box-shadow: 0 0 0 3px rgba(16, 26, 97, .08)
     }
 
     .btn-buscar {
       background: transparent;
-      color: #3695f5;
-      border: 1.5px solid #3695f5;
+      color: var(--ds-primary);
+      border: 1.5px solid var(--ds-primary);
       border-radius: 25px;
       padding: 8px 24px;
       font-size: .82rem;
@@ -500,8 +515,8 @@
 
     .btn-registrar-nuevo {
       background: transparent;
-      color: #3695f5;
-      border: 1.5px solid #3695f5;
+      color:var(--ds-primary);
+      border: 1.5px solid var(--ds-primary);
       border-radius: 25px;
       padding: 6px 20px;
       font-size: .82rem;
@@ -552,11 +567,11 @@
     }
 
     .resultado-meta .lbl-id {
-      color: #3695f5
+      color: var(--ds-primary);
     }
 
     .resultado-meta .lbl-fn {
-      color: #3695f5
+      color: var(--ds-primary);
     }
 
     .resultado-meta .lbl-rep {
@@ -565,8 +580,8 @@
 
     .btn-agregar {
       background: transparent;
-      color: #3695f5;
-      border: 1.5px solid #3695f5;
+      color: var(--ds-primary);
+      border: 1.5px solid var(--ds-primary);
       border-radius: 25px;
       padding: 6px 18px;
       font-size: .78rem;
@@ -578,7 +593,7 @@
     }
 
     .btn-agregar:hover {
-      background: #1b7ae2;
+      background:var(--ds-primary);
       color: #fff
     }
 
@@ -636,7 +651,7 @@
 
     .id-preview {
       background: #f0f4ff;
-      border: 1px dashed #3695f5;
+      border: 1px dashed var(--ds-primary);
       border-radius: 10px;
       padding: 12px 18px;
       margin-bottom: 1.5rem
@@ -651,7 +666,7 @@
      font-family: "Roboto", sans-serif;
       font-size: 1rem;
       font-weight: 700;
-      color: #3695f5;
+      color: var(--ds-primary);
       letter-spacing: 1px
     }
 
@@ -661,10 +676,10 @@
       gap: 8px;
       font-size: .9rem;
       font-weight: 600;
-      color: #3695f5;
+      color: var(--ds-primary);
       margin-bottom: 12px;
       padding-bottom: 8px;
-      border-bottom: 2px solid #3695f5
+      border-bottom: 2px solid var(--ds-primary);
     }
 
     .toggle-bar {
@@ -686,7 +701,7 @@
     }
 
     .toggle-bar.active {
-      border-color: #3695f5;
+      border-color:var(--ds-primary);
       background: #f0f9ff
     }
 
@@ -709,11 +724,11 @@
     }
 
     .toggle-content.open {
-      max-height: 800px
+      max-height: 800px;
     }
 
     .btn-guardar {
-      background: #3695f5;
+      background:var(--ds-primary);
       color: #fff;
       border: none;
       padding: 12px 28px;
@@ -737,7 +752,7 @@
       padding: 12px 24px;
       border-radius: 10px;
       font-size: .9rem;
-      text-decoration: none
+      text-decoration: none;
     }
 
     .btn-cancelar:hover {
@@ -750,7 +765,7 @@
       flex-wrap: wrap;
       gap: 6px;
       margin-top: 8px;
-      min-height: 30px
+      min-height: 30px;
     }
 
     .tag-item {
@@ -758,11 +773,11 @@
       align-items: center;
       gap: 4px;
       background: #e8eaf8;
-      border: 1px solid #3695f5;
+      border: 1px solidvar(--ds-primary);
       border-radius: 20px;
       padding: 4px 12px;
       font-size: .78rem;
-      color: #3695f5;
+      color: var(--ds-primary);
       font-weight: 600
     }
 
@@ -901,7 +916,7 @@
       color: #101a61;
       margin-bottom: 12px;
       padding-bottom: 8px;
-      border-bottom: 2px solid #3695f5
+      border-bottom: 2px solid var(--ds-primary);
     }
 
     .toggle-bar {
@@ -919,12 +934,12 @@
     }
 
     .toggle-bar:hover {
-      border-color: #1b7ae2
+      border-color: #1b7ae2;
     }
 
     .toggle-bar.active {
-      border-color: #3695f5;
-      background: #f0f9ff
+      border-color: var(--ds-primary);
+      background: #f0f9ff;
     }
 
     .toggle-bar .toggle-label {
@@ -1062,7 +1077,7 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      background: #3695f5;
+      background: var(--ds-primary);
       color: #fff;
       border: none;
       border-radius: 14px;

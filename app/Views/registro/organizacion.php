@@ -29,13 +29,13 @@
                 <div class="card-body">
                     <div class="row g-3">
 
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <label for="nombreOrg" class="form-label">Nombre de la Organización *</label>
                             <input type="text" class="form-control" id="nombreOrg" name="nombreOrg" required>
                             <div class="invalid-feedback">Ingresa el nombre de la organización.</div>
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="emailOrg" class="form-label">email Institucional *</label>
                             <div class="input-group">
                                 <span class="input-group-text">
@@ -192,7 +192,7 @@
                                 <span class="input-group-text">
                                     <i class="fa-solid fa-phone"></i>
                                 </span>
-                                <input type="tel" class="form-control" id="telefono" name="telefono" pattern="[0-9+ ]{6,15}" placeholder="+58 412 1234567" required>
+                                <input type="tel" class="form-control" id="telefono" name="telefono" pattern="[0-9+ ]{6,15}" placeholder="412 1234567" required>
                                 <div class="invalid-feedback">Ingresa un teléfono válido.</div>
                             </div>
                         </div>

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Controllers;
 
 use App\Models\JornadaModel;
@@ -18,12 +17,37 @@ class Jornadas extends BaseController
         $this->jornadaModel = new JornadaModel();
     }
 
+    /**
+     * Obtiene los IDs de jornadas donde el usuario tiene contexto JORNADA activo.
+     */
+    private function obtenerIdsJornadasAsignadas(int $idUsuario): array
+    {
+        if ($idUsuario <= 0) {
+            return [];
+        }
+
+        $rolesContextoModel = new RolesUsuariosContextoModel();
+
+        $jornadasAsignadas = $rolesContextoModel
+            ->select('jornada_id')
+            ->where('id_usuario', $idUsuario)
+            ->where('tipo_contexto', 'JORNADA')
+            ->where('status_urc', 1)
+            ->where('jornada_id IS NOT NULL')
+            ->findAll();
+
+        $ids = array_column($jornadasAsignadas, 'jornada_id');
+        $ids = array_map('intval', $ids);
+        $ids = array_filter($ids);
+
+        return array_values(array_unique($ids));
+    }
+
     // ================================
     // INDEX — Listado con filtros y paginación
     // ================================
     public function index()
     {
-        
         $idUsuario = (int) session('id_usuario');
         $rolSesion = (int) session('id_rol');
         $orgSesion = (int) session('organizacion_id');
@@ -36,10 +60,10 @@ class Jornadas extends BaseController
 
         $builder = $this->jornadaModel
             ->select("jornadas.*, 
-                  organizaciones.nombre_org,
-                  instituciones.nombre_institucion,
-                  dir.ciudad,
-                  GROUP_CONCAT(tpa.idtipo_pesquisa SEPARATOR ',') AS pesquisas")
+                      organizaciones.nombre_org,
+                      instituciones.nombre_institucion,
+                      dir.ciudad,
+                      GROUP_CONCAT(tpa.idtipo_pesquisa SEPARATOR ',') AS pesquisas")
             ->join('organizacion AS organizaciones', 'organizaciones.id_organizacion = jornadas.organizacion_id', 'left')
             ->join('instituciones', 'instituciones.id_institucion = jornadas.institucion_id', 'left')
             ->join('tipo_pesquisa_actividad AS tpa', 'tpa.id_jornada = jornadas.id_jornada', 'left')
@@ -48,25 +72,11 @@ class Jornadas extends BaseController
             ->where('jornadas.status_jor !=', 0)
             ->groupBy('jornadas.id_jornada');
 
-        // ═══ FILTRO POR ORGANIZACIÓN (según sesión) ═══
         // ═══ FILTRO POR ORGANIZACIÓN + JORNADAS ASIGNADAS ═══
-        // Admin global / Admin Digi ven todas
+        // Admin App y Admin Digi ven todas.
+        // Los demás ven jornadas de su organización + jornadas donde tengan contexto JORNADA.
         if (!in_array($rolSesion, [1, 2], true)) {
-
-            $rolesContextoModel = new RolesUsuariosContextoModel();
-
-            $jornadasAsignadas = $rolesContextoModel
-                ->select('jornada_id')
-                ->where('id_usuario', $idUsuario)
-                ->where('tipo_contexto', 'JORNADA')
-                ->where('status_urc', 1)
-                ->where('jornada_id IS NOT NULL')
-                ->findAll();
-
-            $idsJornadasAsignadas = array_values(array_filter(array_map(
-                static fn($row) => (int) $row['jornada_id'],
-                $jornadasAsignadas
-            )));
+            $idsJornadasAsignadas = $this->obtenerIdsJornadasAsignadas($idUsuario);
 
             $builder->groupStart()
                 ->where('jornadas.organizacion_id', $orgSesion);
@@ -85,7 +95,7 @@ class Jornadas extends BaseController
                 ->orLike('instituciones.nombre_institucion', $busqueda)
                 ->orLike('dir.ciudad', $busqueda)
                 ->orLike('organizaciones.nombre_org', $busqueda)
-                ->groupEnd();
+            ->groupEnd();
         }
 
         // ═══ FILTRO POR STATUS ═══
@@ -117,6 +127,7 @@ class Jornadas extends BaseController
     // ================================
     public function listar()
     {
+        $idUsuario = (int) session('id_usuario');
         $rol       = (int) session('id_rol');
         $orgSesion = (int) session('organizacion_id');
 
@@ -132,22 +143,10 @@ class Jornadas extends BaseController
             ->where('jornadas.status_jor !=', 0)
             ->groupBy('jornadas.id_jornada');
 
+        // Admin App y Admin Digi ven todas.
+        // Los demás ven jornadas de su organización + jornadas asignadas por contexto.
         if (!in_array($rol, [1, 2], true)) {
-
-            $rolesContextoModel = new RolesUsuariosContextoModel();
-
-            $jornadasAsignadas = $rolesContextoModel
-                ->select('jornada_id')
-                ->where('id_usuario', (int) session('id_usuario'))
-                ->where('tipo_contexto', 'JORNADA')
-                ->where('status_urc', 1)
-                ->where('jornada_id IS NOT NULL')
-                ->findAll();
-
-            $idsJornadasAsignadas = array_values(array_filter(array_map(
-                static fn($row) => (int) $row['jornada_id'],
-                $jornadasAsignadas
-            )));
+            $idsJornadasAsignadas = $this->obtenerIdsJornadasAsignadas($idUsuario);
 
             $builder->groupStart()
                 ->where('jornadas.organizacion_id', $orgSesion);
@@ -160,6 +159,7 @@ class Jornadas extends BaseController
         }
 
         $jornadas = $builder->findAll();
+
         return $this->response->setJSON(['data' => $jornadas]);
     }
 
@@ -185,7 +185,7 @@ class Jornadas extends BaseController
     // ================================
     public function crear()
     {
-        $orgModel          = new \App\Models\OrganizacionModel();
+        $orgModel          = new OrganizacionModel();
         $tipoPesquisaModel = new \App\Models\TipoPesquisaModel();
 
         $rol       = (int) session('id_rol');
@@ -193,13 +193,15 @@ class Jornadas extends BaseController
 
         $pesquisas = $tipoPesquisaModel->findAll();
 
-        // FIX: Roles 3,4,5,6,7 solo su organización
-        if (in_array($rol, [1, 2])) {
+        if (in_array($rol, [1, 2], true)) {
             $organizaciones = $orgModel->findAll();
             $soloLectura    = false;
         } else {
-            $organizaciones = $orgModel->where('id_organizacion', $orgSesion)->findAll();
-            $soloLectura    = true;
+            $organizaciones = $orgModel
+                ->where('id_organizacion', $orgSesion)
+                ->findAll();
+
+            $soloLectura = true;
         }
 
         return view('jornadas/crear', [
@@ -223,29 +225,28 @@ class Jornadas extends BaseController
         $instActModel     = new \App\Models\InstitucionActividadModel();
 
         // ========= 1) GUARDAR DIRECCIÓN =========
-        // FIX: Limpiar prefijo "Estado " que devuelve Nominatim
         $estadoRaw = $this->request->getPost('estado') ?? '';
         $estado    = preg_replace('/^Estado\s+/i', '', trim($estadoRaw));
 
         $direccionData = [
             'pais'        => $this->request->getPost('pais') ?: 'Venezuela',
             'estado'      => $estado,
-            'municipio'   => $this->request->getPost('municipio'),   // FIX: ahora se guarda
-            'parroquia'   => $this->request->getPost('parroquia'),   // FIX: ahora se guarda
+            'municipio'   => $this->request->getPost('municipio'),
+            'parroquia'   => $this->request->getPost('parroquia'),
             'ciudad'      => $this->request->getPost('ciudad'),
-            'detalle'     => $this->request->getPost('detalle'),     // FIX: campo detalle
+            'detalle'     => $this->request->getPost('detalle'),
             'coordenadas' => $this->request->getPost('coords'),
         ];
+
         $direccion_id = $direccionModel->insert($direccionData, true);
 
         // ========= 2) GUARDAR INSTITUCIÓN =========
-        // FIX: Select con sugerencias — puede ser existente o nueva
         $institucion_id_existente = $this->request->getPost('institucion_id');
         $nombre_institucion       = trim($this->request->getPost('nombre_institucion') ?? '');
 
         if (!empty($institucion_id_existente) && is_numeric($institucion_id_existente)) {
-            // Usar existente, actualizar dirección y tipo
             $newInstId = (int) $institucion_id_existente;
+
             $db->table('instituciones')
                 ->where('id_institucion', $newInstId)
                 ->update([
@@ -253,7 +254,6 @@ class Jornadas extends BaseController
                     'direccion_id' => $direccion_id,
                 ]);
         } else {
-            // Crear nueva institución
             $lastId    = $institucionModel->selectMax('id_institucion')->first()['id_institucion'] ?? 0;
             $newInstId = $lastId + 1;
 
@@ -263,11 +263,11 @@ class Jornadas extends BaseController
                 'tipo'               => $this->request->getPost('tipo_jornada'),
                 'direccion_id'       => $direccion_id,
             ];
+
             $institucionModel->insert($institucionData);
         }
 
         // ========= 3) GUARDAR JORNADA =========
-        // FIX: Si el select está disabled, tomar del hidden
         $organizacion_id = $this->request->getPost('organizacion_id')
             ?: $this->request->getPost('organizacion_id_hidden');
 
@@ -280,6 +280,7 @@ class Jornadas extends BaseController
             'creado_en'       => date('Y-m-d H:i:s'),
             'creado_por'      => session('id_usuario'),
         ];
+
         $jornadaModel->insert($jornadaData);
         $id_jornada = $jornadaModel->insertID();
 
@@ -303,7 +304,9 @@ class Jornadas extends BaseController
             ]);
         }
 
-        return redirect()->to('/jornadas')->with('success', 'Jornada creada exitosamente.');
+        return redirect()
+            ->to('/jornadas')
+            ->with('success', 'Jornada creada exitosamente.');
     }
 
     // ════════════════════════════════════════════════
@@ -312,30 +315,38 @@ class Jornadas extends BaseController
     public function editar($id_jornada)
     {
         $rol = (int) session('id_rol');
-        if (!in_array($rol, [1, 2, 3])) {
-            return redirect()->to('/jornadas')->with('error', 'No tienes permiso para editar jornadas.');
+
+        if (!in_array($rol, [1, 2, 3], true)) {
+            return redirect()
+                ->to('/jornadas')
+                ->with('error', 'No tienes permiso para editar jornadas.');
         }
 
         $jornada = $this->jornadaModel->getJornadaConDireccion($id_jornada);
 
         if (!$jornada) {
-            return redirect()->to('/jornadas')->with('error', 'Jornada no encontrada.');
+            return redirect()
+                ->to('/jornadas')
+                ->with('error', 'Jornada no encontrada.');
         }
 
         $pesquisasSeleccionadas = $this->jornadaModel->getPesquisasPorJornada($id_jornada);
 
-        $orgModel          = new \App\Models\OrganizacionModel();
+        $orgModel          = new OrganizacionModel();
         $tipoPesquisaModel = new \App\Models\TipoPesquisaModel();
         $orgSesion         = (int) session('organizacion_id');
 
         $pesquisas = $tipoPesquisaModel->findAll();
 
-        if (in_array($rol, [1, 2])) {
+        if (in_array($rol, [1, 2], true)) {
             $organizaciones = $orgModel->findAll();
             $soloLectura    = false;
         } else {
-            $organizaciones = $orgModel->where('id_organizacion', $orgSesion)->findAll();
-            $soloLectura    = true;
+            $organizaciones = $orgModel
+                ->where('id_organizacion', $orgSesion)
+                ->findAll();
+
+            $soloLectura = true;
         }
 
         return view('jornadas/editar', [
@@ -354,8 +365,11 @@ class Jornadas extends BaseController
     public function actualizar()
     {
         $rol = (int) session('id_rol');
-        if (!in_array($rol, [1, 2, 3])) {
-            return redirect()->to('/jornadas')->with('error', 'No tienes permiso para editar jornadas.');
+
+        if (!in_array($rol, [1, 2, 3], true)) {
+            return redirect()
+                ->to('/jornadas')
+                ->with('error', 'No tienes permiso para editar jornadas.');
         }
 
         $id_jornada = $this->request->getPost('id_jornada');
@@ -370,7 +384,8 @@ class Jornadas extends BaseController
         ];
 
         if (!$this->validate($rules)) {
-            return redirect()->back()
+            return redirect()
+                ->back()
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
         }
@@ -378,14 +393,15 @@ class Jornadas extends BaseController
         $jornada = $this->jornadaModel->getJornadaConDireccion($id_jornada);
 
         if (!$jornada) {
-            return redirect()->to('/jornadas')->with('error', 'Jornada no encontrada.');
+            return redirect()
+                ->to('/jornadas')
+                ->with('error', 'Jornada no encontrada.');
         }
 
         $db = \Config\Database::connect();
         $db->transStart();
 
         // ═══ 1) ACTUALIZAR DIRECCIÓN ═══
-        // FIX: Limpiar "Estado " + guardar municipio/parroquia/detalle
         $estadoRaw = $this->request->getPost('estado') ?? '';
         $estado    = preg_replace('/^Estado\s+/i', '', trim($estadoRaw));
 
@@ -405,6 +421,7 @@ class Jornadas extends BaseController
             $direccionModel->update($jornada['id_direccion'], $dirData);
         } else {
             $nuevaDirId = $direccionModel->insert($dirData, true);
+
             if (!empty($jornada['institucion_id'])) {
                 $db->table('instituciones')
                     ->where('id_institucion', $jornada['institucion_id'])
@@ -415,6 +432,7 @@ class Jornadas extends BaseController
         // ═══ 2) ACTUALIZAR INSTITUCIÓN ═══
         if (!empty($jornada['institucion_id'])) {
             $nombre_institucion = trim($this->request->getPost('nombre_institucion') ?? '');
+
             $db->table('instituciones')
                 ->where('id_institucion', $jornada['institucion_id'])
                 ->update([
@@ -438,6 +456,7 @@ class Jornadas extends BaseController
         $tpaModel->where('id_jornada', $id_jornada)->delete();
 
         $pesquisasSeleccionadas = $this->request->getPost('pesquisas') ?? [];
+
         foreach ($pesquisasSeleccionadas as $idPesquisa) {
             $tpaModel->insert([
                 'idtipo_pesquisa' => $idPesquisa,
@@ -449,10 +468,14 @@ class Jornadas extends BaseController
         $db->transComplete();
 
         if ($db->transStatus() === false) {
-            return redirect()->back()->with('error', 'Error al actualizar la jornada.');
+            return redirect()
+                ->back()
+                ->with('error', 'Error al actualizar la jornada.');
         }
 
-        return redirect()->to('/jornadas')->with('success', 'Jornada actualizada correctamente.');
+        return redirect()
+            ->to('/jornadas')
+            ->with('success', 'Jornada actualizada correctamente.');
     }
 
     // ════════════════════════════════════════════════
