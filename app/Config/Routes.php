@@ -70,16 +70,14 @@ $routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
 });
 
 // BENEFICIARIOS jornadas
-$routes->group('jornadas', function ($routes) {
-    $routes->get('(:num)/beneficiarios', 'JornadaBeneficiariosController::index/$1');
-
+// ✅ DESPUÉS — protegido con auth
+$routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
+    $routes->get('(:num)/beneficiarios',        'JornadaBeneficiariosController::index/$1');
     $routes->get('(:num)/beneficiarios/create', 'BeneficiariosController::create/$1');
     $routes->post('(:num)/beneficiarios/store', 'BeneficiariosController::store/$1');
-
     $routes->get('(:num)/beneficiarios/buscar', 'JornadaBeneficiariosController::buscar/$1');
-
-    $routes->post('(:num)/asociar/(:num)', 'JornadaBeneficiariosController::asociar/$1/$2');
-    $routes->get('(:num)/desasociar/(:num)', 'JornadaBeneficiariosController::desasociar/$1/$2');
+    $routes->post('(:num)/asociar/(:num)',       'JornadaBeneficiariosController::asociar/$1/$2');
+    $routes->get('(:num)/desasociar/(:num)',     'JornadaBeneficiariosController::desasociar/$1/$2');
 });
 
 // =====================================================

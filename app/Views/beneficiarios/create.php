@@ -616,7 +616,7 @@ $openFamiliar     = old('familiar_activo') === '1';
     <div class="breadcrumb-digi">
         <a href="<?= base_url('jornadas') ?>">Jornadas</a> &gt;
         <a href="<?= base_url("jornadas/$jornada_id/beneficiarios") ?>">Beneficiarios</a> &gt;
-        <a href="<?= base_url("beneficiarios/buscar/$jornada_id") ?>">Buscar</a> &gt;
+        <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/buscar") ?>">Buscar</a> &gt;
         <span class="active">Nuevo registro</span>
     </div>
 

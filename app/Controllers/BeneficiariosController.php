@@ -116,15 +116,18 @@ class BeneficiariosController extends BaseController
         // Calcular datos de paginación
         $totalPages = max(1, (int) ceil($totalBeneficiarios / $perPage));
 
+        // En BeneficiariosController::index(), en el array $data al final:
+
         $data = [
-            'beneficiarios'       => $beneficiarios,
-            'organizaciones'      => $organizaciones,
-            'totalBeneficiarios'  => $totalBeneficiarios,
-            'q'                   => $q,
-            'organizacion_id'     => $organizacionId,
-            'page'                => $page,
-            'perPage'             => $perPage,
-            'totalPages'          => $totalPages,
+            'beneficiarios'      => $beneficiarios,
+            'organizaciones'     => $organizaciones,
+            'totalBeneficiarios' => $totalBeneficiarios,
+            'q'                  => $q,
+            'organizacion_id'    => $organizacionId,
+            'page'               => $page,
+            'perPage'            => $perPage,
+            'totalPages'         => $totalPages,
+            'rolActual'          => $rolActual,   // ← AGREGAR ESTA LÍNEA
         ];
 
         return view('beneficiarios/index', $data);
@@ -329,7 +332,54 @@ class BeneficiariosController extends BaseController
     // ════════════════════════════════════════
     public function buscar($jornada_id)
     {
-        return view('beneficiarios/buscar', ['jornada_id' => $jornada_id]);
+        $jornadaModel  = new JornadaModel();
+        $jorBenefModel = new JornadaBeneficiariosModel();
+
+        // Cargar jornada con datos completos que necesita buscar.php
+        $jornada = $jornadaModel
+            ->select("jornadas.*, 
+                  instituciones.nombre_institucion,
+                  dir.ciudad,
+                  GROUP_CONCAT(DISTINCT tpa.idtipo_pesquisa 
+                      ORDER BY tpa.idtipo_pesquisa 
+                      SEPARATOR ',') AS pesquisas")
+            ->join(
+                'instituciones',
+                'instituciones.id_institucion = jornadas.institucion_id',
+                'left'
+            )
+            ->join(
+                'direcciones AS dir',
+                'dir.id_direccion = instituciones.direccion_id',
+                'left'
+            )
+            ->join(
+                'tipo_pesquisa_actividad AS tpa',
+                'tpa.id_jornada = jornadas.id_jornada',
+                'left'
+            )
+            ->where('jornadas.id_jornada', $jornada_id)
+            ->groupBy('jornadas.id_jornada')
+            ->first();
+
+        if (!$jornada) {
+            return redirect()->to(site_url('jornadas'))
+                ->with('error', 'Jornada no encontrada.');
+        }
+
+        // Contar beneficiarios ya asignados
+        $totalAsignados = $jorBenefModel
+            ->where('jornada_id', $jornada_id)
+            ->where('status_bc', 1)
+            ->countAllResults();
+
+        return view('beneficiarios/buscar', [
+            'jornada_id'                  => (int) $jornada_id,
+            'jornada'                     => $jornada,
+            'beneficiariosAsignados'      => [],
+            'totalBeneficiariosAsignados' => $totalAsignados,
+            'pesquisas_jornada'           => [],
+        ]);
     }
 
     public function buscarAjax()
@@ -417,13 +467,13 @@ class BeneficiariosController extends BaseController
     // ════════════════════════════════════════
     // CREAR BENEFICIARIO
     // ════════════════════════════════════════
-   public function create($jornada_id)
-{
-    return view('beneficiarios/create', [
-        'jornada_id' => $jornada_id,
-        'errors'     => session('errors') ?? [],
-    ]);
-}
+    public function create($jornada_id)
+    {
+        return view('beneficiarios/create', [
+            'jornada_id' => $jornada_id,
+            'errors'     => session('errors') ?? [],
+        ]);
+    }
 
     /**
      * ════════════════════════════════════════════════════════════════
@@ -632,8 +682,8 @@ class BeneficiariosController extends BaseController
         ]);
 
         return redirect()
-        ->to(base_url("jornadas/$jornada_id/beneficiarios"))
-        ->with('success', 'Beneficiario registrado y asociado correctamente.');
+            ->to(base_url("jornadas/$jornada_id/beneficiarios"))
+            ->with('success', 'Beneficiario registrado y asociado correctamente.');
     }
 
     // ════════════════════════════════════════

@@ -594,11 +594,12 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
 ?>
 <div class="beneficiarios-page">
     <div class="beneficiarios-breadcrumb">
-        <a href="<?= base_url('jornadas') ?>">Jornadas</a>
-        &gt;
-        <a href="<?= base_url("jornadas/$jornada_id/beneficiarios") ?>">Beneficiarios</a>
-        &gt;
-        <span>Buscar o registrar</span>
+
+<a href="<?= base_url('jornadas') ?>">Jornadas</a>
+&gt;
+<a href="<?= base_url("jornadas/$jornada_id/beneficiarios") ?>">Beneficiarios</a>
+&gt;
+<span>Buscar o registrar</span>
     </div>
 
     <div class="beneficiarios-header">
