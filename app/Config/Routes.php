@@ -78,6 +78,8 @@ $routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
     $routes->get('(:num)/beneficiarios/buscar', 'JornadaBeneficiariosController::buscar/$1');
     $routes->post('(:num)/asociar/(:num)',       'JornadaBeneficiariosController::asociar/$1/$2');
     $routes->get('(:num)/desasociar/(:num)',     'JornadaBeneficiariosController::desasociar/$1/$2');
+    $routes->get('(:num)/beneficiarios/(:num)/ficha-rapida','JornadaBeneficiariosController::fichaRapida/$1/$2'
+);
 });
 
 // =====================================================
@@ -121,4 +123,6 @@ $routes->group('evaluaciones', ['filter' => 'auth'], function ($routes) {
     // Guardar evaluación (POST AJAX)
     $routes->post('guardar', 'EvaluacionesController::guardar');
 });
+
+$routes->get('evaluaciones/historial-sanguinea/(:num)', 'EvaluacionesController::historialSanguinea/$1');
  

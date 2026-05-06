@@ -782,11 +782,11 @@ $openFamiliar     = old('familiar_activo') === '1';
                                     <label class="form-label">Teléfono</label>
                                     <input
                                         type="tel"
-                                        name="telefono"
+                                        name="telefono" id="telefono"
                                         class="form-control"
                                         value="<?= old('telefono') ?>"
-                                        placeholder="+58 412 1234567">
-                                    <div class="helper">Incluye código de país si aplica.</div>
+                                        placeholder="412 1234567">
+                                     
                                 </div>
 
                                 <div class="col-md-6">
@@ -978,10 +978,10 @@ $openFamiliar     = old('familiar_activo') === '1';
                                 <label class="form-label">Teléfono del representante</label>
                                 <input
                                     type="tel"
-                                    name="telefono_representante"
+                                    name="telefono_representante" id="telefono_representante"
                                     class="form-control"
                                     value="<?= old('telefono_representante') ?>"
-                                    placeholder="+58 412 1234567">
+                                    placeholder="412 1234567">
                             </div>
 
                             <div class="col-12">
@@ -1046,7 +1046,7 @@ $openFamiliar     = old('familiar_activo') === '1';
 
                                         <div class="col-md-4">
                                             <label class="form-label">Teléfono</label>
-                                            <input type="tel" name="rep_telefono_nuevo" class="form-control form-control-sm" value="<?= old('rep_telefono_nuevo') ?>" placeholder="+58...">
+                                            <input type="tel" id="rep_telefono_nuevo" name="rep_telefono_nuevo" class="form-control form-control-sm" value="<?= old('rep_telefono_nuevo') ?>" placeholder="+58...">
                                         </div>
                                     </div>
                                 </div>
@@ -1715,5 +1715,35 @@ $openFamiliar     = old('familiar_activo') === '1';
 
     })();
 </script>
+<script>
+// Lista de IDs de tus campos de teléfono
+const IDsTelefonos = ["rep_telefono_nuevo", "telefono_representante", "telefno", "telefono"];
 
+IDsTelefonos.forEach(id => {
+    const elemento = document.getElementById(id);
+    
+    // Verificamos que el elemento exista para evitar errores en consola
+    if (elemento) {
+        elemento.addEventListener("input", function(e) {
+            let value = e.target.value.replace(/\D/g, "");
+
+            if (value.startsWith("58")) {
+                value = value.substring(2);
+            }
+
+            let formatted = "+58 ";
+
+            if (value.length > 0) {
+                formatted += value.substring(0, 3);
+            }
+
+            if (value.length > 3) {
+                formatted += " " + value.substring(3, 10);
+            }
+
+            e.target.value = formatted;
+        });
+    }
+});
+</script>
 <?= $this->endSection() ?>

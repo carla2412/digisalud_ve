@@ -643,6 +643,265 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
             display: none;
         }
     }
+
+    /* estilo dicha*/
+    .ficha-drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, .38);
+        z-index: 1040;
+        opacity: 0;
+        pointer-events: none;
+        transition: .2s ease;
+    }
+
+    .ficha-drawer-backdrop.is-open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .ficha-drawer {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(520px, 100%);
+        height: 100vh;
+        background: #fff;
+        z-index: 1050;
+        box-shadow: -18px 0 40px rgba(15, 23, 42, .18);
+        transform: translateX(100%);
+        transition: .25s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .ficha-drawer.is-open {
+        transform: translateX(0);
+    }
+
+    .ficha-head {
+        padding: 22px 24px;
+        background: linear-gradient(135deg, #101a61, #176be8);
+        color: #fff;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .ficha-head h3 {
+        margin: 0;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .ficha-head p {
+        margin: 5px 0 0;
+        opacity: .85;
+        font-size: 14px;
+    }
+
+    .ficha-close {
+        width: 38px;
+        height: 38px;
+        border: 0;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, .14);
+        color: #fff;
+        font-size: 22px;
+        line-height: 1;
+    }
+
+    .ficha-body {
+        padding: 22px 24px;
+        overflow-y: auto;
+        flex: 1;
+    }
+
+    .ficha-profile {
+        display: grid;
+        grid-template-columns: 76px 1fr;
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .ficha-avatar {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: #eef6ff;
+        border: 1px solid #c8defd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: var(--ds-primary-dark);
+    }
+
+    .ficha-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .ficha-avatar i {
+        font-size: 40px;
+    }
+
+    .ficha-name {
+        margin: 0;
+        color: var(--ds-dark);
+        font-size: 20px;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .ficha-meta {
+        margin-top: 6px;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .ficha-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 18px 0;
+    }
+
+    .ficha-kpi {
+        border: 1px solid var(--ds-border);
+        border-radius: 14px;
+        padding: 12px;
+        background: #f8fbff;
+        text-align: center;
+    }
+
+    .ficha-kpi strong {
+        display: block;
+        color: var(--ds-dark);
+        font-size: 22px;
+    }
+
+    .ficha-kpi span {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .ficha-progress {
+        height: 10px;
+        background: #e5eaf2;
+        border-radius: 999px;
+        overflow: hidden;
+        margin-bottom: 22px;
+    }
+
+    .ficha-progress-bar {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(135deg, #13b76a, #3a8cff);
+        border-radius: inherit;
+        transition: .25s ease;
+    }
+
+    .ficha-section-title {
+        margin: 22px 0 12px;
+        color: var(--ds-dark);
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .ficha-pesquisa-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .ficha-pesquisa-item {
+        border: 1px solid var(--ds-border);
+        border-radius: 14px;
+        padding: 12px;
+        display: grid;
+        grid-template-columns: 42px 1fr auto;
+        align-items: center;
+        gap: 12px;
+        background: #fff;
+    }
+
+    .ficha-pesquisa-item img {
+        width: 34px;
+        height: 34px;
+        object-fit: contain;
+    }
+
+    .ficha-pesquisa-name {
+        color: var(--ds-dark);
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .ficha-pesquisa-desc {
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .ficha-chip {
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 12px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .ficha-chip.ok {
+        background: #e6f8ef;
+        color: #0b8f51;
+    }
+
+    .ficha-chip.pending {
+        background: #fff7e6;
+        color: #b76a00;
+    }
+
+    .ficha-actions {
+        padding: 18px 24px;
+        border-top: 1px solid var(--ds-border);
+        background: #f8fbff;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .ficha-action-btn {
+        min-height: 42px;
+        border-radius: 12px;
+        border: 1px solid var(--ds-border);
+        background: #fff;
+        color: var(--ds-primary-dark);
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ficha-action-btn.primary {
+        border-color: var(--ds-primary-dark);
+        background: var(--ds-primary-dark);
+        color: #fff;
+    }
+
+    .ficha-action-btn:hover {
+        color: var(--ds-primary-dark);
+        background: #f4f9ff;
+    }
+
+    .ficha-action-btn.primary:hover {
+        color: #fff;
+        background: #176be8;
+    }
 </style>
 
 <main class="benef-page">
@@ -738,6 +997,15 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                 }
 
                 $evals = $evaluaciones[$b['id_beneficiario']] ?? [];
+                $evalsJs = esc(
+                    json_encode(
+                        array_values(array_map('strval', $evals)),
+                        JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE
+                    ),
+                    'attr'
+                );
+
+                $tieneEvaluaciones = ! empty($evals);
 
                 $nombreCompleto = trim(($b['nombres'] ?? '') . ' ' . ($b['apellidos'] ?? ''));
                 $nombreCompletoJs = esc(
@@ -778,25 +1046,41 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                                 <a
                                     class="dropdown-item"
                                     href="#"
-                                    onclick="abrirEvaluar(<?= (int) $b['id_beneficiario'] ?>, '0', <?= $nombreCompletoJs ?>); return false;">
+                                    onclick="abrirModalPesquisa(<?= (int) $b['id_beneficiario'] ?>, <?= $nombreCompletoJs ?>, <?= $evalsJs ?>, 'crear'); return false;">
                                     <i class="bi bi-clipboard2-pulse me-2 text-success"></i>
                                     Evaluar
                                 </a>
                             </li>
-
+                            <?php if ($tieneEvaluaciones): ?>
+    <li>
+        <a
+            class="dropdown-item"
+            href="#"
+            onclick="abrirModalPesquisa(<?= (int) $b['id_beneficiario'] ?>, <?= $nombreCompletoJs ?>, <?= $evalsJs ?>, 'editar'); return false;">
+            <i class="bi bi-pencil-square me-2 text-warning"></i>
+            Editar evaluación
+        </a>
+    </li>
+<?php endif; ?>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
 
-                            <li>
-                                <a
-                                    class="dropdown-item text-danger"
-                                    href="#"
-                                    onclick="confirmarRemover(<?= (int) $jornada_id ?>, <?= (int) $b['id_beneficiario'] ?>); return false;">
-                                    <i class="bi bi-x-circle me-2"></i>
-                                    Retirar de la jornada
-                                </a>
-                            </li>
+                            <?php if (! $tieneEvaluaciones): ?>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+
+    <li>
+        <a
+            class="dropdown-item text-danger"
+            href="#"
+            onclick="confirmarRemover(<?= (int) $jornada_id ?>, <?= (int) $b['id_beneficiario'] ?>); return false;">
+            <i class="bi bi-x-circle me-2"></i>
+            Retirar de la jornada
+        </a>
+    </li>
+<?php endif; ?>
                         </ul>
                     </div>
 
@@ -859,10 +1143,13 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                                 <br>
                             </span>
 
-                            <a href="<?= base_url("beneficiarios/editar/{$b['id_beneficiario']}") ?>" class="btn-ficha">
+                            <button
+                                type="button"
+                                class="btn-ficha"
+                                onclick="abrirFichaRapida(<?= (int) $b['id_beneficiario'] ?>)">
                                 <i class="bi bi-card-checklist"></i>
                                 Ver ficha
-                            </a>
+                            </button>
                         </div>
                     </div>
 
@@ -888,7 +1175,11 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                                             class="<?= esc($clase) ?>"
                                             type="button"
                                             title="<?= esc($iconos_color[$p]['nombre'] . ' - ' . $estadoTexto) ?>"
-                                            onclick="abrirEvaluar(<?= (int) $b['id_beneficiario'] ?>, '<?= esc($p) ?>', <?= json_encode($nombreCompleto) ?>)">
+                                            onclick="<?php if ($yaEvaluado && (string) $p === '2'): ?>
+                                                abrirHistorialSanguinea(<?= (int) $b['id_beneficiario'] ?>)
+                                            <?php else: ?>
+                                                abrirEvaluar(<?= (int) $b['id_beneficiario'] ?>, '<?= esc($p) ?>', <?= json_encode($nombreCompleto) ?>)
+                                            <?php endif; ?>">
                                             <img
                                                 src="<?= base_url('img/' . $icono) ?>"
                                                 alt="<?= esc($iconos_color[$p]['nombre']) ?>">
@@ -935,29 +1226,68 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
 </main>
 
-<!-- MODAL EVALUAR -->
-<div class="modal fade" id="modalEvaluar" tabindex="-1">
+<!-- MODAL PESQUISA -->
+<div class="modal fade" id="modalPesquisa" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius:18px; overflow:hidden;">
             <div class="modal-header" style="background:#101a61;color:#fff;">
                 <h6 class="modal-title">
                     <i class="bi bi-clipboard2-pulse me-2"></i>
-                    Evaluar:
+                    <span id="modalPesquisaTitulo">Evaluar:</span>
                     <span id="modalNombreBenef"></span>
                 </h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body p-0">
-                <p class="px-3 pt-3 text-muted" style="font-size:.82rem;">
-                    Selecciona la pesquisa a evaluar:
+                <p class="px-3 pt-3 text-muted" id="modalPesquisaTexto" style="font-size:.82rem;">
+                    Selecciona la pesquisa:
                 </p>
                 <ul class="pesquisa-modal-list" id="listaPesquisasModal"></ul>
             </div>
         </div>
     </div>
 </div>
+<!-- DRAWER FICHA RÁPIDA -->
+<div class="ficha-drawer-backdrop" id="fichaBackdrop" onclick="cerrarFichaRapida()"></div>
 
+<aside class="ficha-drawer" id="fichaDrawer" aria-hidden="true">
+    <div class="ficha-head">
+        <div>
+            <h3>Ficha rápida</h3>
+            <p id="fichaJornadaTexto">Resumen del beneficiario en la jornada</p>
+        </div>
+
+        <button type="button" class="ficha-close" onclick="cerrarFichaRapida()">
+            ×
+        </button>
+    </div>
+
+    <div class="ficha-body" id="fichaBody">
+        <div class="text-muted">Cargando ficha...</div>
+    </div>
+
+    <div class="ficha-actions" id="fichaActions" style="display:none;">
+        <a href="#" class="ficha-action-btn" id="fichaEditarBtn">
+            <i class="bi bi-pencil-square"></i>
+            Editar
+        </a>
+
+        <a href="#" class="ficha-action-btn" id="fichaHistorialBtn">
+            <i class="bi bi-clock-history"></i>
+            Historial
+        </a>
+
+        <button type="button" class="ficha-action-btn primary" id="fichaEvaluarBtn">
+            <i class="bi bi-clipboard2-pulse"></i>
+            Evaluar pendiente
+        </button>
+
+        <button type="button" class="ficha-action-btn" onclick="cerrarFichaRapida()">
+            Cerrar
+        </button>
+    </div>
+</aside>
 <?= $this->endSection() ?>
 
 
@@ -998,53 +1328,275 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
     const pesquisasJornada = <?= json_encode(array_values($pesquisas_jornada ?? [])) ?>;
     const jornadaId = <?= (int) $jornada_id ?>;
+    let fichaBeneficiarioActual = null;
+    let fichaPendienteActual = null;
 
+    function abrirFichaRapida(beneficiarioId) {
+        const drawer = document.getElementById('fichaDrawer');
+        const backdrop = document.getElementById('fichaBackdrop');
+        const body = document.getElementById('fichaBody');
+        const actions = document.getElementById('fichaActions');
+
+        fichaBeneficiarioActual = beneficiarioId;
+        fichaPendienteActual = null;
+
+        body.innerHTML = '<div class="text-muted">Cargando ficha...</div>';
+        actions.style.display = 'none';
+
+        drawer.classList.add('is-open');
+        backdrop.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+
+        fetch(`<?= base_url('jornadas') ?>/${jornadaId}/beneficiarios/${beneficiarioId}/ficha-rapida`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.ok) {
+                    throw new Error(data.message || 'No se pudo cargar la ficha.');
+                }
+
+                renderFichaRapida(data);
+            })
+            .catch(error => {
+                body.innerHTML = `
+                <div class="alert alert-warning mb-0">
+                    ${escapeHtml(error.message)}
+                </div>
+            `;
+            });
+    }
+
+    function cerrarFichaRapida() {
+        const drawer = document.getElementById('fichaDrawer');
+        const backdrop = document.getElementById('fichaBackdrop');
+
+        drawer.classList.remove('is-open');
+        backdrop.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+    }
+
+    function renderFichaRapida(data) {
+        const b = data.beneficiario;
+        const resumen = data.resumen;
+        const pesquisas = data.pesquisas || [];
+
+        const body = document.getElementById('fichaBody');
+        const actions = document.getElementById('fichaActions');
+
+        const primeraPendiente = pesquisas.find(p => !p.evaluado);
+        fichaPendienteActual = primeraPendiente || null;
+
+        document.getElementById('fichaJornadaTexto').textContent =
+            `${data.jornada.nombre} · ${data.jornada.fecha}`;
+
+        const avatar = b.foto_url ?
+            `<img src="${b.foto_url}" alt="${escapeHtml(b.nombre_completo)}">` :
+            `<i class="bi bi-person"></i>`;
+
+        const pesquisasHtml = pesquisas.length ?
+            pesquisas.map(p => `
+            <div class="ficha-pesquisa-item">
+                <img src="${p.icono}" alt="${escapeHtml(p.nombre)}">
+
+                <div>
+                    <div class="ficha-pesquisa-name">${escapeHtml(p.nombre)}</div>
+                    <div class="ficha-pesquisa-desc">${escapeHtml(p.desc || '')}</div>
+                </div>
+
+                <span class="ficha-chip ${p.evaluado ? 'ok' : 'pending'}">
+                    <i class="bi ${p.evaluado ? 'bi-check-circle-fill' : 'bi-clock'}"></i>
+                    ${p.evaluado ? 'Evaluado' : 'Pendiente'}
+                </span>
+            </div>
+        `).join('') :
+            `<div class="text-muted">Esta jornada no tiene pesquisas configuradas.</div>`;
+
+        body.innerHTML = `
+        <div class="ficha-profile">
+            <div class="ficha-avatar">
+                ${avatar}
+            </div>
+
+            <div>
+                <h4 class="ficha-name">
+                    ${escapeHtml(b.apellidos)}, ${escapeHtml(b.nombres)}
+                </h4>
+
+                <div class="ficha-meta">
+                    <strong>ID:</strong> ${escapeHtml(b.id_digisalud || '—')}<br>
+                    <strong>Fn:</strong> ${escapeHtml(b.fecha_nacimiento || '—')}<br>
+                    <strong>Edad:</strong> ${escapeHtml(b.edad || '—')}<br>
+                    <strong>Representante:</strong> ${escapeHtml(b.representante || '—')}
+                </div>
+            </div>
+        </div>
+
+        <div class="ficha-summary">
+            <div class="ficha-kpi">
+                <strong>${resumen.total_pesquisas}</strong>
+                <span>Pesquisas</span>
+            </div>
+
+            <div class="ficha-kpi">
+                <strong>${resumen.total_evaluadas}</strong>
+                <span>Evaluadas</span>
+            </div>
+
+            <div class="ficha-kpi">
+                <strong>${resumen.total_pendientes}</strong>
+                <span>Pendientes</span>
+            </div>
+        </div>
+
+        <div class="ficha-progress" title="${resumen.porcentaje_avance}% completado">
+            <div class="ficha-progress-bar" style="width:${resumen.porcentaje_avance}%"></div>
+        </div>
+
+        <div class="ficha-section-title">Estado de pesquisas</div>
+
+        <div class="ficha-pesquisa-list">
+            ${pesquisasHtml}
+        </div>
+    `;
+
+        document.getElementById('fichaEditarBtn').href = data.acciones.editar_url;
+        document.getElementById('fichaHistorialBtn').href = data.acciones.historial_url;
+
+        const evaluarBtn = document.getElementById('fichaEvaluarBtn');
+
+        if (primeraPendiente) {
+            evaluarBtn.disabled = false;
+            evaluarBtn.style.opacity = '1';
+            evaluarBtn.innerHTML = `
+            <i class="bi bi-clipboard2-pulse"></i>
+            Evaluar ${escapeHtml(primeraPendiente.nombre)}
+        `;
+        } else {
+            evaluarBtn.disabled = true;
+            evaluarBtn.style.opacity = '.55';
+            evaluarBtn.innerHTML = `
+            <i class="bi bi-check-circle"></i>
+            Todo evaluado
+        `;
+        }
+
+        actions.style.display = 'grid';
+    }
+
+    document.addEventListener('click', function(event) {
+        if (event.target && event.target.id === 'fichaEvaluarBtn') {
+            if (!fichaBeneficiarioActual || !fichaPendienteActual) {
+                return;
+            }
+
+            navegarFormulario(fichaBeneficiarioActual, fichaPendienteActual.id);
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            cerrarFichaRapida();
+        }
+    });
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
     /**
      * Evaluar beneficiario.
      * pid = '0' → Desde dropdown "Evaluar" → Abre modal selector.
      * pid > 0   → Desde icono de pesquisa → Navega directo al formulario.
      */
-    function abrirEvaluar(bid, pid, nombre) {
-        if (String(pid) === '0') {
-            document.getElementById('modalNombreBenef').textContent = nombre;
-            var lista = document.getElementById('listaPesquisasModal');
-            lista.innerHTML = '';
+    /**
+ * modo = 'crear'  -> muestra solo pesquisas pendientes
+ * modo = 'editar' -> muestra solo pesquisas evaluadas
+ */
+function abrirModalPesquisa(bid, nombre, pesquisasEvaluadas, modo) {
+    const evaluadas = (pesquisasEvaluadas || []).map(String);
 
-            pesquisasJornada.forEach(function(p) {
-                var pesquisaId = String(p);
-                var info = pesquisaInfo[pesquisaId];
-                if (!info) return;
+    document.getElementById('modalNombreBenef').textContent = nombre;
 
-                var li = document.createElement('li');
-                li.innerHTML =
-                    '<img src="' + info.img + '" alt="' + info.nombre + '">' +
-                    '<div>' +
-                    '<div class="pesq-name">' + info.nombre + '</div>' +
-                    '<div class="pesq-desc">' + info.desc + '</div>' +
-                    '</div>';
+    const titulo = document.getElementById('modalPesquisaTitulo');
+    const texto = document.getElementById('modalPesquisaTexto');
+    const lista = document.getElementById('listaPesquisasModal');
 
-                li.addEventListener('click', function() {
-                    var modalEl = document.getElementById('modalEvaluar');
-                    var modalInst = bootstrap.Modal.getInstance(modalEl);
-                    if (modalInst) modalInst.hide();
-                    navegarFormulario(bid, pesquisaId);
-                });
+    const esEdicion = modo === 'editar';
 
-                lista.appendChild(li);
-            });
+    titulo.textContent = esEdicion ? 'Editar evaluación:' : 'Evaluar:';
+    texto.textContent = esEdicion
+        ? 'Selecciona la pesquisa registrada que deseas editar:'
+        : 'Selecciona la pesquisa pendiente a evaluar:';
 
-            var modalEvaluar = new bootstrap.Modal(document.getElementById('modalEvaluar'));
-            modalEvaluar.show();
+    lista.innerHTML = '';
 
-        } else {
-            navegarFormulario(bid, String(pid));
-        }
+    pesquisasJornada.forEach(function(p) {
+        const pesquisaId = String(p);
+        const info = pesquisaInfo[pesquisaId];
+        if (!info) return;
+
+        const yaEvaluada = evaluadas.includes(pesquisaId);
+
+        if (!esEdicion && yaEvaluada) return;
+        if (esEdicion && !yaEvaluada) return;
+
+        const li = document.createElement('li');
+        li.innerHTML =
+            '<img src="' + info.img + '" alt="' + info.nombre + '">' +
+            '<div>' +
+            '<div class="pesq-name">' + info.nombre + '</div>' +
+            '<div class="pesq-desc">' + info.desc + '</div>' +
+            '</div>';
+
+        li.addEventListener('click', function() {
+            const modalEl = document.getElementById('modalPesquisa');
+            const modalInst = bootstrap.Modal.getInstance(modalEl);
+            if (modalInst) modalInst.hide();
+
+            navegarFormulario(bid, pesquisaId);
+        });
+
+        lista.appendChild(li);
+    });
+
+    if (!lista.children.length) {
+        const li = document.createElement('li');
+        li.style.cursor = 'default';
+        li.innerHTML =
+            '<div>' +
+            '<div class="pesq-name">' + (esEdicion ? 'Sin evaluaciones registradas' : 'Sin pesquisas pendientes') + '</div>' +
+            '<div class="pesq-desc">' + (esEdicion ? 'Este beneficiario no tiene evaluaciones para editar.' : 'Todas las pesquisas de esta jornada ya fueron evaluadas.') + '</div>' +
+            '</div>';
+        lista.appendChild(li);
     }
+
+    const modalPesquisa = new bootstrap.Modal(document.getElementById('modalPesquisa'));
+    modalPesquisa.show();
+}
+
+function abrirEvaluar(bid, pid, nombre) {
+    if (String(pid) === '0') {
+        abrirModalPesquisa(bid, nombre, [], 'crear');
+        return;
+    }
+
+    navegarFormulario(bid, String(pid));
+}
 
     function navegarFormulario(beneficiarioId, tipoPesquisaId) {
         window.location.href = '<?= base_url("evaluaciones/formulario") ?>/' + beneficiarioId + '/' + tipoPesquisaId + '?jornada_id=' + jornadaId;
     }
 
+    function abrirHistorialSanguinea(beneficiarioId) {
+        window.location.href = '<?= base_url("evaluaciones/historial-sanguinea") ?>/' + beneficiarioId + '?jornada_id=' + jornadaId;
+    }
 
 
     document.addEventListener('DOMContentLoaded', function() {

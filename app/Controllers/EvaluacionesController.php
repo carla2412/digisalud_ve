@@ -136,9 +136,78 @@ class EvaluacionesController extends BaseController
         ]);
     }
 
-    /**
-     * POST /evaluaciones/guardar
-     */
+    public function historialSanguinea(int $beneficiarioId)
+    {
+        $jornadaId = (int) $this->request->getGet('jornada_id');
+        $tipoPesquisaId = 2; // Laboratorio / Sanguínea
+
+        $db = \Config\Database::connect();
+
+        $beneficiario = $db->table('beneficiarios')
+            ->where('id_beneficiario', $beneficiarioId)
+            ->get()
+            ->getRowArray();
+
+        if (! $beneficiario) {
+            return redirect()->back()->with('error', 'Beneficiario no encontrado.');
+        }
+
+        $historial = $this->evalModel
+            ->select('
+            pesquisa_evaluaciones.*,
+            jornadas.nombre_jornada,
+            centros.nombre_centro
+        ')
+            ->join('jornadas', 'jornadas.id_jornada = pesquisa_evaluaciones.jornada_id', 'left')
+            ->join('centros', 'centros.id_centro = pesquisa_evaluaciones.centro_id', 'left')
+            ->where('pesquisa_evaluaciones.beneficiario_id', $beneficiarioId)
+            ->where('pesquisa_evaluaciones.tipo_pesquisa_id', $tipoPesquisaId)
+            ->where('pesquisa_evaluaciones.status_eval', 1)
+            ->orderBy('pesquisa_evaluaciones.fecha_evaluacion', 'DESC')
+            ->findAll();
+
+        $historialConResultados = [];
+
+        foreach ($historial as $evaluacion) {
+            $resultados = $this->resultModel->getResultadosConItems((int) $evaluacion['id_evaluacion']);
+
+            $valores = [];
+
+            foreach ($resultados as $r) {
+                switch ($r['tipo_dato']) {
+                    case 'number':
+                        $valor = $r['valor_numero'];
+                        break;
+                    case 'boolean':
+                        $valor = $r['valor_booleano'];
+                        break;
+                    case 'date':
+                        $valor = $r['valor_fecha'];
+                        break;
+                    default:
+                        $valor = $r['valor_texto'];
+                        break;
+                }
+
+                $valores[$r['codigo']] = [
+                    'nombre'  => $r['nombre'],
+                    'valor'   => $valor,
+                    'unidad'  => $r['unidad'],
+                    'seccion' => $r['seccion'],
+                    'codigo'  => $r['codigo'],
+                ];
+            }
+
+            $evaluacion['resultados'] = $valores;
+            $historialConResultados[] = $evaluacion;
+        }
+
+        return view('evaluaciones/historial_sanguinea', [
+            'beneficiario' => $beneficiario,
+            'historial'    => $historialConResultados,
+            'jornadaId'    => $jornadaId,
+        ]);
+    }
     public function guardar(): ResponseInterface
     {
         $session = session();
@@ -222,32 +291,40 @@ class EvaluacionesController extends BaseController
                 ]);
                 $this->resultModel->eliminarPorEvaluacion((int) $evaluacionId);
             } else {
-                // Nueva evaluación — verificar unicidad en jornada
+                // Nueva evaluación — bloquear duplicado en la misma jornada
                 if (! empty($jornadaId)) {
                     $existente = $this->evalModel->existeEnJornada($beneficiarioId, $tipoPesquisaId, (int) $jornadaId);
+
                     if ($existente) {
-                        $evaluacionId = $existente['id_evaluacion'];
-                        $this->evalModel->update($evaluacionId, [
-                            'observaciones'  => $observaciones,
-                            'modificado_en'  => date('Y-m-d H:i:s'),
-                            'modificado_por' => $usuarioId,
+                        return $this->response->setJSON([
+                            'ok'      => false,
+                            'mensaje' => 'Esta pesquisa ya fue evaluada para este beneficiario en esta jornada. Use la opción "Editar evaluación".',
                         ]);
-                        $this->resultModel->eliminarPorEvaluacion((int) $evaluacionId);
                     }
                 }
 
-                if (empty($evaluacionId)) {
-                    $evaluacionId = $this->evalModel->insert([
-                        'beneficiario_id'  => $beneficiarioId,
-                        'tipo_pesquisa_id' => $tipoPesquisaId,
-                        'jornada_id'       => ! empty($jornadaId) ? (int) $jornadaId : null,
-                        'centro_id'        => ! empty($centroId) ? (int) $centroId : null,
-                        'fecha_evaluacion' => date('Y-m-d H:i:s'),
-                        'observaciones'    => $observaciones,
-                        'evaluado_por'     => $usuarioId,
-                        'creado_en'        => date('Y-m-d H:i:s'),
-                        'status_eval'      => 1,
+                if (! empty($evaluacionId)) {
+                    $evaluacionActual = $this->evalModel->find((int) $evaluacionId);
+
+                    if (
+                        ! $evaluacionActual ||
+                        (int) $evaluacionActual['beneficiario_id'] !== $beneficiarioId ||
+                        (int) $evaluacionActual['tipo_pesquisa_id'] !== $tipoPesquisaId ||
+                        (! empty($jornadaId) && (int) $evaluacionActual['jornada_id'] !== (int) $jornadaId)
+                    ) {
+                        return $this->response->setJSON([
+                            'ok'      => false,
+                            'mensaje' => 'La evaluación que intenta editar no corresponde a este beneficiario, pesquisa o jornada.',
+                        ]);
+                    }
+
+                    $this->evalModel->update($evaluacionId, [
+                        'observaciones'  => $observaciones,
+                        'modificado_en'  => date('Y-m-d H:i:s'),
+                        'modificado_por' => $usuarioId,
                     ]);
+
+                    $this->resultModel->eliminarPorEvaluacion((int) $evaluacionId);
                 }
             }
 
@@ -286,7 +363,6 @@ class EvaluacionesController extends BaseController
                 'evaluacion_id' => $evaluacionId,
                 'url_retorno'   => $urlRetorno,
             ]);
-
         } catch (\Exception $e) {
             $db->transRollback();
             log_message('error', 'Error guardando evaluación: ' . $e->getMessage());
