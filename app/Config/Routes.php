@@ -110,15 +110,15 @@ $routes->get('organizaciones/crear',         'Organizaciones::create',    ['as' 
 $routes->post('organizaciones/guardar',      'Organizaciones::store',     ['as' => 'organizaciones.store']);
 $routes->get('organizaciones/editar/(:num)', 'Organizaciones::edit/$1',   ['as' => 'organizaciones.edit']);
 $routes->post('organizaciones/update/(:num)', 'Organizaciones::update/$1', ['as' => 'organizaciones.update']);
-
 // ═══════════════════════════════════════════════════════════════
 // EVALUACIONES (transversal jornadas y centros)
 // Agregar al final de app/Config/Routes.php
 // ═══════════════════════════════════════════════════════════════
-
+ 
 $routes->group('evaluaciones', ['filter' => 'auth'], function ($routes) {
     // Página completa del formulario de evaluación
     $routes->get('formulario/(:num)/(:num)', 'EvaluacionesController::formulario/$1/$2');
     // Guardar evaluación (POST AJAX)
     $routes->post('guardar', 'EvaluacionesController::guardar');
 });
+ 

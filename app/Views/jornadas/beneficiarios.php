@@ -75,7 +75,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         color: var(--ds-dark);
         font-size: 30px;
         line-height: 1.2;
-       
+
     }
 
     .benef-counter {
@@ -133,7 +133,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         border-radius: 12px;
         background: linear-gradient(135deg, #3a8cff, #176be8);
         color: white;
-        font-weight: 850;
+        font-weight: 600;
         font-size: 15px;
         cursor: pointer;
         box-shadow: 0 8px 18px rgba(47, 128, 237, .25);
@@ -258,7 +258,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         margin: 0 0 10px;
         color: var(--ds-dark);
         font-size: 20px;
-        font-weight: 850;
+        font-weight: 600;
         letter-spacing: .2px;
         text-transform: uppercase;
         padding-right: 35px;
@@ -281,12 +281,12 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
     .meta-label {
         color: #176be8;
-        font-weight: 850;
+        font-weight: 600;
     }
 
     .age-label {
         color: #00a8b5;
-        font-weight: 850;
+        font-weight: 600;
     }
 
     .meta-separator {
@@ -328,7 +328,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         border-radius: 999px;
         background: var(--ds-success-bg);
         color: #0b8f51;
-        font-weight: 850;
+        font-weight: 600;
         font-size: 14px;
         white-space: nowrap;
     }
@@ -340,7 +340,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         border: 1px solid var(--ds-border);
         background: #fff;
         color: var(--ds-primary-dark);
-        font-weight: 850;
+        font-weight: 600;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
@@ -396,7 +396,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
     .research-title {
         color: var(--ds-dark);
-        font-weight: 850;
+        font-weight: 600;
         font-size: 15px;
     }
 
@@ -451,7 +451,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         flex-direction: column;
         gap: 2px;
         font-size: 12px;
-        font-weight: 850;
+        font-weight: 600;
         line-height: 1.1;
     }
 
@@ -514,7 +514,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         background: white;
         border-radius: 10px;
         color: var(--ds-dark);
-        font-weight: 850;
+        font-weight: 600;
         cursor: pointer;
     }
 
@@ -547,7 +547,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         background: white;
         color: #536580;
         padding: 0 14px;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .pesquisa-modal-list {
@@ -578,7 +578,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
     .pesq-name {
         color: var(--ds-dark);
-        font-weight: 850;
+        font-weight: 600;
         font-size: 14px;
     }
 
@@ -703,7 +703,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                 Registrar
             </a>
         </div>
-                </div>
+    </div>
 
     <?php if (!empty($beneficiarios) && count($beneficiarios) > 5): ?>
         <div class="benef-search">
@@ -714,46 +714,45 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
     <?php if (!empty($beneficiarios)): ?>
         <?php
-            $iconos_color = [
-                '1' => ['img' => 'antropometria2.svg',      'gris' => 'antropometria-color.svg',      'nombre' => 'Antropometría'],
-                '2' => ['img' => 'sanguinea2.svg',          'gris' => 'sanguinea-color.svg',          'nombre' => 'Laboratorio'],
-                '3' => ['img' => 'visual2.svg',             'gris' => 'visual-color.svg',             'nombre' => 'Visual'],
-                '4' => ['img' => 'signosVitales2.svg',      'gris' => 'signos-vitales-color.svg',     'nombre' => 'Signos vitales'],
-                '5' => ['img' => 'medicinaGeneral2.svg',    'gris' => 'medicina-general-color.svg',   'nombre' => 'Medicina general'],
-                '6' => ['img' => 'vacunacion2.svg',         'gris' => 'vacunacion-color.svg',         'nombre' => 'Vacunación'],
-            ];
+        $iconos_color = [
+            '1' => ['img' => 'antropometria2.svg',      'gris' => 'antropometria-color.svg',      'nombre' => 'Antropometría'],
+            '2' => ['img' => 'sanguinea2.svg',          'gris' => 'sanguinea-color.svg',          'nombre' => 'Laboratorio'],
+            '3' => ['img' => 'visual2.svg',             'gris' => 'visual-color.svg',             'nombre' => 'Visual'],
+            '4' => ['img' => 'signosVitales2.svg',      'gris' => 'signos-vitales-color.svg',     'nombre' => 'Signos vitales'],
+            '5' => ['img' => 'medicinaGeneral2.svg',    'gris' => 'medicina-general-color.svg',   'nombre' => 'Medicina general'],
+            '6' => ['img' => 'vacunacion2.svg',         'gris' => 'vacunacion-color.svg',         'nombre' => 'Vacunación'],
+        ];
         ?>
 
         <section class="benef-cards-list" id="benefCardsList">
             <?php foreach ($beneficiarios as $b): ?>
                 <?php
-                    $fechaNacimiento = $b['fecha_nacimiento'] ?? null;
+                $fechaNacimiento = $b['fecha_nacimiento'] ?? null;
 
-                    if (!empty($fechaNacimiento)) {
-                        $nac  = new \DateTime($fechaNacimiento);
-                        $diff = (new \DateTime())->diff($nac);
-                        $edad = $diff->y . ' año' . ($diff->y != 1 ? 's' : '') . ', ' . $diff->m . ' mes(es) y ' . $diff->d . ' días';
-                    } else {
-                        $edad = '—';
-                    }
+                if (!empty($fechaNacimiento)) {
+                    $nac  = new \DateTime($fechaNacimiento);
+                    $diff = (new \DateTime())->diff($nac);
+                    $edad = $diff->y . ' año' . ($diff->y != 1 ? 's' : '') . ', ' . $diff->m . ' mes(es) y ' . $diff->d . ' días';
+                } else {
+                    $edad = '—';
+                }
 
-                    $evals = $evaluaciones[$b['id_beneficiario']] ?? [];
+                $evals = $evaluaciones[$b['id_beneficiario']] ?? [];
 
-                    $nombreCompleto = trim(($b['nombres'] ?? '') . ' ' . ($b['apellidos'] ?? ''));
-                    $searchText = strtolower(
-                        trim(
-                            ($b['apellidos'] ?? '') . ' ' .
+                $nombreCompleto = trim(($b['nombres'] ?? '') . ' ' . ($b['apellidos'] ?? ''));
+                $searchText = strtolower(
+                    trim(
+                        ($b['apellidos'] ?? '') . ' ' .
                             ($b['nombres'] ?? '') . ' ' .
                             ($b['id_digisalud'] ?? '')
-                        )
-                    );
+                    )
+                );
                 ?>
 
                 <article
                     class="beneficiary-card"
                     data-benef-card="1"
-                    data-search="<?= esc($searchText) ?>"
-                >
+                    data-search="<?= esc($searchText) ?>">
 
                     <div class="benef-card-menu dropdown">
                         <button class="btn btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -772,21 +771,21 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                                 <a
                                     class="dropdown-item"
                                     href="#"
-                                    onclick="abrirEvaluar(<?= (int) $b['id_beneficiario'] ?>, '0', <?= json_encode($nombreCompleto) ?>); return false;"
-                                >
+                                    onclick="abrirEvaluar(<?= (int) $b['id_beneficiario'] ?>, '0', <?= json_encode($nombreCompleto) ?>); return false;">
                                     <i class="bi bi-clipboard2-pulse me-2 text-success"></i>
                                     Evaluar
                                 </a>
                             </li>
 
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
 
                             <li>
                                 <a
                                     class="dropdown-item text-danger"
                                     href="#"
-                                    onclick="confirmarRemover(<?= (int) $jornada_id ?>, <?= (int) $b['id_beneficiario'] ?>); return false;"
-                                >
+                                    onclick="confirmarRemover(<?= (int) $jornada_id ?>, <?= (int) $b['id_beneficiario'] ?>); return false;">
                                     <i class="bi bi-x-circle me-2"></i>
                                     Retirar de la jornada
                                 </a>
@@ -849,7 +848,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                         </div>
 
                         <div class="benef-card-actions">
-                            <span >
+                            <span>
                                 <br>
                             </span>
 
@@ -869,12 +868,12 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                             <?php foreach ($pesquisas_jornada as $p): ?>
                                 <?php if (isset($iconos_color[$p])): ?>
                                     <?php
-                                        $yaEvaluado = in_array($p, $evals);
-                                        $icono = $yaEvaluado ? $iconos_color[$p]['img'] : $iconos_color[$p]['gris'];
-                                        $clase = $yaEvaluado ? 'research-icon-btn evaluado' : 'research-icon-btn';
-                                        $estadoTexto = $yaEvaluado ? 'Evaluado' : 'Pendiente';
-                                        $estadoClase = $yaEvaluado ? 'ok' : 'pending';
-                                        $estadoIcono = $yaEvaluado ? 'bi-check-circle-fill' : 'bi-clock';
+                                    $yaEvaluado = in_array($p, $evals);
+                                    $icono = $yaEvaluado ? $iconos_color[$p]['img'] : $iconos_color[$p]['gris'];
+                                    $clase = $yaEvaluado ? 'research-icon-btn evaluado' : 'research-icon-btn';
+                                    $estadoTexto = $yaEvaluado ? 'Evaluado' : 'Pendiente';
+                                    $estadoClase = $yaEvaluado ? 'ok' : 'pending';
+                                    $estadoIcono = $yaEvaluado ? 'bi-check-circle-fill' : 'bi-clock';
                                     ?>
 
                                     <div class="research-item">
@@ -882,12 +881,10 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                                             class="<?= esc($clase) ?>"
                                             type="button"
                                             title="<?= esc($iconos_color[$p]['nombre'] . ' - ' . $estadoTexto) ?>"
-                                            onclick="abrirEvaluar(<?= (int) $b['id_beneficiario'] ?>, '<?= esc($p) ?>', <?= json_encode($nombreCompleto) ?>)"
-                                        >
+                                            onclick="abrirEvaluar(<?= (int) $b['id_beneficiario'] ?>, '<?= esc($p) ?>', <?= json_encode($nombreCompleto) ?>)">
                                             <img
                                                 src="<?= base_url('img/' . $icono) ?>"
-                                                alt="<?= esc($iconos_color[$p]['nombre']) ?>"
-                                            >
+                                                alt="<?= esc($iconos_color[$p]['nombre']) ?>">
                                         </button>
 
                                         <span class="research-status">
@@ -958,54 +955,188 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
 
 <?= $this->section('scripts') ?>
- <script>
-const pesquisaInfo = {
-    '1': {
-        img: '<?= base_url("img/antropometria2.svg") ?>',
-        nombre: 'Antropometría',
-        desc: 'Peso, talla, IMC'
-    },
-    '2': {
-        img: '<?= base_url("img/sanguinea2.svg") ?>',
-        nombre: 'Laboratorio',
-        desc: 'Hemoglobina, glucosa'
-    },
-    '3': {
-        img: '<?= base_url("img/visual2.svg") ?>',
-        nombre: 'Visual',
-        desc: 'Agudeza visual'
-    },
-    '4': {
-        img: '<?= base_url("img/signosVitales2.svg") ?>',
-        nombre: 'Signos vitales',
-        desc: 'Tensión, temperatura, FC'
-    },
-    '5': {
-        img: '<?= base_url("img/medicinaGeneral2.svg") ?>',
-        nombre: 'Medicina general',
-        desc: 'Evaluación clínica'
-    },
-    '6': {
-        img: '<?= base_url("img/vacunacion2.svg") ?>',
-        nombre: 'Vacunación',
-        desc: 'Control de vacunas'
+<script>
+    const pesquisaInfo = {
+        '1': {
+            img: '<?= base_url("img/antropometria2.svg") ?>',
+            nombre: 'Antropometría',
+            desc: 'Peso, talla, IMC'
+        },
+        '2': {
+            img: '<?= base_url("img/sanguinea2.svg") ?>',
+            nombre: 'Laboratorio',
+            desc: 'Hemoglobina, glucosa'
+        },
+        '3': {
+            img: '<?= base_url("img/visual2.svg") ?>',
+            nombre: 'Visual',
+            desc: 'Agudeza visual'
+        },
+        '4': {
+            img: '<?= base_url("img/signosVitales2.svg") ?>',
+            nombre: 'Signos vitales',
+            desc: 'Tensión, temperatura, FC'
+        },
+        '5': {
+            img: '<?= base_url("img/medicinaGeneral2.svg") ?>',
+            nombre: 'Medicina general',
+            desc: 'Evaluación clínica'
+        },
+        '6': {
+            img: '<?= base_url("img/vacunacion2.svg") ?>',
+            nombre: 'Vacunación',
+            desc: 'Control de vacunas'
+        }
+    };
+
+    const pesquisasJornada = <?= json_encode(array_values($pesquisas_jornada ?? [])) ?>;
+    const jornadaId = <?= (int) $jornada_id ?>;
+
+    function abrirEvaluar(bid, pid, nombre) {
+
+        if (String(pid) === '0') {
+            // ─── Desde dropdown "Evaluar": abrir modal selector de pesquisa ───
+            document.getElementById('modalNombreBenef').textContent = nombre;
+
+            const lista = document.getElementById('listaPesquisasModal');
+            lista.innerHTML = '';
+
+            pesquisasJornada.forEach(p => {
+                const pesquisaId = String(p);
+                const info = pesquisaInfo[pesquisaId];
+                if (!info) return;
+
+                const li = document.createElement('li');
+                li.innerHTML = `
+                <img src="${info.img}" alt="${info.nombre}">
+                <div>
+                    <div class="pesq-name">${info.nombre}</div>
+                    <div class="pesq-desc">${info.desc}</div>
+                </div>
+            `;
+
+                li.onclick = function() {
+                    // Cerrar modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalEvaluar'));
+                    if (modal) modal.hide();
+                    // Navegar al formulario
+                    navegarFormulario(bid, pesquisaId);
+                };
+
+                lista.appendChild(li);
+            });
+
+            new bootstrap.Modal(document.getElementById('modalEvaluar')).show();
+
+        } else {
+            // ─── Desde icono directo de pesquisa: navegar al formulario ───
+            navegarFormulario(bid, String(pid));
+        }
     }
-};
 
-const pesquisasJornada = <?= json_encode(array_values($pesquisas_jornada ?? [])) ?>;
-const jornadaId = <?= (int) $jornada_id ?>;
+    function navegarFormulario(beneficiarioId, tipoPesquisaId) {
+        const url = `<?= base_url('evaluaciones/formulario') ?>/${beneficiarioId}/${tipoPesquisaId}?jornada_id=${jornadaId}`;
+        window.location.href = url;
+    }
 
-function abrirEvaluar(bid, pid, nombre) {
-    if (String(pid) === '0') {
-        document.getElementById('modalNombreBenef').textContent = nombre;
+    /* ─── Paginación (conservar si ya existe) ─── */
+    document.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.beneficiary-card');
+        const totalCards = cards.length;
 
-        const lista = document.getElementById('listaPesquisasModal');
-        lista.innerHTML = '';
+        const pageSizeSelect = document.getElementById('pageSizeBenef');
+        const paginationInfo = document.getElementById('paginationInfo');
+        const paginationBtns = document.getElementById('paginationButtons');
 
-        pesquisasJornada.forEach(p => {
-            const pesquisaId = String(p);
-            const info = pesquisaInfo[pesquisaId];
-            if (!info) return;
+        let pageSize = parseInt(pageSizeSelect?.value || 15);
+        let currentPage = 1;
 
-    
-<?= $this->endSection() ?>
+        function render() {
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            const totalPages = Math.ceil(totalCards / pageSize);
+
+            cards.forEach((card, i) => {
+                card.style.display = (i >= start && i < end) ? '' : 'none';
+            });
+
+            if (paginationInfo) {
+                paginationInfo.textContent = `Mostrando ${start + 1}–${Math.min(end, totalCards)} de ${totalCards} beneficiarios`;
+            }
+
+            if (paginationBtns) {
+                paginationBtns.innerHTML = '';
+
+                const prevBtn = document.createElement('button');
+                prevBtn.className = 'page-btn wide';
+                prevBtn.textContent = '← Anterior';
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.onclick = () => {
+                    currentPage--;
+                    render();
+                };
+                paginationBtns.appendChild(prevBtn);
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                    btn.textContent = i;
+                    btn.onclick = () => {
+                        currentPage = i;
+                        render();
+                    };
+                    paginationBtns.appendChild(btn);
+                }
+
+                const nextBtn = document.createElement('button');
+                nextBtn.className = 'page-btn next';
+                nextBtn.textContent = 'Siguiente →';
+                nextBtn.disabled = currentPage === totalPages;
+                nextBtn.onclick = () => {
+                    currentPage++;
+                    render();
+                };
+                paginationBtns.appendChild(nextBtn);
+            }
+        }
+
+        if (pageSizeSelect) {
+            pageSizeSelect.addEventListener('change', () => {
+                pageSize = parseInt(pageSizeSelect.value);
+                currentPage = 1;
+                render();
+            });
+        }
+
+        render();
+
+        /* ─── Filtro de búsqueda ─── */
+        const filtro = document.getElementById('filtrarBenef');
+        if (filtro) {
+            filtro.addEventListener('keyup', function() {
+                const texto = this.value.toLowerCase().trim();
+                cards.forEach(card => {
+                    const search = card.dataset.search || '';
+                    card.style.display = search.includes(texto) ? '' : 'none';
+                });
+            });
+        }
+    });
+
+    function confirmarRemover(jornadaId, beneficiarioId) {
+        Swal.fire({
+            title: '¿Retirar beneficiario?',
+            text: 'Se desasociará de esta jornada.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e53e3e',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Sí, retirar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `<?= base_url('jornadas') ?>/${jornadaId}/beneficiarios/desasociar/${beneficiarioId}`;
+            }
+        });
+    }
+    <?= $this->endSection() ?>

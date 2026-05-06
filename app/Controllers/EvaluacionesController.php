@@ -49,18 +49,6 @@ class EvaluacionesController extends BaseController
             return redirect()->back()->with('error', 'Tipo de pesquisa no encontrado.');
         }
 
-        if ($jornadaId) {
-            $pesquisaHabilitada = $db->table('tipo_pesquisa_actividad')
-                ->where('id_jornada', $jornadaId)
-                ->where('idtipo_pesquisa', $tipoPesquisaId)
-                ->where('status_pesq_act', 1)
-                ->countAllResults();
-
-            if (! $pesquisaHabilitada) {
-                return redirect()->back()->with('error', 'La pesquisa seleccionada no está habilitada para esta jornada.');
-            }
-        }
-
         // Obtener items agrupados por sección
         $itemsAgrupados = $this->itemModel->getItemsAgrupados($tipoPesquisaId);
 
@@ -82,8 +70,6 @@ class EvaluacionesController extends BaseController
             $pesquisasActividad = $db->table('tipo_pesquisa_actividad')
                 ->select('idtipo_pesquisa')
                 ->where('id_jornada', $jornadaId)
-                ->where('status_pesq_act', 1)
-                ->orderBy('idtipo_pesquisa', 'ASC')
                 ->get()->getResultArray();
             $pesquisasActividad = array_column($pesquisasActividad, 'idtipo_pesquisa');
         }
@@ -134,7 +120,7 @@ class EvaluacionesController extends BaseController
             6 => ['nombre' => 'Vacunación',       'img' => 'vacunacion2.svg',        'gris' => 'vacunacion-color.svg'],
         ];
 
-        return view('evaluaciones/rutas/formulario', [
+        return view('evaluaciones/formulario', [
             'beneficiario'         => $beneficiario,
             'tipoPesquisa'         => $tipoPesquisa,
             'tipoPesquisaId'       => $tipoPesquisaId,

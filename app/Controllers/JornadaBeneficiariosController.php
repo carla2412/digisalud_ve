@@ -52,7 +52,24 @@ class JornadaBeneficiariosController extends BaseController
                 ->with('info', 'Esta jornada aún no tiene beneficiarios. Use el buscador para añadir uno.');
         }
 
+        // ─── Obtener evaluaciones realizadas por beneficiario en esta jornada ───
         $evaluaciones = [];
+
+        $evalRows = db_connect()
+            ->table('pesquisa_evaluaciones')
+            ->select('beneficiario_id, tipo_pesquisa_id')
+            ->where('jornada_id', $jornada_id)
+            ->where('status_eval', 1)
+            ->get()
+            ->getResultArray();
+
+        foreach ($evalRows as $row) {
+            $bid = $row['beneficiario_id'];
+            if (!isset($evaluaciones[$bid])) {
+                $evaluaciones[$bid] = [];
+            }
+            $evaluaciones[$bid][] = $row['tipo_pesquisa_id'];
+        }
 
         return view('jornadas/beneficiarios', [
             'beneficiarios'     => $beneficiarios,
@@ -96,7 +113,7 @@ class JornadaBeneficiariosController extends BaseController
         return redirect()->to("/jornadas/$jornada_id/beneficiarios")
             ->with('success', 'Beneficiario removido de la jornada');
     }
-    
+
 
     public function buscar($jornada_id)
     {
