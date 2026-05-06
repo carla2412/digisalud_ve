@@ -958,8 +958,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
 
 <?= $this->section('scripts') ?>
-
-<script>
+ <script>
 const pesquisaInfo = {
     '1': {
         img: '<?= base_url("img/antropometria2.svg") ?>',
@@ -993,184 +992,20 @@ const pesquisaInfo = {
     }
 };
 
-const pesquisasJornada = <?= json_encode($pesquisas_jornada ?? []) ?>;
+const pesquisasJornada = <?= json_encode(array_values($pesquisas_jornada ?? [])) ?>;
+const jornadaId = <?= (int) $jornada_id ?>;
 
 function abrirEvaluar(bid, pid, nombre) {
-    document.getElementById('modalNombreBenef').textContent = nombre;
+    if (String(pid) === '0') {
+        document.getElementById('modalNombreBenef').textContent = nombre;
 
-    const lista = document.getElementById('listaPesquisasModal');
-    lista.innerHTML = '';
+        const lista = document.getElementById('listaPesquisasModal');
+        lista.innerHTML = '';
 
-    pesquisasJornada.forEach(p => {
-        const info = pesquisaInfo[p];
-        if (!info) return;
+        pesquisasJornada.forEach(p => {
+            const pesquisaId = String(p);
+            const info = pesquisaInfo[pesquisaId];
+            if (!info) return;
 
-        const li = document.createElement('li');
-
-        li.innerHTML = `
-            <img src="${info.img}" alt="${info.nombre}">
-            <div>
-                <div class="pesq-name">${info.nombre}</div>
-                <div class="pesq-desc">${info.desc}</div>
-            </div>
-        `;
-
-        li.onclick = () => {
-            Swal.fire({
-                icon: 'info',
-                title: info.nombre,
-                text: 'Módulo de evaluación próximamente.',
-                confirmButtonColor: '#101a61'
-            });
-
-            const modal = bootstrap.Modal.getInstance(document.getElementById('modalEvaluar'));
-            if (modal) modal.hide();
-        };
-
-        lista.appendChild(li);
-    });
-
-    new bootstrap.Modal(document.getElementById('modalEvaluar')).show();
-}
-
-function confirmarRemover(j, b) {
-    Swal.fire({
-        title: '¿Retirar beneficiario?',
-        text: 'Se retirará de esta jornada. Podrás volver a agregarlo después.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#dc3545',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Sí, retirar',
-        cancelButtonText: 'Cancelar'
-    }).then(r => {
-        if (r.isConfirmed) {
-            window.location.href = `<?= base_url('jornadas') ?>/${j}/desasociar/${b}`;
-        }
-    });
-}
-
-/* Alertas automáticas */
-document.querySelectorAll('.auto-dismiss').forEach(alerta => {
-    setTimeout(() => {
-        const bsAlert = bootstrap.Alert.getOrCreateInstance(alerta);
-        bsAlert.close();
-    }, 3000);
-});
-
-/* Filtro + paginación 15 en 15 */
-const filterInput = document.getElementById('filtrarBenef');
-const allCards = Array.from(document.querySelectorAll('[data-benef-card="1"]'));
-const paginationButtons = document.getElementById('paginationButtons');
-const paginationInfo = document.getElementById('paginationInfo');
-const pageSizeSelect = document.getElementById('pageSizeBenef');
-const paginationWrap = document.getElementById('benefPaginationWrap');
-
-let currentPage = 1;
-let pageSize = pageSizeSelect ? parseInt(pageSizeSelect.value, 10) : 15;
-let filteredCards = [...allCards];
-
-function applyFilter() {
-    const term = filterInput ? filterInput.value.toLowerCase().trim() : '';
-
-    filteredCards = allCards.filter(card => {
-        const haystack = card.getAttribute('data-search') || '';
-        return haystack.includes(term);
-    });
-
-    currentPage = 1;
-    renderPagination();
-}
-
-function renderPagination() {
-    if (!paginationButtons || !paginationInfo) return;
-
-    const totalItems = filteredCards.length;
-    const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
-
-    if (currentPage > totalPages) {
-        currentPage = totalPages;
-    }
-
-    allCards.forEach(card => {
-        card.classList.add('is-hidden');
-    });
-
-    const start = (currentPage - 1) * pageSize;
-    const end = start + pageSize;
-
-    filteredCards.slice(start, end).forEach(card => {
-        card.classList.remove('is-hidden');
-    });
-
-    const showingFrom = totalItems === 0 ? 0 : start + 1;
-    const showingTo = Math.min(end, totalItems);
-
-    paginationInfo.textContent = `Mostrando ${showingFrom}–${showingTo} de ${totalItems} beneficiario${totalItems === 1 ? '' : 's'}`;
-
-    paginationButtons.innerHTML = '';
-
-    if (paginationWrap) {
-        paginationWrap.style.display = totalItems > 0 ? 'flex' : 'none';
-    }
-
-    const prevBtn = document.createElement('button');
-    prevBtn.className = 'page-btn wide';
-    prevBtn.textContent = '‹ Anterior';
-    prevBtn.disabled = currentPage === 1;
-    prevBtn.onclick = () => {
-        if (currentPage > 1) {
-            currentPage--;
-            renderPagination();
-        }
-    };
-    paginationButtons.appendChild(prevBtn);
-
-    const maxButtons = 5;
-    let firstPage = Math.max(1, currentPage - 2);
-    let lastPage = Math.min(totalPages, firstPage + maxButtons - 1);
-
-    if (lastPage - firstPage < maxButtons - 1) {
-        firstPage = Math.max(1, lastPage - maxButtons + 1);
-    }
-
-    for (let i = firstPage; i <= lastPage; i++) {
-        const btn = document.createElement('button');
-        btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-        btn.textContent = i;
-        btn.onclick = () => {
-            currentPage = i;
-            renderPagination();
-        };
-        paginationButtons.appendChild(btn);
-    }
-
-    const nextBtn = document.createElement('button');
-    nextBtn.className = 'page-btn next';
-    nextBtn.textContent = 'Siguiente ›';
-    nextBtn.disabled = currentPage === totalPages;
-    nextBtn.onclick = () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderPagination();
-        }
-    };
-    paginationButtons.appendChild(nextBtn);
-}
-
-if (filterInput) {
-    filterInput.addEventListener('input', applyFilter);
-}
-
-if (pageSizeSelect) {
-    pageSizeSelect.addEventListener('change', function () {
-        pageSize = parseInt(this.value, 10);
-        currentPage = 1;
-        renderPagination();
-    });
-}
-
-renderPagination();
-</script>
-
+    
 <?= $this->endSection() ?>
