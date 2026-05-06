@@ -681,13 +681,13 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                 Beneficiarios de la jornada
                 <span class="benef-counter"><?= $total ?? count($beneficiarios ?? []) ?></span>
             </h1>
-            <p>
+            <!-- <p>
                 Jornada:
                 <?= esc($jornada['nombre_jornada'] ?? 'Jornada') ?>
                 <?php if (!empty($jornada['fecha_inicio'])): ?>
                     · <?= date('d-m-Y', strtotime($jornada['fecha_inicio'])) ?>
                 <?php endif; ?>
-            </p>
+            </p> -->
         </div>
 
         <div class="benef-actions">
@@ -740,6 +740,13 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                 $evals = $evaluaciones[$b['id_beneficiario']] ?? [];
 
                 $nombreCompleto = trim(($b['nombres'] ?? '') . ' ' . ($b['apellidos'] ?? ''));
+                $nombreCompletoJs = esc(
+                    json_encode(
+                        $nombreCompleto,
+                        JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE
+                    ),
+                    'attr'
+                );
                 $searchText = strtolower(
                     trim(
                         ($b['apellidos'] ?? '') . ' ' .
@@ -771,7 +778,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                                 <a
                                     class="dropdown-item"
                                     href="#"
-                                    onclick="abrirEvaluar(<?= (int) $b['id_beneficiario'] ?>, '0', <?= json_encode($nombreCompleto) ?>); return false;">
+                                    onclick="abrirEvaluar(<?= (int) $b['id_beneficiario'] ?>, '0', <?= $nombreCompletoJs ?>); return false;">
                                     <i class="bi bi-clipboard2-pulse me-2 text-success"></i>
                                     Evaluar
                                 </a>
@@ -992,132 +999,132 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
     const pesquisasJornada = <?= json_encode(array_values($pesquisas_jornada ?? [])) ?>;
     const jornadaId = <?= (int) $jornada_id ?>;
 
+    /**
+     * Evaluar beneficiario.
+     * pid = '0' → Desde dropdown "Evaluar" → Abre modal selector.
+     * pid > 0   → Desde icono de pesquisa → Navega directo al formulario.
+     */
     function abrirEvaluar(bid, pid, nombre) {
-
         if (String(pid) === '0') {
-            // ─── Desde dropdown "Evaluar": abrir modal selector de pesquisa ───
             document.getElementById('modalNombreBenef').textContent = nombre;
-
-            const lista = document.getElementById('listaPesquisasModal');
+            var lista = document.getElementById('listaPesquisasModal');
             lista.innerHTML = '';
 
-            pesquisasJornada.forEach(p => {
-                const pesquisaId = String(p);
-                const info = pesquisaInfo[pesquisaId];
+            pesquisasJornada.forEach(function(p) {
+                var pesquisaId = String(p);
+                var info = pesquisaInfo[pesquisaId];
                 if (!info) return;
 
-                const li = document.createElement('li');
-                li.innerHTML = `
-                <img src="${info.img}" alt="${info.nombre}">
-                <div>
-                    <div class="pesq-name">${info.nombre}</div>
-                    <div class="pesq-desc">${info.desc}</div>
-                </div>
-            `;
+                var li = document.createElement('li');
+                li.innerHTML =
+                    '<img src="' + info.img + '" alt="' + info.nombre + '">' +
+                    '<div>' +
+                    '<div class="pesq-name">' + info.nombre + '</div>' +
+                    '<div class="pesq-desc">' + info.desc + '</div>' +
+                    '</div>';
 
-                li.onclick = function() {
-                    // Cerrar modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalEvaluar'));
-                    if (modal) modal.hide();
-                    // Navegar al formulario
+                li.addEventListener('click', function() {
+                    var modalEl = document.getElementById('modalEvaluar');
+                    var modalInst = bootstrap.Modal.getInstance(modalEl);
+                    if (modalInst) modalInst.hide();
                     navegarFormulario(bid, pesquisaId);
-                };
+                });
 
                 lista.appendChild(li);
             });
 
-            new bootstrap.Modal(document.getElementById('modalEvaluar')).show();
+            var modalEvaluar = new bootstrap.Modal(document.getElementById('modalEvaluar'));
+            modalEvaluar.show();
 
         } else {
-            // ─── Desde icono directo de pesquisa: navegar al formulario ───
             navegarFormulario(bid, String(pid));
         }
     }
 
     function navegarFormulario(beneficiarioId, tipoPesquisaId) {
-        const url = `<?= base_url('evaluaciones/formulario') ?>/${beneficiarioId}/${tipoPesquisaId}?jornada_id=${jornadaId}`;
-        window.location.href = url;
+        window.location.href = '<?= base_url("evaluaciones/formulario") ?>/' + beneficiarioId + '/' + tipoPesquisaId + '?jornada_id=' + jornadaId;
     }
 
-    /* ─── Paginación (conservar si ya existe) ─── */
-    document.addEventListener('DOMContentLoaded', () => {
-        const cards = document.querySelectorAll('.beneficiary-card');
-        const totalCards = cards.length;
 
-        const pageSizeSelect = document.getElementById('pageSizeBenef');
-        const paginationInfo = document.getElementById('paginationInfo');
-        const paginationBtns = document.getElementById('paginationButtons');
 
-        let pageSize = parseInt(pageSizeSelect?.value || 15);
-        let currentPage = 1;
+    document.addEventListener('DOMContentLoaded', function() {
+        var cards = document.querySelectorAll('.beneficiary-card');
+        var totalCards = cards.length;
+
+        var pageSizeSelect = document.getElementById('pageSizeBenef');
+        var paginationInfo = document.getElementById('paginationInfo');
+        var paginationBtns = document.getElementById('paginationButtons');
+
+        var pageSize = parseInt(pageSizeSelect ? pageSizeSelect.value : 15);
+        var currentPage = 1;
 
         function render() {
-            const start = (currentPage - 1) * pageSize;
-            const end = start + pageSize;
-            const totalPages = Math.ceil(totalCards / pageSize);
+            var start = (currentPage - 1) * pageSize;
+            var end = start + pageSize;
+            var totalPages = Math.ceil(totalCards / pageSize);
 
-            cards.forEach((card, i) => {
+            cards.forEach(function(card, i) {
                 card.style.display = (i >= start && i < end) ? '' : 'none';
             });
 
             if (paginationInfo) {
-                paginationInfo.textContent = `Mostrando ${start + 1}–${Math.min(end, totalCards)} de ${totalCards} beneficiarios`;
+                paginationInfo.textContent = 'Mostrando ' + (start + 1) + '–' + Math.min(end, totalCards) + ' de ' + totalCards + ' beneficiarios';
             }
 
             if (paginationBtns) {
                 paginationBtns.innerHTML = '';
 
-                const prevBtn = document.createElement('button');
+                var prevBtn = document.createElement('button');
                 prevBtn.className = 'page-btn wide';
                 prevBtn.textContent = '← Anterior';
-                prevBtn.disabled = currentPage === 1;
-                prevBtn.onclick = () => {
+                prevBtn.disabled = (currentPage === 1);
+                prevBtn.addEventListener('click', function() {
                     currentPage--;
                     render();
-                };
+                });
                 paginationBtns.appendChild(prevBtn);
 
-                for (let i = 1; i <= totalPages; i++) {
-                    const btn = document.createElement('button');
+                for (var i = 1; i <= totalPages; i++) {
+                    var btn = document.createElement('button');
                     btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
                     btn.textContent = i;
-                    btn.onclick = () => {
-                        currentPage = i;
+                    btn.setAttribute('data-page', i);
+                    btn.addEventListener('click', function() {
+                        currentPage = parseInt(this.getAttribute('data-page'));
                         render();
-                    };
+                    });
                     paginationBtns.appendChild(btn);
                 }
 
-                const nextBtn = document.createElement('button');
+                var nextBtn = document.createElement('button');
                 nextBtn.className = 'page-btn next';
                 nextBtn.textContent = 'Siguiente →';
-                nextBtn.disabled = currentPage === totalPages;
-                nextBtn.onclick = () => {
+                nextBtn.disabled = (currentPage === totalPages || totalPages === 0);
+                nextBtn.addEventListener('click', function() {
                     currentPage++;
                     render();
-                };
+                });
                 paginationBtns.appendChild(nextBtn);
             }
         }
 
         if (pageSizeSelect) {
-            pageSizeSelect.addEventListener('change', () => {
+            pageSizeSelect.addEventListener('change', function() {
                 pageSize = parseInt(pageSizeSelect.value);
                 currentPage = 1;
                 render();
             });
         }
 
-        render();
+        if (totalCards > 0) render();
 
-        /* ─── Filtro de búsqueda ─── */
-        const filtro = document.getElementById('filtrarBenef');
+        var filtro = document.getElementById('filtrarBenef');
         if (filtro) {
             filtro.addEventListener('keyup', function() {
-                const texto = this.value.toLowerCase().trim();
-                cards.forEach(card => {
-                    const search = card.dataset.search || '';
-                    card.style.display = search.includes(texto) ? '' : 'none';
+                var texto = this.value.toLowerCase().trim();
+                cards.forEach(function(card) {
+                    var search = card.getAttribute('data-search') || '';
+                    card.style.display = search.indexOf(texto) !== -1 ? '' : 'none';
                 });
             });
         }
@@ -1139,4 +1146,5 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
             }
         });
     }
-    <?= $this->endSection() ?>
+</script>
+<?= $this->endSection() ?>

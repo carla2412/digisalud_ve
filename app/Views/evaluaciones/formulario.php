@@ -3,734 +3,1374 @@
 <?= $this->section('content') ?>
 
 <?php
-    $nombreCompleto = trim(esc($beneficiario['nombres'] ?? '') . ' ' . esc($beneficiario['apellidos'] ?? ''));
-    $nombrePesquisa = esc($tipoPesquisa['descripcion_view'] ?? $tipoPesquisa['nombre_tipo'] ?? 'Evaluación');
-    $esEdicion      = ! empty($evaluacionExistente);
-    $evalId         = $evaluacionExistente['id_evaluacion'] ?? '';
-    $obsExistente   = $evaluacionExistente['observaciones'] ?? '';
+$nombreCompleto = trim(esc($beneficiario['nombres'] ?? '') . ' ' . esc($beneficiario['apellidos'] ?? ''));
+$nombrePesquisa = esc($tipoPesquisa['descripcion_view'] ?? $tipoPesquisa['nombre_tipo'] ?? 'Evaluación');
+$esEdicion      = ! empty($evaluacionExistente);
+$evalId         = $evaluacionExistente['id_evaluacion'] ?? '';
+$obsExistente   = $evaluacionExistente['observaciones'] ?? '';
 
-    $urlRetorno = $jornadaId
-        ? base_url("jornadas/{$jornadaId}/beneficiarios")
-        : base_url("centros/{$centroId}/beneficiarios");
+$urlRetorno = $jornadaId
+    ? base_url("jornadas/{$jornadaId}/beneficiarios")
+    : base_url("centros/{$centroId}/beneficiarios");
+
+$seccionesExcluidas = ['observaciones_lab', 'seguimiento_visual', 'seguimiento_vitales'];
+$itemsFormulario = [];
+$itemRemitir = null;
+
+foreach ($itemsAgrupados as $seccion => $items) {
+    foreach ($items as $item) {
+        if (strpos($item['codigo'], 'remitir_especialista') !== false || strpos($item['codigo'], 'especialista_') !== false) {
+            $itemRemitir = $item;
+            break 2;
+        }
+    }
+}
+
+foreach ($itemsAgrupados as $seccion => $items) {
+    if (in_array($seccion, $seccionesExcluidas, true)) {
+        continue;
+    }
+
+    $itemsVisibles = [];
+    foreach ($items as $item) {
+        if ($itemRemitir && $item['codigo'] === $itemRemitir['codigo']) {
+            continue;
+        }
+        $itemsVisibles[] = $item;
+    }
+
+    if (! empty($itemsVisibles)) {
+        $itemsFormulario[$seccion] = $itemsVisibles;
+    }
+}
+
+$jsSections = [];
+$jsRanges = [];
+foreach ($itemsFormulario as $seccion => $items) {
+    $fields = [];
+    $required = [];
+    foreach ($items as $item) {
+        $fields[] = $item['codigo'];
+        if (! empty($item['obligatorio'])) {
+            $required[] = $item['codigo'];
+        }
+        if ($item['tipo_dato'] === 'number' && ($item['valor_min'] !== null || $item['valor_max'] !== null)) {
+            $jsRanges[$item['codigo']] = [
+                'min'   => $item['valor_min'] !== null ? (float) $item['valor_min'] : null,
+                'max'   => $item['valor_max'] !== null ? (float) $item['valor_max'] : null,
+                'label' => $item['nombre'],
+            ];
+        }
+    }
+
+    $jsSections[] = [
+        'id'       => $seccion,
+        'title'    => $nombresSecciones[$seccion] ?? ucfirst(str_replace('_', ' ', $seccion)),
+        'required' => $required,
+        'fields'   => $fields,
+    ];
+}
+
+$observacionesSection = [
+    'id'       => 'observaciones',
+    'title'    => 'Observaciones y remisión',
+    'required' => [],
+    'fields'   => ['observaciones'],
+];
+if ($itemRemitir) {
+    $observacionesSection['fields'][] = $itemRemitir['codigo'];
+}
+$jsSections[] = $observacionesSection;
 ?>
 
 <style>
-    .eval-page {
-        display: grid;
-        grid-template-columns: 60px 1fr 280px;
-        min-height: calc(100vh - 70px);
-        background: #f4f6fb;
+    :root {
+        --lab-primary: #101a61;
+        --lab-primary-soft: #e8edff;
+        --lab-bg: #f4f7fb;
+        --lab-card: #ffffff;
+        --lab-text: #172033;
+        --lab-muted: #64748b;
+        --lab-border: #dbe3ef;
+        --lab-danger: #dc2626;
+        --lab-warning: #f59e0b;
+        --lab-success: #16a34a;
+        --lab-sidebar-w: 72px;
+        --lab-actions-h: 72px;
     }
 
-    /* ─── Sidebar izquierdo: iconos de pesquisas ─── */
-    .eval-sidebar {
-        background: #101a61;
+    .lab-page {
+        display: grid;
+        grid-template-columns: var(--lab-sidebar-w) minmax(0, 1fr);
+        min-height: 100dvh;
+        overflow: clip;
+    }
+
+    .sidebar {
+        background: var(--lab-primary);
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 12px 0;
-        gap: 6px;
+        gap: 8px;
+        padding: 14px 0;
     }
 
-    .eval-sidebar-btn {
+    .sidebar__logo,
+    .sidebar__item {
         width: 42px;
         height: 42px;
-        border-radius: 50%;
-        border: 2px solid transparent;
-        background: rgba(255,255,255,.08);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: .2s;
-        padding: 0;
+        border-radius: 16px;
+        border: 0;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: rgba(255, 255, 255, .1);
+        text-decoration: none;
         position: relative;
+        transition: .2s ease;
     }
 
-    .eval-sidebar-btn img {
+    .sidebar__item img {
         width: 24px;
         height: 24px;
         filter: brightness(0) invert(1);
-        opacity: .5;
-        transition: .2s;
+        opacity: .65;
     }
 
-    .eval-sidebar-btn:hover {
-        background: rgba(255,255,255,.15);
-    }
-
-    .eval-sidebar-btn:hover img {
-        opacity: .9;
-    }
-
-    .eval-sidebar-btn.active {
+    .sidebar__item:hover,
+    .sidebar__item.active {
         background: #fff;
-        border-color: #00D4FF;
     }
 
-    .eval-sidebar-btn.active img {
+    .sidebar__item:hover img,
+    .sidebar__item.active img {
         filter: none;
         opacity: 1;
     }
 
-    .eval-sidebar-btn.evaluado::after {
+    .sidebar__item.evaluado::after {
         content: '';
         position: absolute;
-        bottom: -2px;
         right: -2px;
+        bottom: -2px;
         width: 12px;
         height: 12px;
-        background: #28a745;
         border-radius: 50%;
-        border: 2px solid #101a61;
+        background: var(--lab-success);
+        border: 2px solid var(--lab-primary);
     }
 
-    .eval-sidebar-btn[title]::before {
+    .sidebar__item[title]::before {
         content: attr(title);
         position: absolute;
-        left: 54px;
+        left: 52px;
         top: 50%;
         transform: translateY(-50%);
-        background: #1a2332;
+        background: #111827;
         color: #fff;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: .72rem;
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: .75rem;
         white-space: nowrap;
         opacity: 0;
         pointer-events: none;
-        transition: opacity .15s;
-        z-index: 10;
+        z-index: 30;
     }
 
-    .eval-sidebar-btn:hover[title]::before {
+    .sidebar__item:hover[title]::before {
         opacity: 1;
     }
 
-    /* ─── Área central: formulario ─── */
-    .eval-main {
-        padding: 20px 28px;
-        overflow-y: auto;
+    .lab-main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        padding: 22px 26px 88px;
     }
 
-    .eval-header {
+    .lab-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 16px;
         margin-bottom: 18px;
-        gap: 12px;
+        padding-bottom: calc(var(--lab-actions-h) + 22px);
     }
 
-    .eval-header-left {
+    .lab-title-row {
         display: flex;
         align-items: center;
         gap: 12px;
     }
 
-    .eval-header-left img {
-        width: 36px;
-        height: 36px;
+    .lab-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 18px;
+        display: grid;
+        place-items: center;
+        background: #fff;
+        box-shadow: 0 12px 24px rgba(15, 23, 42, .08);
     }
 
-    .eval-header-title {
-        font-size: 1.1rem;
-        font-weight: 800;
-        color: #101a61;
+    .lab-icon img {
+        width: 30px;
+        height: 30px;
     }
 
-    .eval-header-subtitle {
-        font-size: .8rem;
-        color: #64748b;
+    .lab-header h1 {
+        margin: 0;
+        color: var(--lab-primary);
+        font-size: 1.35rem;
+        font-weight: 900;
     }
 
-    .eval-header-badge {
-        font-size: .7rem;
+    .lab-header p {
+        margin: 2px 0 0;
+        color: var(--lab-muted);
+        font-size: .9rem;
+    }
+
+    .lab-badge {
+        display: inline-flex;
+        margin-top: 6px;
         padding: 3px 10px;
-        border-radius: 20px;
-        font-weight: 700;
+        border-radius: 999px;
+        font-size: .72rem;
+        font-weight: 800;
     }
 
-    .eval-header-badge.new {
+    .lab-badge.new {
         background: #dbeafe;
         color: #1e40af;
     }
 
-    .eval-header-badge.edit {
+    .lab-badge.edit {
         background: #fef3c7;
         color: #92400e;
     }
 
+    .lab-progress {
+        min-width: 280px;
+        font-size: .78rem;
+        font-weight: 700;
+        color: var(--lab-muted);
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 9px;
+        margin-top: 8px;
+        border-radius: 999px;
+        background: #dbe3ef;
+        overflow: hidden;
+    }
+
+    .progress-bar__fill {
+        height: 100%;
+        width: 0;
+        border-radius: inherit;
+        background: var(--lab-primary);
+        transition: width .25s ease;
+    }
+
     .btn-volver {
-        font-size: .82rem;
-        color: #64748b;
+        color: var(--lab-muted);
         text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 4px;
+        font-size: .85rem;
+        font-weight: 700;
     }
 
     .btn-volver:hover {
-        color: #101a61;
+        color: var(--lab-primary);
     }
 
-    .eval-fecha-row {
+    .stepper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
         margin-bottom: 18px;
     }
 
-    .eval-fecha-row label {
-        font-size: .78rem;
-        font-weight: 700;
-        color: #101a61;
-        text-transform: uppercase;
-        letter-spacing: .3px;
-    }
-
-    .eval-fecha-input {
-        height: 38px;
-        border: 1.5px solid #c7d2e0;
-        border-radius: 8px;
-        padding: 0 12px;
-        font-size: .85rem;
-        color: #1a202c;
-        background: #f8fafd;
-        max-width: 200px;
-    }
-
-    /* ─── Secciones del formulario ─── */
-    .eval-seccion {
-        margin-bottom: 16px;
-    }
-
-    .eval-seccion-titulo {
+    .step {
+        border: 1px solid var(--lab-border);
+        background: #fff;
+        color: var(--lab-muted);
+        border-radius: 999px;
+        padding: 8px 12px 8px 8px;
         font-size: .78rem;
         font-weight: 800;
-        color: #101a61;
-        text-transform: uppercase;
-        letter-spacing: .4px;
-        margin: 0 0 8px;
-        padding: 5px 12px;
-        background: #eef1f8;
-        border-radius: 6px;
-        border-left: 3px solid #101a61;
         cursor: pointer;
-        display: flex;
+        display: inline-flex;
         align-items: center;
+        gap: 8px;
+        transition: .2s ease;
+    }
+
+    .step span {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        background: #eef2f7;
+        display: grid;
+        place-items: center;
+        color: var(--lab-muted);
+    }
+
+    .step.active,
+    .step.completed {
+        border-color: var(--lab-primary);
+        color: var(--lab-primary);
+    }
+
+    .step.active span,
+    .step.completed span {
+        background: var(--lab-primary);
+        color: #fff;
+    }
+
+    .lab-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 18px;
+        align-items: start;
+    }
+
+    .lab-content {
+        min-width: 0;
+    }
+
+    .form-section {
+        display: none;
+    }
+
+    .form-section.active {
+        display: block;
+    }
+
+    .section-card,
+    .summary-card {
+        background: var(--lab-card);
+        border: 1px solid var(--lab-border);
+        border-radius: 22px;
+        box-shadow: 0 16px 36px rgba(15, 23, 42, .06);
+    }
+
+    .section-card {
+        padding: 22px;
+    }
+
+    .section-header {
+        display: flex;
         justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 18px;
     }
 
-    .eval-seccion-titulo .toggle-icon {
-        transition: transform .2s;
-        font-size: .7rem;
-        color: #8896a7;
+    .section-header h2,
+    .summary-card h2,
+    .summary-card h3 {
+        margin: 0;
+        color: var(--lab-primary);
+        font-size: 1rem;
+        font-weight: 900;
     }
 
-    .eval-seccion-titulo.collapsed .toggle-icon {
-        transform: rotate(-90deg);
+    .section-header p {
+        margin: 4px 0 0;
+        color: var(--lab-muted);
+        font-size: .84rem;
     }
 
-    .eval-seccion-body {
-        transition: max-height .3s ease;
-        overflow: hidden;
-    }
-
-    .eval-seccion-body.collapsed {
-        max-height: 0 !important;
-        overflow: hidden;
-    }
-
-    .eval-campo-wrap {
-        margin-bottom: 8px;
-    }
-
-    .eval-campo-wrap label {
+    .section-status,
+    .required-note {
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        color: var(--lab-muted);
         font-size: .76rem;
-        font-weight: 600;
-        color: #2d3748;
-        margin-bottom: 2px;
+        font-weight: 800;
+    }
+
+    .required-note {
+        color: var(--lab-danger);
+        margin-right: 8px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+    }
+
+    .field {
+        grid-column: span 6;
+    }
+
+    .field--full {
+        grid-column: 1 / -1;
+    }
+
+    .field label {
+        display: block;
+        color: #334155;
+        font-size: .78rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+        width: 100%;
+        border: 1.5px solid var(--lab-border);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--lab-text);
+        font-size: .86rem;
+        padding: 10px 12px;
+        outline: none;
+        transition: .15s ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+        border-color: var(--lab-primary);
+        box-shadow: 0 0 0 3px rgba(16, 26, 97, .08);
+    }
+
+    .field small {
+        display: block;
+        margin-top: 5px;
+        color: var(--lab-muted);
+        font-size: .72rem;
+    }
+
+    .input-unit {
         display: flex;
         align-items: center;
-        gap: 4px;
-    }
-
-    .eval-campo-wrap .eval-unidad {
-        font-weight: 400;
-        color: #8896a7;
-        font-size: .7rem;
-    }
-
-    .eval-campo-wrap .eval-obligatorio {
-        color: #e53e3e;
-        font-weight: 700;
-    }
-
-    .eval-input {
-        width: 100%;
-        height: 34px;
-        border: 1.5px solid #d2d8e0;
-        border-radius: 7px;
-        padding: 0 10px;
-        font-size: .82rem;
-        color: #1a202c;
+        border: 1.5px solid var(--lab-border);
+        border-radius: 12px;
+        overflow: hidden;
         background: #fff;
-        transition: border-color .15s, box-shadow .15s;
+        transition: .15s ease;
     }
 
-    .eval-input:focus {
-        border-color: #101a61;
-        box-shadow: 0 0 0 2px rgba(16, 26, 97, .08);
-        outline: none;
+    .input-unit:focus-within {
+        border-color: var(--lab-primary);
+        box-shadow: 0 0 0 3px rgba(16, 26, 97, .08);
     }
 
-    .eval-input.is-invalid {
-        border-color: #e53e3e;
-        box-shadow: 0 0 0 2px rgba(229, 62, 62, .1);
+    .input-unit input {
+        border: 0;
+        border-radius: 0;
+        box-shadow: none !important;
     }
 
-    textarea.eval-input {
-        height: auto;
-        padding: 8px 10px;
+    .input-unit span {
+        padding: 0 12px;
+        color: var(--lab-muted);
+        font-size: .76rem;
+        font-weight: 800;
+        border-left: 1px solid var(--lab-border);
+        white-space: nowrap;
     }
 
-    select.eval-input {
-        appearance: auto;
+    .segmented {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .segmented label {
+        margin: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid var(--lab-border);
+        border-radius: 999px;
+        padding: 8px 12px;
+        cursor: pointer;
+    }
+
+    .field--error input,
+    .field--error select,
+    .field--error textarea,
+    .field--error .input-unit,
+    .is-invalid {
+        border-color: var(--lab-danger) !important;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, .08) !important;
+    }
+
+    .field--warning input,
+    .field--warning .input-unit {
+        border-color: var(--lab-warning) !important;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, .1) !important;
     }
 
     .eval-campo-oculto {
         display: none !important;
     }
 
-    /* ─── Panel derecho: observaciones + guardar ─── */
-    .eval-panel-right {
-        background: #fff;
-        border-left: 1px solid #e2e8f0;
-        padding: 20px 18px;
+    .summary-panel {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 14px;
+        position: sticky;
+        top: 16px;
     }
 
-    .eval-panel-right h6 {
-        font-size: .78rem;
-        font-weight: 800;
-        color: #101a61;
-        text-transform: uppercase;
-        margin: 0 0 6px;
+    .summary-card {
+        padding: 18px;
     }
 
-    .eval-obs-textarea {
-        width: 100%;
-        min-height: 120px;
-        border: 1.5px solid #d2d8e0;
-        border-radius: 8px;
-        padding: 10px;
-        font-size: .82rem;
-        resize: vertical;
-        color: #1a202c;
-        background: #f8fafd;
-    }
-
-    .eval-obs-textarea:focus {
-        border-color: #101a61;
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(16, 26, 97, .08);
-    }
-
-    .eval-remitir {
+    .summary-row {
         display: flex;
         align-items: center;
-        gap: 8px;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 0;
+        border-bottom: 1px solid #edf2f7;
         font-size: .82rem;
-        color: #64748b;
     }
 
-    .eval-remitir i {
-        color: #e53e3e;
-        font-size: 1rem;
+    .summary-row:last-child {
+        border-bottom: 0;
     }
 
-    .btn-guardar-eval {
+    .summary-row span {
+        color: var(--lab-muted);
+    }
+
+    .summary-row strong {
+        color: var(--lab-primary);
+        text-align: right;
+    }
+
+    #summaryObservaciones {
+        color: var(--lab-muted);
+        font-size: .84rem;
+        margin: 10px 0 0;
+        word-break: break-word;
+    }
+
+    .actions-bar {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
         width: 100%;
-        height: 44px;
-        border: 2px solid #101a61;
-        border-radius: 10px;
-        background: #fff;
-        color: #101a61;
-        font-weight: 800;
-        font-size: .88rem;
+        max-width: 100%;
+        min-height: var(--lab-actions-h);
+        margin: 18px 0 0;
+        padding: 14px 0 0;
+        background: transparent;
+        border-top: 1px solid var(--lab-border);
+        box-sizing: border-box;
+    }
+
+    .btn {
+        border: 0;
+        border-radius: 12px;
+        min-height: 42px;
+        padding: 0 16px;
+        font-weight: 900;
+        font-size: .84rem;
         cursor: pointer;
-        transition: .2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        margin-top: auto;
+        transition: .2s ease;
     }
 
-    .btn-guardar-eval:hover {
-        background: #101a61;
+    .btn--primary {
+        background: var(--lab-primary);
         color: #fff;
     }
 
-    .btn-guardar-eval:disabled {
-        opacity: .5;
+    .btn--secondary {
+        background: var(--lab-primary-soft);
+        color: var(--lab-primary);
+    }
+
+    .btn--ghost {
+        background: transparent;
+        color: var(--lab-muted);
+    }
+
+    .btn:disabled {
+        opacity: .55;
         cursor: not-allowed;
     }
 
-    .eval-error-msg {
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        color: #991b1b;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: .8rem;
-        display: none;
+    .eval-error-msg,
+    .toast {
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: .82rem;
     }
 
-    /* ─── Responsive ─── */
-    @media (max-width: 900px) {
-        .eval-page {
+    .eval-error-msg {
+        display: none;
+        margin-top: 12px;
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+
+    .toast {
+        position: fixed;
+        right: 22px;
+        bottom: 84px;
+        z-index: 50;
+        background: #111827;
+        color: #fff;
+        transform: translateY(12px);
+        opacity: 0;
+        pointer-events: none;
+        transition: .2s ease;
+    }
+
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    @media (max-width: 1100px) {
+        .lab-layout {
             grid-template-columns: 1fr;
         }
 
-        .eval-sidebar {
-            flex-direction: row;
-            padding: 8px 12px;
-            overflow-x: auto;
+        .summary-panel {
+            position: static;
+        }
+    }
+
+    @media (max-width: 760px) {
+        .lab-page {
+            grid-template-columns: 1fr;
         }
 
-        .eval-panel-right {
-            border-left: none;
-            border-top: 1px solid #e2e8f0;
+        .sidebar {
+            flex-direction: row;
+            overflow-x: auto;
+            justify-content: flex-start;
+            padding: 10px 12px;
+        }
+
+        .lab-main {
+            padding: 18px 14px 92px;
+        }
+
+        .lab-header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .lab-progress {
+            min-width: 0;
+            width: 100%;
+        }
+
+        .field {
+            grid-column: 1 / -1;
+        }
+
+        .actions-bar {
+            margin: 0 -14px -18px;
+            flex-wrap: wrap;
+            padding: 12px 14px;
+        }
+
+        .btn {
+            flex: 1 1 auto;
         }
     }
 </style>
 
-<div class="eval-page">
+<div class="lab-page" data-page="evaluacion">
+    <aside class="sidebar">
+        <div class="sidebar__logo">💧</div>
 
-    <!-- ═══ SIDEBAR IZQUIERDO: Pesquisas de la jornada ═══ -->
-    <aside class="eval-sidebar">
         <?php foreach ($pesquisasActividad as $pid): ?>
             <?php
-                $info = $infoPesquisas[$pid] ?? null;
-                if (! $info) continue;
-                $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
-                $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
-                $clases      = 'eval-sidebar-btn';
-                if ($esActiva)   $clases .= ' active';
-                if ($yaEvaluada) $clases .= ' evaluado';
+            $info = $infoPesquisas[$pid] ?? null;
+            if (! $info) continue;
 
-                $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}")
-                    . ($jornadaId ? "?jornada_id={$jornadaId}" : "?centro_id={$centroId}");
+            $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
+            $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
+            $clases      = 'sidebar__item';
+            if ($esActiva)   $clases .= ' active';
+            if ($yaEvaluada) $clases .= ' evaluado';
+
+            $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}")
+                . ($jornadaId ? "?jornada_id={$jornadaId}" : "?centro_id={$centroId}");
             ?>
             <a href="<?= $urlPesquisa ?>"
-               class="<?= $clases ?>"
-               title="<?= esc($info['nombre']) ?>">
+                class="<?= $clases ?>"
+                title="<?= esc($info['nombre']) ?>"
+                aria-label="<?= esc($info['nombre']) ?>">
                 <img src="<?= base_url('img/' . ($esActiva ? $info['img'] : $info['gris'])) ?>"
-                     alt="<?= esc($info['nombre']) ?>">
+                    alt="<?= esc($info['nombre']) ?>">
             </a>
         <?php endforeach; ?>
     </aside>
 
-    <!-- ═══ ÁREA CENTRAL: Formulario ═══ -->
-    <main class="eval-main">
-
-        <!-- Header -->
-        <div class="eval-header">
-            <div class="eval-header-left">
-                <img src="<?= base_url('img/' . ($infoPesquisas[$tipoPesquisaId]['img'] ?? 'sanguinea2.svg')) ?>"
-                     alt="<?= esc($nombrePesquisa) ?>">
-                <div>
-                    <div class="eval-header-title"><?= esc($nombrePesquisa) ?></div>
-                    <div class="eval-header-subtitle"><?= $nombreCompleto ?></div>
+    <main class="lab-main">
+        <div class="lab-header">
+            <div class="lab-title-row">
+                <div class="lab-icon">
+                    <img src="<?= base_url('img/' . ($infoPesquisas[$tipoPesquisaId]['img'] ?? 'sanguinea2.svg')) ?>"
+                        alt="<?= esc($nombrePesquisa) ?>">
                 </div>
-                <span class="eval-header-badge <?= $esEdicion ? 'edit' : 'new' ?>">
-                    <?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?>
-                </span>
+                <div>
+                    <h1><?= esc($nombrePesquisa) ?></h1>
+                    <p><?= $nombreCompleto ?></p>
+                    <span class="lab-badge <?= $esEdicion ? 'edit' : 'new' ?>">
+                        <?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?>
+                    </span>
+                </div>
             </div>
-            <a href="<?= $urlRetorno ?>" class="btn-volver">
-                <i class="bi bi-arrow-left"></i> Volver
-            </a>
+
+            <div class="lab-progress">
+                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+                    <span id="progressText">Progreso: 0 de <?= count($jsSections) ?> secciones completadas</span>
+                    <a href="<?= $urlRetorno ?>" class="btn-volver">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
+                <div class="progress-bar">
+                    <div id="progressFill" class="progress-bar__fill"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Fecha de evaluación -->
-        <div class="eval-fecha-row">
-            <label>Fecha de evaluación</label><br>
-            <input type="date" class="eval-fecha-input" id="eval_fecha"
-                   value="<?= date('Y-m-d') ?>" readonly>
-        </div>
+        <nav class="stepper" aria-label="Secciones del formulario">
+            <?php foreach ($jsSections as $index => $section): ?>
+                <button class="step <?= $index === 0 ? 'active' : '' ?>" type="button" data-step="<?= esc($section['id']) ?>">
+                    <span><?= $index + 1 ?></span>
+                    <?= esc($section['title']) ?>
+                </button>
+            <?php endforeach; ?>
+        </nav>
 
-        <!-- Formulario dinámico por secciones -->
-        <form id="formEvaluacion" autocomplete="off">
-            <input type="hidden" name="beneficiario_id" value="<?= (int) $beneficiario['id_beneficiario'] ?>">
-            <input type="hidden" name="tipo_pesquisa_id" value="<?= (int) $tipoPesquisaId ?>">
-            <input type="hidden" name="jornada_id" value="<?= (int) $jornadaId ?>">
-            <input type="hidden" name="centro_id" value="<?= (int) $centroId ?>">
-            <input type="hidden" name="evaluacion_id" value="<?= esc($evalId) ?>">
+        <section class="lab-layout">
+            <div class="lab-content">
+                <form id="formEvaluacion" autocomplete="off" novalidate>
+                    <input type="hidden" name="beneficiario_id" value="<?= (int) $beneficiario['id_beneficiario'] ?>">
+                    <input type="hidden" name="tipo_pesquisa_id" value="<?= (int) $tipoPesquisaId ?>">
+                    <input type="hidden" name="jornada_id" value="<?= (int) $jornadaId ?>">
+                    <input type="hidden" name="centro_id" value="<?= (int) $centroId ?>">
+                    <input type="hidden" name="evaluacion_id" value="<?= esc($evalId) ?>">
+                    <input type="hidden" name="fecha_evaluacion" id="eval_fecha_hidden" value="<?= date('Y-m-d') ?>">
 
-            <?php foreach ($itemsAgrupados as $seccion => $items): ?>
-                <?php
-                    // No mostrar sección "observaciones_lab" aquí — va en panel derecho
-                    if (in_array($seccion, ['observaciones_lab', 'seguimiento_visual', 'seguimiento_vitales'])) continue;
+                    <?php foreach ($itemsFormulario as $sectionIndex => $items): ?>
+                        <?php $nombreSeccion = $nombresSecciones[$sectionIndex] ?? ucfirst(str_replace('_', ' ', $sectionIndex)); ?>
+                        <section class="form-section <?= array_key_first($itemsFormulario) === $sectionIndex ? 'active' : '' ?>" data-section="<?= esc($sectionIndex) ?>">
+                            <div class="section-card">
+                                <div class="section-header">
+                                    <div>
+                                        <h2><?= esc($nombreSeccion) ?></h2>
+                                        <p>Complete los campos disponibles para esta sección.</p>
+                                    </div>
+                                    <div>
+                                        <?php if (array_filter($items, static fn($item) => ! empty($item['obligatorio']))): ?>
+                                            <span class="required-note">* Campos obligatorios</span>
+                                        <?php endif; ?>
+                                        <span class="section-status" data-status="<?= esc($sectionIndex) ?>">0/<?= count($items) ?> completados</span>
+                                    </div>
+                                </div>
 
-                    $nombreSeccion = $nombresSecciones[$seccion] ?? ucfirst(str_replace('_', ' ', $seccion));
-                ?>
+                                <div class="form-grid">
+                                    <?php foreach ($items as $item): ?>
+                                        <?php
+                                        $codigo     = $item['codigo'];
+                                        $valorPrev  = $valoresExistentes[$codigo] ?? '';
+                                        $oculto     = ! empty($item['depende_de']) ? 'eval-campo-oculto' : '';
+                                        $dependeAttr = '';
+                                        if (! empty($item['depende_de'])) {
+                                            $dependeAttr = 'data-depende-de="' . esc($item['depende_de']) . '" data-depende-valor="' . esc($item['depende_valor']) . '"';
+                                        }
+                                        $unidad = trim((string) ($item['unidad'] ?? ''));
+                                        $ancho  = (int) ($item['ancho_col'] ?? 6);
+                                        $span   = $ancho >= 12 ? 'field--full' : '';
+                                        ?>
 
-                <div class="eval-seccion">
-                    <h6 class="eval-seccion-titulo" onclick="toggleSeccion(this)">
-                        <?= esc($nombreSeccion) ?>
-                        <i class="bi bi-chevron-down toggle-icon"></i>
-                    </h6>
+                                        <div class="field <?= $span ?> <?= $oculto ?>"
+                                            id="wrap_<?= esc($codigo) ?>"
+                                            data-code="<?= esc($codigo) ?>"
+                                            <?= $dependeAttr ?>>
+                                            <label for="campo_<?= esc($codigo) ?>">
+                                                <?= esc($item['nombre']) ?><?= ! empty($item['obligatorio']) ? ' *' : '' ?>
+                                            </label>
 
-                    <div class="eval-seccion-body">
-                        <div class="row g-2">
-                            <?php foreach ($items as $item): ?>
-                                <?php
-                                    $codigo     = $item['codigo'];
-                                    $valorPrev  = $valoresExistentes[$codigo] ?? '';
-                                    $oculto     = ! empty($item['depende_de']) ? 'eval-campo-oculto' : '';
-                                    $dependeAttr = '';
-                                    if (! empty($item['depende_de'])) {
-                                        $dependeAttr = "data-depende-de=\"{$item['depende_de']}\" data-depende-valor=\"{$item['depende_valor']}\"";
-                                    }
-                                    $unidadStr = $item['unidad'] ? "<span class=\"eval-unidad\">({$item['unidad']})</span>" : '';
-                                    $reqStr    = $item['obligatorio'] ? '<span class="eval-obligatorio">*</span>' : '';
-                                ?>
+                                            <?php if ($item['tipo_dato'] === 'number'): ?>
+                                                <?php if ($unidad !== ''): ?>
+                                                    <div class="input-unit">
+                                                        <input type="number" step="any"
+                                                            name="campos[<?= esc($codigo) ?>]"
+                                                            id="campo_<?= esc($codigo) ?>"
+                                                            value="<?= esc($valorPrev) ?>"
+                                                            <?= $item['valor_min'] !== null ? 'min="' . esc($item['valor_min']) . '"' : '' ?>
+                                                            <?= $item['valor_max'] !== null ? 'max="' . esc($item['valor_max']) . '"' : '' ?>
+                                                            <?= $item['placeholder'] ? 'placeholder="' . esc($item['placeholder']) . '"' : '' ?>
+                                                            data-codigo="<?= esc($codigo) ?>">
+                                                        <span><?= esc($unidad) ?></span>
+                                                    </div>
+                                                <?php else: ?>
+                                                    <input type="number" step="any"
+                                                        name="campos[<?= esc($codigo) ?>]"
+                                                        id="campo_<?= esc($codigo) ?>"
+                                                        value="<?= esc($valorPrev) ?>"
+                                                        <?= $item['valor_min'] !== null ? 'min="' . esc($item['valor_min']) . '"' : '' ?>
+                                                        <?= $item['valor_max'] !== null ? 'max="' . esc($item['valor_max']) . '"' : '' ?>
+                                                        <?= $item['placeholder'] ? 'placeholder="' . esc($item['placeholder']) . '"' : '' ?>
+                                                        data-codigo="<?= esc($codigo) ?>">
+                                                <?php endif; ?>
 
-                                <div class="col-md-<?= (int) $item['ancho_col'] ?> eval-campo-wrap <?= $oculto ?>"
-                                     id="wrap_<?= esc($codigo) ?>"
-                                     <?= $dependeAttr ?>>
+                                            <?php elseif ($item['tipo_dato'] === 'select'): ?>
+                                                <select name="campos[<?= esc($codigo) ?>]"
+                                                    id="campo_<?= esc($codigo) ?>"
+                                                    data-codigo="<?= esc($codigo) ?>">
+                                                    <option value="">Seleccione una opción</option>
+                                                    <?php foreach (($item['opciones'] ?? []) as $opt): ?>
+                                                        <option value="<?= esc($opt['valor']) ?>"
+                                                            <?= ($valorPrev == $opt['valor']) ? 'selected' : '' ?>>
+                                                            <?= esc($opt['texto']) ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
 
-                                    <label for="campo_<?= esc($codigo) ?>">
-                                        <?= esc($item['nombre']) ?> <?= $unidadStr ?> <?= $reqStr ?>
-                                    </label>
+                                            <?php elseif ($item['tipo_dato'] === 'textarea'): ?>
+                                                <textarea name="campos[<?= esc($codigo) ?>]"
+                                                    id="campo_<?= esc($codigo) ?>"
+                                                    rows="4"
+                                                    data-codigo="<?= esc($codigo) ?>"
+                                                    <?= $item['placeholder'] ? 'placeholder="' . esc($item['placeholder']) . '"' : '' ?>><?= esc($valorPrev) ?></textarea>
 
-                                    <?php if ($item['tipo_dato'] === 'number'): ?>
-                                        <input type="number" step="any"
-                                               class="eval-input"
-                                               name="campos[<?= esc($codigo) ?>]"
-                                               id="campo_<?= esc($codigo) ?>"
-                                               value="<?= esc($valorPrev) ?>"
-                                               <?= $item['valor_min'] !== null ? "min=\"{$item['valor_min']}\"" : '' ?>
-                                               <?= $item['valor_max'] !== null ? "max=\"{$item['valor_max']}\"" : '' ?>
-                                               <?= $item['placeholder'] ? "placeholder=\"" . esc($item['placeholder']) . "\"" : '' ?>
-                                               data-codigo="<?= esc($codigo) ?>">
+                                            <?php elseif ($item['tipo_dato'] === 'date'): ?>
+                                                <input type="date"
+                                                    name="campos[<?= esc($codigo) ?>]"
+                                                    id="campo_<?= esc($codigo) ?>"
+                                                    value="<?= esc($valorPrev) ?>"
+                                                    data-codigo="<?= esc($codigo) ?>">
 
-                                    <?php elseif ($item['tipo_dato'] === 'select'): ?>
-                                        <select class="eval-input"
-                                                name="campos[<?= esc($codigo) ?>]"
-                                                id="campo_<?= esc($codigo) ?>"
-                                                data-codigo="<?= esc($codigo) ?>">
-                                            <option value="">— Seleccionar —</option>
-                                            <?php foreach ($item['opciones'] as $opt): ?>
+                                            <?php else: ?>
+                                                <input type="text"
+                                                    name="campos[<?= esc($codigo) ?>]"
+                                                    id="campo_<?= esc($codigo) ?>"
+                                                    value="<?= esc($valorPrev) ?>"
+                                                    <?= $item['placeholder'] ? 'placeholder="' . esc($item['placeholder']) . '"' : '' ?>
+                                                    data-codigo="<?= esc($codigo) ?>">
+                                            <?php endif; ?>
+
+                                            <?php if ($item['tipo_dato'] === 'number' && ($item['valor_min'] !== null || $item['valor_max'] !== null)): ?>
+                                                <small>Rango normal: <?= $item['valor_min'] !== null ? esc($item['valor_min']) : '—' ?> - <?= $item['valor_max'] !== null ? esc($item['valor_max']) : '—' ?><?= $unidad ? ' ' . esc($unidad) : '' ?></small>
+                                            <?php elseif ($unidad !== '' && $item['tipo_dato'] !== 'number'): ?>
+                                                <small>Unidad: <?= esc($unidad) ?></small>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </section>
+                    <?php endforeach; ?>
+
+                    <section class="form-section" data-section="observaciones">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <div>
+                                    <h2>Observaciones y remisión</h2>
+                                    <p>Agregue comentarios generales y defina si requiere remisión.</p>
+                                </div>
+                                <span class="section-status" data-status="observaciones">0/<?= $itemRemitir ? '2' : '1' ?> completados</span>
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="field field--full">
+                                    <label for="eval_observaciones">Observaciones generales</label>
+                                    <textarea id="eval_observaciones"
+                                        name="observaciones"
+                                        maxlength="500"
+                                        rows="5"
+                                        placeholder="Escriba observaciones generales..."> <?= esc($obsExistente) ?></textarea>
+                                    <small><span id="observacionesCounter">0</span>/500</small>
+                                </div>
+
+                                <?php if ($itemRemitir): ?>
+                                    <?php $valorRemitir = $valoresExistentes[$itemRemitir['codigo']] ?? ''; ?>
+                                    <div class="field">
+                                        <label for="campo_<?= esc($itemRemitir['codigo']) ?>">Remitir a especialista</label>
+                                        <select name="campos[<?= esc($itemRemitir['codigo']) ?>]"
+                                            id="campo_<?= esc($itemRemitir['codigo']) ?>"
+                                            data-codigo="<?= esc($itemRemitir['codigo']) ?>">
+                                            <option value="">No definida</option>
+                                            <?php foreach (($itemRemitir['opciones'] ?? []) as $opt): ?>
                                                 <option value="<?= esc($opt['valor']) ?>"
-                                                    <?= ($valorPrev == $opt['valor']) ? 'selected' : '' ?>>
+                                                    <?= ($valorRemitir == $opt['valor']) ? 'selected' : '' ?>>
                                                     <?= esc($opt['texto']) ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>
-
-                                    <?php elseif ($item['tipo_dato'] === 'textarea'): ?>
-                                        <textarea class="eval-input"
-                                                  name="campos[<?= esc($codigo) ?>]"
-                                                  id="campo_<?= esc($codigo) ?>"
-                                                  rows="2"
-                                                  data-codigo="<?= esc($codigo) ?>"
-                                                  <?= $item['placeholder'] ? "placeholder=\"" . esc($item['placeholder']) . "\"" : '' ?>><?= esc($valorPrev) ?></textarea>
-
-                                    <?php elseif ($item['tipo_dato'] === 'date'): ?>
-                                        <input type="date"
-                                               class="eval-input"
-                                               name="campos[<?= esc($codigo) ?>]"
-                                               id="campo_<?= esc($codigo) ?>"
-                                               value="<?= esc($valorPrev) ?>"
-                                               data-codigo="<?= esc($codigo) ?>">
-
-                                    <?php else: ?>
-                                        <input type="text"
-                                               class="eval-input"
-                                               name="campos[<?= esc($codigo) ?>]"
-                                               id="campo_<?= esc($codigo) ?>"
-                                               value="<?= esc($valorPrev) ?>"
-                                               <?= $item['placeholder'] ? "placeholder=\"" . esc($item['placeholder']) . "\"" : '' ?>
-                                               data-codigo="<?= esc($codigo) ?>">
-                                    <?php endif; ?>
-                                </div>
-                            <?php endforeach; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
+                    </section>
+                </form>
+            </div>
+
+            <aside class="summary-panel">
+                <div class="summary-card">
+                    <h2>Resumen de evaluación</h2>
+
+                    <div class="summary-row">
+                        <span>Fecha de evaluación</span>
+                        <strong id="summaryFecha"><?= date('d/m/Y') ?></strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Secciones completadas</span>
+                        <strong id="summarySecciones">0/<?= count($jsSections) ?></strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Alertas</span>
+                        <strong id="summaryAlertas">0</strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Remisión a especialista</span>
+                        <strong id="summaryRemision">No definida</strong>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        </form>
+
+                <div class="summary-card">
+                    <h3>Observaciones</h3>
+                    <p id="summaryObservaciones">Sin observaciones registradas.</p>
+                </div>
+
+                <div class="eval-error-msg" id="evalErrorMsg">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    <span id="evalErrorText"></span>
+                </div>
+            </aside>
+        </section>
+
+        <div class="actions-bar">
+            <button id="btnCancelar" type="button" class="btn btn--ghost">Cancelar</button>
+
+            <button id="btnAnterior" type="button" class="btn btn--secondary">Anterior</button>
+            <button id="btnSiguiente" type="button" class="btn btn--primary">Siguiente</button>
+            <button id="btnGuardarEval" type="button" class="btn btn--primary" hidden>Guardar evaluación</button>
+        </div>
     </main>
-
-    <!-- ═══ PANEL DERECHO: Observaciones + Guardar ═══ -->
-    <aside class="eval-panel-right">
-        <div>
-            <h6>Observaciones</h6>
-            <textarea class="eval-obs-textarea"
-                      id="eval_observaciones"
-                      placeholder="Observaciones generales..."
-                      form="formEvaluacion"
-                      name="observaciones"><?= esc($obsExistente) ?></textarea>
-        </div>
-
-        <?php
-            // Buscar el item "remitir_especialista" de esta pesquisa en las secciones de panel derecho
-            $itemRemitir = null;
-            foreach ($itemsAgrupados as $seccion => $items) {
-                foreach ($items as $item) {
-                    if (strpos($item['codigo'], 'remitir_especialista') !== false ||
-                        strpos($item['codigo'], 'especialista_') !== false) {
-                        $itemRemitir = $item;
-                        break 2;
-                    }
-                }
-            }
-        ?>
-
-        <?php if ($itemRemitir): ?>
-            <div class="eval-remitir">
-                <i class="bi bi-exclamation-triangle"></i>
-                <label for="campo_<?= esc($itemRemitir['codigo']) ?>" style="font-weight:600; cursor:pointer;">
-                    Remitir a especialista
-                </label>
-                <select class="eval-input"
-                        name="campos[<?= esc($itemRemitir['codigo']) ?>]"
-                        id="campo_<?= esc($itemRemitir['codigo']) ?>"
-                        form="formEvaluacion"
-                        style="width:70px; height:30px; font-size:.78rem;"
-                        data-codigo="<?= esc($itemRemitir['codigo']) ?>">
-                    <option value="">—</option>
-                    <?php foreach (($itemRemitir['opciones'] ?? []) as $opt): ?>
-                        <option value="<?= esc($opt['valor']) ?>"
-                            <?= (($valoresExistentes[$itemRemitir['codigo']] ?? '') == $opt['valor']) ? 'selected' : '' ?>>
-                            <?= esc($opt['texto']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        <?php endif; ?>
-
-        <!-- Mensaje de error -->
-        <div class="eval-error-msg" id="evalErrorMsg">
-            <i class="bi bi-exclamation-triangle me-1"></i>
-            <span id="evalErrorText"></span>
-        </div>
-
-        <!-- Botón guardar -->
-        <button type="button" class="btn-guardar-eval" id="btnGuardarEval" onclick="guardarEvaluacion()">
-            GUARDAR
-        </button>
-    </aside>
-
 </div>
 
 <?= $this->endSection() ?>
 
-
 <?= $this->section('scripts') ?>
 <script>
-/**
- * Toggle sección colapsable
- */
-function toggleSeccion(titulo) {
-    const body = titulo.nextElementSibling;
-    titulo.classList.toggle('collapsed');
-    body.classList.toggle('collapsed');
-}
+    const LAB_SECTIONS = <?= json_encode($jsSections, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+    const LAB_RANGES = <?= json_encode($jsRanges, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
+    const URL_GUARDAR = '<?= base_url("evaluaciones/guardar") ?>';
+    const URL_RETORNO = '<?= $urlRetorno ?>';
+    const CSRF_TOKEN = '<?= csrf_token() ?>';
+    const CSRF_HASH = '<?= csrf_hash() ?>';
+    const DRAFT_KEY = 'evaluacion_borrador_<?= (int) $beneficiario['id_beneficiario'] ?>_<?= (int) $tipoPesquisaId ?>';
+    const REMITIR_CODE = <?= json_encode($itemRemitir['codigo'] ?? '', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?>;
 
-/**
- * Dependencias condicionales: mostrar/ocultar campos según valor padre
- */
-function activarDependencias() {
-    document.querySelectorAll('[data-depende-de]').forEach(wrap => {
-        const codigoPadre   = wrap.dataset.dependeDe;
-        const valorRequerido = wrap.dataset.dependeValor;
-        const padre = document.getElementById('campo_' + codigoPadre);
+    let currentSectionIndex = 0;
 
-        if (!padre) return;
+    const form = document.getElementById('formEvaluacion');
+    const sectionEls = Array.from(document.querySelectorAll('.form-section'));
+    const stepEls = Array.from(document.querySelectorAll('.step'));
 
-        const verificar = () => {
-            if (padre.value === valorRequerido) {
-                wrap.classList.remove('eval-campo-oculto');
-            } else {
-                wrap.classList.add('eval-campo-oculto');
-                const input = wrap.querySelector('.eval-input');
-                if (input) input.value = '';
-            }
-        };
-
-        padre.addEventListener('change', verificar);
-        verificar();
-    });
-}
-
-activarDependencias();
-
-/**
- * Guardar evaluación via AJAX
- */
-async function guardarEvaluacion() {
-    const form     = document.getElementById('formEvaluacion');
-    const btn      = document.getElementById('btnGuardarEval');
+    const progressText = document.getElementById('progressText');
+    const progressFill = document.getElementById('progressFill');
+    const summaryFecha = document.getElementById('summaryFecha');
+    const summarySecciones = document.getElementById('summarySecciones');
+    const summaryAlertas = document.getElementById('summaryAlertas');
+    const summaryRemision = document.getElementById('summaryRemision');
+    const summaryObservaciones = document.getElementById('summaryObservaciones');
+    const observacionesGenerales = document.getElementById('eval_observaciones');
+    const observacionesCounter = document.getElementById('observacionesCounter');
     const errorDiv = document.getElementById('evalErrorMsg');
+    const errorText = document.getElementById('evalErrorText');
 
-    errorDiv.style.display = 'none';
-    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    const btnAnterior = document.getElementById('btnAnterior');
+    const btnSiguiente = document.getElementById('btnSiguiente');
+    const btnGuardar = document.getElementById('btnGuardarEval');
 
-    btn.disabled  = true;
-    btn.textContent = 'Guardando...';
+    const btnCancelar = document.getElementById('btnCancelar');
 
-    try {
-        const formData = new FormData(form);
-        // Agregar observaciones del panel derecho
-        formData.set('observaciones', document.getElementById('eval_observaciones').value);
-        // CSRF
-        formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+    function getFieldElement(fieldName) {
+        if (fieldName === 'observaciones') {
+            return document.getElementById('eval_observaciones');
+        }
 
-        const res  = await fetch('<?= base_url("evaluaciones/guardar") ?>', {
-            method: 'POST',
-            body: formData,
-        });
+        return document.getElementById('campo_' + fieldName) ||
+            document.querySelector(`[name="campos[${CSS.escape(fieldName)}]"]`) ||
+            document.querySelector(`[name="${CSS.escape(fieldName)}"]`);
+    }
 
-        const data = await res.json();
+    function getFieldValue(fieldName) {
+        const element = getFieldElement(fieldName);
+        if (!element) return '';
 
-        if (!data.ok) {
-            if (data.campo) {
-                const campoErr = document.getElementById('campo_' + data.campo);
-                if (campoErr) {
-                    campoErr.classList.add('is-invalid');
-                    campoErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    campoErr.focus();
-                }
-            }
-            document.getElementById('evalErrorText').textContent = data.mensaje || 'Error al guardar.';
-            errorDiv.style.display = 'block';
+        if (element.type === 'radio') {
+            const checked = document.querySelector(`[name="${element.name}"]:checked`);
+            return checked ? checked.value : '';
+        }
+
+        return String(element.value || '').trim();
+    }
+
+    function setFieldValue(fieldName, value) {
+        const element = getFieldElement(fieldName);
+        if (!element) return;
+
+        if (element.type === 'radio') {
+            const radio = document.querySelector(`[name="${element.name}"][value="${CSS.escape(value)}"]`);
+            if (radio) radio.checked = true;
             return;
         }
 
-        // Éxito — redirigir a la lista de beneficiarios
-        Swal.fire({
-            icon: 'success',
-            title: '¡Evaluación guardada!',
-            text: data.mensaje,
-            confirmButtonColor: '#101a61',
-            timer: 1800,
-            showConfirmButton: false,
-        }).then(() => {
-            if (data.url_retorno) {
-                window.location.href = data.url_retorno;
+        element.value = value ?? '';
+    }
+
+    function setSection(sectionId) {
+        const nextIndex = LAB_SECTIONS.findIndex(section => section.id === sectionId);
+        if (nextIndex < 0) return;
+
+        currentSectionIndex = nextIndex;
+
+        sectionEls.forEach(sectionEl => {
+            sectionEl.classList.toggle('active', sectionEl.dataset.section === sectionId);
+        });
+
+        stepEls.forEach((stepEl, index) => {
+            const isActive = stepEl.dataset.step === sectionId;
+            const isCompleted = isSectionCompleted(LAB_SECTIONS[index]);
+
+            stepEl.classList.toggle('active', isActive);
+            stepEl.classList.toggle('completed', isCompleted);
+        });
+
+        updateButtons();
+        updateSummary();
+    }
+
+    function updateButtons() {
+        const isFirst = currentSectionIndex === 0;
+        const isLast = currentSectionIndex === LAB_SECTIONS.length - 1;
+
+        btnAnterior.hidden = isFirst;
+        btnSiguiente.hidden = isLast;
+        btnGuardar.hidden = !isLast;
+    }
+
+    function goNext() {
+        const currentSection = LAB_SECTIONS[currentSectionIndex];
+
+        if (!validateRequiredFields(currentSection)) {
+            return;
+        }
+
+        if (currentSectionIndex < LAB_SECTIONS.length - 1) {
+            setSection(LAB_SECTIONS[currentSectionIndex + 1].id);
+        }
+    }
+
+    function goPrevious() {
+        if (currentSectionIndex > 0) {
+            setSection(LAB_SECTIONS[currentSectionIndex - 1].id);
+        }
+    }
+
+    function validateRequiredFields(section) {
+        let isValid = true;
+
+        section.required.forEach(fieldName => {
+            const field = getFieldElement(fieldName);
+            if (!field) return;
+
+            const fieldWrapper = field.closest('.field');
+            const value = getFieldValue(fieldName);
+
+            if (!value) {
+                isValid = false;
+                field.classList.add('is-invalid');
+                fieldWrapper?.classList.add('field--error');
+            } else {
+                field.classList.remove('is-invalid');
+                fieldWrapper?.classList.remove('field--error');
             }
         });
 
-    } catch (err) {
-        console.error('Error guardando:', err);
-        document.getElementById('evalErrorText').textContent = 'Error de conexión al guardar.';
-        errorDiv.style.display = 'block';
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'GUARDAR';
+        if (!isValid) {
+            showToast('Complete los campos obligatorios antes de continuar.');
+        }
+
+        return isValid;
     }
-}
+
+    function isSectionCompleted(section) {
+        if (section.required.length) {
+            return section.required.every(fieldName => Boolean(getFieldValue(fieldName)));
+        }
+
+        return section.fields.some(fieldName => Boolean(getFieldValue(fieldName)));
+    }
+
+    function getSectionCompletion(section) {
+        const completed = section.fields.filter(fieldName => Boolean(getFieldValue(fieldName))).length;
+        return {
+            completed,
+            total: section.fields.length
+        };
+    }
+
+    function updateSectionStatuses() {
+        LAB_SECTIONS.forEach(section => {
+            const status = document.querySelector(`[data-status="${CSS.escape(section.id)}"]`);
+            const {
+                completed,
+                total
+            } = getSectionCompletion(section);
+
+            if (status) {
+                status.textContent = `${completed}/${total} completados`;
+            }
+        });
+    }
+
+    function updateProgress() {
+        const completedSections = LAB_SECTIONS.filter(isSectionCompleted).length;
+        const totalSections = LAB_SECTIONS.length;
+        const percent = totalSections ? Math.round((completedSections / totalSections) * 100) : 0;
+
+        progressText.textContent = `Progreso: ${completedSections} de ${totalSections} secciones completadas`;
+        progressFill.style.width = `${percent}%`;
+        summarySecciones.textContent = `${completedSections}/${totalSections}`;
+    }
+
+    function getAlertCount() {
+        return Object.entries(LAB_RANGES).reduce((count, [fieldName, range]) => {
+            const rawValue = getFieldValue(fieldName);
+            if (!rawValue) return count;
+
+            const value = Number(rawValue);
+            if (Number.isNaN(value)) return count;
+
+            const underMin = range.min !== null && value < Number(range.min);
+            const overMax = range.max !== null && value > Number(range.max);
+
+            return underMin || overMax ? count + 1 : count;
+        }, 0);
+    }
+
+    function updateFieldRangeAlerts() {
+        Object.entries(LAB_RANGES).forEach(([fieldName, range]) => {
+            const field = getFieldElement(fieldName);
+            if (!field) return;
+
+            const fieldWrapper = field.closest('.field');
+            const rawValue = getFieldValue(fieldName);
+            const value = Number(rawValue);
+
+            fieldWrapper?.classList.remove('field--warning');
+
+            if (!rawValue || Number.isNaN(value)) return;
+
+            const underMin = range.min !== null && value < Number(range.min);
+            const overMax = range.max !== null && value > Number(range.max);
+
+            if (underMin || overMax) {
+                fieldWrapper?.classList.add('field--warning');
+            }
+        });
+    }
+
+    function updateSummary() {
+        const fecha = document.getElementById('eval_fecha_hidden')?.value || '';
+        const remision = REMITIR_CODE ? getFieldValue(REMITIR_CODE) : '';
+        const observaciones = getFieldValue('observaciones');
+
+        summaryFecha.textContent = fecha ? formatDate(fecha) : 'No definida';
+        summaryRemision.textContent = remision || 'No definida';
+        summaryObservaciones.textContent = observaciones || 'Sin observaciones registradas.';
+        summaryAlertas.textContent = String(getAlertCount());
+
+        if (observacionesCounter && observacionesGenerales) {
+            observacionesCounter.textContent = String(observacionesGenerales.value.length);
+        }
+
+        updateSectionStatuses();
+        updateProgress();
+        updateFieldRangeAlerts();
+    }
+
+    function formatDate(value) {
+        const [year, month, day] = value.split('-');
+        if (!year || !month || !day) return value;
+        return `${day}/${month}/${year}`;
+    }
+
+    function getFormSnapshot() {
+        const data = {};
+
+        LAB_SECTIONS.forEach(section => {
+            section.fields.forEach(fieldName => {
+                data[fieldName] = getFieldValue(fieldName);
+            });
+        });
+
+        return data;
+    }
+
+
+
+    function cancelForm() {
+        const shouldCancel = window.confirm('¿Desea cancelar la evaluación? Los cambios no guardados se perderán.');
+        if (!shouldCancel) return;
+
+        form.reset();
+        localStorage.removeItem(DRAFT_KEY);
+        window.location.href = URL_RETORNO;
+    }
+
+    function activarDependencias() {
+        document.querySelectorAll('[data-depende-de]').forEach(wrap => {
+            const codigoPadre = wrap.dataset.dependeDe;
+            const valorRequerido = wrap.dataset.dependeValor;
+            const padre = getFieldElement(codigoPadre);
+
+            if (!padre) return;
+
+            const verificar = () => {
+                const debeMostrar = getFieldValue(codigoPadre) === valorRequerido;
+                wrap.classList.toggle('eval-campo-oculto', !debeMostrar);
+
+                if (!debeMostrar) {
+                    const input = wrap.querySelector('input, select, textarea');
+                    if (input) input.value = '';
+                }
+
+                updateSummary();
+            };
+
+            padre.addEventListener('change', verificar);
+            verificar();
+        });
+    }
+
+    async function guardarEvaluacion() {
+        const invalidSection = LAB_SECTIONS.find(section => !validateRequiredFields(section));
+
+        if (invalidSection) {
+            setSection(invalidSection.id);
+            return;
+        }
+
+        errorDiv.style.display = 'none';
+        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        form.querySelectorAll('.field--error').forEach(el => el.classList.remove('field--error'));
+
+        btnGuardar.disabled = true;
+        btnGuardar.textContent = 'Guardando...';
+
+        try {
+            const formData = new FormData(form);
+            formData.set('observaciones', getFieldValue('observaciones'));
+            formData.append(CSRF_TOKEN, CSRF_HASH);
+
+            const res = await fetch(URL_GUARDAR, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await res.json();
+
+            if (!data.ok) {
+                if (data.campo) {
+                    const campoErr = getFieldElement(data.campo);
+                    if (campoErr) {
+                        campoErr.classList.add('is-invalid');
+                        campoErr.closest('.field')?.classList.add('field--error');
+                        campoErr.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'center'
+                        });
+                        campoErr.focus();
+                    }
+                }
+
+                errorText.textContent = data.mensaje || 'Error al guardar.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            localStorage.removeItem(DRAFT_KEY);
+
+            Swal.fire({
+                icon: 'success',
+                title: '¡Evaluación guardada!',
+                text: data.mensaje || 'Evaluación guardada correctamente.',
+                confirmButtonColor: '#101a61',
+                timer: 1800,
+                showConfirmButton: false,
+            }).then(() => {
+                window.location.href = data.url_retorno || URL_RETORNO;
+            });
+        } catch (err) {
+            console.error('Error guardando:', err);
+            errorText.textContent = 'Error de conexión al guardar.';
+            errorDiv.style.display = 'block';
+        } finally {
+            btnGuardar.disabled = false;
+            btnGuardar.textContent = 'Guardar evaluación';
+        }
+    }
+
+    function showToast(message) {
+        let toast = document.querySelector('.toast');
+
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.setAttribute('role', 'status');
+            toast.setAttribute('aria-live', 'polite');
+            document.body.appendChild(toast);
+        }
+
+        toast.textContent = message;
+        toast.classList.add('show');
+
+        window.clearTimeout(showToast.timeout);
+        showToast.timeout = window.setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    stepEls.forEach(stepEl => {
+        stepEl.addEventListener('click', () => {
+            setSection(stepEl.dataset.step);
+        });
+    });
+
+    form.addEventListener('input', updateSummary);
+    form.addEventListener('change', updateSummary);
+    btnSiguiente.addEventListener('click', goNext);
+    btnAnterior.addEventListener('click', goPrevious);
+    btnGuardar.addEventListener('click', guardarEvaluacion);
+
+    btnCancelar.addEventListener('click', cancelForm);
+
+    loadDraft();
+    activarDependencias();
+    setSection(LAB_SECTIONS[0]?.id || 'observaciones');
+    updateSummary();
 </script>
 <?= $this->endSection() ?>
