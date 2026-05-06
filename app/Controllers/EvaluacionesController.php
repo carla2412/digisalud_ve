@@ -120,7 +120,17 @@ class EvaluacionesController extends BaseController
             6 => ['nombre' => 'Vacunación',       'img' => 'vacunacion2.svg',        'gris' => 'vacunacion-color.svg'],
         ];
 
-        return view('evaluaciones/formulario', [
+            // ── Vista especializada por tipo de pesquisa ──
+        // tipo_pesquisa_id = 4 → Signos vitales (vista dedicada)
+        $vistasPorPesquisa = [
+            4 => 'evaluaciones/signos_vitales',
+            // Futuro: 1 => 'evaluaciones/antropometria',
+            // Futuro: 3 => 'evaluaciones/visual',
+        ];
+ 
+        $vistaFormulario = $vistasPorPesquisa[$tipoPesquisaId] ?? 'evaluaciones/formulario';
+ 
+        return view($vistaFormulario, [
             'beneficiario'         => $beneficiario,
             'tipoPesquisa'         => $tipoPesquisa,
             'tipoPesquisaId'       => $tipoPesquisaId,
