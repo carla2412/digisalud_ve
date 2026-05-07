@@ -1089,7 +1089,13 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
                     <h3>Observaciones</h3>
                     <p id="summaryObservaciones">Sin observaciones registradas.</p>
                 </div>
-
+                 <?php if ((int) $tipoPesquisaId === 2): ?>
+      <?= view('partials/lab_badges', [
+    'beneficiario' => $beneficiario,
+    'jornadaId'    => $jornadaId,
+    'centroId'     => $centroId,
+]) ?>
+    <?php endif; ?>                                   
                 <div class="eval-error-msg" id="evalErrorMsg">
                     <i class="bi bi-exclamation-triangle me-1"></i>
                     <span id="evalErrorText"></span>
@@ -1523,5 +1529,11 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
     activarDependencias();
     setSection(LAB_SECTIONS[0]?.id || 'observaciones');
     updateSummary();
+<?php if ((int) $tipoPesquisaId === 2): ?>
+<script src="<?= base_url('js/lab-interpretacion.js') ?>"></script>
+<?php endif; ?>
+
+
+
 </script>
 <?= $this->endSection() ?>

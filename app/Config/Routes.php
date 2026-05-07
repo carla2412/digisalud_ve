@@ -122,6 +122,8 @@ $routes->group('evaluaciones', ['filter' => 'auth'], function ($routes) {
     $routes->get('formulario/(:num)/(:num)', 'EvaluacionesController::formulario/$1/$2');
     // Guardar evaluación (POST AJAX)
     $routes->post('guardar', 'EvaluacionesController::guardar');
+    // ═══ LABORATORIO: Interpretación clínica ═══
+    $routes->get('lab/semaforo', 'LabInterpretacionController::semaforo', ['filter' => 'auth']);
 });
 
 $routes->get('evaluaciones/historial-sanguinea/(:num)', 'EvaluacionesController::historialSanguinea/$1');
