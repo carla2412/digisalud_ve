@@ -196,7 +196,18 @@ $jsSections[] = $observacionesSection;
         margin-bottom: 18px;
         padding-bottom: calc(var(--lab-actions-h) + 22px);
     }
+    .lab-header h1 {
+        margin: 0;
+        color: var(--lab-primary);
+        font-size: 1.35rem;
+        font-weight: 900;
+    }
 
+    .lab-header p {
+        margin: 2px 0 0;
+        color: var(--lab-muted);
+        font-size: .9rem;
+    }
     .lab-title-row {
         display: flex;
         align-items: center;
@@ -218,18 +229,7 @@ $jsSections[] = $observacionesSection;
         height: 30px;
     }
 
-    .lab-header h1 {
-        margin: 0;
-        color: var(--lab-primary);
-        font-size: 1.35rem;
-        font-weight: 900;
-    }
 
-    .lab-header p {
-        margin: 2px 0 0;
-        color: var(--lab-muted);
-        font-size: .9rem;
-    }
 
     .lab-badge {
         display: inline-flex;
@@ -763,7 +763,23 @@ $jsSections[] = $observacionesSection;
                     <input type="hidden" name="jornada_id" value="<?= (int) $jornadaId ?>">
                     <input type="hidden" name="centro_id" value="<?= (int) $centroId ?>">
                     <input type="hidden" name="evaluacion_id" value="<?= esc($evalId) ?>">
-                    <input type="hidden" name="fecha_evaluacion" id="eval_fecha_hidden" value="<?= date('Y-m-d') ?>">
+<?php
+$fechaEvaluacionRaw = $evaluacionExistente['fecha_evaluacion'] ?? date('Y-m-d');
+$fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
+?>
+
+<div class="field field--full" style="margin-bottom: 18px;">
+    <label for="eval_fecha_hidden">
+        Fecha evaluación *
+    </label>
+    <input
+        type="date"
+        name="fecha_evaluacion"
+        id="eval_fecha_hidden"
+        value="<?= esc($fechaEvaluacionInput) ?>"
+        required
+    >
+</div><br>
 
                     <?php foreach ($itemsFormulario as $sectionIndex => $items): ?>
                         <?php $nombreSeccion = $nombresSecciones[$sectionIndex] ?? ucfirst(str_replace('_', ' ', $sectionIndex)); ?>
@@ -927,7 +943,7 @@ $jsSections[] = $observacionesSection;
 
                     <div class="summary-row">
                         <span>Fecha de evaluación</span>
-                        <strong id="summaryFecha"><?= date('d/m/Y') ?></strong>
+                        <strong id="summaryFecha"> <?= date('d/m/Y', strtotime($fechaEvaluacionInput)) ?></strong>
                     </div>
 
                     <div class="summary-row">
@@ -989,7 +1005,7 @@ $jsSections[] = $observacionesSection;
 
     const progressText = document.getElementById('progressText');
     const progressFill = document.getElementById('progressFill');
-    const summaryFecha = document.getElementById('summaryFecha');
+   
     const summarySecciones = document.getElementById('summarySecciones');
     const summaryAlertas = document.getElementById('summaryAlertas');
     const summaryRemision = document.getElementById('summaryRemision');
@@ -1004,7 +1020,19 @@ $jsSections[] = $observacionesSection;
     const btnGuardar = document.getElementById('btnGuardarEval');
 
     const btnCancelar = document.getElementById('btnCancelar');
+     const fechaEvaluacionInput = document.getElementById('fecha_evaluacion');
+    const summaryFecha = document.getElementById('summaryFecha');
+    if (fechaEvaluacionInput && summaryFecha) {
+  fechaEvaluacionInput.addEventListener('change', () => {
+    if (!fechaEvaluacionInput.value) {
+      summaryFecha.textContent = 'Pendiente';
+      return;
+    }
 
+    const [y, m, d] = fechaEvaluacionInput.value.split('-');
+    summaryFecha.textContent = `${d}/${m}/${y}`;
+  });
+}
     function getFieldElement(fieldName) {
         if (fieldName === 'observaciones') {
             return document.getElementById('eval_observaciones');

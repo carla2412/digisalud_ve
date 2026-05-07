@@ -232,6 +232,24 @@ class EvaluacionesController extends BaseController
 
         $usuarioId = $session->get('id_usuario');
 
+        $fechaEvaluacion = trim((string) $this->request->getPost('fecha_evaluacion'));
+
+        if ($fechaEvaluacion === '') {
+            return $this->response->setJSON([
+                'ok'      => false,
+                'mensaje' => 'La fecha de evaluación es obligatoria.',
+                'campo'   => 'fecha_evaluacion',
+            ]);
+        }
+
+        $dt = \DateTime::createFromFormat('Y-m-d', $fechaEvaluacion);
+        if (! $dt || $dt->format('Y-m-d') !== $fechaEvaluacion) {
+            return $this->response->setJSON([
+                'ok'      => false,
+                'mensaje' => 'La fecha de evaluación no tiene un formato válido.',
+                'campo'   => 'fecha_evaluacion',
+            ]);
+        }
         if (! $beneficiarioId || ! $tipoPesquisaId || ! $usuarioId) {
             return $this->response->setJSON([
                 'ok'      => false,
@@ -318,6 +336,7 @@ class EvaluacionesController extends BaseController
                 }
 
                 $this->evalModel->update((int) $evaluacionId, [
+                    'fecha_evaluacion' => $fechaEvaluacion,
                     'observaciones'  => $observaciones,
                     'modificado_en'  => date('Y-m-d H:i:s'),
                     'modificado_por' => $usuarioId,
@@ -345,16 +364,20 @@ class EvaluacionesController extends BaseController
                 }
 
                 $evaluacionId = $this->evalModel->insert([
-                    'beneficiario_id'  => $beneficiarioId,
-                    'tipo_pesquisa_id' => $tipoPesquisaId,
-                    'jornada_id'       => ! empty($jornadaId) ? (int) $jornadaId : null,
-                    'centro_id'        => ! empty($centroId) ? (int) $centroId : null,
-                    'fecha_evaluacion' => date('Y-m-d H:i:s'),
-                    'observaciones'    => $observaciones,
-                    'evaluado_por'     => $usuarioId,
-                    'creado_en'        => date('Y-m-d H:i:s'),
-                    'status_eval'      => 1,
+                    'beneficiario_id'   => $beneficiarioId,
+                    'tipo_pesquisa_id'  => $tipoPesquisaId,
+                    'jornada_id'        => ! empty($jornadaId) ? (int) $jornadaId : null,
+                    'centro_id'         => ! empty($centroId) ? (int) $centroId : null,
+                    'fecha_evaluacion'  => $fechaEvaluacion,
+                    'observaciones'     => $observaciones,
+                    'evaluado_por'      => $usuarioId,
+                    'creado_en'         => date('Y-m-d H:i:s'),
+                    'status_eval'       => 1,
                 ], true);
+
+                if (! $evaluacionId) {
+                    throw new \RuntimeException('No se pudo crear la evaluación.');
+                }
 
                 if (empty($evaluacionId)) {
                     $db->transRollback();

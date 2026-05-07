@@ -4,478 +4,690 @@
 
 <?php
 $nombreCompleto = trim(esc($beneficiario['nombres'] ?? '') . ' ' . esc($beneficiario['apellidos'] ?? ''));
-$nombrePesquisa = 'Signos vitales';
 $esEdicion      = ! empty($evaluacionExistente);
 $evalId         = $evaluacionExistente['id_evaluacion'] ?? '';
-$obsExistente   = $evaluacionExistente['observaciones'] ?? '';
+
+$fechaEvaluacionRaw = $evaluacionExistente['fecha_evaluacion'] ?? date('Y-m-d');
+$fechaEvaluacionIso = ! empty($fechaEvaluacionRaw)
+    ? date('Y-m-d', strtotime($fechaEvaluacionRaw))
+    : date('Y-m-d');
+$fechaEvaluacionVista = ! empty($fechaEvaluacionRaw)
+    ? date('d/m/Y', strtotime($fechaEvaluacionRaw))
+    : date('d/m/Y');
 
 $urlRetorno = $jornadaId
     ? base_url("jornadas/{$jornadaId}/beneficiarios")
     : base_url("centros/{$centroId}/beneficiarios");
+
+$valorCampo = static function (string $codigo, $default = '') use ($valoresExistentes) {
+    return esc($valoresExistentes[$codigo] ?? $default);
+};
+
+$formatoNumeroVista = static function ($valor, $default = '') {
+    if ($valor === '' || $valor === null) {
+        return esc($default);
+    }
+
+    $numero = (float) str_replace(',', '.', (string) $valor);
+    return esc(number_format($numero, 4, ',', ''));
+};
 ?>
+
 <style>
-    :root {
-        --lab-primary: #101a61;
-        --lab-primary-soft: #e8edff;
-        --lab-bg: #f4f7fb;
-        --lab-card: #ffffff;
-        --lab-text: #172033;
-        --lab-muted: #64748b;
-        --lab-border: #dbe3ef;
-        --lab-danger: #dc2626;
-        --lab-warning: #f59e0b;
-        --lab-success: #16a34a;
-        --lab-actions-h: 72px;
-        --lab-sidebar-w: 72px;
-    }
+  :root {
+    --primary: #101a61;
+    --primary-soft: #e8edff;
+    --accent: #dc2626;
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --text: #101828;
+    --muted: #667085;
+    --border: #d9e2ef;
+    --success-bg: #dff5e6;
+    --success: #16a34a;
+    --warning-bg: #fff4d6;
+    --warning: #b54708;
+    --danger-bg: #fee4e2;
+    --danger: #b42318;
+    --info-bg: #e8f8ff;
+    --info-border: #83daf4;
+    --shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
+    --radius: 16px;
+    
+ 
+    --lab-sidebar-w: 72px;
+  }
 
-    body {
-        background: var(--lab-bg);
-    }
-
-    .signos-card,
-    .signos-summary-card {
-        background: var(--lab-card);
-        border: 1px solid var(--lab-border);
-        border-radius: 22px;
-        box-shadow: 0 16px 36px rgba(15, 23, 42, .06);
-    }
-
-    .signos-card {
-        padding: 22px;
-    }
-
-    .signos-summary-card {
-        padding: 18px;
-    }
-
-    .signos-section-header {
-        display: flex;
-        justify-content: space-between;
-        gap: 14px;
-        margin-bottom: 18px;
-        border-bottom: 2px solid #2f80ff;
-        padding-bottom: 12px;
-    }
-
-    .signos-section-header h2,
-    .signos-summary-card h2,
-    .signos-summary-card h3 {
-        margin: 0;
-        color: var(--lab-primary);
-        font-size: 1rem;
-        font-weight: 900;
-    }
-
-    .signos-section-header p {
-        margin: 4px 0 0;
-        color: var(--lab-muted);
-        font-size: .84rem;
-    }
-
-    .signos-grid {
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        gap: 14px;
-    }
-
-    .signos-field {
-        grid-column: span 6;
-    }
-
-    .signos-field--full {
-        grid-column: 1 / -1;
-    }
-
-    .signos-field label {
-        display: block;
-        color: #334155;
-        font-size: .78rem;
-        font-weight: 800;
-        margin-bottom: 6px;
-    }
-
-    .signos-field input,
-    .signos-field select,
-    .signos-field textarea {
-        width: 100%;
-        border: 1.5px solid var(--lab-border);
-        border-radius: 12px;
-        background: #fff;
-        color: var(--lab-text);
-        font-size: .86rem;
-        padding: 10px 12px;
-        outline: none;
-        transition: .15s ease;
-    }
-
-    .signos-field input:focus,
-    .signos-field select:focus,
-    .signos-field textarea:focus {
-        border-color: var(--lab-primary);
-        box-shadow: 0 0 0 3px rgba(16, 26, 97, .08);
-    }
-
-    .signos-field small,
-    .signos-field .form-text {
-        display: block;
-        margin-top: 5px;
-        color: var(--lab-muted);
-        font-size: .72rem;
-    }
-
-    .input-unit {
-        display: flex;
-        align-items: center;
-        border: 1.5px solid var(--lab-border);
-        border-radius: 12px;
-        overflow: hidden;
-        background: #fff;
-        transition: .15s ease;
-    }
-
-    .input-unit:focus-within {
-        border-color: var(--lab-primary);
-        box-shadow: 0 0 0 3px rgba(16, 26, 97, .08);
-    }
-
-    .input-unit input {
-        border: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-    }
-
-    .input-unit span {
-        padding: 0 12px;
-        color: var(--lab-muted);
-        font-size: .76rem;
-        font-weight: 800;
-        border-left: 1px solid var(--lab-border);
-        white-space: nowrap;
-    }
-
-    .summary-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        padding: 12px 0;
-        border-bottom: 1px solid #edf2f7;
-        font-size: .82rem;
-    }
-
-    .summary-row:last-child {
-        border-bottom: 0;
-    }
-
-    .summary-row span {
-        color: var(--lab-muted);
-    }
-
-    .summary-row strong {
-        color: var(--lab-primary);
-        text-align: right;
-    }
-
-   .actions-bar {
-    position: sticky;
-    bottom: 0;
-    z-index: 20;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    max-width: 100%;
-    min-height: var(--lab-actions-h);
-    margin: 18px 0 0;
-    padding: 14px 0 0;
-    background: transparent;
-    border-top: 1px solid var(--lab-border);
+  * {
     box-sizing: border-box;
-}
+  }
 
-    .actions-bar .btn,
-.actions-bar button {
-        border: 0;
-        border-radius: 12px;
-        min-height: 42px;
-        padding: 0 16px;
-        font-weight: 900;
-        font-size: .84rem;
-        cursor: pointer;
-        transition: .2s ease;
-    }
-.actions-bar .btn:disabled,
-.actions-bar button:disabled {
-    opacity: .55;
-    cursor: not-allowed;
-}
-    .btn--primary {
-        background: var(--lab-primary);
-        color: #fff;
-    }
-
-    .btn--primary:hover {
-        background: #17227a;
-        color: #fff;
-    }
-
-    .btn--secondary {
-        background: var(--lab-primary-soft);
-        color: var(--lab-primary);
-    }
-
-    .btn--ghost {
-        background: transparent;
-        color: var(--lab-muted);
-    }
-
-    .btn--ghost:hover,
-    .btn--secondary:hover {
-        color: var(--lab-primary);
-    }
-
-    .field--warning input,
-    .field--warning .input-unit {
-        border-color: var(--lab-warning) !important;
-        box-shadow: 0 0 0 3px rgba(245, 158, 11, .1) !important;
-    }
-
-    .is-invalid {
-        border-color: var(--lab-danger) !important;
-        box-shadow: 0 0 0 3px rgba(220, 38, 38, .08) !important;
-    }
-
-    @media (max-width: 1100px) {
-        .signos-layout {
-            grid-template-columns: 1fr !important;
-        }
-
-        .signos-summary-panel {
-            position: static !important;
-        }
-    }
-
-    @media (max-width: 760px) {
-        .signos-field {
-            grid-column: 1 / -1;
-        }
-
-        .actions-bar {
-            flex-wrap: wrap;
-            padding: 12px 14px;
-        }
-
-        .actions-bar .btn {
-            flex: 1 1 auto;
-        }
-    }
-
-.eval-page {
-    display: grid;
-    grid-template-columns: var(--lab-sidebar-w) minmax(0, 1fr);
-    min-height: 100dvh;
-    background: var(--lab-bg);
-    overflow: clip;
-}
-
-    /* ─── Sidebar izquierdo: iconos de pesquisas ─── */
-    .eval-sidebar {
-        background: #101a61;
+  body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+ 
+ 
+    .sidebar {
+        background: var(--primary);
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 12px 0;
-        gap: 6px;
+        gap: 8px;
+        padding: 14px 0;
     }
 
-    .eval-sidebar-btn {
+    .sidebar__logo,
+    .sidebar__item {
         width: 42px;
         height: 42px;
-        border-radius: 50%;
-        border: 2px solid transparent;
-        background: rgba(255, 255, 255, .08);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: .2s;
-        padding: 0;
-        position: relative;
+        border-radius: 16px;
+        border: 0;
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: rgba(255, 255, 255, .1);
         text-decoration: none;
+        position: relative;
+        transition: .2s ease;
     }
 
-    .eval-sidebar-btn img {
+    .sidebar__item img {
         width: 24px;
         height: 24px;
         filter: brightness(0) invert(1);
-        opacity: .5;
-        transition: .2s;
+        opacity: .65;
     }
 
-    .eval-sidebar-btn:hover {
-        background: rgba(255, 255, 255, .15);
-    }
-
-    .eval-sidebar-btn:hover img {
-        opacity: .9;
-    }
-
-    .eval-sidebar-btn.active {
+    .sidebar__item:hover,
+    .sidebar__item.active {
         background: #fff;
-        border-color: #00D4FF;
     }
 
-    .eval-sidebar-btn.active img {
+    .sidebar__item:hover img,
+    .sidebar__item.active img {
         filter: none;
         opacity: 1;
     }
 
-    .eval-sidebar-btn.evaluado::after {
+    .sidebar__item.evaluado::after {
         content: '';
         position: absolute;
-        bottom: -2px;
         right: -2px;
+        bottom: -2px;
         width: 12px;
         height: 12px;
-        background: #28a745;
         border-radius: 50%;
-        border: 2px solid #101a61;
+        background: var(--success);
+        border: 2px solid var(--primary);
     }
 
-    .eval-sidebar-btn[title]::before {
+    .sidebar__item[title]::before {
         content: attr(title);
         position: absolute;
-        left: 54px;
+        left: 52px;
         top: 50%;
         transform: translateY(-50%);
-        background: #1a2332;
+        background: #111827;
         color: #fff;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: .72rem;
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: .75rem;
         white-space: nowrap;
         opacity: 0;
         pointer-events: none;
-        transition: opacity .15s;
-        z-index: 10;
+        z-index: 30;
     }
 
-    .eval-sidebar-btn:hover[title]::before {
+    .sidebar__item:hover[title]::before {
         opacity: 1;
     }
+  .nav-item {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    position: relative;
+    font-size: 20px;
+    text-decoration: none;
+    overflow: visible;
+  }
 
-    /* ─── Header de evaluación ─── */
-    .sv-eval-header {
+  .nav-item img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: .72;
+  }
+
+  .nav-item.active {
+    background: #ffffff;
+    color: var(--accent);
+    outline: 4px solid #1fc7ff;
+  }
+
+  .nav-item.active img {
+    filter: none;
+    opacity: 1;
+  }
+
+  .nav-item.has-dot::after {
+    content: "";
+    width: 9px;
+    height: 9px;
+    background: #23d160;
+    border-radius: 50%;
+    position: absolute;
+    right: -1px;
+    bottom: 5px;
+    border: 2px solid var(--primary);
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+     .lab-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 16px 24px;
-        background: #fff;
-        border-bottom: 1px solid #e2e8f0;
+        gap: 16px;
+        margin-bottom: 18px;
+        padding-bottom: calc(var(--lab-actions-h) + 22px);
     }
-
-    .sv-eval-header-left {
-        display: flex;
-        align-items: center;
-        gap: 12px;
+  .lab-header h1 {
+        margin: 0;
+        color: var(--lab-primary);
+        font-size: 1.35rem;
+        font-weight: 900;
     }
-
-    .sv-eval-header-left img {
-        width: 36px;
-        height: 36px;
+     .lab-header p {
+        margin: 2px 0 0;
+        color: var(--lab-muted);
+        font-size: .9rem;
     }
+  .title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
 
-    .sv-eval-header-title {
-        font-size: 1.1rem;
-        font-weight: 800;
-        color: #101a61;
-    }
-
-    .sv-eval-header-subtitle {
-        font-size: .8rem;
-        color: #64748b;
-    }
-
-    .sv-eval-header-badge {
-        font-size: .7rem;
-        padding: 3px 10px;
-        border-radius: 20px;
-        font-weight: 700;
-    }
-
-    .sv-eval-header-badge.new {
-        background: #dbeafe;
-        color: #1e40af;
-    }
-
-    .sv-eval-header-badge.edit {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .sv-btn-volver {
-        font-size: .82rem;
-        color: #64748b;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .sv-btn-volver:hover {
-        color: #101a61;
-    }
-
-    .sv-eval-content {
-        overflow-y: auto;
-    }
-
-    /* ─── Responsive ─── */
-    @media (max-width: 900px) {
-        .eval-page {
-            grid-template-columns: 1fr;
-        }
-
-        .eval-sidebar {
-            flex-direction: row;
-            padding: 8px 12px;
-            overflow-x: auto;
-        }
-    }
-
-    .signos-layout {
+  .title-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 320px;
-    gap: 18px;
-    align-items: start;
-}
+    place-items: center;
+    font-size: 24px;
+  }
 
-.signos-content {
-    min-width: 0;
-}
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    color: var(--primary);
+    line-height: 1.1;
+  }
 
-.signos-summary-panel {
+  .patient-row {
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #344054;
+    font-size: 14px;
+  }
+
+  .badge {
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: #fff0c9;
+    color: #b54708;
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  .badge.new {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  .back-link {
+    color: #53627c;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .content {
+    padding: 24px 28px;
     display: flex;
     flex-direction: column;
+    gap: 22px;
+  }
+
+  .top-grid {
+    display: grid;
+    grid-template-columns: minmax(340px, 0.95fr) minmax(560px, 1.3fr);
+    gap: 18px;
+  }
+
+  .tip-card,
+  .summary-card,
+  .form-card {
+    background: var(--card);
+    border: 1px solid #e6edf6;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .tip-card {
+    padding: 24px;
+  }
+
+  .tip-box {
+    min-height: 80px;
+    border-radius: 10px;
+    border: 1px solid var(--info-border);
+    background: var(--info-bg);
+    display: flex;
+    align-items: center;
     gap: 14px;
-    position: sticky;
-    top: 16px;
-}
+    padding: 16px 18px;
+    color: #075985;
+    line-height: 1.45;
+  }
+
+  .tip-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #208bee;
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    flex: 0 0 auto;
+  }
+
+  .summary-card {
+    padding: 18px 22px;
+  }
+
+  .summary-card h2 {
+    margin: 0 0 16px;
+    font-size: 18px;
+    color: #0f172a;
+  }
+
+  .summary-row {
+    display: grid;
+    grid-template-columns: 230px repeat(5, 1fr);
+    align-items: center;
+    gap: 16px;
+  }
+
+  .status-pill {
+    background: var(--success-bg);
+    border: 1px solid #acdcb9;
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    min-height: 54px;
+  }
+
+  .status-pill.warning {
+    background: var(--warning-bg);
+    border-color: #fedf89;
+    color: var(--warning);
+  }
+
+  .status-pill.danger {
+    background: var(--danger-bg);
+    border-color: #fecdca;
+    color: var(--danger);
+  }
+
+  .status-pill strong {
+    display: block;
+    color: inherit;
+  }
+
+  .metric {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+  }
+
+  .metric:first-of-type {
+    border-left: 0;
+  }
+
+  .metric-icon {
+    font-size: 27px;
+    line-height: 1;
+  }
+
+  .metric-value {
+    font-weight: 800;
+    font-size: 17px;
+    color: #0f172a;
+    line-height: 1.1;
+  }
+
+  .metric-unit {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    align-items: stretch;
+  }
+
+  .form-card {
+    padding: 22px;
+    min-height: 450px;
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 25px;
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+  }
+
+  .card-icon.purple {
+    background: #ffe9fa;
+    
+  }
+    .card-icon.purple>img {
+    width: 3rem;
+  }
+
+  .card-icon.green {
+    background: #e8f8ed;
+    color: #12a150;
+  }
+
+  .card-icon.blue {
+    background: #e9f4ff;
+    color: #1f7ae0;
+  }
+
+  .card-title h3 {
+    margin: 0;
+    color: #11184f;
+    font-size: 19px;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    color: #182033;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+
+  .required {
+    color: #f04438;
+  }
+
+  .input-wrap {
+    height: 43px;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font: inherit;
+    color: #172033;
+  }
+
+  input,
+  select {
+    height: 100%;
+    padding: 0 14px;
+  }
+
+  select {
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #344054 50%),
+      linear-gradient(135deg, #344054 50%, transparent 50%);
+    background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 36px;
+  }
+
+  .unit {
+    min-width: 72px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border-left: 1px solid var(--border);
+    color: #53627c;
+    font-weight: 700;
+    font-size: 13px;
+    margin-right: 8px;
+  }
+
+  .calendar {
+    width: 42px;
+    display: grid;
+    place-items: center;
+    color: #111827;
+    font-size: 17px;
+  }
+
+  .hint {
+    color: #64748b;
+    margin-top: 7px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  textarea {
+    min-height: 88px;
+    resize: vertical;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: block;
+  }
+
+  .textarea-footer {
+    text-align: right;
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    padding-top: 12px;
+  }
+
+  .btn {
+    border: 0;
+    border-radius: 11px;
+    height: 44px;
+    padding: 0 24px;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .btn.secondary {
+    background: #fff;
+    color: #344054;
+    border: 1px solid #d8e0ed;
+  }
+
+  .btn.soft {
+    background: #e9edff;
+    color: var(--primary);
+  }
+
+  .btn.primary {
+    background: var(--primary);
+    color: #fff;
+    min-width: 210px;
+  }
+
+  .btn:hover {
+    filter: brightness(0.97);
+  }
+
+  .input-wrap.is-invalid,
+  textarea.is-invalid,
+  input.is-invalid,
+  select.is-invalid {
+    border-color: #f04438 !important;
+    box-shadow: 0 0 0 3px rgba(240, 68, 56, .08);
+  }
+
+  .input-wrap.is-warning {
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, .10);
+  }
+
+  .field-error {
+    color: #b42318;
+    margin-top: 7px;
+    font-size: 12px;
+    display: none;
+  }
+
+  .field-error.show {
+    display: block;
+  }
+
+  @media (max-width: 1280px) {
+    .top-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .summary-row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .status-pill {
+      grid-column: 1 / -1;
+    }
+
+    .cards-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .form-card {
+      min-height: auto;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .app {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+            flex-direction: row;
+            overflow-x: auto;
+            justify-content: flex-start;
+            padding: 10px 12px;
+        }
+    .lab-header {
+      height: auto;
+      padding: 18px;
+      align-items: flex-start;
+    }
+
+    .content {
+      padding: 18px;
+    }
+
+    .summary-row {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .actions {
+      flex-direction: column;
+    }
+
+    .btn,
+    .btn.primary {
+      width: 100%;
+    }
+  }
+
+  
+    .lab-page {
+        display: grid;
+        grid-template-columns: var(--lab-sidebar-w) minmax(0, 1fr);
+        min-height: 100dvh;
+        overflow: clip;
+    }
 </style>
 
-<div class="eval-page">
+<div class="lab-page" data-page="evaluacion">
+ <aside class="sidebar">
+        
 
-    <!-- ═══ SIDEBAR IZQUIERDO: Pesquisas de la jornada ═══ -->
-    <aside class="eval-sidebar">
         <?php foreach ($pesquisasActividad as $pid): ?>
             <?php
             $info = $infoPesquisas[$pid] ?? null;
             if (! $info) continue;
+
             $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
             $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
-            $clases      = 'eval-sidebar-btn';
+            $clases      = 'sidebar__item';
             if ($esActiva)   $clases .= ' active';
             if ($yaEvaluada) $clases .= ' evaluado';
 
@@ -484,672 +696,645 @@ $urlRetorno = $jornadaId
             ?>
             <a href="<?= $urlPesquisa ?>"
                 class="<?= $clases ?>"
-                title="<?= esc($info['nombre']) ?>">
+                title="<?= esc($info['nombre']) ?>"
+                aria-label="<?= esc($info['nombre']) ?>">
                 <img src="<?= base_url('img/' . ($esActiva ? $info['img'] : $info['gris'])) ?>"
                     alt="<?= esc($info['nombre']) ?>">
             </a>
         <?php endforeach; ?>
     </aside>
 
-    <!-- ═══ ÁREA PRINCIPAL ═══ -->
-    <div class="sv-eval-content">
+  <main class="main">
+    <div class="lab-header">
+      <div class="title-wrap">
+        <div class="title-icon"><img src="<?= base_url("img/signosVitales2.svg") ?>" alt=""></div>
+        <div>
+          <h1><?= $nombreCompleto ?></h1> 
+          <div class="patient-row">
+            <h6>Signos vitales</h6>
+            <span class="badge <?= $esEdicion ? '' : 'new' ?>"><?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?></span>
+          </div>
+        </div>
+      </div>
 
-        <!-- Header -->
-        <div class="sv-eval-header">
-            <div class="sv-eval-header-left">
-                <img src="<?= base_url('img/signosVitales2.svg') ?>"
-                    alt="Signos vitales">
-                <div>
-                    <div class="sv-eval-header-title">Signos vitales</div>
-                    <div class="sv-eval-header-subtitle"><?= $nombreCompleto ?></div>
-                </div>
-                <span class="sv-eval-header-badge <?= $esEdicion ? 'edit' : 'new' ?>">
-                    <?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?>
-                </span>
-            </div>
-            <a href="<?= $urlRetorno ?>" class="sv-btn-volver">
-                <i class="bi bi-arrow-left"></i> Volver
-            </a>
+      <a href="<?= $urlRetorno ?>" class="back-link">← Volver</a>
         </div>
 
-        <!-- ═══════════════════════════════════════════════════════════ -->
-        <!-- FORMULARIO SIGNOS VITALES (HTML proporcionado — sin modificar diseño) -->
-        <!-- ═══════════════════════════════════════════════════════════ -->
 
-        <div class="container-fluid py-3" id="evaluacionSignosVitalesApp">
-            <div class="row g-3">
+        
 
+    <section class="content">
+      <div class="top-grid">
+        <div class="tip-card">
+          <div class="tip-box">
+            <div class="tip-icon">i</div>
+            <div>
+              <strong>Consejo:</strong>
+              completa los valores. El sistema validará rangos y resaltará posibles alertas.
+            </div>
+          </div>
+        </div>
+
+        <div class="summary-card">
+          <h2>Resumen rápido</h2>
+
+          <div class="summary-row">
+            <div class="status-pill" id="estadoGeneralSignos">
+              <span id="estadoGeneralIcon">✓</span>
+              <div>
+                <strong id="estadoGeneralTitle">Estado general:</strong>
+                <span id="estadoGeneralText">sin alertas críticas detectadas.</span>
+              </div>
+            </div>
+
+            <div class="metric">
+              <div class="metric-icon"  ><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit_120_off.png") ?>" alt=""></div>
+              <div>
                 
-
-                <div class="col-12 col-xl-8">
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body">
-
-                            <div class="alert alert-info d-flex align-items-start gap-2 mb-4">
-                                <div>
-                                    <strong>Consejo:</strong>
-                                    completa primero los valores numéricos. El sistema validará rangos y resaltará posibles alertas.
-                                </div>
-                            </div>
-
-                            <form id="formSignosVitales" novalidate>
-                                <!-- Hidden fields para el backend -->
-                                <input type="hidden" name="beneficiario_id" value="<?= (int) $beneficiario['id_beneficiario'] ?>">
-                                <input type="hidden" name="tipo_pesquisa_id" value="<?= (int) $tipoPesquisaId ?>">
-                                <input type="hidden" name="jornada_id" value="<?= (int) $jornadaId ?>">
-                                <input type="hidden" name="centro_id" value="<?= (int) $centroId ?>">
-                                <input type="hidden" name="evaluacion_id" value="<?= esc($evalId) ?>">
-
-                                <div class="row g-3">
-
-                                    <div class="col-12 col-md-6">
-                                        <label for="sv_tension_sistolica" class="form-label">
-                                            Tensión arterial sistólica
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <div class="input-unit">
-                                            <input
-                                                type="number"
-                                                class="form-control campo-signo-vital"
-                                                id="sv_tension_sistolica"
-                                                name="campos[tension_sistolica]"
-                                                data-codigo="tension_sistolica"
-                                                data-label="Tensión sistólica"
-                                                data-unidad="mmHg"
-                                                data-min="70"
-                                                data-max="180"
-                                                data-alerta-min="90"
-                                                data-alerta-max="140"
-                                                placeholder="Ej: 120"
-                                                value="<?= esc($valoresExistentes['tension_sistolica'] ?? '') ?>"
-                                                required>
-                                            <span >mmHg</span>
-                                        </div>
-                                        <div class="form-text">Rango esperado: 90 - 140 mmHg.</div>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="col-12 col-md-6">
-                                        <label for="sv_tension_diastolica" class="form-label">
-                                            Tensión arterial diastólica
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <div class="input-unit">
-                                            <input
-                                                type="number"
-                                                class="form-control campo-signo-vital"
-                                                id="sv_tension_diastolica"
-                                                name="campos[tension_diastolica]"
-                                                data-codigo="tension_diastolica"
-                                                data-label="Tensión diastólica"
-                                                data-unidad="mmHg"
-                                                data-min="40"
-                                                data-max="120"
-                                                data-alerta-min="60"
-                                                data-alerta-max="90"
-                                                placeholder="Ej: 80"
-                                                value="<?= esc($valoresExistentes['tension_diastolica'] ?? '') ?>"
-                                                required>
-                                            <span >mmHg</span>
-                                        </div>
-                                        <div class="form-text">Rango esperado: 60 - 90 mmHg.</div>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="col-12 col-md-6">
-                                        <label for="sv_frecuencia_cardiaca" class="form-label">
-                                            Frecuencia cardíaca
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <div class="input-unit">
-                                            <input
-                                                type="number"
-                                                class="form-control campo-signo-vital"
-                                                id="sv_frecuencia_cardiaca"
-                                                name="campos[frecuencia_cardiaca]"
-                                                data-codigo="frecuencia_cardiaca"
-                                                data-label="Frecuencia cardíaca"
-                                                data-unidad="lpm"
-                                                data-min="30"
-                                                data-max="220"
-                                                data-alerta-min="60"
-                                                data-alerta-max="100"
-                                                placeholder="Ej: 72"
-                                                value="<?= esc($valoresExistentes['frecuencia_cardiaca'] ?? '') ?>"
-                                                required>
-                                            <span >lpm</span>
-                                        </div>
-                                        <div class="form-text">Rango esperado: 60 - 100 lpm.</div>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="col-12 col-md-6">
-                                        <label for="sv_frecuencia_respiratoria" class="form-label">
-                                            Frecuencia respiratoria
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <div class="input-unit">
-                                            <input
-                                                type="number"
-                                                class="form-control campo-signo-vital"
-                                                id="sv_frecuencia_respiratoria"
-                                                name="campos[frecuencia_respiratoria]"
-                                                data-codigo="frecuencia_respiratoria"
-                                                data-label="Frecuencia respiratoria"
-                                                data-unidad="rpm"
-                                                data-min="5"
-                                                data-max="60"
-                                                data-alerta-min="12"
-                                                data-alerta-max="20"
-                                                placeholder="Ej: 16"
-                                                value="<?= esc($valoresExistentes['frecuencia_respiratoria'] ?? '') ?>"
-                                                required>
-                                            <span >rpm</span>
-                                        </div>
-                                        <div class="form-text">Rango esperado: 12 - 20 rpm.</div>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="col-12 col-md-6">
-                                        <label for="sv_temperatura" class="form-label">
-                                            Temperatura
-                                            <span class="text-danger">*</span>
-                                        </label>
-                                        <div class="input-unit">
-                                            <input
-                                                type="number"
-                                                step="0.1"
-                                                class="form-control campo-signo-vital"
-                                                id="sv_temperatura"
-                                                name="campos[temperatura]"
-                                                data-codigo="temperatura"
-                                                data-label="Temperatura"
-                                                data-unidad="°C"
-                                                data-min="30"
-                                                data-max="45"
-                                                data-alerta-min="36"
-                                                data-alerta-max="37.5"
-                                                placeholder="Ej: 36.8"
-                                                value="<?= esc($valoresExistentes['temperatura'] ?? '') ?>"
-                                                required>
-                                            <span >°C</span>
-                                        </div>
-                                        <div class="form-text">Rango esperado: 36.0 - 37.5 °C.</div>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="col-12 col-md-6">
-                                        <label for="sv_saturacion_oxigeno" class="form-label">
-                                            Saturación de oxígeno
-                                        </label>
-                                        <div class="input-unit">
-                                            <input
-                                                type="number"
-                                                class="form-control campo-signo-vital"
-                                                id="sv_saturacion_oxigeno"
-                                                name="campos[saturacion_o2]"
-                                                data-codigo="saturacion_o2"
-                                                data-label="Saturación de oxígeno"
-                                                data-unidad="%"
-                                                data-min="50"
-                                                data-max="100"
-                                                data-alerta-min="95"
-                                                data-alerta-max="100"
-                                                placeholder="Ej: 98"
-                                                value="<?= esc($valoresExistentes['saturacion_o2'] ?? '') ?>">
-                                            <span >%</span>
-                                        </div>
-                                        <div class="form-text">Rango esperado: 95 - 100%.</div>
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label for="sv_remision" class="form-label">
-                                            ¿Requiere remisión?
-                                        </label>
-                                        <select
-                                            class="form-select campo-signo-vital"
-                                            id="sv_remision"
-                                            name="campos[especialista_vitales]"
-                                            data-codigo="especialista_vitales"
-                                            data-label="Remisión"
-                                            data-unidad="">
-                                            <option value="">Seleccione una opción</option>
-                                            <option value="n" <?= (($valoresExistentes['especialista_vitales'] ?? '') === 'n') ? 'selected' : '' ?>>No requiere remisión</option>
-                                            <option value="s" <?= (($valoresExistentes['especialista_vitales'] ?? '') === 's') ? 'selected' : '' ?>>Sí, requiere remisión</option>
-                                        </select>
-                                        <div class="form-text">
-                                            Usa esta opción si los signos vitales sugieren seguimiento médico.
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label for="sv_observaciones" class="form-label">
-                                            Observaciones
-                                        </label>
-                                        <textarea
-                                            class="form-control campo-signo-vital"
-                                            id="sv_observaciones"
-                                            name="campos[observaciones_vitales]"
-                                            data-codigo="observaciones_vitales"
-                                            data-label="Observaciones"
-                                            data-unidad=""
-                                            rows="4"
-                                            placeholder="Ej: paciente estable, refiere mareo leve, se recomienda hidratación..."><?= esc($valoresExistentes['observaciones_vitales'] ?? '') ?></textarea>
-                                    </div>
-
-                                </div>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-xl-4">
-                    <div class="card border-0 shadow-sm position-sticky" style="top: 1rem;">
-                        <div class="card-body">
-
-                            <h5 class="mb-3">Resumen rápido</h5>
-
-                            <div id="estadoGeneralSignos" class="alert alert-secondary mb-3">
-                                Completa los signos vitales para ver el estado general.
-                            </div>
-
-                            <div class="list-group list-group-flush mb-3" id="resumenSignosVitales">
-                                <div class="list-group-item px-0 text-muted">
-                                    Sin datos registrados.
-                                </div>
-                            </div>
-
-                            <div class="border rounded p-3 bg-light">
-                                <h6 class="mb-2">Alertas</h6>
-                                <div id="alertasSignosVitales" class="small text-muted">
-                                    No hay alertas por ahora.
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
+                <div class="metric-value" id="summaryPressure">120/80</div>
+                <div class="metric-unit">mmHg</div>
+              </div>
             </div>
+
+            <div class="metric">
+              <div class="metric-icon" ><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit.png") ?>" alt=""></div>
+              <div>
+                <div class="metric-value" id="summaryHeart">72</div>
+                <div class="metric-unit">lpm</div>
+              </div>
+            </div>
+
+            <div class="metric">
+              <div class="metric-icon" ><img style="width: 30px;" src="<?= base_url("img/icon/lungs_4981940.png") ?>" alt=""></div>
+              <div>
+                <div class="metric-value" id="summaryResp">16</div>
+                <div class="metric-unit">rpm</div>
+              </div>
+            </div>
+
+            <div class="metric">
+              <div class="metric-icon"  ><img style="width: 30px;" src="<?= base_url("img/icon/thermometer.png") ?>" alt=""></div>
+              <div>
+                <div class="metric-value" id="summaryTemp">37</div>
+                <div class="metric-unit">°C</div>
+              </div>
+            </div>
+
+            <div class="metric">
+              <div class="metric-icon" style="color:#ec4899;"><img style="width: 35px;" src="<?= base_url("img/icon/oximeter.png") ?>" alt=""></div>
+              <div>
+                <div class="metric-value" id="summaryOxygen">97</div>
+                <div class="metric-unit">%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form id="formSignosVitales" novalidate>
+        <input type="hidden" name="beneficiario_id" value="<?= (int) $beneficiario['id_beneficiario'] ?>">
+        <input type="hidden" name="tipo_pesquisa_id" value="<?= (int) $tipoPesquisaId ?>">
+        <input type="hidden" name="jornada_id" value="<?= (int) $jornadaId ?>">
+        <input type="hidden" name="centro_id" value="<?= (int) $centroId ?>">
+        <input type="hidden" name="evaluacion_id" value="<?= esc($evalId) ?>">
+        <input type="hidden" id="fechaEvaluacionIso" value="<?= esc($fechaEvaluacionIso) ?>">
+
+        <div class="cards-grid">
+          <section class="form-card">
+            <div class="card-title">
+              <div class="card-icon purple"><img src="<?= base_url('img/icon/icon_vit_120_off.png') ?>"></div>
+              <h3>Presión arterial</h3>
+            </div>
+
+            <div class="field">
+              <label for="evaluationDate">Fecha evaluación <span class="required">*</span></label>
+              <div class="input-wrap">
+                <input id="evaluationDate" name="fecha_evaluacion" data-codigo="fecha_evaluacion" value="<?= esc($fechaEvaluacionVista) ?>" required />
+                <span class="calendar">▣</span>
+              </div>
+              <div class="field-error">La fecha de evaluación es obligatoria.</div>
+            </div>
+
+            <div class="field">
+              <label for="systolic">Tensión arterial sistólica <span class="required">*</span></label>
+              <div class="input-wrap">
+                <input id="systolic" name="campos[tension_sistolica]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['tension_sistolica'] ?? '', '120,0000') ?>" class="campo-signo-vital" data-codigo="tension_sistolica" data-label="Tensión sistólica" data-unidad="mmHg" data-min="70" data-max="180" data-alerta-min="90" data-alerta-max="140" required />
+                <span class="unit">mmHg</span>
+              </div>
+              <div class="hint">Rango esperado: 90 - 140 mmHg.</div>
+              <div class="field-error"></div>
+            </div>
+
+            <div class="field">
+              <label for="diastolic">Tensión arterial diastólica <span class="required">*</span></label>
+              <div class="input-wrap">
+                <input id="diastolic" name="campos[tension_diastolica]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['tension_diastolica'] ?? '', '80,0000') ?>" class="campo-signo-vital" data-codigo="tension_diastolica" data-label="Tensión diastólica" data-unidad="mmHg" data-min="40" data-max="120" data-alerta-min="60" data-alerta-max="90" required />
+                <span class="unit">mmHg</span>
+              </div>
+              <div class="hint">Rango esperado: 60 - 90 mmHg.</div>
+              <div class="field-error"></div>
+            </div>
+          </section>
+
+          <section class="form-card">
+            <div class="card-title">
+              <div class="card-icon green">⌁</div>
+              <h3>Frecuencias</h3>
+            </div>
+
+            <div class="field">
+              <label for="heartRate">Frecuencia cardíaca <span class="required">*</span></label>
+              <div class="input-wrap">
+                <input id="heartRate" name="campos[frecuencia_cardiaca]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['frecuencia_cardiaca'] ?? '', '72,0000') ?>" class="campo-signo-vital" data-codigo="frecuencia_cardiaca" data-label="Frecuencia cardíaca" data-unidad="lpm" data-min="30" data-max="220" data-alerta-min="60" data-alerta-max="100" required />
+                <span class="unit">lpm</span>
+              </div>
+              <div class="hint">Rango esperado: 60 - 100 lpm.</div>
+              <div class="field-error"></div>
+            </div>
+
+            <div class="field">
+              <label for="respiratoryRate">Frecuencia respiratoria <span class="required">*</span></label>
+              <div class="input-wrap">
+                <input id="respiratoryRate" name="campos[frecuencia_respiratoria]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['frecuencia_respiratoria'] ?? '', '16,0000') ?>" class="campo-signo-vital" data-codigo="frecuencia_respiratoria" data-label="Frecuencia respiratoria" data-unidad="rpm" data-min="5" data-max="60" data-alerta-min="12" data-alerta-max="20" required />
+                <span class="unit">rpm</span>
+              </div>
+              <div class="hint">Rango esperado: 12 - 20 rpm.</div>
+              <div class="field-error"></div>
+            </div>
+          </section>
+
+          <section class="form-card">
+            <div class="card-title">
+              <div class="card-icon blue">♧</div>
+              <h3>Temperatura y seguimiento</h3>
+            </div>
+
+            <div class="field">
+              <label for="temperature">Temperatura <span class="required">*</span></label>
+              <div class="input-wrap">
+                <input id="temperature" name="campos[temperatura]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['temperatura'] ?? '', '37,0000') ?>" class="campo-signo-vital" data-codigo="temperatura" data-label="Temperatura" data-unidad="°C" data-min="30" data-max="45" data-alerta-min="36" data-alerta-max="37.5" required />
+                <span class="unit">°C</span>
+              </div>
+              <div class="hint">Rango esperado: 36.0 - 37.5 °C.</div>
+              <div class="field-error"></div>
+            </div>
+
+            <div class="field">
+              <label for="oxygen">Saturación de oxígeno</label>
+              <div class="input-wrap">
+                <input id="oxygen" name="campos[saturacion_o2]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['saturacion_o2'] ?? '', '97,0000') ?>" class="campo-signo-vital" data-codigo="saturacion_o2" data-label="Saturación de oxígeno" data-unidad="%" data-min="50" data-max="100" data-alerta-min="95" data-alerta-max="100" />
+                <span class="unit">%</span>
+              </div>
+              <div class="hint">Rango esperado: 95 - 100%.</div>
+              <div class="field-error"></div>
+            </div>
+
+            <div class="field">
+              <label for="referral">¿Requiere remisión?</label>
+              <div class="input-wrap">
+                <select id="referral" name="campos[especialista_vitales]" class="campo-signo-vital" data-codigo="especialista_vitales" data-label="Remisión" data-unidad="">
+                  <option value="n" <?= (($valoresExistentes['especialista_vitales'] ?? 'n') === 'n') ? 'selected' : '' ?>>No requiere remisión</option>
+                  <option value="s" <?= (($valoresExistentes['especialista_vitales'] ?? '') === 's') ? 'selected' : '' ?>>Requiere remisión</option>
+                  <option value="seguimiento" <?= (($valoresExistentes['especialista_vitales'] ?? '') === 'seguimiento') ? 'selected' : '' ?>>Seguimiento médico</option>
+                </select>
+              </div>
+              <div class="hint">Usa esta opción si los signos vitales sugieren seguimiento médico.</div>
+            </div>
+
+            <div class="field">
+              <label for="observations">Observaciones</label>
+              <textarea id="observations" name="campos[observaciones_vitales]" class="campo-signo-vital" data-codigo="observaciones_vitales" data-label="Observaciones" data-unidad="" maxlength="200"><?= $valorCampo('observaciones_vitales', '') ?></textarea>
+              <div class="textarea-footer">
+                <span id="charCount">0</span> / 200
+              </div>
+            </div>
+          </section>
         </div>
 
-    </div><!-- /.sv-eval-content -->
-
-</div><!-- /.eval-page -->
-<div class="actions-bar signos-actions-bar">
-    <button id="btnCancelarSignos" type="button" class="btn btn--ghost">
-        Cancelar
-    </button>
-
-    <button id="btnLimpiarSignos" type="button" class="btn btn--secondary">
-        Limpiar
-    </button>
-
-    <button id="btnGuardarSignos" type="button" class="btn btn--primary">
-        Guardar evaluación
-    </button>
+        <div class="actions">
+          <button type="button" id="btnCancelarSignos" class="btn secondary">Cancelar</button>
+          <button type="button" id="btnLimpiarSignos" class="btn soft">Limpiar</button>
+          <button type="button" id="btnGuardarSignos" class="btn primary">▣ Guardar evaluación</button>
+        </div>
+      </form>
+    </section>
+  </main>
 </div>
-<?= $this->endSection() ?>
 
+<?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
 <script>
-    (function() {
-        const form = document.getElementById('formSignosVitales');
-        const campos = Array.from(document.querySelectorAll('.campo-signo-vital'));
-        const resumen = document.getElementById('resumenSignosVitales');
-        const alertas = document.getElementById('alertasSignosVitales');
-        const estadoGeneral = document.getElementById('estadoGeneralSignos');
-        const btnGuardar = document.getElementById('btnGuardarSignos');
-        const btnLimpiar = document.getElementById('btnLimpiarSignos');
-        const btnCancelar = document.getElementById('btnCancelarSignos');
-        const summaryCampos = document.getElementById('summaryCamposSignos');
-        const summaryAlertas = document.getElementById('summaryAlertasSignos');
-        const summaryRemision = document.getElementById('summaryRemisionSignos');
-        const summaryObservaciones = document.getElementById('summaryObservacionesSignos');
-        const URL_RETORNO = '<?= $urlRetorno ?>';
+  (function() {
+    const $ = (selector) => document.querySelector(selector);
 
-        function obtenerValorCampo(campo) {
-            if (campo.tagName === 'SELECT') {
-                return campo.value;
-            }
-            if (campo.tagName === 'TEXTAREA') {
-                return campo.value.trim();
-            }
-            return campo.value !== '' ? Number(campo.value) : '';
+    const form = $('#formSignosVitales');
+    const btnGuardar = $('#btnGuardarSignos');
+    const btnLimpiar = $('#btnLimpiarSignos');
+    const btnCancelar = $('#btnCancelarSignos');
+    const URL_RETORNO = '<?= $urlRetorno ?>';
+
+    const fields = {
+      systolic: $('#systolic'),
+      diastolic: $('#diastolic'),
+      heartRate: $('#heartRate'),
+      respiratoryRate: $('#respiratoryRate'),
+      temperature: $('#temperature'),
+      oxygen: $('#oxygen'),
+      observations: $('#observations'),
+      evaluationDate: $('#evaluationDate')
+    };
+
+    const summary = {
+      pressure: $('#summaryPressure'),
+      heart: $('#summaryHeart'),
+      respiratory: $('#summaryResp'),
+      temperature: $('#summaryTemp'),
+      oxygen: $('#summaryOxygen'),
+      status: $('#estadoGeneralSignos'),
+      statusIcon: $('#estadoGeneralIcon'),
+      statusTitle: $('#estadoGeneralTitle'),
+      statusText: $('#estadoGeneralText')
+    };
+
+    const campos = Array.from(document.querySelectorAll('.campo-signo-vital'));
+
+    function normalizeValue(value) {
+      return String(value || '').replace(',', '.').trim();
+    }
+
+    function parseNumber(value) {
+      const number = parseFloat(normalizeValue(value));
+      return Number.isFinite(number) ? number : null;
+    }
+
+    function compactValue(value) {
+      const number = parseNumber(value);
+      return number !== null ? String(Math.round(number)) : '-';
+    }
+
+    function decimalValue(value) {
+      const number = parseNumber(value);
+      return number !== null ? String(number) : '';
+    }
+
+    function setFieldState(input, state, message) {
+      const field = input.closest('.field');
+      const wrap = input.closest('.input-wrap');
+      const error = field ? field.querySelector('.field-error') : null;
+
+      input.classList.remove('is-invalid');
+      if (wrap) wrap.classList.remove('is-invalid', 'is-warning');
+      if (error) {
+        error.textContent = '';
+        error.classList.remove('show');
+      }
+
+      if (state === 'invalid') {
+        input.classList.add('is-invalid');
+        if (wrap) wrap.classList.add('is-invalid');
+        if (error) {
+          error.textContent = message || 'Valor inválido.';
+          error.classList.add('show');
+        }
+      }
+
+      if (state === 'warning' && wrap) {
+        wrap.classList.add('is-warning');
+      }
+    }
+
+    function updateSummary() {
+      summary.pressure.textContent = `${compactValue(fields.systolic.value)}/${compactValue(fields.diastolic.value)}`;
+      summary.heart.textContent = compactValue(fields.heartRate.value);
+      summary.respiratory.textContent = compactValue(fields.respiratoryRate.value);
+      summary.temperature.textContent = compactValue(fields.temperature.value);
+      summary.oxygen.textContent = compactValue(fields.oxygen.value);
+      updateCharCount();
+      updateStatus();
+    }
+
+    function updateCharCount() {
+      $('#charCount').textContent = fields.observations.value.length;
+    }
+
+    function validarFecha() {
+      const value = fields.evaluationDate.value.trim();
+      const wrap = fields.evaluationDate.closest('.input-wrap');
+      const error = fields.evaluationDate.closest('.field').querySelector('.field-error');
+      wrap.classList.remove('is-invalid');
+      error.classList.remove('show');
+
+      if (!value) {
+        wrap.classList.add('is-invalid');
+        error.textContent = 'La fecha de evaluación es obligatoria.';
+        error.classList.add('show');
+        return false;
+      }
+
+      if (!toIsoDate(value)) {
+        wrap.classList.add('is-invalid');
+        error.textContent = 'Usa el formato dd/mm/aaaa.';
+        error.classList.add('show');
+        return false;
+      }
+
+      return true;
+    }
+
+    function validarCampo(campo) {
+      const esObligatorio = campo.hasAttribute('required');
+      const valorTexto = campo.value.trim();
+      const min = campo.dataset.min !== undefined ? Number(campo.dataset.min) : null;
+      const max = campo.dataset.max !== undefined ? Number(campo.dataset.max) : null;
+      const alertaMin = campo.dataset.alertaMin !== undefined ? Number(campo.dataset.alertaMin) : null;
+      const alertaMax = campo.dataset.alertaMax !== undefined ? Number(campo.dataset.alertaMax) : null;
+      const valor = parseNumber(valorTexto);
+
+      setFieldState(campo, 'clean');
+
+      if (campo.tagName === 'SELECT' || campo.tagName === 'TEXTAREA') {
+        return true;
+      }
+
+      if (esObligatorio && valorTexto === '') {
+        setFieldState(campo, 'invalid', 'Este campo es obligatorio.');
+        return false;
+      }
+
+      if (valorTexto !== '' && valor === null) {
+        setFieldState(campo, 'invalid', 'Ingresa un número válido.');
+        return false;
+      }
+
+      if (valor !== null) {
+        if (min !== null && valor < min) {
+          setFieldState(campo, 'invalid', `El valor mínimo permitido es ${min}.`);
+          return false;
         }
 
-        function cancelarSignos() {
-            const confirmar = window.confirm('¿Desea cancelar la evaluación? Los cambios no guardados se perderán.');
-
-            if (!confirmar) {
-                return;
-            }
-
-            window.location.href = URL_RETORNO;
+        if (max !== null && valor > max) {
+          setFieldState(campo, 'invalid', `El valor máximo permitido es ${max}.`);
+          return false;
         }
 
-        function obtenerTextoValor(campo) {
-            const valor = obtenerValorCampo(campo);
-            const unidad = campo.dataset.unidad || '';
+        if ((alertaMin !== null && valor < alertaMin) || (alertaMax !== null && valor > alertaMax)) {
+          setFieldState(campo, 'warning');
+        }
+      }
 
-            if (valor === '' || valor === null || typeof valor === 'undefined') {
-                return 'Pendiente';
-            }
-            if (campo.tagName === 'SELECT') {
-                const option = campo.options[campo.selectedIndex];
-                return option && option.value ? option.text : 'Pendiente';
-            }
-            if (campo.tagName === 'TEXTAREA') {
-                return valor || 'Sin observaciones';
-            }
-            return `${valor} ${unidad}`.trim();
+      return true;
+    }
+
+    function generarAlertas() {
+      const listaAlertas = [];
+
+      campos.forEach((campo) => {
+        if (campo.tagName === 'SELECT' || campo.tagName === 'TEXTAREA') return;
+
+        const valor = parseNumber(campo.value);
+        if (valor === null) return;
+
+        const alertaMin = Number(campo.dataset.alertaMin);
+        const alertaMax = Number(campo.dataset.alertaMax);
+        const label = campo.dataset.label;
+        const unidad = campo.dataset.unidad || '';
+
+        if (!Number.isNaN(alertaMin) && valor < alertaMin) {
+          listaAlertas.push(`${label}: ${valor} ${unidad} está por debajo del rango esperado.`);
         }
 
-        function validarCampo(campo) {
-            const valor = obtenerValorCampo(campo);
-            const esObligatorio = campo.hasAttribute('required');
-            const min = campo.dataset.min !== undefined ? Number(campo.dataset.min) : null;
-            const max = campo.dataset.max !== undefined ? Number(campo.dataset.max) : null;
-            const feedback = campo.closest('.col-12, .col-md-6')?.querySelector('.invalid-feedback');
+        if (!Number.isNaN(alertaMax) && valor > alertaMax) {
+          listaAlertas.push(`${label}: ${valor} ${unidad} está por encima del rango esperado.`);
+        }
+      });
 
-            campo.classList.remove('is-invalid', 'is-valid');
+      return listaAlertas;
+    }
 
-            if (esObligatorio && valor === '') {
-                campo.classList.add('is-invalid');
-                if (feedback) feedback.textContent = 'Este campo es obligatorio.';
-                return false;
-            }
+    function updateStatus() {
+      const numericWithValue = campos.filter((campo) => {
+        return campo.tagName !== 'SELECT' && campo.tagName !== 'TEXTAREA' && campo.value.trim() !== '';
+      });
+      const listaAlertas = generarAlertas();
 
-            if (valor !== '' && typeof valor === 'number') {
-                if (min !== null && valor < min) {
-                    campo.classList.add('is-invalid');
-                    if (feedback) feedback.textContent = `El valor mínimo permitido es ${min}.`;
-                    return false;
-                }
-                if (max !== null && valor > max) {
-                    campo.classList.add('is-invalid');
-                    if (feedback) feedback.textContent = `El valor máximo permitido es ${max}.`;
-                    return false;
-                }
-            }
+      summary.status.className = 'status-pill';
 
-            if (valor !== '') {
-                campo.classList.add('is-valid');
-            }
+      if (numericWithValue.length === 0) {
+        summary.status.classList.add('warning');
+        summary.statusIcon.textContent = 'i';
+        summary.statusTitle.textContent = 'Pendiente:';
+        summary.statusText.textContent = 'completa los signos vitales para ver el estado general.';
+        return;
+      }
 
-            return true;
+      if (listaAlertas.length === 0) {
+        summary.statusIcon.textContent = '✓';
+        summary.statusTitle.textContent = 'Estado general:';
+        summary.statusText.textContent = 'sin alertas críticas detectadas.';
+        return;
+      }
+
+      summary.status.classList.add('warning');
+      summary.statusIcon.textContent = '!';
+      summary.statusTitle.textContent = 'Revisar:';
+      summary.statusText.textContent = `se detectaron ${listaAlertas.length} valor(es) fuera del rango esperado.`;
+    }
+
+    function validarFormulario() {
+      let valido = validarFecha();
+
+      campos.forEach((campo) => {
+        if (!validarCampo(campo)) valido = false;
+      });
+
+      updateSummary();
+      return valido;
+    }
+
+    function toIsoDate(value) {
+      const clean = String(value || '').trim();
+
+      if (/^\d{4}-\d{2}-\d{2}$/.test(clean)) {
+        return clean;
+      }
+
+      const match = clean.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      if (!match) return '';
+
+      const [, d, m, y] = match;
+      return `${y}-${m}-${d}`;
+    }
+
+    function prepararFormData() {
+      const formData = new FormData(form);
+
+      formData.set('fecha_evaluacion', toIsoDate(fields.evaluationDate.value));
+      formData.set('observaciones', fields.observations.value.trim());
+
+      campos.forEach((campo) => {
+        if (campo.tagName === 'SELECT' || campo.tagName === 'TEXTAREA') {
+          formData.set(campo.name, campo.value.trim());
+          return;
         }
 
-        function generarAlertas() {
-            const listaAlertas = [];
+        formData.set(campo.name, decimalValue(campo.value));
+      });
 
-            campos.forEach((campo) => {
-                if (campo.type !== 'number') return;
+      const csrfName = '<?= csrf_token() ?>';
+      const csrfHash = '<?= csrf_hash() ?>';
+      formData.append(csrfName, csrfHash);
 
-                const valor = obtenerValorCampo(campo);
-                if (valor === '') return;
+      return formData;
+    }
 
-                const alertaMin = Number(campo.dataset.alertaMin);
-                const alertaMax = Number(campo.dataset.alertaMax);
-                const label = campo.dataset.label;
-                const unidad = campo.dataset.unidad || '';
+    async function guardarEvaluacion() {
+      if (!validarFormulario()) {
+        summary.status.className = 'status-pill danger';
+        summary.statusIcon.textContent = '!';
+        summary.statusTitle.textContent = 'Faltan datos:';
+        summary.statusText.textContent = 'revisa los campos marcados antes de guardar.';
+        return;
+      }
 
-                if (!Number.isNaN(alertaMin) && valor < alertaMin) {
-                    listaAlertas.push({
-                        tipo: 'bajo',
-                        mensaje: `${label}: ${valor} ${unidad} está por debajo del rango esperado.`
-                    });
-                }
+      btnGuardar.disabled = true;
+      btnGuardar.innerHTML = 'Guardando...';
 
-                if (!Number.isNaN(alertaMax) && valor > alertaMax) {
-                    listaAlertas.push({
-                        tipo: 'alto',
-                        mensaje: `${label}: ${valor} ${unidad} está por encima del rango esperado.`
-                    });
-                }
-            });
-
-            return listaAlertas;
-        }
-
-        function actualizarResumen() {
-            const camposConValor = campos.filter((campo) => obtenerValorCampo(campo) !== '');
-            const listaAlertas = generarAlertas();
-
-            if (camposConValor.length === 0) {
-                resumen.innerHTML = `
-        <div class="list-group-item px-0 text-muted">
-          Sin datos registrados.
-        </div>
-      `;
-            } else {
-                resumen.innerHTML = campos.map((campo) => {
-                    const label = campo.dataset.label;
-                    const texto = obtenerTextoValor(campo);
-
-                    return `
-          <div class="list-group-item px-0 d-flex justify-content-between gap-3">
-            <span class="text-muted">${label}</span>
-            <strong class="text-end">${texto}</strong>
-          </div>
-        `;
-                }).join('');
-            }
-
-            if (listaAlertas.length === 0) {
-                alertas.className = 'small text-muted';
-                alertas.innerHTML = 'No hay alertas por ahora.';
-                estadoGeneral.className = 'alert alert-success mb-3';
-                estadoGeneral.innerHTML = '<strong>Estado general:</strong> sin alertas críticas detectadas.';
-            } else {
-                alertas.className = 'small text-danger';
-                alertas.innerHTML = `
-        <ul class="mb-0 ps-3">
-          ${listaAlertas.map(alerta => `<li>${alerta.mensaje}</li>`).join('')}
-        </ul>
-      `;
-                estadoGeneral.className = 'alert alert-warning mb-3';
-                estadoGeneral.innerHTML = `
-        <strong>Revisar:</strong> se detectaron ${listaAlertas.length} valor(es) fuera del rango esperado.
-      `;
-            }
-
-            if (camposConValor.length === 0) {
-                estadoGeneral.className = 'alert alert-secondary mb-3';
-                estadoGeneral.innerHTML = 'Completa los signos vitales para ver el estado general.';
-            }
-
-            const totalCampos = campos.length;
-            const completados = campos.filter((campo) => obtenerValorCampo(campo) !== '').length;
-            const listaAlertas = generarAlertas();
-
-            if (summaryCampos) {
-                summaryCampos.textContent = `${completados}/${totalCampos}`;
-            }
-
-            if (summaryAlertas) {
-                summaryAlertas.textContent = String(listaAlertas.length);
-            }
-
-            if (summaryRemision) {
-                const remision = document.getElementById('sv_remision');
-                const textoRemision = remision && remision.value ?
-                    remision.options[remision.selectedIndex].text :
-                    'No definida';
-
-                summaryRemision.textContent = textoRemision;
-            }
-
-            if (summaryObservaciones) {
-                const observaciones = document.getElementById('sv_observaciones')?.value.trim();
-
-                summaryObservaciones.textContent = observaciones || 'Sin observaciones registradas.';
-            }
-        }
-
-        function validarFormulario() {
-            let valido = true;
-            campos.forEach((campo) => {
-                const campoValido = validarCampo(campo);
-                if (!campoValido) valido = false;
-            });
-            return valido;
-        }
-
-        /**
-         * Guardar evaluación via AJAX al endpoint existente /evaluaciones/guardar
-         */
-        async function guardarEvaluacion() {
-            const valido = validarFormulario();
-            actualizarResumen();
-
-            if (!valido) {
-                estadoGeneral.className = 'alert alert-danger mb-3';
-                estadoGeneral.innerHTML = '<strong>Faltan datos:</strong> revisa los campos marcados antes de guardar.';
-                return;
-            }
-
-            btnGuardar.disabled = true;
-            btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Guardando...';
-
-            try {
-                const formData = new FormData(form);
-
-                // Agregar observaciones generales (del textarea de observaciones_vitales)
-                // El campo observaciones del formulario va como campo genérico de la evaluación
-                const obsTextarea = document.getElementById('sv_observaciones');
-                if (obsTextarea) {
-                    formData.set('observaciones', obsTextarea.value.trim());
-                }
-
-                // Agregar token CSRF
-                const csrfName = '<?= csrf_token() ?>';
-                const csrfHash = '<?= csrf_hash() ?>';
-                formData.append(csrfName, csrfHash);
-
-                const resp = await fetch('<?= base_url("evaluaciones/guardar") ?>', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                const data = await resp.json();
-
-                if (data.ok) {
-                    estadoGeneral.className = 'alert alert-success mb-3';
-                    estadoGeneral.innerHTML = '<strong>Listo:</strong> evaluación guardada correctamente.';
-
-                    if (typeof Swal !== 'undefined') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '¡Guardado!',
-                            text: data.mensaje || 'Evaluación de signos vitales guardada.',
-                            confirmButtonColor: '#101a61',
-                        }).then(() => {
-                            if (data.url_retorno) {
-                                window.location.href = data.url_retorno;
-                            }
-                        });
-                    } else {
-                        alert(data.mensaje || 'Evaluación guardada.');
-                        if (data.url_retorno) {
-                            window.location.href = data.url_retorno;
-                        }
-                    }
-                } else {
-                    estadoGeneral.className = 'alert alert-danger mb-3';
-                    estadoGeneral.innerHTML = `<strong>Error:</strong> ${data.mensaje || 'No se pudo guardar.'}`;
-
-                    // Resaltar campo con error
-                    if (data.campo) {
-                        const campoError = document.querySelector(`[data-codigo="${data.campo}"]`);
-                        if (campoError) {
-                            campoError.classList.add('is-invalid');
-                            campoError.focus();
-                        }
-                    }
-
-                    if (typeof Swal !== 'undefined') {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: data.mensaje || 'No se pudo guardar la evaluación.',
-                            confirmButtonColor: '#101a61',
-                        });
-                    }
-                }
-            } catch (err) {
-                console.error('Error guardando evaluación:', err);
-                estadoGeneral.className = 'alert alert-danger mb-3';
-                estadoGeneral.innerHTML = '<strong>Error:</strong> no se pudo conectar con el servidor.';
-
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error de conexión',
-                        text: 'No se pudo conectar con el servidor. Intenta de nuevo.',
-                        confirmButtonColor: '#101a61',
-                    });
-                }
-            } finally {
-                btnGuardar.disabled = false;
-                btnGuardar.innerHTML = 'Guardar evaluación';
-            }
-        }
-
-        function limpiarFormulario() {
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    title: '¿Limpiar formulario?',
-                    text: 'Se borrarán todos los valores ingresados.',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#101a61',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Sí, limpiar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        ejecutarLimpieza();
-                    }
-                });
-            } else {
-                if (confirm('¿Limpiar todos los campos?')) {
-                    ejecutarLimpieza();
-                }
-            }
-        }
-
-        function ejecutarLimpieza() {
-            form.reset();
-            campos.forEach((campo) => {
-                campo.classList.remove('is-valid', 'is-invalid');
-            });
-            actualizarResumen();
-        }
-
-        // Event listeners
-        campos.forEach((campo) => {
-            campo.addEventListener('input', () => {
-                validarCampo(campo);
-                actualizarResumen();
-            });
-            campo.addEventListener('change', () => {
-                validarCampo(campo);
-                actualizarResumen();
-            });
+      try {
+        const resp = await fetch('<?= base_url("evaluaciones/guardar") ?>', {
+          method: 'POST',
+          body: prepararFormData(),
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
         });
 
-        btnGuardar.addEventListener('click', guardarEvaluacion);
-        btnLimpiar.addEventListener('click', limpiarFormulario);
-        btnCancelar.addEventListener('click', cancelarSignos);
-        // Inicializar resumen
-        actualizarResumen();
-    })();
+        const data = await resp.json();
+
+        if (data.ok) {
+          summary.status.className = 'status-pill';
+          summary.statusIcon.textContent = '✓';
+          summary.statusTitle.textContent = 'Listo:';
+          summary.statusText.textContent = data.mensaje || 'evaluación guardada correctamente.';
+
+          if (typeof Swal !== 'undefined') {
+            Swal.fire({
+              icon: 'success',
+              title: '¡Guardado!',
+              text: data.mensaje || 'Evaluación de signos vitales guardada.',
+              confirmButtonColor: '#111b69'
+            }).then(() => {
+              window.location.href = data.url_retorno || URL_RETORNO;
+            });
+          } else {
+            alert(data.mensaje || 'Evaluación guardada.');
+            window.location.href = data.url_retorno || URL_RETORNO;
+          }
+
+          return;
+        }
+
+        summary.status.className = 'status-pill danger';
+        summary.statusIcon.textContent = '!';
+        summary.statusTitle.textContent = 'Error:';
+        summary.statusText.textContent = data.mensaje || 'no se pudo guardar.';
+
+        if (data.campo) {
+          const campoError = document.querySelector(`[data-codigo="${data.campo}"]`);
+          if (campoError) {
+            setFieldState(campoError, 'invalid', data.mensaje || 'Revisa este campo.');
+            campoError.focus();
+          }
+        }
+
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.mensaje || 'No se pudo guardar la evaluación.',
+            confirmButtonColor: '#111b69'
+          });
+        }
+      } catch (err) {
+        console.error('Error guardando evaluación:', err);
+        summary.status.className = 'status-pill danger';
+        summary.statusIcon.textContent = '!';
+        summary.statusTitle.textContent = 'Error:';
+        summary.statusText.textContent = 'no se pudo conectar con el servidor.';
+
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'No se pudo conectar con el servidor. Intenta de nuevo.',
+            confirmButtonColor: '#111b69'
+          });
+        }
+      } finally {
+        btnGuardar.disabled = false;
+        btnGuardar.innerHTML = '▣ Guardar evaluación';
+      }
+    }
+
+    function ejecutarLimpieza() {
+      form.reset();
+      fields.evaluationDate.value = $('#fechaEvaluacionIso').value.split('-').reverse().join('/');
+
+      campos.forEach((campo) => {
+        setFieldState(campo, 'clean');
+      });
+
+      const dateWrap = fields.evaluationDate.closest('.input-wrap');
+      const dateError = fields.evaluationDate.closest('.field').querySelector('.field-error');
+      dateWrap.classList.remove('is-invalid');
+      dateError.classList.remove('show');
+
+      updateSummary();
+    }
+
+    function limpiarFormulario() {
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          title: '¿Limpiar formulario?',
+          text: 'Se borrarán todos los valores ingresados.',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#111b69',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Sí, limpiar',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.isConfirmed) ejecutarLimpieza();
+        });
+      } else if (confirm('¿Limpiar todos los campos?')) {
+        ejecutarLimpieza();
+      }
+    }
+
+    function cancelarSignos() {
+      if (confirm('¿Desea cancelar la evaluación? Los cambios no guardados se perderán.')) {
+        window.location.href = URL_RETORNO;
+      }
+    }
+
+    campos.forEach((campo) => {
+      campo.addEventListener('input', () => {
+        validarCampo(campo);
+        updateSummary();
+      });
+      campo.addEventListener('change', () => {
+        validarCampo(campo);
+        updateSummary();
+      });
+    });
+
+    fields.evaluationDate.addEventListener('input', validarFecha);
+    fields.evaluationDate.addEventListener('change', validarFecha);
+    btnGuardar.addEventListener('click', guardarEvaluacion);
+    btnLimpiar.addEventListener('click', limpiarFormulario);
+    btnCancelar.addEventListener('click', cancelarSignos);
+
+    updateSummary();
+  })();
 </script>
 <?= $this->endSection() ?>
