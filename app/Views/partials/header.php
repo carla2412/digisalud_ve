@@ -2,24 +2,15 @@
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
         <div class="d-flex align-items-center gap-2">
-
-            <!--  <button class="btn" id="menuToggle">
-                <img src="<?= base_url('img/icon/icon_menu.png') ?>" width="22">
-            </button>-->
+ 
             <button id="openSidebar" type="button" class="btn btn-outline-light">
                 ☰
             </button>
-            <button class="btn" onclick="window.history.back();">
+            <button class="btn" onclick="window.history.back();" id="backvol">
                 <img src="<?= base_url('img/icon/icon_back.png') ?>" width="35">
             </button>
 
-            <!-- <div class="input-group input-group-sm ms-2" style="width:180px;">
-                <span class="input-group-text bg-light border-0">
-                    <img src="<?= base_url('img/icon/search-blue.png') ?>" width="16">
-                </span>
-                <input type="text" class="form-control border-0" placeholder="Búsqueda">
-            </div> -->
-
+            
         </div>
 
         <img src="<?= base_url('img/isotipo_digisalud.png') ?>" height="60">

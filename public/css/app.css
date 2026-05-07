@@ -90,7 +90,16 @@
     }
 
 
-
+#openSidebar,#backvol{
+   border: 1;
+         
+        min-height: 42px;
+        padding: 0 16px;
+        
+       
+        cursor: pointer;
+        transition: .2s ease;
+}
 
     .btnalgo {
       color: var(--ds-primary) !important;

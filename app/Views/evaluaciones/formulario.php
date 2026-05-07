@@ -44,6 +44,23 @@ foreach ($itemsAgrupados as $seccion => $items) {
     }
 }
 
+$seccionCondicionesEspeciales = null;
+$itemsCondicionesEspeciales = [];
+
+foreach ($itemsFormulario as $seccion => $items) {
+    $nombreSeccionBusqueda = strtolower($nombresSecciones[$seccion] ?? $seccion);
+
+    if (
+        (strpos($nombreSeccionBusqueda, 'condiciones') !== false || strpos($nombreSeccionBusqueda, 'codiciones') !== false)
+        && strpos($nombreSeccionBusqueda, 'especial') !== false
+    ) {
+        $seccionCondicionesEspeciales = $seccion;
+        $itemsCondicionesEspeciales = $items;
+        unset($itemsFormulario[$seccion]);
+        break;
+    }
+}
+
 $jsSections = [];
 $jsRanges = [];
 foreach ($itemsFormulario as $seccion => $items) {
@@ -77,6 +94,23 @@ $observacionesSection = [
     'required' => [],
     'fields'   => ['observaciones'],
 ];
+
+foreach ($itemsCondicionesEspeciales as $item) {
+    $observacionesSection['fields'][] = $item['codigo'];
+
+    if (! empty($item['obligatorio'])) {
+        $observacionesSection['required'][] = $item['codigo'];
+    }
+
+    if ($item['tipo_dato'] === 'number' && ($item['valor_min'] !== null || $item['valor_max'] !== null)) {
+        $jsRanges[$item['codigo']] = [
+            'min'   => $item['valor_min'] !== null ? (float) $item['valor_min'] : null,
+            'max'   => $item['valor_max'] !== null ? (float) $item['valor_max'] : null,
+            'label' => $item['nombre'],
+        ];
+    }
+}
+
 if ($itemRemitir) {
     $observacionesSection['fields'][] = $itemRemitir['codigo'];
 }
@@ -96,7 +130,7 @@ $jsSections[] = $observacionesSection;
         --lab-warning: #f59e0b;
         --lab-success: #16a34a;
         --lab-sidebar-w: 72px;
-        --lab-actions-h: 72px;
+        --lab-actions-h: 22px;
     }
 
     .lab-page {
@@ -193,8 +227,8 @@ $jsSections[] = $observacionesSection;
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        margin-bottom: 18px;
-        padding-bottom: calc(var(--lab-actions-h) + 22px);
+        margin-bottom: 16px;
+        padding-bottom: calc(var(--lab-actions-h) + 12px);
     }
     .lab-header h1 {
         margin: 0;
@@ -242,7 +276,7 @@ $jsSections[] = $observacionesSection;
 
     .lab-badge.new {
         background: #dbeafe;
-        color: #1e40af;
+        color: #1b7ae2;
     }
 
     .lab-badge.edit {
@@ -573,13 +607,13 @@ $jsSections[] = $observacionesSection;
         box-sizing: border-box;
     }
 
-    .btn {
-        border: 0;
-        border-radius: 12px;
+    .btn1 {
+        border: 1px solid white;
+         
         min-height: 42px;
         padding: 0 16px;
-        font-weight: 900;
-        font-size: .84rem;
+        
+       
         cursor: pointer;
         transition: .2s ease;
     }
@@ -736,9 +770,7 @@ $jsSections[] = $observacionesSection;
             <div class="lab-progress">
                 <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
                     <span id="progressText">Progreso: 0 de <?= count($jsSections) ?> secciones completadas</span>
-                    <a href="<?= $urlRetorno ?>" class="btn-volver">
-                        <i class="bi bi-arrow-left"></i> Volver
-                    </a>
+                   
                 </div>
                 <div class="progress-bar">
                     <div id="progressFill" class="progress-bar__fill"></div>
@@ -900,7 +932,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
                                     <h2>Observaciones y remisión</h2>
                                     <p>Agregue comentarios generales y defina si requiere remisión.</p>
                                 </div>
-                                <span class="section-status" data-status="observaciones">0/<?= $itemRemitir ? '2' : '1' ?> completados</span>
+                                <span class="section-status" data-status="observaciones">0/<?= 1 + count($itemsCondicionesEspeciales) + ($itemRemitir ? 1 : 0) ?> completados</span>
                             </div>
 
                             <div class="form-grid">
@@ -913,6 +945,97 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
                                         placeholder="Escriba observaciones generales..."> <?= esc($obsExistente) ?></textarea>
                                     <small><span id="observacionesCounter">0</span>/500</small>
                                 </div>
+
+
+                                <?php foreach ($itemsCondicionesEspeciales as $item): ?>
+                                    <?php
+                                    $codigo     = $item['codigo'];
+                                    $valorPrev  = $valoresExistentes[$codigo] ?? '';
+                                    $oculto     = ! empty($item['depende_de']) ? 'eval-campo-oculto' : '';
+                                    $dependeAttr = '';
+                                    if (! empty($item['depende_de'])) {
+                                        $dependeAttr = 'data-depende-de="' . esc($item['depende_de']) . '" data-depende-valor="' . esc($item['depende_valor']) . '"';
+                                    }
+                                    $unidad = trim((string) ($item['unidad'] ?? ''));
+                                    $ancho  = (int) ($item['ancho_col'] ?? 6);
+                                    $span   = $ancho >= 12 ? 'field--full' : '';
+                                    ?>
+
+                                    <div class="field <?= $span ?> <?= $oculto ?>"
+                                        id="wrap_<?= esc($codigo) ?>"
+                                        data-code="<?= esc($codigo) ?>"
+                                        <?= $dependeAttr ?>>
+                                        <label for="campo_<?= esc($codigo) ?>">
+                                            <?= esc($item['nombre']) ?><?= ! empty($item['obligatorio']) ? ' *' : '' ?>
+                                        </label>
+
+                                        <?php if ($item['tipo_dato'] === 'number'): ?>
+                                            <?php if ($unidad !== ''): ?>
+                                                <div class="input-unit">
+                                                    <input type="number" step="any"
+                                                        name="campos[<?= esc($codigo) ?>]"
+                                                        id="campo_<?= esc($codigo) ?>"
+                                                        value="<?= esc($valorPrev) ?>"
+                                                        <?= $item['valor_min'] !== null ? 'min="' . esc($item['valor_min']) . '"' : '' ?>
+                                                        <?= $item['valor_max'] !== null ? 'max="' . esc($item['valor_max']) . '"' : '' ?>
+                                                        <?= $item['placeholder'] ? 'placeholder="' . esc($item['placeholder']) . '"' : '' ?>
+                                                        data-codigo="<?= esc($codigo) ?>">
+                                                    <span><?= esc($unidad) ?></span>
+                                                </div>
+                                            <?php else: ?>
+                                                <input type="number" step="any"
+                                                    name="campos[<?= esc($codigo) ?>]"
+                                                    id="campo_<?= esc($codigo) ?>"
+                                                    value="<?= esc($valorPrev) ?>"
+                                                    <?= $item['valor_min'] !== null ? 'min="' . esc($item['valor_min']) . '"' : '' ?>
+                                                    <?= $item['valor_max'] !== null ? 'max="' . esc($item['valor_max']) . '"' : '' ?>
+                                                    <?= $item['placeholder'] ? 'placeholder="' . esc($item['placeholder']) . '"' : '' ?>
+                                                    data-codigo="<?= esc($codigo) ?>">
+                                            <?php endif; ?>
+
+                                        <?php elseif ($item['tipo_dato'] === 'select'): ?>
+                                            <select name="campos[<?= esc($codigo) ?>]"
+                                                id="campo_<?= esc($codigo) ?>"
+                                                data-codigo="<?= esc($codigo) ?>">
+                                                <option value="">Seleccione una opción</option>
+                                                <?php foreach (($item['opciones'] ?? []) as $opt): ?>
+                                                    <option value="<?= esc($opt['valor']) ?>"
+                                                        <?= ($valorPrev == $opt['valor']) ? 'selected' : '' ?>>
+                                                        <?= esc($opt['texto']) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+
+                                        <?php elseif ($item['tipo_dato'] === 'textarea'): ?>
+                                            <textarea name="campos[<?= esc($codigo) ?>]"
+                                                id="campo_<?= esc($codigo) ?>"
+                                                rows="4"
+                                                data-codigo="<?= esc($codigo) ?>"
+                                                <?= $item['placeholder'] ? 'placeholder="' . esc($item['placeholder']) . '"' : '' ?>><?= esc($valorPrev) ?></textarea>
+
+                                        <?php elseif ($item['tipo_dato'] === 'date'): ?>
+                                            <input type="date"
+                                                name="campos[<?= esc($codigo) ?>]"
+                                                id="campo_<?= esc($codigo) ?>"
+                                                value="<?= esc($valorPrev) ?>"
+                                                data-codigo="<?= esc($codigo) ?>">
+
+                                        <?php else: ?>
+                                            <input type="text"
+                                                name="campos[<?= esc($codigo) ?>]"
+                                                id="campo_<?= esc($codigo) ?>"
+                                                value="<?= esc($valorPrev) ?>"
+                                                <?= $item['placeholder'] ? 'placeholder="' . esc($item['placeholder']) . '"' : '' ?>
+                                                data-codigo="<?= esc($codigo) ?>">
+                                        <?php endif; ?>
+
+                                        <?php if ($item['tipo_dato'] === 'number' && ($item['valor_min'] !== null || $item['valor_max'] !== null)): ?>
+                                            <small>Rango normal: <?= $item['valor_min'] !== null ? esc($item['valor_min']) : '—' ?> - <?= $item['valor_max'] !== null ? esc($item['valor_max']) : '—' ?><?= $unidad ? ' ' . esc($unidad) : '' ?></small>
+                                        <?php elseif ($unidad !== '' && $item['tipo_dato'] !== 'number'): ?>
+                                            <small>Unidad: <?= esc($unidad) ?></small>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endforeach; ?>
 
                                 <?php if ($itemRemitir): ?>
                                     <?php $valorRemitir = $valoresExistentes[$itemRemitir['codigo']] ?? ''; ?>

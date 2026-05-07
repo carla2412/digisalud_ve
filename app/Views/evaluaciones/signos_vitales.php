@@ -4,8 +4,18 @@
 
 <?php
 $nombreCompleto = trim(esc($beneficiario['nombres'] ?? '') . ' ' . esc($beneficiario['apellidos'] ?? ''));
-$esEdicion      = ! empty($evaluacionExistente);
-$evalId         = $evaluacionExistente['id_evaluacion'] ?? '';
+
+$infoPesquisaActual = $infoPesquisas[$tipoPesquisaId] ?? [];
+
+$nombrePesquisa = $infoPesquisaActual['nombre']
+    ?? ($tipoPesquisa['descripcion_view'] ?? $tipoPesquisa['nombre_tipo'] ?? 'Signos vitales');
+
+$iconoPesquisa = $infoPesquisaActual['img'] ?? 'signosVitales2.svg';
+
+$esEdicion    = ! empty($evaluacionExistente);
+$evalId       = $evaluacionExistente['id_evaluacion'] ?? '';
+$obsExistente = $evaluacionExistente['observaciones'] ?? '';
+
 
 $fechaEvaluacionRaw = $evaluacionExistente['fecha_evaluacion'] ?? date('Y-m-d');
 $fechaEvaluacionIso = ! empty($fechaEvaluacionRaw)
@@ -36,13 +46,13 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 <style>
   :root {
     --primary: #101a61;
-    --primary-soft: #e8edff;
+    --primary-soft: #f5f8fc;
     --accent: #dc2626;
-    --bg: #f4f7fb;
+    --bg: #f8f9fa;
     --card: #ffffff;
     --text: #101828;
-    --muted: #667085;
-    --border: #d9e2ef;
+    --muted: #38393a;
+    --border: #e0e6ed;
     --success-bg: #dff5e6;
     --success: #16a34a;
     --warning-bg: #fff4d6;
@@ -196,25 +206,95 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     min-width: 0;
   }
 
-     .lab-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 18px;
-        padding-bottom: calc(var(--lab-actions-h) + 22px);
+ .lab-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 22px 26px 88px;
+}
+
+.lab-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.lab-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.lab-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 18px;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, .08);
+}
+
+.lab-icon img {
+    width: 30px;
+    height: 30px;
+}
+
+.lab-header h1 {
+    margin: 0;
+    color: var(--lab-primary);
+    font-size: 1.35rem;
+    font-weight: 900;
+}
+
+.lab-header p {
+    margin: 2px 0 0;
+    color: var(--lab-muted);
+    font-size: .9rem;
+}
+
+.lab-badge {
+    display: inline-flex;
+    margin-top: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: .72rem;
+    font-weight: 800;
+}
+
+.lab-badge.new {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.lab-badge.edit {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.btn-volver {
+    color: var(--lab-muted);
+    text-decoration: none;
+    font-size: .85rem;
+    font-weight: 700;
+}
+
+.btn-volver:hover {
+    color: var(--lab-primary);
+}
+
+@media (max-width: 760px) {
+    .lab-main {
+        padding: 18px 14px 92px;
     }
-  .lab-header h1 {
-        margin: 0;
-        color: var(--lab-primary);
-        font-size: 1.35rem;
-        font-weight: 900;
+
+    .lab-header {
+        align-items: flex-start;
+        flex-direction: column;
     }
-     .lab-header p {
-        margin: 2px 0 0;
-        color: var(--lab-muted);
-        font-size: .9rem;
-    }
+}
   .title-wrap {
     display: flex;
     align-items: center;
@@ -278,7 +358,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   .top-grid {
     display: grid;
     grid-template-columns: minmax(340px, 0.95fr) minmax(560px, 1.3fr);
-    gap: 18px;
+    gap: 16px;
   }
 
   .tip-card,
@@ -291,7 +371,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   }
 
   .tip-card {
-    padding: 24px;
+    padding: 18px;
   }
 
   .tip-box {
@@ -406,7 +486,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
   .form-card {
     padding: 22px;
-    min-height: 450px;
+    min-height: 350px;
+    max-height: 600px;
   }
 
   .card-title {
@@ -553,16 +634,14 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   }
 
   .btn {
-    border: 0;
-    border-radius: 11px;
-    height: 44px;
-    padding: 0 24px;
-    font-weight: 800;
-    font-size: 14px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-grid;
-    place-items: center;
+ border: 1 ;
+         
+        min-height: 42px;
+        padding: 0 16px;
+        
+       
+        cursor: pointer;
+        transition: .2s ease;
   }
 
   .btn.secondary {
@@ -643,11 +722,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
             justify-content: flex-start;
             padding: 10px 12px;
         }
-    .lab-header {
-      height: auto;
-      padding: 18px;
-      align-items: flex-start;
-    }
+   
 
     .content {
       padding: 18px;
@@ -704,34 +779,35 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         <?php endforeach; ?>
     </aside>
 
-  <main class="main">
-    <div class="lab-header">
-      <div class="title-wrap">
-        <div class="title-icon"><img src="<?= base_url("img/signosVitales2.svg") ?>" alt=""></div>
-        <div>
-          <h1><?= $nombreCompleto ?></h1> 
-          <div class="patient-row">
-            <h6>Signos vitales</h6>
-            <span class="badge <?= $esEdicion ? '' : 'new' ?>"><?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?></span>
-          </div>
-        </div>
-      </div>
+<main class="lab-main">
 
-      <a href="<?= $urlRetorno ?>" class="back-link">← Volver</a>
-        </div>
-
+ 
 
         
 
     <section class="content">
       <div class="top-grid">
         <div class="tip-card">
-          <div class="tip-box">
-            <div class="tip-icon">i</div>
-            <div>
-              <strong>Consejo:</strong>
-              completa los valores. El sistema validará rangos y resaltará posibles alertas.
+          <div  >
+           
+             <div class="lab-header">
+        <div class="lab-title-row">
+            <div class="lab-icon">
+                <img src="<?= base_url('img/' . $iconoPesquisa) ?>"
+                    alt="<?= esc($nombrePesquisa) ?>">
             </div>
+
+            <div>
+                <h1><?= esc($nombrePesquisa) ?></h1>
+                <p><?= $nombreCompleto ?></p>
+
+                <span class="lab-badge <?= $esEdicion ? 'edit' : 'new' ?>">
+                    <?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?>
+                </span>
+            </div>
+        </div>
+ 
+    </div>
           </div>
         </div>
 
@@ -838,7 +914,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
           <section class="form-card">
             <div class="card-title">
-              <div class="card-icon green">⌁</div>
+              <div class="card-icon green"><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit.png") ?>" alt=""></div>
               <h3>Frecuencias</h3>
             </div>
 
@@ -865,7 +941,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
           <section class="form-card">
             <div class="card-title">
-              <div class="card-icon blue">♧</div>
+              <div class="card-icon blue"><img style="width: 35px;" src="<?= base_url("img/icon/thermometer.png") ?>" alt=""></div>
               <h3>Temperatura y seguimiento</h3>
             </div>
 
