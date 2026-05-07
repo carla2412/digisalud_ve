@@ -9,7 +9,7 @@ $idRol = (int) session()->get('id_rol');
 <style>
  
 /*index organizacion*/
-  * {
+  .org-page * {
     box-sizing: border-box;
   }
 
@@ -43,7 +43,7 @@ $idRol = (int) session()->get('id_rol');
     font-weight: 600;
   }
 
-  .topbar {
+  .org-topbar {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -51,20 +51,20 @@ $idRol = (int) session()->get('id_rol');
     margin-bottom: 24px;
   }
 
-  .title h1 {
+  .org-title h1 {
     font-size: 56px;
     line-height: 1.1;
     margin-bottom: 8px;
     color: #101a61;
   }
 
-  .title p {
+  .org-title p {
     font-size: 18px;
     color: #6b7280;
     margin: 0;
   }
 
-  .btn-primary-custom {
+  .org-btn-primary-custom {
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -81,21 +81,21 @@ $idRol = (int) session()->get('id_rol');
     text-decoration: none;
   }
 
-  .btn-primary-custom:hover {
+  .org-btn-primary-custom:hover {
     transform: translateY(-1px);
     background: #1b7ae2;
     color: #fff;
     text-decoration: none;
   }
 
-  .filters {
+  .org-filters {
     display: grid;
     grid-template-columns: 1fr;
     gap: 14px;
     margin-bottom: 36px;
   }
 
-  .input-custom {
+  .org-input-custom {
     background: #fff;
     border: 1px solid #dbe3f0;
     border-radius: 16px;
@@ -107,7 +107,7 @@ $idRol = (int) session()->get('id_rol');
     box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
   }
 
-  .input-custom input {
+  .org-input-custom input {
     border: none;
     outline: none;
     width: 100%;
@@ -117,7 +117,7 @@ $idRol = (int) session()->get('id_rol');
     color: #334155;
   }
 
-  .cards {
+  .org-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 28px;
@@ -141,12 +141,12 @@ $idRol = (int) session()->get('id_rol');
     box-shadow: 0 14px 34px rgba(31, 42, 68, 0.12);
   }
 
-  .org-card.inactiva {
+  .org-card.org-inactiva {
     opacity: 0.75;
     background: #f8fafc;
   }
 
-  .menu {
+  .org-menu {
     position: absolute;
     right: 20px;
     top: 18px;
@@ -155,7 +155,7 @@ $idRol = (int) session()->get('id_rol');
     z-index: 2;
   }
 
-  .avatar {
+  .org-avatar {
     width: 72px;
     height: 72px;
     border-radius: 50%;
@@ -170,16 +170,16 @@ $idRol = (int) session()->get('id_rol');
     z-index: 2;
   }
 
-  .avatar img {
+  .org-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
   }
 
-  .blue { background: #dce8ff; color: #3695f5; }
-  .green { background: #dff4e7; color: #22c55e; }
-  .purple { background: #eedfff; color: #7c3aed; }
+  .org-blue { background: #dce8ff; color: #3695f5; }
+  .org-green { background: #dff4e7; color: #22c55e; }
+  .org-purple { background: #eedfff; color: #7c3aed; }
 
   .org-card h3 {
     font-size: 22px;
@@ -189,7 +189,7 @@ $idRol = (int) session()->get('id_rol');
     z-index: 2;
   }
 
-  .tag {
+  .org-tag {
     display: inline-block;
     padding: 6px 12px;
     border-radius: 999px;
@@ -200,12 +200,12 @@ $idRol = (int) session()->get('id_rol');
     z-index: 2;
   }
 
-  .tag.blue { background: #e7f0ff; color: #3695f5; }
-  .tag.green { background: #e8f8ee; color: #16a34a; }
-  .tag.purple { background: #f1e8ff; color: #7c3aed; }
-  .tag.gray { background: #eef2f7; color: #64748b; }
+  .org-tag.org-blue { background: #e7f0ff; color: #3695f5; }
+  .org-tag.org-green { background: #e8f8ee; color: #16a34a; }
+  .org-tag.org-purple { background: #f1e8ff; color: #7c3aed; }
+  .org-tag.org-gray { background: #eef2f7; color: #64748b; }
 
-  .email {
+  .org-email {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -217,7 +217,7 @@ $idRol = (int) session()->get('id_rol');
     word-break: break-word;
   }
 
-  .divider {
+  .org-divider {
     height: 1px;
     background: #e8edf5;
     margin-bottom: 22px;
@@ -225,7 +225,7 @@ $idRol = (int) session()->get('id_rol');
     z-index: 2;
   }
 
-  .actions {
+  .org-actions {
     display: flex;
     gap: 12px;
     position: relative;
@@ -233,7 +233,7 @@ $idRol = (int) session()->get('id_rol');
     flex-wrap: wrap;
   }
 
-  .btn-action-custom {
+  .org-btn-action-custom {
     border-radius: 14px;
     padding: 12px 20px;
     font-size: 15px;
@@ -248,42 +248,42 @@ $idRol = (int) session()->get('id_rol');
     gap: 8px;
   }
 
-  .btn-action-custom:hover {
+  .org-btn-action-custom:hover {
     transform: translateY(-1px);
     text-decoration: none;
   }
 
-  .btn-edit {
+  .org-btn-edit {
     color: #ea8a00;
     border-color: #f2c27c;
   }
 
-  .btn-edit:hover {
+  .org-btn-edit:hover {
     color: #c96f00;
     background: #fff8ef;
   }
 
-  .btn-block {
+  .org-btn-block {
     color: #ef4444;
     border-color: #f3a7a7;
   }
 
-  .btn-block:hover {
+  .org-btn-block:hover {
     color: #dc2626;
     background: #fff5f5;
   }
 
-  .btn-activate {
+  .org-btn-activate {
     color: #16a34a;
     border-color: #86efac;
   }
 
-  .btn-activate:hover {
+  .org-btn-activate:hover {
     color: #15803d;
     background: #f0fdf4;
   }
 
-  .bg-shape {
+  .org-bg-shape {
     position: absolute;
     right: -40px;
     bottom: -50px;
@@ -294,11 +294,11 @@ $idRol = (int) session()->get('id_rol');
     z-index: 0;
   }
 
-  .shape-blue { background: #bcd3ff; }
-  .shape-green { background: #b9ebc9; }
-  .shape-purple { background: #dec5ff; }
-  .shape-red { background: #ffc5d3; }
-  .shape-icon {
+  .org-shape-blue { background: #bcd3ff; }
+  .org-shape-green { background: #b9ebc9; }
+  .org-shape-purple { background: #dec5ff; }
+  .org-shape-red { background: #ffc5d3; }
+  .org-shape-icon {
     position: absolute;
     right: 34px;
     bottom: 40px;
@@ -307,7 +307,7 @@ $idRol = (int) session()->get('id_rol');
     z-index: 1;
   }
 
-  .meta-row {
+  .org-meta-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -318,7 +318,7 @@ $idRol = (int) session()->get('id_rol');
     flex-wrap: wrap;
   }
 
-  .empty-state {
+  .org-empty-state {
     grid-column: 1 / -1;
     background: #fff;
     border: 1px dashed #cbd5e1;
@@ -329,20 +329,20 @@ $idRol = (int) session()->get('id_rol');
   }
 
   @media (max-width: 1200px) {
-    .cards {
+    .org-cards {
       grid-template-columns: 1fr 1fr;
     }
 
-    .topbar {
+    .org-topbar {
       flex-direction: column;
       align-items: stretch;
     }
 
-    .title h1 {
+    .org-title h1 {
       font-size: 40px;
     }
 
-    .btn-primary-custom {
+    .org-btn-primary-custom {
       width: fit-content;
     }
   }
@@ -357,20 +357,20 @@ $idRol = (int) session()->get('id_rol');
       border-radius: 18px;
     }
 
-    .cards {
+    .org-cards {
       grid-template-columns: 1fr;
       gap: 20px;
     }
 
-    .title h1 {
+    .org-title h1 {
       font-size: 32px;
     }
 
-    .actions {
+    .org-actions {
       flex-direction: column;
     }
 
-    .btn-action-custom {
+    .org-btn-action-custom {
       justify-content: center;
       width: 100%;
     }
@@ -384,22 +384,22 @@ $idRol = (int) session()->get('id_rol');
       <a href="<?= base_url('inicio') ?>">Inicio</a> &nbsp;›&nbsp; <span>Organizaciones</span>
     </div>
 
-    <div class="topbar">
-      <div class="title">
+    <div class="org-topbar">
+      <div class="org-title">
         <h1>Organizaciones</h1>
         <p>Gestiona y administra las organizaciones registradas. </p>
       </div>
 
 <?php if (in_array($idRol, [1, 2], true)) : ?>
-  <a href="<?= base_url('organizaciones/crear') ?>" class="btn-primary-custom">
+  <a href="<?= base_url('organizaciones/crear') ?>" class="org-btn-primary-custom">
     <i class="fas fa-plus"></i>
     Nueva Organización
   </a>
 <?php endif; ?>
     </div>
 
-    <div class="filters">
-      <div class="input-custom">
+    <div class="org-filters">
+      <div class="org-input-custom">
         <i class="fas fa-search"></i>
         <input
           type="text"
@@ -409,11 +409,11 @@ $idRol = (int) session()->get('id_rol');
       </div>
     </div>
 
-    <div class="cards" id="orgGrid">
+    <div class="org-cards" id="orgGrid">
       <?php if (!empty($organizaciones)): ?>
         <?php
-          $colores = ['blue', 'green', 'purple'];
-          $shapeColores = ['shape-blue', 'shape-green', 'shape-purple', 'shape-red'];
+          $colores = ['org-blue', 'org-green', 'org-purple'];
+          $shapeColores = ['org-shape-blue', 'org-shape-green', 'org-shape-purple', 'org-shape-red'];
         ?>
 
         <?php foreach ($organizaciones as $i => $org): ?>
@@ -427,12 +427,12 @@ $idRol = (int) session()->get('id_rol');
             $inactiva = ((int)($org['status_org'] ?? 1) === 2);
           ?>
           <div class="org-item">
-            <div class="org-card <?= $inactiva ? 'inactiva' : '' ?>">
-              <div class="menu">
+            <div class="org-card <?= $inactiva ? 'org-inactiva' : '' ?>">
+              <div class="org-menu">
                 <i class="fas fa-building"></i>
               </div>
  
-              <div class="avatar <?= $color ?>">
+              <div class="org-avatar <?= $color ?>">
                 <?php if (!empty($logo)): ?>
                   <img src="<?= base_url('uploads/logos/' . $logo) ?>" alt="Logo de <?= esc($nombre) ?>">
                 <?php else: ?>
@@ -442,21 +442,21 @@ $idRol = (int) session()->get('id_rol');
 
               <h3 class="org-name"><?= esc($nombre) ?></h3>
 
-              <span class="tag <?= $color ?>">
+              <span class="org-tag <?= $color ?>">
                 <?= esc($tipo) ?>
               </span>
 
-              <div class="email">
+              <div class="org-email">
                 <i class="fas fa-envelope"></i>
                 <span><?= esc($email) ?></span>
               </div>
 
-              <div class="divider"></div>
+              <div class="org-divider"></div>
 
-              <div class="actions">
+              <div class="org-actions">
                 <a
                   href="<?= base_url('organizaciones/editar/' . $org['id_organizacion']) ?>"
-                  class="btn-action-custom btn-edit"
+                  class="org-btn-action-custom org-btn-edit"
                   title="Editar Organización"
                 >
                   <i class="fas fa-pen"></i>
@@ -467,7 +467,7 @@ $idRol = (int) session()->get('id_rol');
                   <!-- <button
                     type="button"
                     onclick="cambiarStatus(<?= $org['id_organizacion'] ?>, 2)"
-                    class="btn-action-custom btn-block"
+                    class="org-btn-action-custom org-btn-block"
                     title="Bloquear"
                   >
                     <i class="fas fa-ban"></i>
@@ -477,7 +477,7 @@ $idRol = (int) session()->get('id_rol');
                   <button
                     type="button"
                     onclick="cambiarStatus(<?= $org['id_organizacion'] ?>, 1)"
-                    class="btn-action-custom btn-activate"
+                    class="org-btn-action-custom org-btn-activate"
                     title="Activar"
                   >
                     <i class="fas fa-check"></i>
@@ -486,13 +486,13 @@ $idRol = (int) session()->get('id_rol');
                 <?php endif; ?>
               </div>
 
-              <div class="bg-shape <?= $shapeColor ?>"></div>
-              <div class="shape-icon"><i class="fas fa-building"></i></div>
+              <div class="org-bg-shape <?= $shapeColor ?>"></div>
+              <div class="org-shape-icon"><i class="fas fa-building"></i></div>
             </div>
           </div>
         <?php endforeach; ?>
       <?php else: ?>
-        <div class="empty-state">
+        <div class="org-empty-state">
           <i class="fas fa-building fa-2x mb-3"></i>
           <h4 class="mb-2">No hay organizaciones registradas</h4>
           <p class="mb-0">Cuando agregues organizaciones, aparecerán aquí.</p>
@@ -500,7 +500,7 @@ $idRol = (int) session()->get('id_rol');
       <?php endif; ?>
     </div>
 
-    <div class="meta-row">
+    <div class="org-meta-row">
       <div id="orgCount">
         Mostrando <?= count($organizaciones) ?> organización<?= count($organizaciones) !== 1 ? 'es' : '' ?>
       </div>

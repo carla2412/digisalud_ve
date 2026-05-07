@@ -4,36 +4,36 @@
 <style>
 :root {
     --ds-primary: #3695f5;
-    --ds-dark: #101a61;
-    --ds-text: #0b1b3f;
+    --ds-dark: #1b7ae2;
+    --ds-text: #101a61;
     --ds-muted: #6c757d;
     --ds-bg: #f5f7fb;
     --ds-border: #e6eaf0;
     --ds-success: #16a34a;
 }
 
-.page-wrapper {
+.org_create-page-wrapper {
     max-width: 1180px;
     margin: 0 auto;
     padding: 24px 16px 40px;
 }
 
-.breadcrumb {
+.org_create-breadcrumb {
     font-size: .82rem;
     color: var(--ds-muted);
     margin-bottom: 18px;
 }
 
-.breadcrumb a {
+.org_create-breadcrumb a {
     color: var(--ds-muted);
     text-decoration: none;
 }
 
-.breadcrumb strong {
+.org_create-breadcrumb strong {
     color: var(--ds-text);
 }
 
-.page-header {
+.org_create-page-header {
     display: flex;
     justify-content: space-between;
     gap: 20px;
@@ -41,20 +41,20 @@
     margin-bottom: 20px;
 }
 
-.page-header h1 {
+.org_create-page-header h1 {
     font-size: 1.45rem;
     font-weight: 700;
     color: var(--ds-text);
     margin: 0;
 }
 
-.page-header p {
+.org_create-page-header p {
     color: var(--ds-muted);
     font-size: .9rem;
     margin: 4px 0 0;
 }
 
-.info-box {
+.org_create-info-box {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -66,22 +66,22 @@
     min-width: 260px;
 }
 
-.info-box i {
+.org_create-info-box i {
     color: var(--ds-primary);
     font-size: 1.25rem;
 }
 
-.info-box strong {
+.org_create-info-box strong {
     display: block;
     font-size: .85rem;
 }
 
-.info-box span {
+.org_create-info-box span {
     font-size: .75rem;
     color: var(--ds-muted);
 }
 
-.org-card {
+.org_create-org-card {
     background: #fff;
     border: 1px solid var(--ds-border);
     border-radius: 24px;
@@ -89,19 +89,19 @@
     overflow: hidden;
 }
 
-.org-layout {
+.org_create-org-layout {
     display: grid;
     grid-template-columns: 280px 1fr;
     min-height: 520px;
 }
 
-.org-steps {
+.org_create-org-steps {
     background: linear-gradient(180deg, #f8fbff, #eef5ff);
     border-right: 1px solid var(--ds-border);
     padding: 24px;
 }
 
-.step {
+.org_create-step {
     display: flex;
     gap: 12px;
     align-items: flex-start;
@@ -111,14 +111,14 @@
     margin-bottom: 10px;
 }
 
-.step.active,
-.step.is-open {
+.org_create-step.active,
+.org_create-step.is-open {
     background: #fff;
     color: var(--ds-text);
     box-shadow: 0 8px 18px rgba(15, 23, 42, .05);
 }
 
-.step i {
+.org_create-step i {
     width: 36px;
     height: 36px;
     display: inline-flex;
@@ -129,51 +129,51 @@
     color: var(--ds-primary);
 }
 
-.step strong {
+.org_create-step strong {
     display: block;
     font-size: .86rem;
 }
 
-.step span {
+.org_create-step span {
     display: block;
     font-size: .72rem;
     color: var(--ds-muted);
 }
 
-.org-form {
+.org_create-org-form {
     padding: 28px;
 }
 
-.section-title {
+.org_create-section-title {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 16px;
 }
 
-.section-title.mt {
+.org_create-section-title.mt {
     margin-top: 28px;
 }
 
-.section-title i {
+.org_create-section-title i {
     color: var(--ds-primary);
     font-size: 1.2rem;
 }
 
-.section-title h2 {
+.org_create-section-title h2 {
     font-size: 1rem;
     font-weight: 700;
     color: var(--ds-text);
     margin: 0;
 }
 
-.form-grid {
+.org_create-form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
 }
 
-.form-group label {
+.org_create-form-group label {
     display: block;
     font-size: .82rem;
     font-weight: 600;
@@ -181,12 +181,12 @@
     margin-bottom: 7px;
 }
 
-.form-group label span {
+.org_create-form-group label span {
     color: #dc3545;
 }
 
-.form-group input,
-.form-group select {
+.org_create-form-group input,
+.org_create-form-group select {
     width: 100%;
     border: 1px solid var(--ds-border);
     border-radius: 13px;
@@ -196,17 +196,17 @@
     background: #fff;
 }
 
-.form-group input:focus,
-.form-group select:focus {
+.org_create-form-group input:focus,
+.org_create-form-group select:focus {
     border-color: var(--ds-primary);
     box-shadow: 0 0 0 4px rgba(54,149,245,.12);
 }
 
-.input-icon {
+.org_create-input-icon {
     position: relative;
 }
 
-.input-icon i {
+.org_create-input-icon i {
     position: absolute;
     left: 13px;
     top: 50%;
@@ -214,11 +214,11 @@
     color: #94a3b8;
 }
 
-.input-icon input {
+.org_create-input-icon input {
     padding-left: 40px;
 }
 
-.action-card {
+.org_create-action-card {
     margin-top: 24px;
     border: 1px solid var(--ds-border);
     border-radius: 18px;
@@ -226,20 +226,20 @@
     background: #fafcff;
 }
 
-.action-card-header {
+.org_create-action-card-header {
     display: flex;
     justify-content: space-between;
     gap: 16px;
     align-items: center;
 }
 
-.action-info {
+.org_create-action-info {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.action-info > i {
+.org_create-action-info > i {
     width: 42px;
     height: 42px;
     display: inline-flex;
@@ -251,21 +251,21 @@
     font-size: 1.15rem;
 }
 
-.action-info strong {
+.org_create-action-info strong {
     display: block;
     color: var(--ds-text);
     font-size: .9rem;
 }
 
-.action-info span {
+.org_create-action-info span {
     display: block;
     color: var(--ds-muted);
     font-size: .76rem;
 }
 
-.btn-outline,
-.btn-cancel,
-.btn-save {
+.org_create-btn-outline,
+.org_create-btn-cancel,
+.org_create-btn-save {
     border: none;
     text-decoration: none;
     cursor: pointer;
@@ -277,37 +277,37 @@
     gap: 8px;
 }
 
-.btn-outline {
+.org_create-btn-outline {
     background: #fff;
     color: var(--ds-dark);
     border: 1px solid var(--ds-border);
     padding: 10px 16px;
 }
 
-.btn-outline:hover {
+.org_create-btn-outline:hover {
     border-color: var(--ds-primary);
     color: var(--ds-primary);
 }
 
-.btn-outline.success {
+.org_create-btn-outline.success {
     color: var(--ds-success);
 }
 
-.toggle-content {
+.org_create-toggle-content {
     max-height: 0;
     overflow: hidden;
     transition: max-height .3s ease;
 }
 
-.toggle-content.open {
+.org_create-toggle-content.open {
     max-height: 900px;
 }
 
-.address-fields {
+.org_create-address-fields {
     padding-top: 18px;
 }
 
-.drop-zone {
+.org_create-drop-zone {
     margin-top: 16px;
     border: 2px dashed #d1d5db;
     background: #fff;
@@ -319,12 +319,12 @@
     cursor: pointer;
 }
 
-.drop-zone:hover {
+.org_create-drop-zone:hover {
     border-color: var(--ds-primary);
     background: #f8fbff;
 }
 
-.logo-preview {
+.org_create-logo-preview {
     width: 96px;
     height: 96px;
     border-radius: 50%;
@@ -334,7 +334,7 @@
     box-shadow: 0 8px 18px rgba(15, 23, 42, .12);
 }
 
-.form-actions {
+.org_create-form-actions {
     border-top: 1px solid var(--ds-border);
     padding: 18px 28px;
     display: flex;
@@ -343,41 +343,41 @@
     background: #fbfdff;
 }
 
-.btn-cancel {
+.org_create-btn-cancel {
     color: var(--ds-muted);
     border: 1px solid var(--ds-border);
     padding: 11px 20px;
     background: #fff;
 }
 
-.btn-save {
+.org_create-btn-save {
     color: #fff;
     background: #3695f5;
     padding: 12px 24px;
 }
 
-.btn-save:hover {
+.org_create-btn-save:hover {
     color: #fff;
     background: #1b7ae2;
 }
 
 @media (max-width: 900px) {
-    .page-header,
-    .action-card-header {
+    .org_create-page-header,
+    .org_create-action-card-header {
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .org-layout {
+    .org_create-org-layout {
         grid-template-columns: 1fr;
     }
 
-    .org-steps {
+    .org_create-org-steps {
         border-right: 0;
         border-bottom: 1px solid var(--ds-border);
     }
 
-    .form-grid {
+    .org_create-form-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -386,21 +386,21 @@
 
 <?= $this->section('content') ?>
 
-<div class="page-wrapper">
+<div class="org_create-page-wrapper">
 
-    <div class="breadcrumb">
+    <div class="org_create-breadcrumb">
         <a href="<?= base_url('/') ?>">Inicio</a> /
         <a href="<?= base_url('organizaciones') ?>">Organizaciones</a> /
         <strong>Nueva Organización</strong>
     </div>
 
-    <div class="page-header">
+    <div class="org_create-page-header">
         <div>
             <h1>Nueva Organización</h1>
             <p>Completa los datos para registrar una nueva organización en el sistema.</p>
         </div>
 
-        <div class="info-box">
+        <div class="org_create-info-box">
             <i class="bi bi-info-circle"></i>
             <div>
                 <strong>Información</strong>
@@ -420,13 +420,13 @@
         </div>
     <?php endif; ?>
 
-    <form action="<?= base_url('organizaciones/guardar') ?>" method="post" enctype="multipart/form-data" class="org-card" novalidate>
+    <form action="<?= base_url('organizaciones/guardar') ?>" method="post" enctype="multipart/form-data" class="org_create-org-card" novalidate>
         <?= csrf_field() ?>
 
-        <div class="org-layout">
+        <div class="org_create-org-layout">
 
-            <aside class="org-steps">
-                <div class="step active">
+            <aside class="org_create-org-steps">
+                <div class="org_create-step org_create-active">
                     <i class="bi bi-building"></i>
                     <div>
                         <strong>Datos Básicos</strong>
@@ -434,7 +434,7 @@
                     </div>
                 </div>
 
-                <div class="step">
+                <div class="org_create-step">
                     <i class="bi bi-telephone"></i>
                     <div>
                         <strong>Contacto</strong>
@@ -442,7 +442,7 @@
                     </div>
                 </div>
 
-                <div class="step" id="stepDireccion">
+                <div class="org_create-step" id="stepDireccion">
                     <i class="bi bi-geo-alt"></i>
                     <div>
                         <strong>Dirección</strong>
@@ -450,7 +450,7 @@
                     </div>
                 </div>
 
-                <div class="step" id="stepLogo">
+                <div class="org_create-step" id="stepLogo">
                     <i class="bi bi-image"></i>
                     <div>
                         <strong>Logo</strong>
@@ -459,17 +459,17 @@
                 </div>
             </aside>
 
-            <section class="org-form">
+            <section class="org_create-org-form">
 
-                <div class="section-title">
+                <div class="org_create-section-title">
                     <i class="bi bi-building"></i>
                     <h2>Datos Básicos</h2>
                 </div>
 
-                <div class="form-grid">
-                    <div class="form-group">
+                <div class="org_create-form-grid">
+                    <div class="org_create-form-group">
                         <label for="nombre_org">Nombre de la organización <span>*</span></label>
-                        <div class="input-icon">
+                        <div class="org_create-input-icon">
                             <i class="bi bi-building"></i>
                             <input type="text" id="nombre_org" name="nombre_org"
                                    value="<?= old('nombre_org') ?>"
@@ -477,7 +477,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="org_create-form-group">
                         <label for="tipo">Tipo <span>*</span></label>
                         <select id="tipo" name="tipo" class="form-label" required>
                             <option value="">Selecciona un tipo...</option>
@@ -491,7 +491,7 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="org_create-form-group">
                         <label for="categoria">Categoría <span>*</span></label>
                         <select id="categoria" name="categoria" class="form-select"  required>
                             <option value="">Selecciona una categoría...</option>
@@ -505,9 +505,9 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="org_create-form-group">
                         <label for="nombre_responsable">Nombre del responsable</label>
-                        <div class="input-icon">
+                        <div class="org_create-input-icon">
                             <i class="bi bi-person"></i>
                             <input type="text" id="nombre_responsable" name="nombre_responsable"
                                    value="<?= old('nombre_responsable') ?>"
@@ -516,15 +516,15 @@
                     </div>
                 </div>
 
-                <div class="section-title mt">
+                <div class="org_create-section-title org_create-mt">
                     <i class="bi bi-telephone"></i>
                     <h2>Contacto</h2>
                 </div>
 
-                <div class="form-grid">
-                    <div class="form-group">
+                <div class="org_create-form-grid">
+                    <div class="org_create-form-group">
                         <label for="telefono">Teléfono <span>*</span></label>
-                        <div class="input-icon">
+                        <div class="org_create-input-icon">
                             <i class="bi bi-telephone"></i>
                             <input type="text" id="telefono" name="telefono"
                                    value="<?= old('telefono') ?>"
@@ -532,9 +532,9 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="org_create-form-group">
                         <label for="email">Correo electrónico <span>*</span></label>
-                        <div class="input-icon">
+                        <div class="org_create-input-icon">
                             <i class="bi bi-envelope"></i>
                             <input type="email" id="email" name="email"
                                    value="<?= old('email') ?>"
@@ -543,9 +543,9 @@
                     </div>
                 </div>
 
-                <div class="action-card address-card">
-                    <div class="action-card-header">
-                        <div class="action-info">
+                <div class="org_create-action-card org_create-address-card">
+                    <div class="org_create-action-card-header">
+                        <div class="org_create-action-info">
                             <i class="bi bi-geo-alt"></i>
                             <div>
                                 <strong>Dirección</strong>
@@ -553,49 +553,49 @@
                             </div>
                         </div>
 
-                        <button type="button" class="btn-outline" onclick="toggleSeccion('secDireccion', 'stepDireccion')">
+                        <button type="button" class="org_create-btn-outline" onclick="toggleSeccion('secDireccion', 'stepDireccion')">
                             <i class="bi bi-map"></i>
                             Buscar dirección
                         </button>
                     </div>
 
-                    <div class="toggle-content" id="secDireccion">
+                    <div class="org_create-toggle-content" id="secDireccion">
                         <input type="hidden" name="direccion_activa" id="hDireccion" value="<?= old('direccion_activa') ?>">
 
-                        <div class="form-grid address-fields">
-                            <div class="form-group">
+                        <div class="org_create-form-grid org_create-address-fields">
+                            <div class="org_create-form-group">
                                 <label for="pais">País</label>
                                 <input type="text" id="pais" name="pais" value="Venezuela" readonly>
                             </div>
 
-                            <div class="form-group">
+                            <div class="org_create-form-group">
                                 <label for="estado">Estado</label>
                                 <select id="estado" name="estado">
                                     <option value="">Selecciona un estado...</option>
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div class="org_create-form-group">
                                 <label for="municipio">Municipio</label>
                                 <select id="municipio" name="municipio">
                                     <option value="">Selecciona un municipio...</option>
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div class="org_create-form-group">
                                 <label for="parroquia">Parroquia</label>
                                 <select id="parroquia" name="parroquia">
                                     <option value="">Selecciona...</option>
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div class="org_create-form-group">
                                 <label for="ciudad">Ciudad o localidad</label>
                                 <input type="text" name="ciudad" id="ciudad"
                                        value="<?= old('ciudad') ?>"
                                        placeholder="Se carga automático o escribe manualmente">
                             </div>
-                            <div class="form-group">
+                            <div class="org_create-form-group">
                                 <label for="detalle">Detalle de dirección</label>
                                 <input type="text"
                                     name="detalle"
@@ -607,9 +607,9 @@
                     </div>
                 </div>
 
-                <div class="action-card logo-card">
-                    <div class="action-card-header">
-                        <div class="action-info">
+                <div class="org_create-action-card org_create-logo-card">
+                    <div class="org_create-action-card-header">
+                        <div class="org_create-action-info">
                             <i class="bi bi-image"></i>
                             <div>
                                 <strong>Logo de la organización</strong>
@@ -617,30 +617,30 @@
                             </div>
                         </div>
 
-                        <label class="btn-outline success">
+                        <label class="org_create-btn-outline org_create-success">
                             <i class="bi bi-cloud-arrow-up"></i>
                             Subir logo
                             <input type="file" name="logo" id="logo-input" accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg" hidden>
                         </label>
                     </div>
 
-                    <div class="drop-zone" id="logo-dropzone">
+                    <div class="org_create-drop-zone" id="logo-dropzone">
                         <div id="dz-message">
                             <i class="bi bi-cloud-arrow-up" style="font-size:2rem;"></i>
                             <div>Arrastra y suelta tu archivo aquí o haz clic para seleccionar</div>
                         </div>
 
-                        <img id="logo-preview" src="#" alt="Previsualización" class="logo-preview d-none">
+                        <img id="org_create-logo-preview" src="#" alt="Previsualización" class="org_create-logo-preview d-none">
                     </div>
                 </div>
 
             </section>
         </div>
 
-        <div class="form-actions">
-            <a href="<?= base_url('organizaciones') ?>" class="btn-cancel">Cancelar</a>
+        <div class="org_create-form-actions">
+            <a href="<?= base_url('organizaciones') ?>" class="org_create-btn-cancel">Cancelar</a>
 
-            <button type="submit" class="btn-save">
+            <button type="submit" class="org_create-btn-save">
                 <i class="bi bi-check-circle"></i>
                 Guardar Organización
             </button>
@@ -695,13 +695,13 @@ function mostrarPreviewLogo(file) {
     const reader = new FileReader();
 
     reader.onload = function (ev) {
-        const preview = document.getElementById('logo-preview');
+        const preview = document.getElementById('org_create-logo-preview');
         preview.src = ev.target.result;
         preview.classList.remove('d-none');
         document.getElementById('dz-message').classList.add('d-none');
 
         const stepLogo = document.getElementById('stepLogo');
-        if (stepLogo) stepLogo.classList.add('is-open');
+        if (stepLogo) stepLogo.classList.add('org_create-is-open');
     };
 
     reader.readAsDataURL(file);
@@ -713,11 +713,11 @@ function toggleSeccion(id, stepId) {
 
     if (!sec) return;
 
-    const isOpen = sec.classList.contains('open');
-    sec.classList.toggle('open');
+    const isOpen = sec.classList.contains('org_create-open');
+    sec.classList.toggle('org_create-open');
 
     if (step) {
-        step.classList.toggle('is-open');
+        step.classList.toggle('org_create-is-open');
     }
 
     const hidden = sec.querySelector('input[type="hidden"]');

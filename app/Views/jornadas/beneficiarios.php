@@ -32,13 +32,13 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         background: var(--ds-bg);
     }
 
-    .benef-page {
+    .jor_ben-page {
         width: min(1480px, calc(100% - 48px));
         margin: 0 auto;
         padding: 28px 0 36px;
     }
 
-    .breadcrumb-digi-new {
+    .jor_ben-breadcrumb-digi-new {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
@@ -48,18 +48,18 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         margin-bottom: 16px;
     }
 
-    .breadcrumb-digi-new a {
+    .jor_ben-breadcrumb-digi-new a {
         color: #536580;
         text-decoration: none;
         font-weight: 600;
     }
 
-    .breadcrumb-digi-new .active {
+    .jor_ben-breadcrumb-digi-new .jor_ben-active {
         color: var(--ds-dark);
         font-weight: 600;
     }
 
-    .benef-topbar {
+    .jor_ben-topbar {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
@@ -67,7 +67,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         margin-bottom: 20px;
     }
 
-    .benef-title h1 {
+    .jor_ben-title h1 {
         display: flex;
         align-items: center;
         gap: 12px;
@@ -78,7 +78,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
     }
 
-    .benef-counter {
+    .jor_ben-counter {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -92,20 +92,20 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         font-weight: 600;
     }
 
-    .benef-title p {
+    .jor_ben-title p {
         margin: 6px 0 0;
         color: #536580;
         font-size: 15px;
     }
 
-    .benef-actions {
+    .jor_ben-actions {
         display: flex;
         align-items: center;
         gap: 18px;
         flex-wrap: wrap;
     }
 
-    .benef-total-pill {
+    .jor_ben-total-pill {
         height: 44px;
         min-width: 88px;
         padding: 0 18px;
@@ -120,13 +120,13 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         font-weight: 600;
     }
 
-    .benef-divider {
+    .jor_ben-divider {
         width: 1px;
         height: 36px;
         background: #b9c3d0;
     }
 
-    .ds-btn-primary {
+    .jor_ben-ds-btn-primary {
         height: 46px;
         padding: 0 28px;
         border: none;
@@ -144,18 +144,18 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         gap: 8px;
     }
 
-    .ds-btn-primary:hover {
+    .jor_ben-ds-btn-primary:hover {
         color: #fff;
         transform: translateY(-1px);
     }
 
-    .benef-search {
+    .jor_ben-search {
         position: relative;
         margin: 0 0 18px;
         max-width: 520px;
     }
 
-    .benef-search i {
+    .jor_ben-search i {
         position: absolute;
         left: 16px;
         top: 50%;
@@ -163,7 +163,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         color: var(--ds-primary-dark);
     }
 
-    .benef-search input {
+    .jor_ben-search input {
         width: 100%;
         height: 46px;
         border: 1px solid var(--ds-border);
@@ -175,18 +175,18 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         box-shadow: var(--shadow-sm);
     }
 
-    .benef-search input:focus {
+    .jor_ben-search input:focus {
         border-color: var(--ds-primary);
         box-shadow: 0 0 0 3px rgba(54, 149, 245, .12);
     }
 
-    .benef-cards-list {
+    .jor_ben-cards-list {
         display: flex;
         flex-direction: column;
         gap: 12px;
     }
 
-    .beneficiary-card {
+    .jor_ben-card {
         position: relative;
         background: var(--ds-light);
         border: 1px solid var(--ds-border);
@@ -196,28 +196,28 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         transition: .2s ease;
     }
 
-    .beneficiary-card:hover {
+    .jor_ben-card:hover {
         box-shadow: var(--shadow-md);
         transform: translateY(-1px);
     }
 
-    .beneficiary-card.is-hidden {
+    .jor_ben-card.jor_ben-is-hidden {
         display: none !important;
     }
 
-    .benef-card-main {
+    .jor_ben-card-main {
         display: grid;
         grid-template-columns: 112px 1fr 170px;
         gap: 24px;
         align-items: flex-start;
     }
 
-    .benef-avatar-wrap {
+    .jor_ben-avatar-wrap {
         display: flex;
         justify-content: center;
     }
 
-    .benef-avatar {
+    .jor_ben-avatar {
         width: 86px;
         height: 86px;
         border-radius: 50%;
@@ -231,18 +231,18 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         overflow: hidden;
     }
 
-    .benef-avatar img {
+    .jor_ben-avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .benef-avatar svg {
+    .jor_ben-avatar svg {
         width: 52px;
         height: 52px;
     }
 
-    .benef-avatar::after {
+    .jor_ben-avatar::after {
         content: "";
         position: absolute;
         right: 8px;
@@ -254,7 +254,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         border-radius: 50%;
     }
 
-    .person-name {
+    .jor_ben-person-name {
         margin: 0 0 10px;
         color: var(--ds-dark);
         font-size: 20px;
@@ -264,7 +264,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         padding-right: 35px;
     }
 
-    .meta-row {
+    .jor_ben-meta-row {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
@@ -273,29 +273,29 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         color: #374151;
     }
 
-    .meta-item {
+    .jor_ben-meta-item {
         display: inline-flex;
         align-items: center;
         gap: 8px;
     }
 
-    .meta-label {
+    .jor_ben-meta-label {
         color: #176be8;
         font-weight: 600;
     }
 
-    .age-label {
+    .jor_ben-age-label {
         color: #00a8b5;
         font-weight: 600;
     }
 
-    .meta-separator {
+    .jor_ben-meta-separator {
         width: 1px;
         height: 22px;
         background: #cfd7e3;
     }
 
-    .representative {
+    .jor_ben-representative {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -304,22 +304,22 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         font-size: 15px;
     }
 
-    .representative strong {
+    .jor_ben-representative strong {
         color: #f26b00;
     }
 
-    .representative i {
+    .jor_ben-representative i {
         color: #f26b00;
     }
 
-    .benef-card-actions {
+    .jor_ben-card-actions {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
         gap: 12px;
     }
 
-    .status-badge {
+    .jor_ben-status-badge {
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -333,7 +333,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         white-space: nowrap;
     }
 
-    .btn-ficha {
+    .jor_ben-btn-ficha {
         height: 40px;
         padding: 0 16px;
         border-radius: 10px;
@@ -349,72 +349,72 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         white-space: nowrap;
     }
 
-    .btn-ficha:hover {
+    .jor_ben-btn-ficha:hover {
         color: var(--ds-primary-dark);
         border-color: var(--ds-primary);
         background: #f4f9ff;
     }
 
-    .benef-card-menu {
+    .jor_ben-card-menu {
         position: absolute;
         top: 18px;
         right: 20px;
         z-index: 5;
     }
 
-    .benef-card-menu .btn {
+    .jor_ben-card-menu .btn {
         color: #7b8794;
         text-decoration: none;
         padding: 4px 6px;
         border-radius: 10px;
     }
 
-    .benef-card-menu .btn:hover {
+    .jor_ben-card-menu .btn:hover {
         background: #f1f5f9;
         color: var(--ds-dark);
     }
 
-    .benef-card-menu .dropdown-menu {
+    .jor_ben-card-menu .dropdown-menu {
         border-radius: 14px;
         border: 1px solid var(--ds-border);
         overflow: hidden;
         z-index: 9999;
     }
 
-    .card-divider {
+    .jor_ben-card-divider {
         height: 1px;
         background: var(--ds-border);
         margin: 18px 0 12px;
     }
 
-    .research-block {
+    .jor_ben-research-block {
         display: grid;
         grid-template-columns: 90px 1fr;
         gap: 14px;
         align-items: center;
     }
 
-    .research-title {
+    .jor_ben-research-title {
         color: var(--ds-dark);
         font-weight: 600;
         font-size: 15px;
     }
 
-    .research-list {
+    .jor_ben-research-list {
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         gap: 22px;
     }
 
-    .research-item {
+    .jor_ben-research-item {
         display: flex;
         align-items: center;
         gap: 9px;
         min-width: 126px;
     }
 
-    .research-icon-btn {
+    .jor_ben-research-icon-btn {
         width: 42px;
         height: 42px;
         border-radius: 50%;
@@ -429,24 +429,24 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         padding: 7px;
     }
 
-    .research-icon-btn img {
+    .jor_ben-research-icon-btn img {
         width: 24px;
         height: 24px;
         object-fit: contain;
         display: block;
     }
 
-    .research-icon-btn.evaluado {
+    .jor_ben-research-icon-btn.jor_ben-evaluado {
         background: #f8fbff;
         box-shadow: 0 5px 12px rgba(16, 26, 97, .08);
     }
 
-    .research-icon-btn:hover {
+    .jor_ben-research-icon-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 16px rgba(16, 26, 97, .10);
     }
 
-    .research-status {
+    .jor_ben-research-status {
         display: flex;
         flex-direction: column;
         gap: 2px;
@@ -455,21 +455,21 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         line-height: 1.1;
     }
 
-    .research-status .ok {
+    .jor_ben-research-status .jor_ben-ok {
         color: var(--ds-success);
         display: inline-flex;
         align-items: center;
         gap: 4px;
     }
 
-    .research-status .pending {
+    .jor_ben-research-status .jor_ben-pending {
         color: #7b8794;
         display: inline-flex;
         align-items: center;
         gap: 4px;
     }
 
-    .empty-state {
+    .jor_ben-empty-state {
         background: #fff;
         border: 1px dashed #cbd5e1;
         border-radius: 18px;
@@ -478,18 +478,18 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         box-shadow: var(--shadow-sm);
     }
 
-    .empty-state img {
+    .jor_ben-empty-state img {
         width: 64px;
         opacity: .25;
         margin-bottom: 14px;
     }
 
-    .empty-state p {
+    .jor_ben-empty-state p {
         color: #64748b;
         margin-bottom: 18px;
     }
 
-    .pagination-wrap {
+    .jor_ben-pagination-wrap {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -499,14 +499,14 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         font-size: 14px;
     }
 
-    .pagination-custom {
+    .jor_ben-pagination-custom {
         display: flex;
         align-items: center;
         gap: 8px;
         flex-wrap: wrap;
     }
 
-    .page-btn {
+    .jor_ben-page-btn {
         min-width: 42px;
         height: 42px;
         padding: 0 14px;
@@ -518,29 +518,29 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         cursor: pointer;
     }
 
-    .page-btn.active {
+    .jor_ben-page-btn.jor_ben-active {
         background: var(--ds-primary-dark);
         color: white;
         border-color: var(--ds-primary-dark);
         box-shadow: 0 8px 16px rgba(47, 128, 237, .22);
     }
 
-    .page-btn:disabled {
+    .jor_ben-page-btn:disabled {
         opacity: .45;
         cursor: not-allowed;
     }
 
-    .page-btn.wide {
+    .jor_ben-page-btn.jor_ben-wide {
         min-width: 108px;
         color: #536580;
     }
 
-    .page-btn.next {
+    .jor_ben-page-btn.jor_ben-next {
         min-width: 118px;
         color: var(--ds-primary-dark);
     }
 
-    .page-size {
+    .jor_ben-page-size {
         height: 42px;
         border: 1px solid var(--ds-border);
         border-radius: 10px;
@@ -550,13 +550,13 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         font-weight: 600;
     }
 
-    .pesquisa-modal-list {
+    .jor_ben-pesquisa-modal-list {
         padding: 0;
         margin: 0;
         list-style: none;
     }
 
-    .pesquisa-modal-list li {
+    .jor_ben-pesquisa-modal-list li {
         display: flex;
         align-items: center;
         gap: 12px;
@@ -566,86 +566,86 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         transition: .15s ease;
     }
 
-    .pesquisa-modal-list li:hover {
+    .jor_ben-pesquisa-modal-list li:hover {
         background: #f5f8fc;
     }
 
-    .pesquisa-modal-list img {
+    .jor_ben-pesquisa-modal-list img {
         width: 34px;
         height: 34px;
         object-fit: contain;
     }
 
-    .pesq-name {
+    .jor_ben-pesq-name {
         color: var(--ds-dark);
         font-weight: 600;
         font-size: 14px;
     }
 
-    .pesq-desc {
+    .jor_ben-pesq-desc {
         color: #64748b;
         font-size: 12px;
     }
 
     @media (max-width: 1100px) {
-        .benef-card-main {
+        .jor_ben-card-main {
             grid-template-columns: 86px 1fr;
         }
 
-        .benef-card-actions {
+        .jor_ben-card-actions {
             grid-column: 2;
             flex-direction: row;
             align-items: center;
             justify-content: flex-start;
         }
 
-        .research-block {
+        .jor_ben-research-block {
             grid-template-columns: 1fr;
         }
     }
 
     @media (max-width: 760px) {
-        .benef-page {
+        .jor_ben-page {
             width: min(100% - 28px, 100%);
             padding-top: 18px;
         }
 
-        .benef-topbar,
-        .pagination-wrap {
+        .jor_ben-topbar,
+        .jor_ben-pagination-wrap {
             flex-direction: column;
             align-items: flex-start;
         }
 
-        .benef-card-main {
+        .jor_ben-card-main {
             grid-template-columns: 1fr;
         }
 
-        .benef-avatar-wrap {
+        .jor_ben-avatar-wrap {
             justify-content: flex-start;
         }
 
-        .benef-card-actions {
+        .jor_ben-card-actions {
             grid-column: auto;
             flex-direction: row;
             align-items: center;
             flex-wrap: wrap;
         }
 
-        .research-list {
+        .jor_ben-research-list {
             gap: 14px;
         }
 
-        .research-item {
+        .jor_ben-research-item {
             min-width: 100%;
         }
 
-        .benef-divider {
+        .jor_ben-divider {
             display: none;
         }
     }
 
     /* estilo dicha*/
-    .ficha-drawer-backdrop {
+    .jor_ben-ficha-drawer-backdrop {
         position: fixed;
         inset: 0;
         background: rgba(15, 23, 42, .38);
@@ -655,12 +655,12 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         transition: .2s ease;
     }
 
-    .ficha-drawer-backdrop.is-open {
+    .jor_ben-ficha-drawer-backdrop.jor_ben-is-open {
         opacity: 1;
         pointer-events: auto;
     }
 
-    .ficha-drawer {
+    .jor_ben-ficha-drawer {
         position: fixed;
         top: 0;
         right: 0;
@@ -675,11 +675,11 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         flex-direction: column;
     }
 
-    .ficha-drawer.is-open {
+    .jor_ben-ficha-drawer.jor_ben-is-open {
         transform: translateX(0);
     }
 
-    .ficha-head {
+    .jor_ben-ficha-head {
         padding: 22px 24px;
         background: linear-gradient(135deg, #101a61, #176be8);
         color: #fff;
@@ -688,19 +688,19 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         gap: 16px;
     }
 
-    .ficha-head h3 {
+    .jor_ben-ficha-head h3 {
         margin: 0;
         font-size: 21px;
         font-weight: 700;
     }
 
-    .ficha-head p {
+    .jor_ben-ficha-head p {
         margin: 5px 0 0;
         opacity: .85;
         font-size: 14px;
     }
 
-    .ficha-close {
+    .jor_ben-ficha-close {
         width: 38px;
         height: 38px;
         border: 0;
@@ -711,13 +711,13 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         line-height: 1;
     }
 
-    .ficha-body {
+    .jor_ben-ficha-body {
         padding: 22px 24px;
         overflow-y: auto;
         flex: 1;
     }
 
-    .ficha-profile {
+    .jor_ben-ficha-profile {
         display: grid;
         grid-template-columns: 76px 1fr;
         gap: 16px;
@@ -725,7 +725,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         margin-bottom: 20px;
     }
 
-    .ficha-avatar {
+    .jor_ben-ficha-avatar {
         width: 76px;
         height: 76px;
         border-radius: 50%;
@@ -738,17 +738,17 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         color: var(--ds-primary-dark);
     }
 
-    .ficha-avatar img {
+    .jor_ben-ficha-avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .ficha-avatar i {
+    .jor_ben-ficha-avatar i {
         font-size: 40px;
     }
 
-    .ficha-name {
+    .jor_ben-ficha-name {
         margin: 0;
         color: var(--ds-dark);
         font-size: 20px;
@@ -756,20 +756,20 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         text-transform: uppercase;
     }
 
-    .ficha-meta {
+    .jor_ben-ficha-meta {
         margin-top: 6px;
         color: #64748b;
         font-size: 14px;
     }
 
-    .ficha-summary {
+    .jor_ben-ficha-summary {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
         margin: 18px 0;
     }
 
-    .ficha-kpi {
+    .jor_ben-ficha-kpi {
         border: 1px solid var(--ds-border);
         border-radius: 14px;
         padding: 12px;
@@ -777,19 +777,19 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         text-align: center;
     }
 
-    .ficha-kpi strong {
+    .jor_ben-ficha-kpi strong {
         display: block;
         color: var(--ds-dark);
         font-size: 22px;
     }
 
-    .ficha-kpi span {
+    .jor_ben-ficha-kpi span {
         color: #64748b;
         font-size: 12px;
         font-weight: 600;
     }
 
-    .ficha-progress {
+    .jor_ben-ficha-progress {
         height: 10px;
         background: #e5eaf2;
         border-radius: 999px;
@@ -797,7 +797,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         margin-bottom: 22px;
     }
 
-    .ficha-progress-bar {
+    .jor_ben-ficha-progress-bar {
         height: 100%;
         width: 0%;
         background: linear-gradient(135deg, #13b76a, #3a8cff);
@@ -805,20 +805,20 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         transition: .25s ease;
     }
 
-    .ficha-section-title {
+    .jor_ben-ficha-section-title {
         margin: 22px 0 12px;
         color: var(--ds-dark);
         font-size: 15px;
         font-weight: 700;
     }
 
-    .ficha-pesquisa-list {
+    .jor_ben-ficha-pesquisa-list {
         display: flex;
         flex-direction: column;
         gap: 10px;
     }
 
-    .ficha-pesquisa-item {
+    .jor_ben-ficha-pesquisa-item {
         border: 1px solid var(--ds-border);
         border-radius: 14px;
         padding: 12px;
@@ -829,24 +829,24 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         background: #fff;
     }
 
-    .ficha-pesquisa-item img {
+    .jor_ben-ficha-pesquisa-item img {
         width: 34px;
         height: 34px;
         object-fit: contain;
     }
 
-    .ficha-pesquisa-name {
+    .jor_ben-ficha-pesquisa-name {
         color: var(--ds-dark);
         font-weight: 700;
         font-size: 14px;
     }
 
-    .ficha-pesquisa-desc {
+    .jor_ben-ficha-pesquisa-desc {
         color: #64748b;
         font-size: 12px;
     }
 
-    .ficha-chip {
+    .jor_ben-ficha-chip {
         border-radius: 999px;
         padding: 6px 10px;
         font-size: 12px;
@@ -854,17 +854,17 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         white-space: nowrap;
     }
 
-    .ficha-chip.ok {
+    .jor_ben-ficha-chip.jor_ben-ok {
         background: #e6f8ef;
         color: #0b8f51;
     }
 
-    .ficha-chip.pending {
+    .jor_ben-ficha-chip.jor_ben-pending {
         background: #fff7e6;
         color: #b76a00;
     }
 
-    .ficha-actions {
+    .jor_ben-ficha-actions {
         padding: 18px 24px;
         border-top: 1px solid var(--ds-border);
         background: #f8fbff;
@@ -873,7 +873,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         gap: 10px;
     }
 
-    .ficha-action-btn {
+    .jor_ben-ficha-action-btn {
         min-height: 42px;
         border-radius: 12px;
         border: 1px solid var(--ds-border);
@@ -887,32 +887,32 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         gap: 8px;
     }
 
-    .ficha-action-btn.primary {
+    .jor_ben-ficha-action-btn.jor_ben-primary {
         border-color: var(--ds-primary-dark);
         background: var(--ds-primary-dark);
         color: #fff;
     }
 
-    .ficha-action-btn:hover {
+    .jor_ben-ficha-action-btn:hover {
         color: var(--ds-primary-dark);
         background: #f4f9ff;
     }
 
-    .ficha-action-btn.primary:hover {
+    .jor_ben-ficha-action-btn.jor_ben-primary:hover {
         color: #fff;
         background: #176be8;
     }
 </style>
 
-<main class="benef-page">
+<main class="jor_ben-page">
 
-    <nav class="breadcrumb-digi-new">
+    <nav class="jor_ben-breadcrumb-digi-new">
         <span><i class="bi bi-house-door"></i></span>
         <a href="<?= base_url('jornadas') ?>">Listado de Jornadas</a>
         <span>›</span>
         <span>Beneficiarios</span>
         <span>›</span>
-        <span class="active">
+        <span class="jor_ben-active">
             <?= esc($jornada['nombre_jornada'] ?? 'Jornada') ?>
             <?php if (!empty($jornada['fecha_inicio'])): ?>
                 <?= date('d-m-Y', strtotime($jornada['fecha_inicio'])) ?>
@@ -934,11 +934,11 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         </div>
     <?php endif; ?>
 
-    <div class="benef-topbar">
-        <div class="benef-title">
+    <div class="jor_ben-topbar">
+        <div class="jor_ben-title">
             <h1>
                 Beneficiarios de la jornada
-                <span class="benef-counter"><?= $total ?? count($beneficiarios ?? []) ?></span>
+                <span class="jor_ben-counter"><?= $total ?? count($beneficiarios ?? []) ?></span>
             </h1>
             <!-- <p>
                 Jornada:
@@ -949,15 +949,15 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
             </p> -->
         </div>
 
-        <div class="benef-actions">
-            <div class="benef-total-pill">
+        <div class="jor_ben-actions">
+            <div class="jor_ben-total-pill">
                 <i class="bi bi-people"></i>
                 <span><?= $total ?? count($beneficiarios ?? []) ?></span>
             </div>
 
-            <div class="benef-divider"></div>
+            <div class="jor_ben-divider"></div>
 
-            <a href="<?= site_url('jornadas/' . $jornada_id . '/beneficiarios/buscar') ?>" class="ds-btn-primary">
+            <a href="<?= site_url('jornadas/' . $jornada_id . '/beneficiarios/buscar') ?>" class="jor_ben-ds-btn-primary">
                 <i class="bi bi-plus-lg"></i>
                 Registrar
             </a>
@@ -965,7 +965,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
     </div>
 
     <?php if (!empty($beneficiarios) && count($beneficiarios) > 5): ?>
-        <div class="benef-search">
+        <div class="jor_ben-search">
             <i class="bi bi-search"></i>
             <input type="text" id="filtrarBenef" placeholder="Filtrar por nombre, apellido o ID...">
         </div>
@@ -983,7 +983,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         ];
         ?>
 
-        <section class="benef-cards-list" id="benefCardsList">
+        <section class="jor_ben-cards-list" id="benefCardsList">
             <?php foreach ($beneficiarios as $b): ?>
                 <?php
                 $fechaNacimiento = $b['fecha_nacimiento'] ?? null;
@@ -1025,11 +1025,11 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                 ?>
 
                 <article
-                    class="beneficiary-card"
+                    class="jor_ben-card"
                     data-benef-card="1"
                     data-search="<?= esc($searchText) ?>">
 
-                    <div class="benef-card-menu dropdown">
+                    <div class="jor_ben-card-menu dropdown">
                         <button class="btn btn-link" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-three-dots-vertical fs-5"></i>
                         </button>
@@ -1084,9 +1084,9 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                         </ul>
                     </div>
 
-                    <div class="benef-card-main">
-                        <div class="benef-avatar-wrap">
-                            <div class="benef-avatar">
+                    <div class="jor_ben-card-main">
+                        <div class="jor_ben-avatar-wrap">
+                            <div class="jor_ben-avatar">
                                 <?php if (!empty($b['foto_url'])): ?>
                                     <img src="<?= base_url($b['foto_url']) ?>" alt="<?= esc($nombreCompleto) ?>">
                                 <?php else: ?>
@@ -1099,35 +1099,35 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                         </div>
 
                         <div>
-                            <h2 class="person-name">
+                            <h2 class="jor_ben-person-name">
                                 <?= esc(strtoupper($b['apellidos'] ?? '')) ?>,
                                 <?= esc(strtoupper($b['nombres'] ?? '')) ?>
                             </h2>
 
-                            <div class="meta-row">
+                            <div class="jor_ben-meta-row">
                                 <span>
-                                    <span class="meta-label">ID:</span>
+                                    <span class="jor_ben-meta-label">ID:</span>
                                     <?= esc($b['id_digisalud'] ?? '—') ?>
                                 </span>
 
-                                <span class="meta-separator"></span>
+                                <span class="jor_ben-meta-separator"></span>
 
-                                <span class="meta-item">
-                                    <i class="bi bi-calendar3 meta-label"></i>
-                                    <span class="meta-label">Fn:</span>
+                                <span class="jor_ben-meta-item">
+                                    <i class="bi bi-calendar3 jor_ben-meta-label"></i>
+                                    <span class="jor_ben-meta-label">Fn:</span>
                                     <?= !empty($fechaNacimiento) ? date('d-m-Y', strtotime($fechaNacimiento)) : '—' ?>
                                 </span>
 
-                                <span class="meta-separator"></span>
+                                <span class="jor_ben-meta-separator"></span>
 
-                                <span class="meta-item">
-                                    <i class="bi bi-person-standing age-label"></i>
-                                    <span class="age-label">Edad:</span>
+                                <span class="jor_ben-meta-item">
+                                    <i class="bi bi-person-standing jor_ben-age-label"></i>
+                                    <span class="jor_ben-age-label">Edad:</span>
                                     <?= esc($edad) ?>
                                 </span>
                             </div>
 
-                            <div class="representative">
+                            <div class="jor_ben-representative">
                                 <i class="bi bi-person-badge"></i>
                                 <strong>Representante:</strong>
                                 <?php if (!empty($b['rep_nombres'])): ?>
@@ -1138,14 +1138,14 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                             </div>
                         </div>
 
-                        <div class="benef-card-actions">
+                        <div class="jor_ben-card-actions">
                             <span>
                                 <br>
                             </span>
 
                             <button
                                 type="button"
-                                class="btn-ficha"
+                                class="jor_ben-btn-ficha"
                                 onclick="abrirFichaRapida(<?= (int) $b['id_beneficiario'] ?>)">
                                 <i class="bi bi-card-checklist"></i>
                                 Ver ficha
@@ -1153,24 +1153,24 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                         </div>
                     </div>
 
-                    <div class="card-divider"></div>
+                    <div class="jor_ben-card-divider"></div>
 
-                    <div class="research-block">
-                        <div class="research-title">Pesquisas</div>
+                    <div class="jor_ben-research-block">
+                        <div class="jor_ben-research-title">Pesquisas</div>
 
-                        <div class="research-list">
+                        <div class="jor_ben-research-list">
                             <?php foreach ($pesquisas_jornada as $p): ?>
                                 <?php if (isset($iconos_color[$p])): ?>
                                     <?php
                                     $yaEvaluado = in_array($p, $evals);
                                     $icono = $yaEvaluado ? $iconos_color[$p]['img'] : $iconos_color[$p]['gris'];
-                                    $clase = $yaEvaluado ? 'research-icon-btn evaluado' : 'research-icon-btn';
+                                    $clase = $yaEvaluado ? 'jor_ben-research-icon-btn jor_ben-evaluado' : 'jor_ben-research-icon-btn';
                                     $estadoTexto = $yaEvaluado ? 'Evaluado' : 'Pendiente';
-                                    $estadoClase = $yaEvaluado ? 'ok' : 'pending';
+                                    $estadoClase = $yaEvaluado ? 'jor_ben-ok' : 'jor_ben-pending';
                                     $estadoIcono = $yaEvaluado ? 'bi-check-circle-fill' : 'bi-clock';
                                     ?>
 
-                                    <div class="research-item">
+                                    <div class="jor_ben-research-item">
                                         <button
                                             class="<?= esc($clase) ?>"
                                             type="button"
@@ -1185,7 +1185,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                                                 alt="<?= esc($iconos_color[$p]['nombre']) ?>">
                                         </button>
 
-                                        <span class="research-status">
+                                        <span class="jor_ben-research-status">
                                             <span class="<?= esc($estadoClase) ?>">
                                                 <i class="bi <?= esc($estadoIcono) ?>"></i>
                                                 <?= esc($estadoTexto) ?>
@@ -1201,12 +1201,12 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
             <?php endforeach; ?>
         </section>
 
-        <footer class="pagination-wrap" id="benefPaginationWrap">
+        <footer class="jor_ben-pagination-wrap" id="benefPaginationWrap">
             <div id="paginationInfo">Mostrando 1–15 de <?= (int) ($total ?? count($beneficiarios)) ?> beneficiarios</div>
 
-            <div class="pagination-custom" id="paginationButtons"></div>
+            <div class="jor_ben-pagination-custom" id="paginationButtons"></div>
 
-            <select class="page-size" id="pageSizeBenef">
+            <select class="jor_ben-page-size" id="pageSizeBenef">
                 <option value="15" selected>15 por página</option>
                 <option value="30">30 por página</option>
                 <option value="45">45 por página</option>
@@ -1214,10 +1214,10 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         </footer>
 
     <?php else: ?>
-        <div class="empty-state">
+        <div class="jor_ben-empty-state">
             <img src="<?= base_url('img/beneficiario-evaluado-azul.svg') ?>" alt="Sin beneficiarios">
             <p>No hay beneficiarios en esta jornada</p>
-            <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/buscar") ?>" class="ds-btn-primary">
+            <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/buscar") ?>" class="jor_ben-ds-btn-primary">
                 <i class="bi bi-plus-lg"></i>
                 Registrar primer beneficiario
             </a>
@@ -1243,47 +1243,47 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                 <p class="px-3 pt-3 text-muted" id="modalPesquisaTexto" style="font-size:.82rem;">
                     Selecciona la pesquisa:
                 </p>
-                <ul class="pesquisa-modal-list" id="listaPesquisasModal"></ul>
+                <ul class="jor_ben-pesquisa-modal-list" id="listaPesquisasModal"></ul>
             </div>
         </div>
     </div>
 </div>
 <!-- DRAWER FICHA RÁPIDA -->
-<div class="ficha-drawer-backdrop" id="fichaBackdrop" onclick="cerrarFichaRapida()"></div>
+<div class="jor_ben-ficha-drawer-backdrop" id="fichaBackdrop" onclick="cerrarFichaRapida()"></div>
 
-<aside class="ficha-drawer" id="fichaDrawer" aria-hidden="true">
-    <div class="ficha-head">
+<aside class="jor_ben-ficha-drawer" id="fichaDrawer" aria-hidden="true">
+    <div class="jor_ben-ficha-head">
         <div>
             <h3>Ficha rápida</h3>
             <p id="fichaJornadaTexto">Resumen del beneficiario en la jornada</p>
         </div>
 
-        <button type="button" class="ficha-close" onclick="cerrarFichaRapida()">
+        <button type="button" class="jor_ben-ficha-close" onclick="cerrarFichaRapida()">
             ×
         </button>
     </div>
 
-    <div class="ficha-body" id="fichaBody">
+    <div class="jor_ben-ficha-body" id="fichaBody">
         <div class="text-muted">Cargando ficha...</div>
     </div>
 
-    <div class="ficha-actions" id="fichaActions" style="display:none;">
-        <a href="#" class="ficha-action-btn" id="fichaEditarBtn">
+    <div class="jor_ben-ficha-actions" id="fichaActions" style="display:none;">
+        <a href="#" class="jor_ben-ficha-action-btn" id="fichaEditarBtn">
             <i class="bi bi-pencil-square"></i>
             Editar
         </a>
 
-        <a href="#" class="ficha-action-btn" id="fichaHistorialBtn">
+        <a href="#" class="jor_ben-ficha-action-btn" id="fichaHistorialBtn">
             <i class="bi bi-clock-history"></i>
             Historial
         </a>
 
-        <button type="button" class="ficha-action-btn primary" id="fichaEvaluarBtn">
+        <button type="button" class="jor_ben-ficha-action-btn jor_ben-primary" id="fichaEvaluarBtn">
             <i class="bi bi-clipboard2-pulse"></i>
             Evaluar pendiente
         </button>
 
-        <button type="button" class="ficha-action-btn" onclick="cerrarFichaRapida()">
+        <button type="button" class="jor_ben-ficha-action-btn" onclick="cerrarFichaRapida()">
             Cerrar
         </button>
     </div>
@@ -1343,8 +1343,8 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         body.innerHTML = '<div class="text-muted">Cargando ficha...</div>';
         actions.style.display = 'none';
 
-        drawer.classList.add('is-open');
-        backdrop.classList.add('is-open');
+        drawer.classList.add('jor_ben-is-open');
+        backdrop.classList.add('jor_ben-is-open');
         drawer.setAttribute('aria-hidden', 'false');
 
         fetch(`<?= base_url('jornadas') ?>/${jornadaId}/beneficiarios/${beneficiarioId}/ficha-rapida`, {
@@ -1373,8 +1373,8 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         const drawer = document.getElementById('fichaDrawer');
         const backdrop = document.getElementById('fichaBackdrop');
 
-        drawer.classList.remove('is-open');
-        backdrop.classList.remove('is-open');
+        drawer.classList.remove('jor_ben-is-open');
+        backdrop.classList.remove('jor_ben-is-open');
         drawer.setAttribute('aria-hidden', 'true');
     }
 
@@ -1398,15 +1398,15 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
         const pesquisasHtml = pesquisas.length ?
             pesquisas.map(p => `
-            <div class="ficha-pesquisa-item">
+            <div class="jor_ben-ficha-pesquisa-item">
                 <img src="${p.icono}" alt="${escapeHtml(p.nombre)}">
 
                 <div>
-                    <div class="ficha-pesquisa-name">${escapeHtml(p.nombre)}</div>
-                    <div class="ficha-pesquisa-desc">${escapeHtml(p.desc || '')}</div>
+                    <div class="jor_ben-ficha-pesquisa-name">${escapeHtml(p.nombre)}</div>
+                    <div class="jor_ben-ficha-pesquisa-desc">${escapeHtml(p.desc || '')}</div>
                 </div>
 
-                <span class="ficha-chip ${p.evaluado ? 'ok' : 'pending'}">
+                <span class="jor_ben-ficha-chip ${p.evaluado ? 'jor_ben-ok' : 'jor_ben-pending'}">
                     <i class="bi ${p.evaluado ? 'bi-check-circle-fill' : 'bi-clock'}"></i>
                     ${p.evaluado ? 'Evaluado' : 'Pendiente'}
                 </span>
@@ -1415,17 +1415,17 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
             `<div class="text-muted">Esta jornada no tiene pesquisas configuradas.</div>`;
 
         body.innerHTML = `
-        <div class="ficha-profile">
-            <div class="ficha-avatar">
+        <div class="jor_ben-ficha-profile">
+            <div class="jor_ben-ficha-avatar">
                 ${avatar}
             </div>
 
             <div>
-                <h4 class="ficha-name">
+                <h4 class="jor_ben-ficha-name">
                     ${escapeHtml(b.apellidos)}, ${escapeHtml(b.nombres)}
                 </h4>
 
-                <div class="ficha-meta">
+                <div class="jor_ben-ficha-meta">
                     <strong>ID:</strong> ${escapeHtml(b.id_digisalud || '—')}<br>
                     <strong>Fn:</strong> ${escapeHtml(b.fecha_nacimiento || '—')}<br>
                     <strong>Edad:</strong> ${escapeHtml(b.edad || '—')}<br>
@@ -1434,30 +1434,30 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
             </div>
         </div>
 
-        <div class="ficha-summary">
-            <div class="ficha-kpi">
+        <div class="jor_ben-ficha-summary">
+            <div class="jor_ben-ficha-kpi">
                 <strong>${resumen.total_pesquisas}</strong>
                 <span>Pesquisas</span>
             </div>
 
-            <div class="ficha-kpi">
+            <div class="jor_ben-ficha-kpi">
                 <strong>${resumen.total_evaluadas}</strong>
                 <span>Evaluadas</span>
             </div>
 
-            <div class="ficha-kpi">
+            <div class="jor_ben-ficha-kpi">
                 <strong>${resumen.total_pendientes}</strong>
                 <span>Pendientes</span>
             </div>
         </div>
 
-        <div class="ficha-progress" title="${resumen.porcentaje_avance}% completado">
-            <div class="ficha-progress-bar" style="width:${resumen.porcentaje_avance}%"></div>
+        <div class="jor_ben-ficha-progress" title="${resumen.porcentaje_avance}% completado">
+            <div class="jor_ben-ficha-progress-bar" style="width:${resumen.porcentaje_avance}%"></div>
         </div>
 
-        <div class="ficha-section-title">Estado de pesquisas</div>
+        <div class="jor_ben-ficha-section-title">Estado de pesquisas</div>
 
-        <div class="ficha-pesquisa-list">
+        <div class="jor_ben-ficha-pesquisa-list">
             ${pesquisasHtml}
         </div>
     `;
@@ -1551,8 +1551,8 @@ function abrirModalPesquisa(bid, nombre, pesquisasEvaluadas, modo) {
         li.innerHTML =
             '<img src="' + info.img + '" alt="' + info.nombre + '">' +
             '<div>' +
-            '<div class="pesq-name">' + info.nombre + '</div>' +
-            '<div class="pesq-desc">' + info.desc + '</div>' +
+            '<div class="jor_ben-pesq-name">' + info.nombre + '</div>' +
+            '<div class="jor_ben-pesq-desc">' + info.desc + '</div>' +
             '</div>';
 
         li.addEventListener('click', function() {
@@ -1571,8 +1571,8 @@ function abrirModalPesquisa(bid, nombre, pesquisasEvaluadas, modo) {
         li.style.cursor = 'default';
         li.innerHTML =
             '<div>' +
-            '<div class="pesq-name">' + (esEdicion ? 'Sin evaluaciones registradas' : 'Sin pesquisas pendientes') + '</div>' +
-            '<div class="pesq-desc">' + (esEdicion ? 'Este beneficiario no tiene evaluaciones para editar.' : 'Todas las pesquisas de esta jornada ya fueron evaluadas.') + '</div>' +
+            '<div class="jor_ben-pesq-name">' + (esEdicion ? 'Sin evaluaciones registradas' : 'Sin pesquisas pendientes') + '</div>' +
+            '<div class="jor_ben-pesq-desc">' + (esEdicion ? 'Este beneficiario no tiene evaluaciones para editar.' : 'Todas las pesquisas de esta jornada ya fueron evaluadas.') + '</div>' +
             '</div>';
         lista.appendChild(li);
     }
@@ -1600,7 +1600,7 @@ function abrirEvaluar(bid, pid, nombre) {
 
 
     document.addEventListener('DOMContentLoaded', function() {
-        var cards = document.querySelectorAll('.beneficiary-card');
+        var cards = document.querySelectorAll('.jor_ben-card');
         var totalCards = cards.length;
 
         var pageSizeSelect = document.getElementById('pageSizeBenef');
@@ -1627,7 +1627,7 @@ function abrirEvaluar(bid, pid, nombre) {
                 paginationBtns.innerHTML = '';
 
                 var prevBtn = document.createElement('button');
-                prevBtn.className = 'page-btn wide';
+                prevBtn.className = 'jor_ben-page-btn jor_ben-wide';
                 prevBtn.textContent = '← Anterior';
                 prevBtn.disabled = (currentPage === 1);
                 prevBtn.addEventListener('click', function() {
@@ -1638,7 +1638,7 @@ function abrirEvaluar(bid, pid, nombre) {
 
                 for (var i = 1; i <= totalPages; i++) {
                     var btn = document.createElement('button');
-                    btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+                    btn.className = 'jor_ben-page-btn' + (i === currentPage ? ' jor_ben-active' : '');
                     btn.textContent = i;
                     btn.setAttribute('data-page', i);
                     btn.addEventListener('click', function() {
@@ -1649,7 +1649,7 @@ function abrirEvaluar(bid, pid, nombre) {
                 }
 
                 var nextBtn = document.createElement('button');
-                nextBtn.className = 'page-btn next';
+                nextBtn.className = 'jor_ben-page-btn jor_ben-next';
                 nextBtn.textContent = 'Siguiente →';
                 nextBtn.disabled = (currentPage === totalPages || totalPages === 0);
                 nextBtn.addEventListener('click', function() {

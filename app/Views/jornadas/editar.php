@@ -29,13 +29,13 @@
     color: var(--text);
   }
 
-  .page {
+  .jornada_edit-page {
     max-width: 1400px;
     margin: 24px auto;
     padding: 0 18px;
   }
 
-  .shell {
+  .jornada_edit-shell {
     background: #fff;
     border-radius: 24px;
     box-shadow: var(--shadow);
@@ -43,7 +43,7 @@
     border: 1px solid #eef2f7;
   }
 
-  .topbar {
+  .jornada_edit-topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -52,13 +52,13 @@
     background: #fff;
   }
 
-  .topbar-left {
+  .jornada_edit-topbar-left {
     display: flex;
     align-items: flex-start;
     gap: 16px;
   }
 
-  .back-btn {
+  .jornada_edit-back-btn {
     width: 44px;
     height: 44px;
     border-radius: 12px;
@@ -72,20 +72,20 @@
     color: #31415f;
   }
 
-  .title h1 {
+  .jornada_edit-title h1 {
     margin: 0;
     font-size: 40px;
     font-weight: 600;
     letter-spacing: -0.02em;
   }
 
-  .title p {
+  .jornada_edit-title p {
     margin: 8px 0 0;
     color: var(--muted);
     font-size: 18px;
   }
 
-  .content {
+  .jornada_edit-content {
     display: grid;
     grid-template-columns: 2fr 1fr;
     gap: 20px;
@@ -93,14 +93,14 @@
     background: linear-gradient(180deg, #f7f9fd 0%, #f4f7fb 100%);
   }
 
-  .left-col,
-  .right-col {
+  .jornada_edit-left-col,
+  .jornada_edit-right-col {
     display: flex;
     flex-direction: column;
     gap: 20px;
   }
 
-  .card {
+  .jornada_edit-card {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 22px;
@@ -108,7 +108,7 @@
     padding: 22px;
   }
 
-  .card-title {
+  .jornada_edit-card-title {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -117,7 +117,7 @@
     font-weight: 700;
   }
 
-  .card-modern {
+  .jornada_edit-card-modern {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 22px;
@@ -125,7 +125,7 @@
     padding: 22px;
   }
 
-  .card-title-modern {
+  .jornada_edit-card-title-modern {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -134,27 +134,27 @@
     font-weight: 700;
   }
 
-  .grid-2 {
+  .jornada_edit-grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 18px 22px;
   }
 
-  .field {
+  .jornada_edit-field {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
 
-  .field label {
+  .jornada_edit-field label {
     font-size: 16px;
     font-weight: 600;
     color: #31415f;
     margin: 0;
   }
 
-  .input,
-  .select {
+  .jornada_edit-input,
+  .jornada_edit-select {
     width: 100%;
     min-height: 56px;
     border: 1px solid #d7e0ec;
@@ -166,20 +166,20 @@
     color: var(--text);
   }
 
-  .input:focus,
-  .select:focus {
+  .jornada_edit-input:focus,
+  .jornada_edit-select:focus {
     border-color: #8fb3ff;
     box-shadow: 0 0 0 4px rgba(37, 99, 235, .10);
   }
 
-  .radio-group {
+  .jornada_edit-radio-group {
     display: flex;
     align-items: center;
     gap: 22px;
     min-height: 56px;
   }
 
-  .radio-option {
+  .jornada_edit-radio-option {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -187,15 +187,15 @@
     margin: 0;
   }
 
-  .search-box {
+  .jornada_edit-search-box {
     position: relative;
   }
 
-  .search-box input {
+  .jornada_edit-search-box input {
     padding-left: 46px;
   }
 
-  .search-icon {
+  .jornada_edit-search-icon {
     position: absolute;
     left: 16px;
     top: 50%;
@@ -203,14 +203,14 @@
     color: #94a3b8;
   }
 
-  .location-grid {
+  .jornada_edit-location-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 16px;
     margin-top: 18px;
   }
 
-  .readonly-input {
+  .jornada_edit-readonly-input {
     background: #f8f9fa;
   }
 
@@ -221,13 +221,13 @@
     border: 1px solid var(--line);
   }
 
-  .pesquisa-selector {
+  .jornada_edit-pesquisa-selector {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 18px;
   }
 
-  .pesquisa-item {
+  .jornada_edit-pesquisa-item {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -236,11 +236,11 @@
     padding: 10px 6px;
   }
 
-  .pesquisa-item input[type="checkbox"] {
+  .jornada_edit-pesquisa-item input[type="checkbox"] {
     display: none;
   }
 
-  .pesquisa-icon-wrap {
+  .jornada_edit-pesquisa-icon-wrap {
     width: 64px;
     height: 64px;
     border-radius: 50%;
@@ -252,53 +252,53 @@
     transition: .25s ease;
   }
 
-  .pesquisa-icon-wrap img {
+  .jornada_edit-pesquisa-icon-wrap img {
     width: 34px;
     height: 34px;
   }
 
-  .pesquisa-icon-wrap .icon-color {
+  .jornada_edit-pesquisa-icon-wrap .jornada_edit-icon-color {
     display: none;
   }
 
-  .pesquisa-icon-wrap .icon-gris {
+  .jornada_edit-pesquisa-icon-wrap .jornada_edit-icon-gris {
     display: block;
   }
 
-  .pesquisa-item input:checked+.pesquisa-icon-wrap {
+  .jornada_edit-pesquisa-item input:checked+.jornada_edit-pesquisa-icon-wrap {
     border-color: #3695f5;
     background: #e8eaf8;
     transform: scale(1.08);
     box-shadow: 0 2px 8px rgba(54, 149, 245, .3);
   }
 
-  .pesquisa-item input:checked+.pesquisa-icon-wrap .icon-color {
+  .jornada_edit-pesquisa-item input:checked+.jornada_edit-pesquisa-icon-wrap .jornada_edit-icon-color {
     display: block;
   }
 
-  .pesquisa-item input:checked+.pesquisa-icon-wrap .icon-gris {
+  .jornada_edit-pesquisa-item input:checked+.jornada_edit-pesquisa-icon-wrap .jornada_edit-icon-gris {
     display: none;
   }
 
-  .pesquisa-label {
+  .jornada_edit-pesquisa-label {
     font-size: .85rem;
     font-weight: 600;
     color: #555;
     margin-top: 8px;
   }
 
-  .pesquisa-item input:checked~.pesquisa-label {
+  .jornada_edit-pesquisa-item input:checked~.jornada_edit-pesquisa-label {
     color: #101a61;
   }
 
-  .summary-list {
+  .jornada_edit-summary-list {
     display: flex;
     flex-direction: column;
     gap: 18px;
     font-size: 16px;
   }
 
-  .summary-item {
+  .jornada_edit-summary-item {
     display: flex;
     justify-content: space-between;
     gap: 20px;
@@ -306,16 +306,16 @@
     padding-bottom: 12px;
   }
 
-  .summary-item:last-child {
+  .jornada_edit-summary-item:last-child {
     border-bottom: none;
   }
 
-  .label-muted {
+  .jornada_edit-label-muted {
     color: var(--muted);
     font-weight: 500;
   }
 
-  .badge-success-modern {
+  .jornada_edit-badge-success-modern {
     background: #ecfdf3;
     color: #198754;
     padding: 4px 14px;
@@ -324,7 +324,7 @@
     font-size: 14px;
   }
 
-  .badge-danger-modern {
+  .jornada_edit-badge-danger-modern {
     background: #fef2f2;
     color: #dc2626;
     padding: 4px 14px;
@@ -333,13 +333,13 @@
     font-size: 14px;
   }
 
-  .chips {
+  .jornada_edit-chips {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
   }
 
-  .chip {
+  .jornada_edit-chip {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -351,7 +351,7 @@
     color: #1f2a44;
   }
 
-  .chip-icon {
+  .jornada_edit-chip-icon {
     width: 28px;
     height: 28px;
     border-radius: 50%;
@@ -362,23 +362,23 @@
     font-size: .78rem;
   }
 
-  .chip-icon.blue {
+  .jornada_edit-chip-icon.jornada_edit-blue {
     background: #2478df;
   }
 
-  .chip-icon.red {
+  .jornada_edit-chip-icon.jornada_edit-red {
     background: #e72713;
   }
 
-  .chip-icon.purple {
+  .jornada_edit-chip-icon.jornada_edit-purple {
     background: #341092;
   }
 
-  .chip-icon.yellow {
+  .jornada_edit-chip-icon.jornada_edit-yellow {
     background: #ffc107;
   }
 
-  .footer {
+  .jornada_edit-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -387,18 +387,18 @@
     background: #fff;
   }
 
-  .note {
+  .jornada_edit-note {
     font-size: 14px;
     color: var(--muted);
     max-width: 520px;
   }
 
-  .actions {
+  .jornada_edit-actions {
     display: flex;
     gap: 14px;
   }
 
-  .btn-modern {
+  .jornada_edit-btn-modern {
     padding: 14px 30px;
     border-radius: 12px;
     font-weight: 700;
@@ -407,38 +407,38 @@
     cursor: pointer;
   }
 
-  .btn-modern-secondary {
+  .jornada_edit-btn-modern-secondary {
     background: #f1f5f9;
     color: #475569;
   }
 
-  .btn-modern-primary {
+  .jornada_edit-btn-modern-primary {
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: #fff;
     box-shadow: 0 8px 20px rgba(37, 99, 235, .3);
   }
 
-  .inst-sugerencia {
+  .jornada_edit-inst-sugerencia {
     padding: 10px 14px;
     cursor: pointer;
     border-bottom: 1px solid #f0f0f0;
     font-size: .9rem;
   }
 
-  .inst-sugerencia:hover {
+  .jornada_edit-inst-sugerencia:hover {
     background: #f0f4ff;
   }
 
   @media(max-width:900px) {
-    .content {
+    .jornada_edit-content {
       grid-template-columns: 1fr;
     }
 
-    .grid-2 {
+    .jornada_edit-grid-2 {
       grid-template-columns: 1fr;
     }
 
-    .location-grid {
+    .jornada_edit-location-grid {
       grid-template-columns: 1fr;
     }
   }
@@ -449,12 +449,12 @@
 
 <?php
 $iconos_color = [
-  '1' => ['color' => 'antropometria-color.svg', 'gris' => 'antropometria2.svg', 'nombre' => 'Antropometría', 'emoji' => '📏', 'clase' => 'yellow'],
-  '2' => ['color' => 'sanguinea-color.svg', 'gris' => 'sanguinea2.svg', 'nombre' => 'Laboratorio', 'emoji' => '🩸', 'clase' => 'red'],
-  '3' => ['color' => 'visual-color.svg', 'gris' => 'visual2.svg', 'nombre' => 'Visual', 'emoji' => '👁', 'clase' => 'purple'],
-  '4' => ['color' => 'signos-vitales-color.svg', 'gris' => 'signosVitales2.svg', 'nombre' => 'Signos vitales', 'emoji' => '❤', 'clase' => 'red'],
-  '5' => ['color' => 'medicina-general-color.svg', 'gris' => 'medicinaGeneral2.svg', 'nombre' => 'Medicina general', 'emoji' => '🩺', 'clase' => 'blue'],
-  '6' => ['color' => 'vacunacion-color.svg', 'gris' => 'vacunacion2.svg', 'nombre' => 'Vacunación', 'emoji' => '💉', 'clase' => 'blue'],
+  '1' => ['color' => 'antropometria-color.svg', 'gris' => 'antropometria2.svg', 'nombre' => 'Antropometría', 'emoji' => '📏', 'clase' => 'jornada_edit-yellow'],
+  '2' => ['color' => 'sanguinea-color.svg', 'gris' => 'sanguinea2.svg', 'nombre' => 'Laboratorio', 'emoji' => '🩸', 'clase' => 'jornada_edit-red'],
+  '3' => ['color' => 'visual-color.svg', 'gris' => 'visual2.svg', 'nombre' => 'Visual', 'emoji' => '👁', 'clase' => 'jornada_edit-purple'],
+  '4' => ['color' => 'signos-vitales-color.svg', 'gris' => 'signosVitales2.svg', 'nombre' => 'Signos vitales', 'emoji' => '❤', 'clase' => 'jornada_edit-red'],
+  '5' => ['color' => 'medicina-general-color.svg', 'gris' => 'medicinaGeneral2.svg', 'nombre' => 'Medicina general', 'emoji' => '🩺', 'clase' => 'jornada_edit-blue'],
+  '6' => ['color' => 'vacunacion-color.svg', 'gris' => 'vacunacion2.svg', 'nombre' => 'Vacunación', 'emoji' => '💉', 'clase' => 'jornada_edit-blue'],
 ];
 
 $pesquisasActivas = [];
@@ -467,13 +467,13 @@ if (!empty($pesquisasSeleccionadas)) {
 }
 ?>
 
-<div class="page">
-  <div class="shell">
+<div class="jornada_edit-page">
+  <div class="jornada_edit-shell">
 
-    <div class="topbar">
-      <div class="topbar-left">
-        <a href="<?= base_url('jornadas') ?>" class="back-btn">&larr;</a>
-        <div class="title">
+    <div class="jornada_edit-topbar">
+      <div class="jornada_edit-topbar-left">
+        <a href="<?= base_url('jornadas') ?>" class="jornada_edit-back-btn">&larr;</a>
+        <div class="jornada_edit-title">
           <h1>Editar Jornada</h1>
           <p>Modifica los datos de la jornada y sus servicios</p>
         </div>
@@ -484,41 +484,41 @@ if (!empty($pesquisasSeleccionadas)) {
       <?= csrf_field() ?>
       <input type="hidden" name="id_jornada" value="<?= esc($jornada['id_jornada']) ?>">
 
-      <main class="content">
-        <section class="left-col">
+      <main class="jornada_edit-content">
+        <section class="jornada_edit-left-col">
 
           <!-- STATUS Y FECHA -->
-          <div class="card">
-            <div class="card-title"><span>Estado y Fecha</span></div>
-            <div class="grid-2">
-              <div class="field">
+          <div class="jornada_edit-card">
+            <div class="jornada_edit-card-title"><span>Estado y Fecha</span></div>
+            <div class="jornada_edit-grid-2">
+              <div class="jornada_edit-field">
                 <label for="status_jor">Estado</label>
-                <select class="select" id="status_jor" name="status_jor" required>
+                <select class="jornada_edit-select" id="status_jor" name="status_jor" required>
                   <option value="1" <?= ($jornada['status_jor'] == 1) ? 'selected' : '' ?>>Activa</option>
                   <option value="2" <?= ($jornada['status_jor'] == 2) ? 'selected' : '' ?>>Finalizada</option>
                 </select>
               </div>
-              <div class="field">
+              <div class="jornada_edit-field">
                 <label for="fecha_inicio">Fecha</label>
-                <input class="input" type="date" id="fecha_inicio" name="fecha_inicio"
+                <input class="jornada_edit-input" type="date" id="fecha_inicio" name="fecha_inicio"
                   value="<?= esc($jornada['fecha_inicio']) ?>" required>
               </div>
             </div>
           </div>
 
           <!-- DETALLES -->
-          <div class="card">
-            <div class="card-title"><span>Detalles de la Jornada</span></div>
-            <div class="grid-2">
-              <div class="field">
+          <div class="jornada_edit-card">
+            <div class="jornada_edit-card-title"><span>Detalles de la Jornada</span></div>
+            <div class="jornada_edit-grid-2">
+              <div class="jornada_edit-field">
                 <label for="nombre_jornada">Nombre de la Jornada</label>
-                <input class="input" type="text" id="nombre_jornada" name="nombre_jornada"
+                <input class="jornada_edit-input" type="text" id="nombre_jornada" name="nombre_jornada"
                   value="<?= esc($jornada['nombre_jornada']) ?>" required>
               </div>
 
-              <div class="field">
+              <div class="jornada_edit-field">
                 <label for="organizacion_id">Organización</label>
-                <select class="select" id="organizacion_id" name="organizacion_id"
+                <select class="jornada_edit-select" id="organizacion_id" name="organizacion_id"
                   <?= $soloLectura ? 'disabled' : '' ?> required>
                   <?php foreach ($organizaciones as $o): ?>
                     <option value="<?= $o['id_organizacion'] ?>"
@@ -533,12 +533,12 @@ if (!empty($pesquisasSeleccionadas)) {
               </div>
 
               <!-- FIX: Institución con sugerencias -->
-              <div class="field">
+              <div class="jornada_edit-field">
                 <label for="nombre_institucion">Institución o Localidad</label>
                 <div style="position:relative;">
                   <input type="hidden" name="institucion_id" id="institucion_id"
                     value="<?= esc($jornada['institucion_id'] ?? '') ?>">
-                  <input class="input" type="text" id="nombre_institucion" name="nombre_institucion"
+                  <input class="jornada_edit-input" type="text" id="nombre_institucion" name="nombre_institucion"
                     value="<?= esc($jornada['nombre_institucion'] ?? '') ?>"
                     placeholder="Escribe para buscar o crear nueva..." autocomplete="off" required>
                   <div id="institucion-sugerencias" style="
@@ -553,14 +553,14 @@ if (!empty($pesquisasSeleccionadas)) {
                 </small>
               </div>
 
-              <div class="field">
+              <div class="jornada_edit-field">
                 <label>Tipo de Jornada</label>
-                <div class="radio-group">
-                  <label class="radio-option">
+                <div class="jornada_edit-radio-group">
+                  <label class="jornada_edit-radio-option">
                     <input type="radio" name="tipo_jornada" value="publica"
                       <?= (($jornada['tipo_jornada'] ?? '') == 'publica') ? 'checked' : '' ?> required> Pública
                   </label>
-                  <label class="radio-option">
+                  <label class="jornada_edit-radio-option">
                     <input type="radio" name="tipo_jornada" value="privada"
                       <?= (($jornada['tipo_jornada'] ?? '') == 'privada') ? 'checked' : '' ?>> Privada
                   </label>
@@ -569,51 +569,51 @@ if (!empty($pesquisasSeleccionadas)) {
             </div>
 
             <!-- MAPA -->
-            <div class="field" style="margin-top:14px;">
+            <div class="jornada_edit-field" style="margin-top:14px;">
               <label for="searchPlace">Ubicación en el mapa</label>
-              <div class="search-box">
-                <span class="search-icon">&#128269;</span>
-                <input class="input" type="text" id="searchPlace" placeholder="Buscar lugar o dirección...">
+              <div class="jornada_edit-search-box">
+                <span class="jornada_edit-search-icon">&#128269;</span>
+                <input class="jornada_edit-input" type="text" id="searchPlace" placeholder="Buscar lugar o dirección...">
               </div>
             </div>
 
             <div id="map"></div>
 
-            <div class="location-grid">
-              <div class="field">
+            <div class="jornada_edit-location-grid">
+              <div class="jornada_edit-field">
                 <label for="pais">País</label>
-                <input type="text" class="input readonly-input" name="pais" id="pais"
+                <input type="text" class="jornada_edit-input jornada_edit-readonly-input" name="pais" id="pais"
                   value="<?= esc($jornada['pais'] ?? '') ?>" readonly>
               </div>
-              <div class="field">
+              <div class="jornada_edit-field">
                 <label for="estado">Estado</label>
-                <input type="text" class="input readonly-input" name="estado" id="estado"
+                <input type="text" class="jornada_edit-input jornada_edit-readonly-input" name="estado" id="estado"
                   value="<?= esc($jornada['estado'] ?? '') ?>" readonly>
               </div>
-              <div class="field">
+              <div class="jornada_edit-field">
                 <label for="ciudad">Ciudad</label>
-                <input type="text" class="input readonly-input" name="ciudad" id="ciudad"
+                <input type="text" class="jornada_edit-input jornada_edit-readonly-input" name="ciudad" id="ciudad"
                   value="<?= esc($jornada['ciudad'] ?? '') ?>" readonly>
               </div>
             </div>
 
             <!-- FIX: Campos municipio, parroquia, detalle -->
-            <div class="location-grid" style="margin-top:12px;">
-              <div class="field">
+            <div class="jornada_edit-location-grid" style="margin-top:12px;">
+              <div class="jornada_edit-field">
                 <label for="municipio">Municipio</label>
-                <input type="text" class="input" name="municipio" id="municipio"
+                <input type="text" class="jornada_edit-input" name="municipio" id="municipio"
                   value="<?= esc($jornada['municipio'] ?? '') ?>"
                   placeholder="Se completa con el mapa o escríbelo">
               </div>
-              <div class="field">
+              <div class="jornada_edit-field">
                 <label for="parroquia">Parroquia</label>
-                <input type="text" class="input" name="parroquia" id="parroquia"
+                <input type="text" class="jornada_edit-input" name="parroquia" id="parroquia"
                   value="<?= esc($jornada['parroquia'] ?? '') ?>"
                   placeholder="Se completa con el mapa o escríbelo">
               </div>
-              <div class="field">
+              <div class="jornada_edit-field">
                 <label for="detalle">Detalle / Referencia</label>
-                <input type="text" class="input" name="detalle" id="detalle"
+                <input type="text" class="jornada_edit-input" name="detalle" id="detalle"
                   value="<?= esc($jornada['detalle'] ?? '') ?>"
                   placeholder="Nombre de calle, punto de referencia, etc.">
               </div>
@@ -623,44 +623,44 @@ if (!empty($pesquisasSeleccionadas)) {
           </div>
 
           <!-- PESQUISAS -->
-          <div class="card">
-            <div class="card-title"><span>Pesquisas</span></div>
+          <div class="jornada_edit-card">
+            <div class="jornada_edit-card-title"><span>Pesquisas</span></div>
             <div class="mb-3">
               <strong>Seleccionadas para esta Jornada (<?= count($pesquisasActivas) ?>)</strong>
             </div>
 
-            <div class="chips mb-4" id="selectedPesquisasPreview">
+            <div class="jornada_edit-chips mb-4" id="selectedPesquisasPreview">
               <?php if (!empty($pesquisasActivas)): ?>
                 <?php foreach ($pesquisasActivas as $pes): ?>
-                  <div class="chip">
-                    <div class="chip-icon <?= esc($pes['clase']) ?>"><?= esc($pes['emoji']) ?></div>
+                  <div class="jornada_edit-chip">
+                    <div class="jornada_edit-chip-icon <?= esc($pes['clase']) ?>"><?= esc($pes['emoji']) ?></div>
                     <span><?= esc($pes['nombre']) ?></span>
                   </div>
                 <?php endforeach; ?>
               <?php else: ?>
-                <span class="label-muted">No hay pesquisas seleccionadas.</span>
+                <span class="jornada_edit-label-muted">No hay pesquisas seleccionadas.</span>
               <?php endif; ?>
             </div>
 
             <label class="form-label">Seleccionar Pesquisas (al menos una)</label>
 
-            <div class="pesquisa-selector">
+            <div class="jornada_edit-pesquisa-selector">
               <?php foreach ($pesquisas as $p):
                 $id  = $p['idtipo_pesquisa'];
                 $ico = $iconos_color[$id] ?? null;
                 if (!$ico) continue;
                 $checked = in_array($id, $pesquisasSeleccionadas) ? 'checked' : '';
               ?>
-                <label class="pesquisa-item">
+                <label class="jornada_edit-pesquisa-item">
                   <input type="checkbox" name="pesquisas[]" value="<?= $id ?>" <?= $checked ?>
                     data-nombre="<?= esc($ico['nombre']) ?>"
                     data-emoji="<?= esc($ico['emoji']) ?>"
                     data-clase="<?= esc($ico['clase']) ?>">
-                  <div class="pesquisa-icon-wrap">
-                    <img src="<?= base_url('img/' . $ico['color']) ?>" class="icon-gris" alt="<?= esc($ico['nombre']) ?>">
-                    <img src="<?= base_url('img/' . $ico['gris']) ?>" class="icon-color" alt="<?= esc($ico['nombre']) ?>">
+                  <div class="jornada_edit-pesquisa-icon-wrap">
+                    <img src="<?= base_url('img/' . $ico['color']) ?>" class="jornada_edit-icon-gris" alt="<?= esc($ico['nombre']) ?>">
+                    <img src="<?= base_url('img/' . $ico['gris']) ?>" class="jornada_edit-icon-color" alt="<?= esc($ico['nombre']) ?>">
                   </div>
-                  <span class="pesquisa-label"><?= esc($ico['nombre']) ?></span>
+                  <span class="jornada_edit-pesquisa-label"><?= esc($ico['nombre']) ?></span>
                 </label>
               <?php endforeach; ?>
             </div>
@@ -673,52 +673,52 @@ if (!empty($pesquisasSeleccionadas)) {
         </section>
 
         <!-- RESUMEN -->
-        <aside class="right-col">
-          <div class="card-modern">
-            <div class="card-title-modern"><span>Resumen</span></div>
-            <div class="summary-list">
-              <div class="summary-item">
-                <span class="label-muted">Estado:</span>
-                <span id="resumenEstado" class="<?= $jornada['status_jor'] == 1 ? 'badge-success-modern' : 'badge-danger-modern' ?>">
+        <aside class="jornada_edit-right-col">
+          <div class="jornada_edit-card-modern">
+            <div class="jornada_edit-card-title-modern"><span>Resumen</span></div>
+            <div class="jornada_edit-summary-list">
+              <div class="jornada_edit-summary-item">
+                <span class="jornada_edit-label-muted">Estado:</span>
+                <span id="resumenEstado" class="<?= $jornada['status_jor'] == 1 ? 'jornada_edit-badge-success-modern' : 'jornada_edit-badge-danger-modern' ?>">
                   <?= $jornada['status_jor'] == 1 ? 'Activa' : 'Finalizada' ?>
                 </span>
               </div>
-              <div class="summary-item">
-                <span class="label-muted">Fecha:</span>
+              <div class="jornada_edit-summary-item">
+                <span class="jornada_edit-label-muted">Fecha:</span>
                 <strong id="resumenFecha"><?= esc($jornada['fecha_inicio']) ?></strong>
               </div>
-              <div class="summary-item">
-                <span class="label-muted">Nombre:</span>
+              <div class="jornada_edit-summary-item">
+                <span class="jornada_edit-label-muted">Nombre:</span>
                 <strong id="resumenNombre"><?= esc($jornada['nombre_jornada']) ?></strong>
               </div>
-              <div class="summary-item">
-                <span class="label-muted">Organización:</span>
+              <div class="jornada_edit-summary-item">
+                <span class="jornada_edit-label-muted">Organización:</span>
                 <strong id="resumenOrganizacion"><?= esc($jornada['nombre_org'] ?? '') ?></strong>
               </div>
-              <div class="summary-item">
-                <span class="label-muted">Tipo:</span>
+              <div class="jornada_edit-summary-item">
+                <span class="jornada_edit-label-muted">Tipo:</span>
                 <strong id="resumenTipo"><?= esc(ucfirst($jornada['tipo_jornada'] ?? '')) ?></strong>
               </div>
-              <div class="summary-item">
-                <span class="label-muted">Ubicación:</span>
+              <div class="jornada_edit-summary-item">
+                <span class="jornada_edit-label-muted">Ubicación:</span>
                 <strong id="resumenUbicacion">
                   &#128205; <?= esc(($jornada['ciudad'] ?? '') . (empty($jornada['estado']) ? '' : ', ' . $jornada['estado'])) ?>
                 </strong>
               </div>
-              <div class="summary-item" style="display:block;">
-                <div class="label-muted" style="margin-bottom:10px;">Pesquisas seleccionadas:</div>
+              <div class="jornada_edit-summary-item" style="display:block;">
+                <div class="jornada_edit-label-muted" style="margin-bottom:10px;">Pesquisas seleccionadas:</div>
                 <div id="resumenPesquisas">
                   <?php if (!empty($pesquisasActivas)): ?>
-                    <div class="chips">
+                    <div class="jornada_edit-chips">
                       <?php foreach ($pesquisasActivas as $pes): ?>
-                        <div class="chip">
-                          <div class="chip-icon <?= esc($pes['clase']) ?>"><?= esc($pes['emoji']) ?></div>
+                        <div class="jornada_edit-chip">
+                          <div class="jornada_edit-chip-icon <?= esc($pes['clase']) ?>"><?= esc($pes['emoji']) ?></div>
                           <span><?= esc($pes['nombre']) ?></span>
                         </div>
                       <?php endforeach; ?>
                     </div>
                   <?php else: ?>
-                    <span class="label-muted">No hay pesquisas seleccionadas.</span>
+                    <span class="jornada_edit-label-muted">No hay pesquisas seleccionadas.</span>
                   <?php endif; ?>
                 </div>
               </div>
@@ -727,13 +727,13 @@ if (!empty($pesquisasSeleccionadas)) {
         </aside>
       </main>
 
-      <footer class="footer">
-        <div class="note">
+      <footer class="jornada_edit-footer">
+        <div class="jornada_edit-note">
           Actualiza la jornada manteniendo la organización, ubicación y pesquisas correctamente asociadas.
         </div>
-        <div class="actions">
-          <a href="<?= base_url('jornadas') ?>" class="btn-modern btn-modern-secondary">Cancelar</a>
-          <button type="submit" class="btn-modern btn-modern-primary">Actualizar</button>
+        <div class="jornada_edit-actions">
+          <a href="<?= base_url('jornadas') ?>" class="jornada_edit-btn-modern jornada_edit-btn-modern-secondary">Cancelar</a>
+          <button type="submit" class="jornada_edit-btn-modern jornada_edit-btn-modern-primary">Actualizar</button>
         </div>
       </footer>
     </form>
@@ -893,7 +893,7 @@ if (!empty($pesquisasSeleccionadas)) {
     if (statusSel) {
       const badge = document.getElementById('resumenEstado');
       badge.textContent = statusSel.value == 1 ? 'Activa' : 'Finalizada';
-      badge.className = statusSel.value == 1 ? 'badge-success-modern' : 'badge-danger-modern';
+      badge.className = statusSel.value == 1 ? 'jornada_edit-badge-success-modern' : 'jornada_edit-badge-danger-modern';
     }
 
     actualizarResumenPesquisas();
@@ -913,8 +913,8 @@ if (!empty($pesquisasSeleccionadas)) {
     const resumen = document.getElementById('resumenPesquisas');
 
     if (checks.length === 0) {
-      preview.innerHTML = '<span class="label-muted">No hay pesquisas seleccionadas.</span>';
-      resumen.innerHTML = '<span class="label-muted">No hay pesquisas seleccionadas.</span>';
+      preview.innerHTML = '<span class="jornada_edit-label-muted">No hay pesquisas seleccionadas.</span>';
+      resumen.innerHTML = '<span class="jornada_edit-label-muted">No hay pesquisas seleccionadas.</span>';
       return;
     }
 
@@ -922,12 +922,12 @@ if (!empty($pesquisasSeleccionadas)) {
     checks.forEach(chk => {
       const nombre = chk.dataset.nombre || '';
       const emoji = chk.dataset.emoji || '🩺';
-      const clase = chk.dataset.clase || 'blue';
-      html += `<div class="chip"><div class="chip-icon ${clase}">${emoji}</div><span>${nombre}</span></div>`;
+      const clase = chk.dataset.clase || 'jornada_edit-blue';
+      html += `<div class="jornada_edit-chip"><div class="jornada_edit-chip-icon ${clase}">${emoji}</div><span>${nombre}</span></div>`;
     });
 
     preview.innerHTML = html;
-    resumen.innerHTML = `<div class="chips">${html}</div>`;
+    resumen.innerHTML = `<div class="jornada_edit-chips">${html}</div>`;
   }
 
   document.getElementById('formJornada').addEventListener('submit', function(e) {
@@ -968,11 +968,11 @@ if (!empty($pesquisasSeleccionadas)) {
           }
 
           sugBox.innerHTML = data.map(item =>
-            `<div class="inst-sugerencia" data-id="${item.id_institucion}" data-nombre="${item.nombre_institucion}">${item.nombre_institucion}</div>`
+            `<div class="jornada_edit-inst-sugerencia" data-id="${item.id_institucion}" data-nombre="${item.nombre_institucion}">${item.nombre_institucion}</div>`
           ).join('');
           sugBox.style.display = 'block';
 
-          sugBox.querySelectorAll('.inst-sugerencia').forEach(el => {
+          sugBox.querySelectorAll('.jornada_edit-inst-sugerencia').forEach(el => {
             el.addEventListener('click', function() {
               inputInst.value = this.dataset.nombre;
               hiddenId.value = this.dataset.id;

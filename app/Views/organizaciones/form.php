@@ -20,17 +20,17 @@ body {
 }
 
 /* Tarjetas con estilo amigable */
-.friendly-card {
+.org-form-friendly-card {
     border: none;
     border-radius: var(--ds-card-border-radius);
     transition: box-shadow 0.2s ease-in-out;
 }
 
-.friendly-card:hover {
+.org-form-friendly-card:hover {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
 }
 
-.friendly-card .card-header {
+.org-form-friendly-card .card-header {
     border-bottom: none;
 }
 
@@ -58,13 +58,13 @@ body {
 }
 
 /* Área de Dropzone para el logo */
-.logo-dropzone {
+.org-form-logo-dropzone {
     border-color: #d1d3e2 !important;
     cursor: pointer;
     transition: background-color 0.2s;
 }
 
-.logo-dropzone:hover {
+.org-form-logo-dropzone:hover {
     background-color: #eaecf4 !important;
 }
 
@@ -72,15 +72,15 @@ body {
 .btn.rounded-pill {
     padding-top: 0.6rem;
     padding-bottom: 0.6rem;
-    font-weight: 500;
+    font-weight: 600;
 }
 
 /* Utilidades adicionales */
-.fs-7 {
+.org-form-fs-7 {
     font-size: 0.8rem;
 }
 
-.cursor-pointer {
+.org-form-cursor-pointer {
     cursor: pointer;
 }
 </style>
@@ -107,7 +107,7 @@ body {
         <div class="row">
             <div class="col-lg-8">
                 
-                <div class="card shadow-sm mb-4 friendly-card">
+                <div class="card shadow-sm mb-4 org-form-friendly-card">
                     <div class="card-header bg-white border-0 pt-4 pb-0">
                         <h6 class="card-title text-uppercase text-muted fw-bold mb-0">1. Datos Básicos</h6>
                     </div>
@@ -173,7 +173,7 @@ body {
                     </div>
                 </div>
 
-                <div class="card shadow-sm mb-4 friendly-card">
+                <div class="card shadow-sm mb-4 org-form-friendly-card">
                     <div class="card-header bg-white border-0 pt-4 pb-0">
                         <h6 class="card-title text-uppercase text-muted fw-bold mb-0">2. Ubicación y Contacto</h6>
                     </div>
@@ -207,15 +207,15 @@ body {
                             </div>
                         </div>
                         <!-- ═══ DIRECCIÓN ═══ -->
-<div class="toggle-bar" onclick="toggleSeccion(this,'secDireccion')">
+<div class="org-form-toggle-bar" onclick="toggleSeccion(this,'secDireccion')">
     <i class="bi bi-geo-alt" style="font-size:1.1rem;color:#101a61;"></i>
     <div>
-        <div class="toggle-label">Dirección de residencia</div>
-        <div class="toggle-desc">Opcional — carga automática desde venezuela.js</div>
+        <div class="org-form-toggle-label">Dirección de residencia</div>
+        <div class="org-form-toggle-desc">Opcional — carga automática desde venezuela.js</div>
     </div>
 </div>
 
-<div class="toggle-content" id="secDireccion">
+<div class="org-form-toggle-content" id="secDireccion">
     <input type="hidden" name="direccion_activa" id="hDireccion" value="<?= old('direccion_activa', !empty($org['direccion_id']) ? '1' : '') ?>">
 
     <div class="row g-3 py-3">
@@ -263,18 +263,18 @@ body {
 
             <div class="col-lg-4">
                 
-                <div class="card shadow-sm mb-4 friendly-card">
+                <div class="card shadow-sm mb-4 org-form-friendly-card">
                     <div class="card-header bg-white border-0 pt-4 pb-0">
                         <h6 class="card-title text-uppercase text-muted fw-bold mb-0">3. Identidad Visual</h6>
                     </div>
                     <div class="card-body text-center">
                         <label class="form-label fw-bold text-dark mb-3">Logo de la organización</label>
                         
-                        <div class="logo-dropzone p-4 border border-2 border-dashed rounded-3 bg-light cursor-pointer" id="logo-dropzone">
+                        <div class="org-form-logo-dropzone p-4 border border-2 border-dashed rounded-3 bg-light org-form-cursor-pointer" id="logo-dropzone">
                             <div class="dz-message needsclick">
                                 <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
                                 <h5 class="text-muted">Arrastra el logo aquí</h5>
-                                <span class="text-muted fs-7">o haz clic para buscar</span>
+                                <span class="text-muted org-form-fs-7">o haz clic para buscar</span>
                             </div>
                             <input type="file" name="logo" id="logo-input" accept=".png, .jpg, .jpeg, .svg" class="d-none">
                             <?php
@@ -289,7 +289,7 @@ $tieneLogo = !empty($org['logo_url']);
      style="width: 100px; height: 100px; object-fit: cover;">
                         </div>
                         
-                        <div class="form-text text-muted fs-7 mt-3">
+                        <div class="form-text text-muted org-form-fs-7 mt-3">
                             Formatos aceptados: PNG, JPG, JPEG, SVG.<br>
                             Tamaño máximo sugerido: 2MB (100x100px).
                         </div>
@@ -321,7 +321,7 @@ $tieneLogo = !empty($org['logo_url']);
     document.getElementById('logo-input').addEventListener('change', function(event) {
         const input = event.target;
         const preview = document.getElementById('logo-preview');
-        const dzMessage = document.querySelector('.logo-dropzone .dz-message');
+        const dzMessage = document.querySelector('.org-form-logo-dropzone .dz-message');
 
         if (input.files && input.files[0]) {
             const reader = new FileReader();
