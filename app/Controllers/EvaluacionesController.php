@@ -120,16 +120,16 @@ class EvaluacionesController extends BaseController
             6 => ['nombre' => 'Vacunación',       'img' => 'vacunacion2.svg',        'gris' => 'vacunacion-color.svg'],
         ];
 
-            // ── Vista especializada por tipo de pesquisa ──
+        // ── Vista especializada por tipo de pesquisa ──
         // tipo_pesquisa_id = 4 → Signos vitales (vista dedicada)
         $vistasPorPesquisa = [
             4 => 'evaluaciones/signos_vitales',
             // Futuro: 1 => 'evaluaciones/antropometria',
             // Futuro: 3 => 'evaluaciones/visual',
         ];
- 
+
         $vistaFormulario = $vistasPorPesquisa[$tipoPesquisaId] ?? 'evaluaciones/formulario';
- 
+
         return view($vistaFormulario, [
             'beneficiario'         => $beneficiario,
             'tipoPesquisa'         => $tipoPesquisa,
@@ -241,7 +241,9 @@ class EvaluacionesController extends BaseController
 
         // Obtener items del catálogo
         $itemsCatalogo = $this->itemModel->getItemsPorPesquisa($tipoPesquisaId);
+
         $mapaCodigo = [];
+
         foreach ($itemsCatalogo as $item) {
             $mapaCodigo[$item['codigo']] = $item;
         }
@@ -252,10 +254,12 @@ class EvaluacionesController extends BaseController
                 // Verificar si el campo está oculto por dependencia
                 if (! empty($item['depende_de'])) {
                     $valorPadre = $campos[$item['depende_de']] ?? '';
+
                     if ($valorPadre !== $item['depende_valor']) {
-                        continue; // El campo está oculto, no validar
+                        continue;
                     }
                 }
+
                 return $this->response->setJSON([
                     'ok'      => false,
                     'mensaje' => "El campo '{$item['nombre']}' es obligatorio.",
@@ -269,7 +273,9 @@ class EvaluacionesController extends BaseController
             if (! isset($mapaCodigo[$codigo]) || $valor === '' || $valor === null) {
                 continue;
             }
+
             $item = $mapaCodigo[$codigo];
+
             if ($item['tipo_dato'] === 'number' && is_numeric($valor)) {
                 if ($item['valor_min'] !== null && (float) $valor < (float) $item['valor_min']) {
                     return $this->response->setJSON([
@@ -278,6 +284,7 @@ class EvaluacionesController extends BaseController
                         'campo'   => $codigo,
                     ]);
                 }
+
                 if ($item['valor_max'] !== null && (float) $valor > (float) $item['valor_max']) {
                     return $this->response->setJSON([
                         'ok'      => false,
@@ -289,23 +296,47 @@ class EvaluacionesController extends BaseController
         }
 
         $db = \Config\Database::connect();
-        $db->transStart();
+        $db->transBegin();
 
         try {
             if (! empty($evaluacionId)) {
-                // Editar existente
-                $this->evalModel->update($evaluacionId, [
+                // Editar evaluación existente
+                $evaluacionActual = $this->evalModel->find((int) $evaluacionId);
+
+                if (
+                    ! $evaluacionActual ||
+                    (int) $evaluacionActual['beneficiario_id'] !== $beneficiarioId ||
+                    (int) $evaluacionActual['tipo_pesquisa_id'] !== $tipoPesquisaId ||
+                    (! empty($jornadaId) && (int) $evaluacionActual['jornada_id'] !== (int) $jornadaId)
+                ) {
+                    $db->transRollback();
+
+                    return $this->response->setJSON([
+                        'ok'      => false,
+                        'mensaje' => 'La evaluación que intenta editar no corresponde a este beneficiario, pesquisa o jornada.',
+                    ]);
+                }
+
+                $this->evalModel->update((int) $evaluacionId, [
                     'observaciones'  => $observaciones,
                     'modificado_en'  => date('Y-m-d H:i:s'),
                     'modificado_por' => $usuarioId,
+                    'status_eval'    => 1,
                 ]);
+
                 $this->resultModel->eliminarPorEvaluacion((int) $evaluacionId);
             } else {
-                // Nueva evaluación — bloquear duplicado en la misma jornada
+                // Nueva evaluación
                 if (! empty($jornadaId)) {
-                    $existente = $this->evalModel->existeEnJornada($beneficiarioId, $tipoPesquisaId, (int) $jornadaId);
+                    $existente = $this->evalModel->existeEnJornada(
+                        $beneficiarioId,
+                        $tipoPesquisaId,
+                        (int) $jornadaId
+                    );
 
                     if ($existente) {
+                        $db->transRollback();
+
                         return $this->response->setJSON([
                             'ok'      => false,
                             'mensaje' => 'Esta pesquisa ya fue evaluada para este beneficiario en esta jornada. Use la opción "Editar evaluación".',
@@ -313,37 +344,36 @@ class EvaluacionesController extends BaseController
                     }
                 }
 
-                if (! empty($evaluacionId)) {
-                    $evaluacionActual = $this->evalModel->find((int) $evaluacionId);
+                $evaluacionId = $this->evalModel->insert([
+                    'beneficiario_id'  => $beneficiarioId,
+                    'tipo_pesquisa_id' => $tipoPesquisaId,
+                    'jornada_id'       => ! empty($jornadaId) ? (int) $jornadaId : null,
+                    'centro_id'        => ! empty($centroId) ? (int) $centroId : null,
+                    'fecha_evaluacion' => date('Y-m-d H:i:s'),
+                    'observaciones'    => $observaciones,
+                    'evaluado_por'     => $usuarioId,
+                    'creado_en'        => date('Y-m-d H:i:s'),
+                    'status_eval'      => 1,
+                ], true);
 
-                    if (
-                        ! $evaluacionActual ||
-                        (int) $evaluacionActual['beneficiario_id'] !== $beneficiarioId ||
-                        (int) $evaluacionActual['tipo_pesquisa_id'] !== $tipoPesquisaId ||
-                        (! empty($jornadaId) && (int) $evaluacionActual['jornada_id'] !== (int) $jornadaId)
-                    ) {
-                        return $this->response->setJSON([
-                            'ok'      => false,
-                            'mensaje' => 'La evaluación que intenta editar no corresponde a este beneficiario, pesquisa o jornada.',
-                        ]);
-                    }
+                if (empty($evaluacionId)) {
+                    $db->transRollback();
 
-                    $this->evalModel->update($evaluacionId, [
-                        'observaciones'  => $observaciones,
-                        'modificado_en'  => date('Y-m-d H:i:s'),
-                        'modificado_por' => $usuarioId,
+                    return $this->response->setJSON([
+                        'ok'      => false,
+                        'mensaje' => 'No se pudo crear la evaluación.',
                     ]);
-
-                    $this->resultModel->eliminarPorEvaluacion((int) $evaluacionId);
                 }
             }
 
             // Guardar resultados
             $datosResultados = [];
+
             foreach ($campos as $codigo => $valor) {
                 if (! isset($mapaCodigo[$codigo]) || $valor === '' || $valor === null) {
                     continue;
                 }
+
                 $datosResultados[] = [
                     'item_id'   => $mapaCodigo[$codigo]['id_item'],
                     'valor'     => $valor,
@@ -351,16 +381,21 @@ class EvaluacionesController extends BaseController
                 ];
             }
 
-            $this->resultModel->guardarLote((int) $evaluacionId, $datosResultados);
+            if (empty($evaluacionId) || (int) $evaluacionId <= 0) {
+                $db->transRollback();
 
-            $db->transComplete();
-
-            if ($db->transStatus() === false) {
-                return $this->response->setJSON(['ok' => false, 'mensaje' => 'Error al guardar.']);
+                return $this->response->setJSON([
+                    'ok'      => false,
+                    'mensaje' => 'No se pudo determinar el ID de la evaluación.',
+                ]);
             }
 
-            // URL de retorno
+            $this->resultModel->guardarLote((int) $evaluacionId, $datosResultados);
+
+            $db->transCommit();
+
             $urlRetorno = '';
+
             if (! empty($jornadaId)) {
                 $urlRetorno = base_url("jornadas/{$jornadaId}/beneficiarios");
             } elseif (! empty($centroId)) {
@@ -370,13 +405,18 @@ class EvaluacionesController extends BaseController
             return $this->response->setJSON([
                 'ok'            => true,
                 'mensaje'       => 'Evaluación guardada correctamente.',
-                'evaluacion_id' => $evaluacionId,
+                'evaluacion_id' => (int) $evaluacionId,
                 'url_retorno'   => $urlRetorno,
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $db->transRollback();
+
             log_message('error', 'Error guardando evaluación: ' . $e->getMessage());
-            return $this->response->setJSON(['ok' => false, 'mensaje' => 'Error interno al guardar.']);
+
+            return $this->response->setJSON([
+                'ok'      => false,
+                'mensaje' => 'Error interno al guardar.',
+            ]);
         }
     }
 

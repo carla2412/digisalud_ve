@@ -691,7 +691,7 @@ $jsSections[] = $observacionesSection;
 
 <div class="lab-page" data-page="evaluacion">
     <aside class="sidebar">
-        <div class="sidebar__logo">💧</div>
+        
 
         <?php foreach ($pesquisasActividad as $pid): ?>
             <?php
