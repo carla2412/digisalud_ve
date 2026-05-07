@@ -607,15 +607,20 @@ $jsSections[] = $observacionesSection;
         box-sizing: border-box;
     }
 
-    .btn1 {
-        border: 1px solid white;
-         
-        min-height: 42px;
-        padding: 0 16px;
-        
-       
+    .actions-bar .btn {
+        border: 1px solid var(--lab-border);
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 12px;
+        font-size: .86rem;
+        font-weight: 900;
         cursor: pointer;
         transition: .2s ease;
+    }
+
+    .actions-bar .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(15, 23, 42, .10);
     }
 
     .btn--primary {
@@ -721,6 +726,241 @@ $jsSections[] = $observacionesSection;
             flex: 1 1 auto;
         }
     }
+
+
+    /* UX refresh: mantiene la lógica, estructura PHP e iconografía existente de CI4 */
+    body {
+        background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+    }
+
+    .lab-page {
+        background: transparent;
+    }
+
+    .sidebar {
+        background: linear-gradient(180deg, #102073 0%, #08144f 100%);
+        box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
+    }
+
+    .sidebar__logo,
+    .sidebar__item {
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, .10);
+    }
+
+    .sidebar__item:hover,
+    .sidebar__item.active {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, .18);
+    }
+
+    .lab-main {
+        max-width: 1720px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .lab-header {
+        background: rgba(255, 255, 255, .86);
+        border: 1px solid var(--lab-border);
+        border-radius: 26px;
+        padding: 22px;
+        margin-bottom: 18px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, .07);
+        backdrop-filter: blur(10px);
+    }
+
+    .lab-icon {
+        border: 1px solid var(--lab-border);
+        box-shadow: 0 12px 26px rgba(16, 26, 97, .10);
+    }
+
+    .lab-badge {
+        letter-spacing: .01em;
+    }
+
+    .lab-progress {
+        background: #f8fbff;
+        border: 1px solid var(--lab-border);
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .progress-bar {
+        height: 10px;
+        background: #e5ecf7;
+    }
+
+    .stepper {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding: 0 2px 12px;
+        scroll-snap-type: x proximity;
+    }
+
+    .stepper::-webkit-scrollbar {
+        height: 7px;
+    }
+
+    .stepper::-webkit-scrollbar-thumb {
+        background: #c8d4e8;
+        border-radius: 999px;
+    }
+
+    .step {
+        scroll-snap-align: start;
+        min-height: 42px;
+        background: rgba(255, 255, 255, .92);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, .04);
+    }
+
+    .step:hover {
+        border-color: var(--lab-primary);
+        color: var(--lab-primary);
+        transform: translateY(-1px);
+    }
+
+    .step.completed span::after {
+        content: '✓';
+        font-size: .72rem;
+        line-height: 1;
+    }
+
+    .step.completed span {
+        font-size: 0;
+        background: var(--lab-success);
+    }
+
+    .lab-layout {
+        gap: 22px;
+    }
+
+    .section-card,
+    .summary-card {
+        border-radius: 24px;
+        box-shadow: 0 18px 44px rgba(15, 23, 42, .07);
+    }
+
+    .section-card {
+        padding: 24px;
+    }
+
+    .section-header {
+        align-items: flex-start;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #edf2f7;
+    }
+
+    .section-status {
+        background: var(--lab-primary-soft);
+        color: var(--lab-primary);
+        border-radius: 999px;
+        padding: 6px 10px;
+    }
+
+    .field {
+        background: #fbfdff;
+        border: 1px solid #edf2f7;
+        border-radius: 18px;
+        padding: 14px;
+        transition: .18s ease;
+    }
+
+    .field:focus-within {
+        background: #fff;
+        border-color: rgba(16, 26, 97, .22);
+        box-shadow: 0 12px 28px rgba(16, 26, 97, .08);
+        transform: translateY(-1px);
+    }
+
+    .field label {
+        color: var(--lab-primary);
+    }
+
+    .field small {
+        background: #f1f5fb;
+        border-radius: 999px;
+        display: inline-flex;
+        padding: 4px 9px;
+        margin-top: 8px;
+    }
+
+    .field--warning small {
+        background: #fff7ed;
+        color: #9a3412;
+    }
+
+    .summary-panel {
+        top: 18px;
+    }
+
+    .summary-card h2,
+    .summary-card h3 {
+        margin-bottom: 6px;
+    }
+
+    .summary-row strong {
+        font-weight: 900;
+    }
+
+    .actions-bar {
+        position: sticky;
+        bottom: 0;
+        background: rgba(248, 251, 255, .92);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--lab-border);
+        border-radius: 20px 20px 0 0;
+        padding: 12px;
+        box-shadow: 0 -16px 36px rgba(15, 23, 42, .08);
+    }
+
+    .actions-help {
+        margin-right: auto;
+        color: var(--lab-muted);
+        font-size: .78rem;
+        font-weight: 800;
+    }
+
+    .btn--primary {
+        border-color: var(--lab-primary) !important;
+        box-shadow: 0 10px 22px rgba(16, 26, 97, .18);
+    }
+
+    .btn--secondary {
+        border-color: transparent !important;
+    }
+
+    .btn--ghost:hover {
+        background: #fff;
+        color: var(--lab-primary);
+    }
+
+    .toast {
+        box-shadow: 0 18px 36px rgba(15, 23, 42, .22);
+    }
+
+    @media (max-width: 760px) {
+        .lab-header {
+            border-radius: 20px;
+            padding: 18px;
+        }
+
+        .section-card {
+            padding: 18px;
+        }
+
+        .section-header {
+            flex-direction: column;
+        }
+
+        .actions-help {
+            flex: 1 0 100%;
+            text-align: center;
+            order: -1;
+            margin: 0 0 4px;
+        }
+    }
+
 </style>
 
 <div class="lab-page" data-page="evaluacion">
@@ -1104,6 +1344,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
         </section>
 
         <div class="actions-bar">
+            <div class="actions-help" aria-live="polite">Navegación rápida: usa ← Anterior y → Siguiente.</div>
             <button id="btnCancelar" type="button" class="btn btn--ghost">Cancelar</button>
 
             <button id="btnAnterior" type="button" class="btn btn--secondary">Anterior</button>
@@ -1149,7 +1390,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
     const btnGuardar = document.getElementById('btnGuardarEval');
 
     const btnCancelar = document.getElementById('btnCancelar');
-     const fechaEvaluacionInput = document.getElementById('fecha_evaluacion');
+     const fechaEvaluacionInput = document.getElementById('eval_fecha_hidden');
     const summaryFecha = document.getElementById('summaryFecha');
     if (fechaEvaluacionInput && summaryFecha) {
   fechaEvaluacionInput.addEventListener('change', () => {
@@ -1389,6 +1630,11 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
 
 
 
+    function loadDraft() {
+        // Se mantiene como punto seguro de extensión para borradores sin alterar el flujo actual.
+        return null;
+    }
+
     function cancelForm() {
         const shouldCancel = window.confirm('¿Desea cancelar la evaluación? Los cambios no guardados se perderán.');
         if (!shouldCancel) return;
@@ -1525,15 +1771,31 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
 
     btnCancelar.addEventListener('click', cancelForm);
 
+    document.addEventListener('keydown', event => {
+        const tagName = event.target?.tagName?.toLowerCase();
+        const isTyping = ['input', 'select', 'textarea'].includes(tagName);
+
+        if (isTyping) return;
+
+        if (event.key === 'ArrowRight') {
+            event.preventDefault();
+            if (!btnSiguiente.hidden) goNext();
+        }
+
+        if (event.key === 'ArrowLeft') {
+            event.preventDefault();
+            goPrevious();
+        }
+    });
+
     loadDraft();
     activarDependencias();
     setSection(LAB_SECTIONS[0]?.id || 'observaciones');
     updateSummary();
+  
+</script>
 <?php if ((int) $tipoPesquisaId === 2): ?>
 <script src="<?= base_url('js/lab-interpretacion.js') ?>"></script>
 <?php endif; ?>
 
-
-
-</script>
 <?= $this->endSection() ?>

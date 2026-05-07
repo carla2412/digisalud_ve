@@ -886,7 +886,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
               <label for="evaluationDate">Fecha evaluación <span class="required">*</span></label>
               <div class="input-wrap">
                 <input id="evaluationDate" name="fecha_evaluacion" data-codigo="fecha_evaluacion" value="<?= esc($fechaEvaluacionVista) ?>" required />
-                <span class="calendar">▣</span>
+                <span class="calendar">🗓️</span>
               </div>
               <div class="field-error">La fecha de evaluación es obligatoria.</div>
             </div>
@@ -904,7 +904,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
             <div class="field">
               <label for="diastolic">Tensión arterial diastólica <span class="required">*</span></label>
               <div class="input-wrap">
-                <input id="diastolic" name="campos[tension_diastolica]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['tension_diastolica'] ?? '', '80,0000') ?>" class="campo-signo-vital" data-codigo="tension_diastolica" data-label="Tensión diastólica" data-unidad="mmHg" data-min="40" data-max="120" data-alerta-min="60" data-alerta-max="90" required />
+                <input id="diastolic" name="campos[tension_diastolica]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['tension_diastolica'] ?? '', '80,00') ?>" class="campo-signo-vital" data-codigo="tension_diastolica" data-label="Tensión diastólica" data-unidad="mmHg" data-min="40" data-max="120" data-alerta-min="60" data-alerta-max="90" required />
                 <span class="unit">mmHg</span>
               </div>
               <div class="hint">Rango esperado: 60 - 90 mmHg.</div>
@@ -990,7 +990,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         <div class="actions">
           <button type="button" id="btnCancelarSignos" class="btn secondary">Cancelar</button>
           <button type="button" id="btnLimpiarSignos" class="btn soft">Limpiar</button>
-          <button type="button" id="btnGuardarSignos" class="btn primary">▣ Guardar evaluación</button>
+          <button type="button" id="btnGuardarSignos" class="btn primary">Guardar</button>
         </div>
       </form>
     </section>

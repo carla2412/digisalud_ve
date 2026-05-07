@@ -1,571 +1,343 @@
 /**
- * ═══════════════════════════════════════════════════════════════════
  * DigiSalud — Interpretación clínica para Laboratorio (pesquisa 2)
- * ═══════════════════════════════════════════════════════════════════
+ * Archivo: public/js/lab-interpretacion.js — v1.3
  *
- * Archivo: public/js/lab-interpretacion.js
- *
- * Funciones puras que implementan:
- *   1. Clasificación de anemia por hemoglobina (edad, sexo, embarazo)
- *   2. Riesgo cardiometabólico (triglicéridos, HDL, VLDL, LDL)
- *   3. Semáforo de anemia (conteo acumulado por jornada/centro)
- *   4. Validación inteligente pre-guardado
- *
- * Se inicializa automáticamente si existe el div#labDatosBeneficiario
- * con los data-attributes necesarios.
- *
- * NO modifica la función guardarEvaluacion() existente. Solo agrega
- * un interceptor que se ejecuta ANTES del POST AJAX.
+ * Corregido v1.3:
+ *   - Eliminado semáforo AJAX (no aplica — es clasificación INDIVIDUAL)
+ *   - Widget "Estado clínico" en panel derecho se actualiza en tiempo real
+ *   - Badges debajo de inputs + indicadores en panel derecho
+ *   - Todo client-side, sin endpoints server-side
+ *   - Clases CSS: lab-interp-badge-* (sin colisión con .lab-badge)
+ *   - renderBadge busca .field como wrapper (wizard layout)
+ *   - Todo en try/catch para nunca romper el wizard
  */
 
 var LabInterpretacion = (function () {
     'use strict';
 
-    // ══════════════════════════════════════════════════════════════
-    // CONFIGURACIÓN: Colores y clases CSS para badges
-    // ══════════════════════════════════════════════════════════════
+    // ═══ Configuración de clases CSS ═══
 
     var CLASES = {
-        normal:   { clase: 'lab-badge lab-badge-normal',   icono: 'bi-check-circle',         texto: 'Normal' },
-        leve:     { clase: 'lab-badge lab-badge-leve',     icono: 'bi-exclamation-triangle', texto: 'Anemia leve' },
-        moderada: { clase: 'lab-badge lab-badge-moderada', icono: 'bi-exclamation-triangle', texto: 'Anemia moderada' },
-        severa:   { clase: 'lab-badge lab-badge-severa',   icono: 'bi-exclamation-circle',   texto: 'Anemia severa' },
-        revisar:  { clase: 'lab-badge lab-badge-revisar',  icono: 'bi-question-circle',      texto: 'Revisar datos' },
-        sin_dato: { clase: 'lab-badge lab-badge-revisar',  icono: 'bi-dash-circle',          texto: 'Sin registrar' }
+        normal:   { clase: 'lab-interp-badge lab-interp-badge-normal',   icono: 'bi-check-circle',         texto: 'Normal' },
+        leve:     { clase: 'lab-interp-badge lab-interp-badge-leve',     icono: 'bi-exclamation-triangle', texto: 'Anemia leve' },
+        moderada: { clase: 'lab-interp-badge lab-interp-badge-moderada', icono: 'bi-exclamation-triangle', texto: 'Anemia moderada' },
+        severa:   { clase: 'lab-interp-badge lab-interp-badge-severa',   icono: 'bi-exclamation-circle',   texto: 'Anemia severa' },
+        revisar:  { clase: 'lab-interp-badge lab-interp-badge-revisar',  icono: 'bi-question-circle',      texto: 'Revisar datos' },
+        sin_dato: { clase: 'lab-interp-badge lab-interp-badge-revisar',  icono: 'bi-dash-circle',          texto: 'Sin registrar' }
     };
 
     var CLASES_CARDIO = {
-        normal:       { clase: 'lab-badge lab-badge-normal',   icono: 'bi-check-circle',         texto: 'Normal' },
-        limite_alto:  { clase: 'lab-badge lab-badge-leve',     icono: 'bi-exclamation-triangle', texto: 'Límite alto' },
-        alto:         { clase: 'lab-badge lab-badge-moderada', icono: 'bi-exclamation-triangle', texto: 'Alto' },
-        muy_alto:     { clase: 'lab-badge lab-badge-severa',   icono: 'bi-exclamation-circle',   texto: 'Muy alto' },
-        riesgo:       { clase: 'lab-badge lab-badge-moderada', icono: 'bi-heart-pulse',          texto: 'Riesgo cardiometabólico' }
+        normal:       { clase: 'lab-interp-badge lab-interp-badge-normal',   icono: 'bi-check-circle',         texto: 'Normal' },
+        limite_alto:  { clase: 'lab-interp-badge lab-interp-badge-leve',     icono: 'bi-exclamation-triangle', texto: 'Límite alto' },
+        alto:         { clase: 'lab-interp-badge lab-interp-badge-moderada', icono: 'bi-exclamation-triangle', texto: 'Alto' },
+        muy_alto:     { clase: 'lab-interp-badge lab-interp-badge-severa',   icono: 'bi-exclamation-circle',   texto: 'Muy alto' },
+        riesgo:       { clase: 'lab-interp-badge lab-interp-badge-moderada', icono: 'bi-heart-pulse',          texto: 'Riesgo cardiometabólico' }
     };
 
-    // ══════════════════════════════════════════════════════════════
-    // 1. CLASIFICACIÓN DE ANEMIA
-    // ══════════════════════════════════════════════════════════════
+    // Mapa de clave → clase CSS del indicador en panel derecho
+    var IND_CLASES = {
+        normal: 'lab-ind-normal', leve: 'lab-ind-leve', moderada: 'lab-ind-moderada',
+        severa: 'lab-ind-severa', revisar: 'lab-ind-revisar', sin_dato: 'lab-ind-pending',
+        limite_alto: 'lab-ind-leve', alto: 'lab-ind-moderada', muy_alto: 'lab-ind-severa',
+        riesgo: 'lab-ind-moderada', pending: 'lab-ind-pending'
+    };
 
-    /**
-     * Clasifica anemia según hemoglobina, edad en días, sexo y embarazo.
-     *
-     * @param {number} hb          - Hemoglobina en g/dL
-     * @param {number} edadDias    - Edad en días al momento de la medición
-     * @param {string} sexo        - 'M' o 'F'
-     * @param {string} embarazada  - 's' o 'n'
-     * @returns {object} { clave, texto, rango, clase, icono }
-     */
+    // ═══ 1. CLASIFICACIÓN DE ANEMIA ═══
+
     function clasificarAnemia(hb, edadDias, sexo, embarazada) {
-        // Validaciones previas
-        if (hb === null || hb === undefined || hb === '' || isNaN(hb)) {
-            return _resultado('sin_dato', '', CLASES);
-        }
-
+        if (hb === null || hb === undefined || hb === '' || isNaN(hb)) return _r('sin_dato', '', CLASES);
         hb = parseFloat(hb);
+        if (edadDias <= 0) return _r('revisar', 'Edad inválida', CLASES);
+        if (hb > 20 || (hb > 0 && hb < 3)) return _r('revisar', 'Hb fuera de rango válido', CLASES);
 
-        if (edadDias <= 0) {
-            return _resultado('revisar', 'Edad inválida', CLASES);
-        }
-
-        if (hb > 20 || (hb > 0 && hb < 3)) {
-            return _resultado('revisar', 'Hb fuera de rango válido', CLASES);
-        }
-
-        // A. Edad 183–1825 días (≈6 meses a 5 años)
         if (edadDias >= 183 && edadDias <= 1825) {
-            if (hb >= 11.0 && hb <= 20)  return _resultado('normal',   '11.0–20',     CLASES);
-            if (hb >= 10.0 && hb <= 10.9) return _resultado('leve',     '10.0–10.9',   CLASES);
-            if (hb >= 7.0  && hb <= 9.9)  return _resultado('moderada', '7.0–9.9',     CLASES);
-            if (hb >= 3.0  && hb < 7.0)   return _resultado('severa',   '3.0–<7.0',    CLASES);
-            return _resultado('revisar', '', CLASES);
+            if (hb >= 11.0 && hb <= 20)   return _r('normal',   '11.0–20',   CLASES);
+            if (hb >= 10.0 && hb <= 10.9) return _r('leve',     '10.0–10.9', CLASES);
+            if (hb >= 7.0  && hb <= 9.9)  return _r('moderada', '7.0–9.9',   CLASES);
+            if (hb >= 3.0  && hb < 7.0)   return _r('severa',   '3.0–<7.0',  CLASES);
+            return _r('revisar', '', CLASES);
         }
-
-        // B. Edad 1826–4382 días (≈5 a 12 años)
         if (edadDias >= 1826 && edadDias <= 4382) {
-            if (hb >= 11.5 && hb <= 20)   return _resultado('normal',   '11.5–20',     CLASES);
-            if (hb >= 11.0 && hb <= 11.4)  return _resultado('leve',     '11.0–11.4',   CLASES);
-            if (hb >= 8.0  && hb <= 10.9)  return _resultado('moderada', '8.0–10.9',    CLASES);
-            if (hb >= 3.0  && hb < 8.0)    return _resultado('severa',   '3.0–<8.0',    CLASES);
-            return _resultado('revisar', '', CLASES);
+            if (hb >= 11.5 && hb <= 20)   return _r('normal',   '11.5–20',   CLASES);
+            if (hb >= 11.0 && hb <= 11.4) return _r('leve',     '11.0–11.4', CLASES);
+            if (hb >= 8.0  && hb <= 10.9) return _r('moderada', '8.0–10.9',  CLASES);
+            if (hb >= 3.0  && hb < 8.0)   return _r('severa',   '3.0–<8.0',  CLASES);
+            return _r('revisar', '', CLASES);
         }
-
-        // C. Edad 4383–5478 días (≈12 a 15 años)
         if (edadDias >= 4383 && edadDias <= 5478) {
-            if (hb >= 12.0 && hb <= 20)   return _resultado('normal',   '12.0–20',     CLASES);
-            if (hb >= 11.0 && hb <= 11.9)  return _resultado('leve',     '11.0–11.9',   CLASES);
-            if (hb >= 8.0  && hb <= 10.9)  return _resultado('moderada', '8.0–10.9',    CLASES);
-            if (hb >= 3.0  && hb < 8.0)    return _resultado('severa',   '3.0–<8.0',    CLASES);
-            return _resultado('revisar', '', CLASES);
+            if (hb >= 12.0 && hb <= 20)   return _r('normal',   '12.0–20',   CLASES);
+            if (hb >= 11.0 && hb <= 11.9) return _r('leve',     '11.0–11.9', CLASES);
+            if (hb >= 8.0  && hb <= 10.9) return _r('moderada', '8.0–10.9',  CLASES);
+            if (hb >= 3.0  && hb < 8.0)   return _r('severa',   '3.0–<8.0',  CLASES);
+            return _r('revisar', '', CLASES);
         }
-
-        // D. Edad >= 5479 días (≈15+ años) — depende de sexo/embarazo
         if (edadDias >= 5479) {
-            // D.1 Masculino
             if (sexo === 'M') {
-                if (hb >= 13.0 && hb <= 20)   return _resultado('normal',   '13.0–20',     CLASES);
-                if (hb >= 11.0 && hb <= 12.9)  return _resultado('leve',     '11.0–12.9',   CLASES);
-                if (hb >= 8.0  && hb <= 10.9)  return _resultado('moderada', '8.0–10.9',    CLASES);
-                if (hb >= 3.0  && hb < 8.0)    return _resultado('severa',   '3.0–<8.0',    CLASES);
-                return _resultado('revisar', '', CLASES);
+                if (hb >= 13.0 && hb <= 20)   return _r('normal',   '13.0–20',   CLASES);
+                if (hb >= 11.0 && hb <= 12.9) return _r('leve',     '11.0–12.9', CLASES);
+                if (hb >= 8.0  && hb <= 10.9) return _r('moderada', '8.0–10.9',  CLASES);
+                if (hb >= 3.0  && hb < 8.0)   return _r('severa',   '3.0–<8.0',  CLASES);
+                return _r('revisar', '', CLASES);
             }
-
-            // D.2 Femenino embarazada
             if (sexo === 'F' && embarazada === 's') {
-                if (hb >= 11.0 && hb <= 20)   return _resultado('normal',   '11.0–20',     CLASES);
-                if (hb >= 10.0 && hb <= 10.9)  return _resultado('leve',     '10.0–10.9',   CLASES);
-                if (hb >= 7.0  && hb <= 9.9)   return _resultado('moderada', '7.0–9.9',     CLASES);
-                if (hb >= 3.0  && hb < 7.0)    return _resultado('severa',   '3.0–<7.0',    CLASES);
-                return _resultado('revisar', '', CLASES);
+                if (hb >= 11.0 && hb <= 20)   return _r('normal',   '11.0–20',   CLASES);
+                if (hb >= 10.0 && hb <= 10.9) return _r('leve',     '10.0–10.9', CLASES);
+                if (hb >= 7.0  && hb <= 9.9)  return _r('moderada', '7.0–9.9',   CLASES);
+                if (hb >= 3.0  && hb < 7.0)   return _r('severa',   '3.0–<7.0',  CLASES);
+                return _r('revisar', '', CLASES);
             }
-
-            // D.3 Femenino no embarazada
-            if (hb >= 12.0 && hb <= 20)   return _resultado('normal',   '12.0–20',     CLASES);
-            if (hb >= 11.0 && hb <= 11.9)  return _resultado('leve',     '11.0–11.9',   CLASES);
-            if (hb >= 8.0  && hb <= 10.9)  return _resultado('moderada', '8.0–10.9',    CLASES);
-            if (hb >= 3.0  && hb < 8.0)    return _resultado('severa',   '3.0–<8.0',    CLASES);
-            return _resultado('revisar', '', CLASES);
+            if (hb >= 12.0 && hb <= 20)   return _r('normal',   '12.0–20',   CLASES);
+            if (hb >= 11.0 && hb <= 11.9) return _r('leve',     '11.0–11.9', CLASES);
+            if (hb >= 8.0  && hb <= 10.9) return _r('moderada', '8.0–10.9',  CLASES);
+            if (hb >= 3.0  && hb < 8.0)   return _r('severa',   '3.0–<8.0',  CLASES);
+            return _r('revisar', '', CLASES);
         }
-
-        // Edad < 183 días — fuera de rango de evaluación
-        return _resultado('revisar', 'Menor de 6 meses', CLASES);
+        return _r('revisar', 'Menor de 6 meses', CLASES);
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // 2. RIESGO CARDIOMETABÓLICO
-    // ══════════════════════════════════════════════════════════════
+    // ═══ 2. RIESGO CARDIOMETABÓLICO ═══
 
-    /**
-     * Clasifica triglicéridos.
-     */
-    function clasificarTrigliceridos(valor) {
-        if (!valor && valor !== 0) return null;
-        valor = parseFloat(valor);
-        if (isNaN(valor)) return null;
-
-        if (valor < 150)               return _resultado('normal',      '<150 mg/dL',      CLASES_CARDIO);
-        if (valor >= 150 && valor <= 199) return _resultado('limite_alto', '150–199 mg/dL',   CLASES_CARDIO);
-        if (valor >= 200 && valor <= 499) return _resultado('alto',        '200–499 mg/dL',   CLASES_CARDIO);
-        if (valor >= 500)               return _resultado('muy_alto',    '≥500 mg/dL',      CLASES_CARDIO);
-        return null;
+    function clasificarTrigliceridos(v) {
+        if (!v && v !== 0) return null; v = parseFloat(v); if (isNaN(v)) return null;
+        if (v < 150) return _r('normal', '<150 mg/dL', CLASES_CARDIO);
+        if (v <= 199) return _r('limite_alto', '150–199 mg/dL', CLASES_CARDIO);
+        if (v <= 499) return _r('alto', '200–499 mg/dL', CLASES_CARDIO);
+        return _r('muy_alto', '≥500 mg/dL', CLASES_CARDIO);
+    }
+    function clasificarHDL(v, sexo) {
+        if (!v && v !== 0) return null; v = parseFloat(v); if (isNaN(v)) return null;
+        if (sexo === 'M') return v >= 40 ? _r('normal', '≥40', CLASES_CARDIO) : _r('riesgo', '<40', CLASES_CARDIO);
+        return v >= 50 ? _r('normal', '≥50', CLASES_CARDIO) : _r('riesgo', '<50', CLASES_CARDIO);
+    }
+    function clasificarVLDL(v) {
+        if (!v && v !== 0) return null; v = parseFloat(v); if (isNaN(v)) return null;
+        return v < 30 ? _r('normal', '<30', CLASES_CARDIO) : _r('riesgo', '≥30', CLASES_CARDIO);
+    }
+    function clasificarLDL(v) {
+        if (!v && v !== 0) return null; v = parseFloat(v); if (isNaN(v)) return null;
+        return v < 100 ? _r('normal', '<100', CLASES_CARDIO) : _r('riesgo', '≥100', CLASES_CARDIO);
     }
 
-    /**
-     * Clasifica HDL-Colesterol según sexo.
-     */
-    function clasificarHDL(valor, sexo) {
-        if (!valor && valor !== 0) return null;
-        valor = parseFloat(valor);
-        if (isNaN(valor)) return null;
+    // ═══ 3. VALIDACIÓN PRE-GUARDADO ═══
 
-        if (sexo === 'M') {
-            return valor >= 40
-                ? _resultado('normal', '≥40 mg/dL', CLASES_CARDIO)
-                : _resultado('riesgo', '<40 mg/dL',  CLASES_CARDIO);
-        }
-        // Femenino
-        return valor >= 50
-            ? _resultado('normal', '≥50 mg/dL', CLASES_CARDIO)
-            : _resultado('riesgo', '<50 mg/dL',  CLASES_CARDIO);
-    }
-
-    /**
-     * Clasifica VLDL-Colesterol.
-     */
-    function clasificarVLDL(valor) {
-        if (!valor && valor !== 0) return null;
-        valor = parseFloat(valor);
-        if (isNaN(valor)) return null;
-
-        return valor < 30
-            ? _resultado('normal', '<30 mg/dL', CLASES_CARDIO)
-            : _resultado('riesgo', '≥30 mg/dL', CLASES_CARDIO);
-    }
-
-    /**
-     * Clasifica LDL-Colesterol.
-     */
-    function clasificarLDL(valor) {
-        if (!valor && valor !== 0) return null;
-        valor = parseFloat(valor);
-        if (isNaN(valor)) return null;
-
-        return valor < 100
-            ? _resultado('normal', '<100 mg/dL', CLASES_CARDIO)
-            : _resultado('riesgo', '≥100 mg/dL', CLASES_CARDIO);
-    }
-
-    // ══════════════════════════════════════════════════════════════
-    // 3. VALIDACIÓN PRE-GUARDADO
-    // ══════════════════════════════════════════════════════════════
-
-    /**
-     * Revisa valores antes de guardar y retorna advertencias.
-     * @returns {Array} Lista de objetos { tipo: 'warning'|'info'|'error', mensaje }
-     */
     function validarPreGuardado(edadDias, sexo, embarazada) {
-        var advertencias = [];
+        var warns = [];
         var hbInput = document.getElementById('campo_hemoglobina');
         var hb = hbInput ? parseFloat(hbInput.value) : NaN;
 
-        // Edad inválida
         if (edadDias <= 0) {
-            advertencias.push({
-                tipo: 'error',
-                mensaje: 'No se puede calcular interpretación de anemia: edad inválida. Verifique la fecha de nacimiento del beneficiario.'
-            });
+            warns.push({ tipo: 'error', mensaje: 'No se puede calcular interpretación de anemia: edad inválida. Verifique la fecha de nacimiento.' });
         }
-
-        // Hemoglobina en rango "revisar"
         if (!isNaN(hb) && (hb > 20 || (hb > 0 && hb < 3))) {
-            advertencias.push({
-                tipo: 'warning',
-                mensaje: 'El valor de hemoglobina (' + hb.toFixed(1) + ' g/dL) está en rango de "Revisar datos". ¿Desea guardar de todas formas?'
-            });
+            warns.push({ tipo: 'warning', mensaje: 'Hemoglobina (' + hb.toFixed(1) + ' g/dL) en rango "Revisar datos". ¿Desea guardar?' });
         }
-
-        // Hemoglobina vacía
         if (hbInput && (hbInput.value === '' || hbInput.value === null)) {
-            advertencias.push({
-                tipo: 'info',
-                mensaje: 'No se registró hemoglobina. La clasificación de anemia quedará como "Sin registrar datos de hemoglobina".'
-            });
+            warns.push({ tipo: 'info', mensaje: 'No se registró hemoglobina. La clasificación quedará como "Sin registrar".' });
         }
 
-        // Riesgos cardiometabólicos
         var riesgos = [];
-        var campos_cardio = [
-            { id: 'campo_trigliceridos',   nombre: 'Triglicéridos',   fn: function(v) { return clasificarTrigliceridos(v); } },
-            { id: 'campo_hdl_colesterol',  nombre: 'HDL-Colesterol',  fn: function(v) { return clasificarHDL(v, sexo); } },
-            { id: 'campo_vldl_colesterol', nombre: 'VLDL-Colesterol', fn: function(v) { return clasificarVLDL(v); } },
-            { id: 'campo_ldl_colesterol',  nombre: 'LDL-Colesterol',  fn: function(v) { return clasificarLDL(v); } }
-        ];
-
-        campos_cardio.forEach(function(c) {
+        [
+            { id: 'campo_trigliceridos', nombre: 'Triglicéridos', fn: clasificarTrigliceridos },
+            { id: 'campo_hdl_colesterol', nombre: 'HDL', fn: function(v) { return clasificarHDL(v, sexo); } },
+            { id: 'campo_vldl_colesterol', nombre: 'VLDL', fn: clasificarVLDL },
+            { id: 'campo_ldl_colesterol', nombre: 'LDL', fn: clasificarLDL }
+        ].forEach(function(c) {
             var el = document.getElementById(c.id);
             if (!el || el.value === '') return;
-            var result = c.fn(el.value);
-            if (result && result.clave !== 'normal') {
-                riesgos.push(c.nombre + ': ' + result.texto + ' (' + result.rango + ')');
-            }
+            var res = c.fn(el.value);
+            if (res && res.clave !== 'normal') riesgos.push(c.nombre + ': ' + res.texto);
         });
 
         if (riesgos.length > 0) {
-            advertencias.push({
-                tipo: 'warning',
-                mensaje: 'Se detectaron ' + riesgos.length + ' indicador(es) de riesgo cardiometabólico:\n• ' + riesgos.join('\n• ')
-            });
+            warns.push({ tipo: 'warning', mensaje: riesgos.length + ' riesgo(s) cardiometabólico(s):\n• ' + riesgos.join('\n• ') });
         }
-
-        return advertencias;
+        return warns;
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // 4. RENDERIZADO DE BADGES
-    // ══════════════════════════════════════════════════════════════
+    // ═══ 4. RENDERIZADO DE BADGES (debajo de inputs) ═══
 
-    /**
-     * Inserta/actualiza un badge debajo de un input.
-     */
     function renderBadge(inputId, resultado) {
         var input = document.getElementById(inputId);
         if (!input) return;
-
-        var wrap = input.closest('.eval-campo-wrap');
+        var wrap = input.closest('.field');
         if (!wrap) return;
 
-        // Remover badge anterior si existe
-        var anterior = wrap.querySelector('.lab-badge');
+        var anterior = wrap.querySelector('.lab-interp-badge');
         if (anterior) anterior.remove();
-
         if (!resultado) return;
 
         var badge = document.createElement('div');
         badge.className = resultado.clase;
         badge.innerHTML = '<i class="bi ' + resultado.icono + '"></i> ' +
-                          resultado.texto +
-                          (resultado.rango ? ' <span class="lab-badge-rango">(' + resultado.rango + ')</span>' : '');
-
-        // Insertar después del input (o del contenedor del input)
-        input.parentNode.insertBefore(badge, input.nextSibling);
+            resultado.texto +
+            (resultado.rango ? ' <span class="lab-interp-badge-rango">(' + resultado.rango + ')</span>' : '');
+        wrap.appendChild(badge);
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // 5. SEMÁFORO DE ANEMIA (carga AJAX)
-    // ══════════════════════════════════════════════════════════════
+    // ═══ 5. ACTUALIZAR INDICADOR EN PANEL DERECHO ═══
 
-    /**
-     * Carga y renderiza el widget de semáforo en el panel derecho.
-     */
-    function cargarSemaforo(baseUrl, jornadaId, centroId) {
-        var contenedor = document.getElementById('labSemaforoWidget');
-        if (!contenedor) return;
+    function actualizarIndicador(elementId, resultado, textoDefault) {
+        var el = document.getElementById(elementId);
+        if (!el) return;
 
-        var url = baseUrl + 'lab/semaforo?';
-        if (jornadaId) url += 'jornada_id=' + jornadaId;
-        else if (centroId) url += 'centro_id=' + centroId;
-        else return;
+        if (!resultado) {
+            el.className = 'lab-indicador lab-ind-pending';
+            el.style.display = 'none';
+            return;
+        }
 
-        contenedor.innerHTML = '<div class="lab-semaforo-loading"><i class="bi bi-hourglass-split"></i> Cargando semáforo...</div>';
+        // Mostrar el indicador
+        el.style.display = 'flex';
 
-        fetch(url, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-            if (!data.ok) {
-                contenedor.innerHTML = '<div class="lab-semaforo-loading">No hay datos disponibles</div>';
-                return;
-            }
-            renderSemaforo(contenedor, data);
-        })
-        .catch(function() {
-            contenedor.innerHTML = '<div class="lab-semaforo-loading">Error al cargar</div>';
-        });
+        // Asignar clase de color
+        var claseColor = IND_CLASES[resultado.clave] || 'lab-ind-pending';
+        el.className = 'lab-indicador ' + claseColor;
+
+        // Actualizar texto
+        var valorEl = el.querySelector('.lab-indicador-valor');
+        if (valorEl) {
+            var texto = resultado.texto;
+            if (resultado.rango) texto += ' (' + resultado.rango + ')';
+            valorEl.textContent = texto;
+        }
     }
 
-    /**
-     * Renderiza el HTML del semáforo.
-     */
-    function renderSemaforo(contenedor, data) {
-        var s = data.semaforo;
-        var total = s.verde + s.amarillo + s.naranja + s.rojo;
-
-        var pct = function(val) {
-            return total > 0 ? Math.round(val * 100 / total) : 0;
-        };
-
-        var html = '' +
-            '<div class="lab-semaforo-header">' +
-                '<i class="bi bi-bar-chart-fill"></i> ' +
-                '<strong>Semáforo de anemia</strong>' +
-                '<span class="lab-semaforo-total">' + data.total_evaluados + ' evaluados</span>' +
-            '</div>' +
-            '<div class="lab-semaforo-grid">' +
-                _semaforoItem('verde',    s.verde,    'Normal',   pct(s.verde)) +
-                _semaforoItem('amarillo', s.amarillo, 'Leve',     pct(s.amarillo)) +
-                _semaforoItem('naranja',  s.naranja,  'Moderada', pct(s.naranja)) +
-                _semaforoItem('rojo',     s.rojo,     'Severa',   pct(s.rojo)) +
-                _semaforoItem('gris',     s.gris,     'Revisar',  '—') +
-            '</div>' +
-            '<div class="lab-semaforo-barra">' +
-                (total > 0 ? (
-                    '<div class="lab-barra-seg lab-barra-verde"    style="width:' + pct(s.verde)    + '%"></div>' +
-                    '<div class="lab-barra-seg lab-barra-amarillo" style="width:' + pct(s.amarillo) + '%"></div>' +
-                    '<div class="lab-barra-seg lab-barra-naranja"  style="width:' + pct(s.naranja)  + '%"></div>' +
-                    '<div class="lab-barra-seg lab-barra-rojo"     style="width:' + pct(s.rojo)     + '%"></div>'
-                ) : '<div class="lab-barra-seg lab-barra-gris" style="width:100%"></div>') +
-            '</div>' +
-            '<div class="lab-semaforo-nota">' +
-                'Porcentajes sobre total sin incluir "Revisar datos"' +
-            '</div>';
-
-        contenedor.innerHTML = html;
-    }
-
-    function _semaforoItem(color, count, label, pct) {
-        return '<div class="lab-sem-item lab-sem-' + color + '">' +
-                    '<div class="lab-sem-count">' + count + '</div>' +
-                    '<div class="lab-sem-label">' + label + '</div>' +
-                    '<div class="lab-sem-pct">' + (typeof pct === 'number' ? pct + '%' : pct) + '</div>' +
-               '</div>';
-    }
-
-    // ══════════════════════════════════════════════════════════════
-    // 6. INICIALIZACIÓN
-    // ══════════════════════════════════════════════════════════════
+    // ═══ 6. INIT ═══
 
     function init() {
-        var datosDiv = document.getElementById('labDatosBeneficiario');
-        if (!datosDiv) return; // No estamos en formulario de laboratorio
+        try {
+            var datosDiv = document.getElementById('labDatosBeneficiario');
+            if (!datosDiv) return;
 
-        var fechaNac  = datosDiv.dataset.fechaNacimiento || '';
-        var sexo      = datosDiv.dataset.sexo || 'M';
-        var baseUrl   = datosDiv.dataset.baseUrl || '/';
-        var jornadaId = datosDiv.dataset.jornadaId || '';
-        var centroId  = datosDiv.dataset.centroId || '';
+            var fechaNac = datosDiv.dataset.fechaNacimiento || '';
+            var sexo     = datosDiv.dataset.sexo || 'M';
 
-        // Calcular edad en días
-        var edadDias = 0;
-        if (fechaNac) {
-            var nacimiento = new Date(fechaNac);
-            var hoy        = new Date();
-            var diffMs     = hoy.getTime() - nacimiento.getTime();
-            edadDias       = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-        }
-
-        // Obtener valor de embarazada del formulario
-        function getEmbarazada() {
-            var sel = document.getElementById('campo_embarazada_lab');
-            return sel ? sel.value : 'n';
-        }
-
-        // ─── Listeners para hemoglobina ───
-        var campoHb = document.getElementById('campo_hemoglobina');
-        if (campoHb) {
-            campoHb.addEventListener('input', function () {
-                var result = clasificarAnemia(this.value, edadDias, sexo, getEmbarazada());
-                renderBadge('campo_hemoglobina', result);
-            });
-            // Evaluar valor precargado (edición)
-            if (campoHb.value !== '') {
-                var resultInicial = clasificarAnemia(campoHb.value, edadDias, sexo, getEmbarazada());
-                renderBadge('campo_hemoglobina', resultInicial);
-            }
-        }
-
-        // ─── Listener para cambio de embarazada (re-evalúa hemoglobina) ───
-        var campoEmb = document.getElementById('campo_embarazada_lab');
-        if (campoEmb) {
-            campoEmb.addEventListener('change', function () {
-                if (campoHb && campoHb.value !== '') {
-                    var r = clasificarAnemia(campoHb.value, edadDias, sexo, getEmbarazada());
-                    renderBadge('campo_hemoglobina', r);
-                }
-            });
-        }
-
-        // ─── Listeners para riesgo cardiometabólico ───
-        var camposTri = document.getElementById('campo_trigliceridos');
-        if (camposTri) {
-            camposTri.addEventListener('input', function () {
-                var r = clasificarTrigliceridos(this.value);
-                renderBadge('campo_trigliceridos', r);
-            });
-            if (camposTri.value !== '') {
-                renderBadge('campo_trigliceridos', clasificarTrigliceridos(camposTri.value));
-            }
-        }
-
-        var campoHdl = document.getElementById('campo_hdl_colesterol');
-        if (campoHdl) {
-            campoHdl.addEventListener('input', function () {
-                renderBadge('campo_hdl_colesterol', clasificarHDL(this.value, sexo));
-            });
-            if (campoHdl.value !== '') {
-                renderBadge('campo_hdl_colesterol', clasificarHDL(campoHdl.value, sexo));
-            }
-        }
-
-        var campoVldl = document.getElementById('campo_vldl_colesterol');
-        if (campoVldl) {
-            campoVldl.addEventListener('input', function () {
-                renderBadge('campo_vldl_colesterol', clasificarVLDL(this.value));
-            });
-            if (campoVldl.value !== '') {
-                renderBadge('campo_vldl_colesterol', clasificarVLDL(campoVldl.value));
-            }
-        }
-
-        var campoLdl = document.getElementById('campo_ldl_colesterol');
-        if (campoLdl) {
-            campoLdl.addEventListener('input', function () {
-                renderBadge('campo_ldl_colesterol', clasificarLDL(this.value));
-            });
-            if (campoLdl.value !== '') {
-                renderBadge('campo_ldl_colesterol', clasificarLDL(campoLdl.value));
-            }
-        }
-
-        // ─── Cargar semáforo ───
-        cargarSemaforo(baseUrl, jornadaId, centroId);
-
-        // ─── Interceptor de guardado ───
-        _instalarInterceptor(edadDias, sexo, getEmbarazada);
-    }
-
-    // ══════════════════════════════════════════════════════════════
-    // 7. INTERCEPTOR PRE-GUARDADO
-    // ══════════════════════════════════════════════════════════════
-
-    function _instalarInterceptor(edadDias, sexo, getEmbarazada) {
-        // Guardar referencia a la función original
-        if (typeof window.guardarEvaluacion !== 'function') return;
-
-        var _guardarOriginal = window.guardarEvaluacion;
-
-        window.guardarEvaluacion = function () {
-            var advertencias = validarPreGuardado(edadDias, sexo, getEmbarazada());
-
-            // Sin advertencias → ejecutar guardado normal
-            if (advertencias.length === 0) {
-                _guardarOriginal();
-                return;
+            var edadDias = 0;
+            if (fechaNac) {
+                var nac = new Date(fechaNac + 'T00:00:00');
+                var hoy = new Date(); hoy.setHours(0,0,0,0);
+                edadDias = Math.floor((hoy.getTime() - nac.getTime()) / 86400000);
             }
 
-            // Separar errores de advertencias/info
-            var errores = advertencias.filter(function(a) { return a.tipo === 'error'; });
-            var warns   = advertencias.filter(function(a) { return a.tipo !== 'error'; });
+            function getEmb() {
+                var sel = document.getElementById('campo_embarazada_lab');
+                return sel ? sel.value : 'n';
+            }
 
-            // Si hay errores graves → bloquear
-            if (errores.length > 0) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'No se puede guardar',
-                    html: errores.map(function(e) { return e.mensaje; }).join('<br><br>'),
-                    confirmButtonColor: '#101a61'
+            // ─── Hemoglobina → badge + indicador panel ───
+            _bindCampo('campo_hemoglobina', function(val) {
+                var res = clasificarAnemia(val, edadDias, sexo, getEmb());
+                actualizarIndicador('labIndicadorAnemia', res);
+                return res;
+            });
+
+            // Re-evaluar hemoglobina al cambiar embarazada
+            var campoEmb = document.getElementById('campo_embarazada_lab');
+            if (campoEmb) {
+                campoEmb.addEventListener('change', function() {
+                    var hb = document.getElementById('campo_hemoglobina');
+                    if (hb && hb.value !== '') {
+                        var res = clasificarAnemia(hb.value, edadDias, sexo, getEmb());
+                        renderBadge('campo_hemoglobina', res);
+                        actualizarIndicador('labIndicadorAnemia', res);
+                    }
                 });
-                return;
             }
 
-            // Advertencias → pedir confirmación
-            var htmlWarns = warns.map(function(w) {
-                var icono = w.tipo === 'warning' ? '⚠️' : 'ℹ️';
-                return '<div style="text-align:left;margin-bottom:8px;font-size:.9rem;">' +
-                       icono + ' ' + w.mensaje.replace(/\n/g, '<br>') +
-                       '</div>';
-            }).join('');
-
-            Swal.fire({
-                icon: 'warning',
-                title: 'Advertencias detectadas',
-                html: htmlWarns,
-                showCancelButton: true,
-                confirmButtonText: 'Guardar de todas formas',
-                cancelButtonText: 'Revisar valores',
-                confirmButtonColor: '#101a61',
-                cancelButtonColor: '#6c757d',
-                reverseButtons: true
-            }).then(function(result) {
-                if (result.isConfirmed) {
-                    _guardarOriginal();
-                }
+            // ─── Cardiometabólicos → badge + indicador panel ───
+            _bindCampo('campo_trigliceridos', function(val) {
+                var res = clasificarTrigliceridos(val);
+                actualizarIndicador('labIndicadorTri', res);
+                return res;
             });
+            _bindCampo('campo_hdl_colesterol', function(val) {
+                var res = clasificarHDL(val, sexo);
+                actualizarIndicador('labIndicadorHdl', res);
+                return res;
+            });
+            _bindCampo('campo_ldl_colesterol', function(val) {
+                var res = clasificarLDL(val);
+                actualizarIndicador('labIndicadorLdl', res);
+                return res;
+            });
+            _bindCampo('campo_vldl_colesterol', function(val) {
+                var res = clasificarVLDL(val);
+                actualizarIndicador('labIndicadorVldl', res);
+                return res;
+            });
+
+            // ─── Interceptor de guardado ───
+            try { _instalarInterceptor(edadDias, sexo, getEmb); } catch(e) { console.warn('[Lab]', e); }
+
+        } catch (error) {
+            console.error('[LabInterpretacion] Error en init:', error);
+        }
+    }
+
+    function _bindCampo(campoId, fnClasificar) {
+        var campo = document.getElementById(campoId);
+        if (!campo) return;
+        campo.addEventListener('input', function() { renderBadge(campoId, fnClasificar(this.value)); });
+        if (campo.value !== '' && campo.value !== null) {
+            renderBadge(campoId, fnClasificar(campo.value));
+        }
+    }
+
+    // ═══ 7. INTERCEPTOR PRE-GUARDADO ═══
+
+    function _instalarInterceptor(edadDias, sexo, getEmb) {
+        if (typeof window.guardarEvaluacion !== 'function') return;
+        if (window._labInterceptorInstalado) return;
+        window._labInterceptorInstalado = true;
+
+        var _original = window.guardarEvaluacion;
+
+        window.guardarEvaluacion = function() {
+            try {
+                var advertencias = validarPreGuardado(edadDias, sexo, getEmb());
+                if (advertencias.length === 0) return _original();
+
+                var errores = advertencias.filter(function(a) { return a.tipo === 'error'; });
+                var warns = advertencias.filter(function(a) { return a.tipo !== 'error'; });
+
+                if (errores.length > 0) {
+                    Swal.fire({ icon: 'error', title: 'No se puede guardar', html: errores.map(function(e) { return e.mensaje; }).join('<br><br>'), confirmButtonColor: '#101a61' });
+                    return;
+                }
+
+                Swal.fire({
+                    icon: 'warning', title: 'Advertencias detectadas',
+                    html: warns.map(function(w) {
+                        return '<div style="text-align:left;margin-bottom:8px;font-size:.9rem;">' +
+                            (w.tipo === 'warning' ? '⚠️' : 'ℹ️') + ' ' + w.mensaje.replace(/\n/g, '<br>') + '</div>';
+                    }).join(''),
+                    showCancelButton: true, confirmButtonText: 'Guardar de todas formas',
+                    cancelButtonText: 'Revisar valores', confirmButtonColor: '#101a61',
+                    cancelButtonColor: '#6c757d', reverseButtons: true
+                }).then(function(result) { if (result.isConfirmed) _original(); });
+
+            } catch (error) {
+                console.error('[Lab] Interceptor falló, guardando normal:', error);
+                _original();
+            }
         };
     }
 
-    // ══════════════════════════════════════════════════════════════
-    // HELPERS
-    // ══════════════════════════════════════════════════════════════
+    // ═══ HELPERS ═══
 
-    function _resultado(clave, rango, mapa) {
+    function _r(clave, rango, mapa) {
         var cfg = mapa[clave] || mapa.revisar;
-        return {
-            clave:  clave,
-            texto:  cfg.texto,
-            rango:  rango,
-            clase:  cfg.clase,
-            icono:  cfg.icono
-        };
+        return { clave: clave, texto: cfg.texto, rango: rango, clase: cfg.clase, icono: cfg.icono };
     }
-
-    // ══════════════════════════════════════════════════════════════
-    // API PÚBLICA
-    // ══════════════════════════════════════════════════════════════
 
     return {
-        init:                    init,
-        clasificarAnemia:        clasificarAnemia,
-        clasificarTrigliceridos: clasificarTrigliceridos,
-        clasificarHDL:           clasificarHDL,
-        clasificarVLDL:          clasificarVLDL,
-        clasificarLDL:           clasificarLDL,
-        validarPreGuardado:      validarPreGuardado,
-        cargarSemaforo:          cargarSemaforo
+        init: init, clasificarAnemia: clasificarAnemia,
+        clasificarTrigliceridos: clasificarTrigliceridos, clasificarHDL: clasificarHDL,
+        clasificarVLDL: clasificarVLDL, clasificarLDL: clasificarLDL,
+        validarPreGuardado: validarPreGuardado
     };
-
 })();
 
-// Auto-inicializar al cargar el DOM
-document.addEventListener('DOMContentLoaded', function () {
-    LabInterpretacion.init();
+document.addEventListener('DOMContentLoaded', function() {
+    try { LabInterpretacion.init(); } catch(e) { console.error('[Lab] Fatal:', e); }
 });
