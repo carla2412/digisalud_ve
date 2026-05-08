@@ -751,7 +751,10 @@
     }
 
     .btn-guardar:hover {
-      background: #1b7ae2
+       transform: translateY(-1px);
+      background: #1b7ae2;
+      color: #fff;
+      text-decoration: none;
     }
 
     .btn-cancelar {
@@ -973,23 +976,7 @@
       max-height: 800px
     }
 
-    .btn-guardar {
-      background: #101a61;
-      color: #fff;
-      border: none;
-      padding: 12px 28px;
-      border-radius: 10px;
-      font-size: .9rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px
-    }
-
-    .btn-guardar:hover {
-      background: #1b7ae2
-    }
+     
 
     .btn-cancelar {
       background: transparent;

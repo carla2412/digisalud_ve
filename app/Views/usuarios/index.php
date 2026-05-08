@@ -6,12 +6,12 @@
         box-sizing: border-box;
     }
 
-    .org-page {
+    .usu_mod-org-page {
         background: #eef2f7;
         padding: 20px;
     }
 
-    .org-container {
+    .usu_mod-org-container {
         max-width: 1600px;
         margin: 0 auto;
         background: #f9fbff;
@@ -20,23 +20,23 @@
         box-shadow: 0 8px 30px rgba(31, 42, 68, 0.08);
     }
 
-    .org-breadcrumb {
+    .usu_mod-org-breadcrumb {
         font-size: 14px;
         color: #6d7890;
         margin-bottom: 18px;
     }
 
-    .org-breadcrumb a {
+    .usu_mod-org-breadcrumb a {
         color: #6d7890;
         text-decoration: none;
     }
 
-    .org-breadcrumb span {
+    .usu_mod-org-breadcrumb span {
         color: #3695f5;
         font-weight: 600;
     }
 
-    .topbar {
+    .usu_mod-topbar {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
@@ -44,27 +44,27 @@
         margin-bottom: 24px;
     }
 
-    .title h1 {
+    .usu_mod-title h1 {
         font-size: 56px;
         line-height: 1.1;
         margin-bottom: 8px;
         color: #101a61;
     }
 
-    .title p {
+    .usu_mod-title p {
         font-size: 18px;
         color: #6b7280;
         margin: 0;
     }
 
-    .filters {
+    .usu_mod-filters {
         display: grid;
         grid-template-columns: 1fr;
         gap: 14px;
         margin-bottom: 36px;
     }
 
-    .input-custom {
+    .usu_mod-input-custom {
         background: #fff;
         border: 1px solid #dbe3f0;
         border-radius: 16px;
@@ -76,7 +76,7 @@
         box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
     }
 
-    .input-custom input {
+    .usu_mod-input-custom input {
         border: none;
         outline: none;
         width: 100%;
@@ -86,7 +86,7 @@
         color: #334155;
     }
 
-    .cards {
+    .usu_mod-cards {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 28px;
@@ -94,13 +94,13 @@
         overflow: visible !important;
     }
 
-    .user-item {
+    .usu_mod-user-item {
         position: relative;
         overflow: visible !important;
         z-index: 1;
     }
 
-    .user-card {
+    .usu_mod-user-card {
         position: relative;
         background: #fff;
         border-radius: 24px;
@@ -113,17 +113,17 @@
         z-index: 1;
     }
 
-    .user-card:hover {
+    .usu_mod-user-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 14px 34px rgba(31, 42, 68, 0.12);
     }
 
-    .user-card.inactivo {
+    .usu_mod-user-card.usu_mod-inactivo {
         opacity: 0.75;
         background: #f8fafc;
     }
 
-    .menu {
+    .usu_mod-menu {
         position: absolute;
         right: 20px;
         top: 18px;
@@ -132,7 +132,7 @@
         z-index: 10;
     }
 
-    .avatar {
+    .usu_mod-avatar {
         width: 72px;
         height: 72px;
         border-radius: 50%;
@@ -147,29 +147,29 @@
         z-index: 2;
     }
 
-    .avatar img {
+    .usu_mod-avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         border-radius: 50%;
     }
 
-    .blue {
+    .usu_mod-blue {
         background: #dce8ff;
         color: #3695f5;
     }
 
-    .green {
+    .usu_mod-green {
         background: #dff4e7;
         color: #22c55e;
     }
 
-    .purple {
+    .usu_mod-purple {
         background: #eedfff;
         color: #7c3aed;
     }
 
-    .user-card h3 {
+    .usu_mod-user-card h3 {
         font-size: 22px;
         margin-bottom: 10px;
         color: #14213d;
@@ -177,7 +177,7 @@
         z-index: 2;
     }
 
-    .tag {
+    .usu_mod-tag {
         display: inline-block;
         padding: 6px 12px;
         border-radius: 999px;
@@ -188,33 +188,33 @@
         z-index: 2;
     }
 
-    .tag.blue {
+    .usu_mod-tag.usu_mod-blue {
         background: #e7f0ff;
         color: #3695f5;
     }
 
-    .tag.green {
+    .usu_mod-tag.usu_mod-green {
         background: #e8f8ee;
         color: #16a34a;
     }
 
-    .tag.purple {
+    .usu_mod-tag.usu_mod-purple {
         background: #f1e8ff;
         color: #7c3aed;
     }
 
-    .tag.red {
+    .usu_mod-tag.usu_mod-red {
         background: #fee2e2;
         color: #dc2626;
     }
 
-    .tag.gray {
+    .usu_mod-tag.usu_mod-gray {
         background: #eef2f7;
         color: #64748b;
     }
 
-    .email,
-    .org-info {
+    .usu_mod-email,
+    .usu_mod-org-info {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -226,7 +226,7 @@
         word-break: break-word;
     }
 
-    .divider {
+    .usu_mod-divider {
         height: 1px;
         background: #e8edf5;
         margin: 22px 0;
@@ -234,7 +234,7 @@
         z-index: 2;
     }
 
-    .actions {
+    .usu_mod-actions {
         display: flex;
         gap: 12px;
         position: relative;
@@ -242,7 +242,7 @@
         flex-wrap: wrap;
     }
 
-    .btn-action-custom {
+    .usu_mod-btn-action-custom {
         border-radius: 14px;
         padding: 12px 20px;
         font-size: 15px;
@@ -258,7 +258,7 @@
         color: #3695f5;
     }
 
-    .btn-action-custom:hover {
+    .usu_mod-btn-action-custom:hover {
         transform: translateY(-1px);
         text-decoration: none;
         background: #f8fbff;
@@ -281,7 +281,7 @@
         width: 18px;
     }
 
-    .bg-shape {
+    .usu_mod-bg-shape {
         position: absolute;
         right: -40px;
         bottom: -50px;
@@ -292,23 +292,23 @@
         z-index: 0;
     }
 
-    .shape-blue {
+    .usu_mod-shape-blue {
         background: #bcd3ff;
     }
 
-    .shape-green {
+    .usu_mod-shape-green {
         background: #b9ebc9;
     }
 
-    .shape-purple {
+    .usu_mod-shape-purple {
         background: #dec5ff;
     }
 
-    .shape-red {
+    .usu_mod-shape-red {
         background: #ffc5d3;
     }
 
-    .shape-icon {
+    .usu_mod-shape-icon {
         position: absolute;
         right: 34px;
         bottom: 40px;
@@ -317,7 +317,7 @@
         z-index: 1;
     }
 
-    .meta-row {
+    .usu_mod-meta-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -328,7 +328,7 @@
         flex-wrap: wrap;
     }
 
-    .empty-state {
+    .usu_mod-empty-state {
         grid-column: 1 / -1;
         background: #fff;
         border: 1px dashed #cbd5e1;
@@ -338,11 +338,11 @@
         color: #64748b;
     }
 
-    .user-item:has(.dropdown-menu.show) {
+    .usu_mod-user-item:has(.dropdown-menu.show) {
         z-index: 99999;
     }
 
-    .user-card:has(.dropdown-menu.show) {
+    .usu_mod-user-card:has(.dropdown-menu.show) {
         z-index: 99999;
     }
 
@@ -360,44 +360,44 @@
     }
 
     @media (max-width: 1200px) {
-        .cards {
+        .usu_mod-cards {
             grid-template-columns: 1fr 1fr;
         }
 
-        .topbar {
+        .usu_mod-topbar {
             flex-direction: column;
             align-items: stretch;
         }
 
-        .title h1 {
+        .usu_mod-title h1 {
             font-size: 40px;
         }
     }
 
     @media (max-width: 768px) {
-        .org-page {
+        .usu_mod-org-page {
             padding: 12px;
         }
 
-        .org-container {
+        .usu_mod-org-container {
             padding: 20px;
             border-radius: 18px;
         }
 
-        .cards {
+        .usu_mod-cards {
             grid-template-columns: 1fr;
             gap: 20px;
         }
 
-        .title h1 {
+        .usu_mod-title h1 {
             font-size: 32px;
         }
 
-        .actions {
+        .usu_mod-actions {
             flex-direction: column;
         }
 
-        .btn-action-custom {
+        .usu_mod-btn-action-custom {
             justify-content: center;
             width: 100%;
         }
@@ -407,22 +407,22 @@
 
 <?= $this->section('content') ?>
 
-<div class="org-page">
-    <div class="org-container">
+<div class="usu_mod-org-page">
+    <div class="usu_mod-org-container">
 
-        <div class="org-breadcrumb">
+        <div class="usu_mod-org-breadcrumb">
             <a href="<?= base_url('inicio') ?>">Inicio</a> &nbsp;›&nbsp; <span>Usuarios</span>
         </div>
 
-        <div class="topbar">
-            <div class="title">
+        <div class="usu_mod-topbar">
+            <div class="usu_mod-title">
                 <h1>Usuarios</h1>
                 <p>Gestiona los usuarios registrados en Digisalud.</p>
             </div>
         </div>
 
-        <div class="filters">
-            <div class="input-custom">
+        <div class="usu_mod-filters">
+            <div class="usu_mod-input-custom">
                 <i class="fas fa-search"></i>
                 <input
                     type="text"
@@ -431,15 +431,15 @@
             </div>
         </div>
 
-        <div class="cards" id="contenedorUsuarios"></div>
+        <div class="usu_mod-cards" id="contenedorUsuarios"></div>
 
-        <div id="sinResultados" class="empty-state d-none">
+        <div id="sinResultados" class="usu_mod-empty-state d-none">
             <i class="fas fa-users-slash fa-2x mb-3"></i>
             <h4 class="mb-2">No se encontraron usuarios</h4>
             <p class="mb-0">Intenta con otro criterio de búsqueda.</p>
         </div>
 
-        <div class="meta-row">
+        <div class="usu_mod-meta-row">
             <div>
                 Mostrando <span id="totalUsuarios">0</span> usuario<span id="pluralUsuarios">s</span>
             </div>
@@ -499,7 +499,7 @@
                     console.error("Error cargando usuarios:", error);
 
                     $('#contenedorUsuarios').html(`
-                    <div class="empty-state">
+                    <div class="usu_mod-empty-state">
                         <i class="fas fa-triangle-exclamation fa-2x mb-3"></i>
                         <h4 class="mb-2">Error al cargar usuarios</h4>
                         <p class="mb-0">Ocurrió un problema al consultar el listado.</p>
@@ -531,7 +531,7 @@
 
             if (fotoUrl) {
                 return `
-                <div class="avatar ${color}">
+                <div class="usu_mod-avatar ${color}">
                     <img 
                         src="${baseUrl}${escapeHtml(fotoUrl)}" 
                         alt="${escapeHtml(nombre)}"
@@ -545,7 +545,7 @@
             const inicialA = apellido ? apellido.charAt(0).toUpperCase() : '';
             const iniciales = inicialN + inicialA || '?';
 
-            return `<div class="avatar ${color}">${escapeHtml(iniciales)}</div>`;
+            return `<div class="usu_mod-avatar ${color}">${escapeHtml(iniciales)}</div>`;
         }
 
         function renderUsuarios(data) {
@@ -561,8 +561,8 @@
 
             sinResultados.addClass('d-none');
 
-            const colores = ['blue', 'green', 'purple'];
-            const shapes = ['shape-blue', 'shape-green', 'shape-purple', 'shape-red'];
+            const colores = ['usu_mod-blue', 'usu_mod-green', 'usu_mod-purple'];
+            const shapes = ['usu_mod-shape-blue', 'usu_mod-shape-green', 'usu_mod-shape-purple', 'usu_mod-shape-red'];
 
             data.forEach((row, index) => {
                 const color = colores[index % colores.length];
@@ -583,15 +583,15 @@
                 const puedeBloquear = [1, 2, 3].includes(rolSesion);
 
                 const tagRol = rolNombreOriginal ?
-                    `<span class="tag ${color}"><i class="fas fa-user-shield me-1"></i>${escapeHtml(nombreMostrarRol)}</span>` :
-                    `<span class="tag red"><i class="fas fa-exclamation-triangle me-1"></i>Sin rol</span>`;
+                    `<span class="usu_mod-tag ${color}"><i class="fas fa-user-shield me-1"></i>${escapeHtml(nombreMostrarRol)}</span>` :
+                    `<span class="usu_mod-tag usu_mod-red"><i class="fas fa-exclamation-triangle me-1"></i>Sin rol</span>`;
 
                 let acciones = '';
 
                 if (puedeAgregarOrg) {
                     acciones += `
                     <li>
-                        <a class="dropdown-item btnAgregarOrg" href="javascript:void(0)" data-id="${idUsuario}">
+                        <a class="dropdown-item usu_mod-btnAgregarOrg" href="javascript:void(0)" data-id="${idUsuario}">
                             <i class="bi bi-person-fill-add me-2"></i> Agregar organización
                         </a>
                     </li>
@@ -601,18 +601,18 @@
                 if (puedeBloquear && !puedeAgregarOrg) {
                     acciones += `
                     <li>
-                        <a class="dropdown-item btnCorreo" href="javascript:void(0)" data-id="${idUsuario}">
+                        <a class="dropdown-item usu_mod-btnCorreo" href="javascript:void(0)" data-id="${idUsuario}">
                             <i class="bi bi-envelope-fill me-2"></i> Cambiar correo
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item btnPass" href="javascript:void(0)" data-id="${idUsuario}">
+                        <a class="dropdown-item usu_mod-btnPass" href="javascript:void(0)" data-id="${idUsuario}">
                             <i class="bi bi-key-fill me-2"></i> Cambiar contraseña
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item text-danger btnBloquear" href="javascript:void(0)" data-id="${idUsuario}">
+                        <a class="dropdown-item text-danger usu_mod-btnBloquear" href="javascript:void(0)" data-id="${idUsuario}">
                             <i class="bi bi-lock-fill me-2"></i> Bloquear / desbloquear
                         </a>
                     </li>
@@ -628,9 +628,9 @@
                 const searchText = `${nombre} ${apellido} ${correo} ${organizacion} ${nombreMostrarRol}`.toLowerCase();
 
                 const card = `
-                <div class="user-item" data-search="${escapeHtml(searchText)}">
-                    <div class="user-card ${statusUsu !== 1 ? 'inactivo' : ''}">
-                        <div class="menu">
+                <div class="usu_mod-user-item" data-search="${escapeHtml(searchText)}">
+                    <div class="usu_mod-user-card ${statusUsu !== 1 ? 'usu_mod-inactivo' : ''}">
+                        <div class="usu_mod-menu">
                             <i class="fas fa-user"></i>
                         </div>
 
@@ -640,22 +640,22 @@
 
                         ${tagRol}
 
-                        <div class="org-info">
+                        <div class="usu_mod-org-info">
                             <i class="fas fa-building"></i>
                             <span>${escapeHtml(organizacion)}</span>
                         </div>
 
-                        <div class="email">
+                        <div class="usu_mod-email">
                             <i class="fas fa-envelope"></i>
                             <span>${escapeHtml(correo || '—')}</span>
                         </div>
 
-                        <div class="divider"></div>
+                        <div class="usu_mod-divider"></div>
 
-                        <div class="actions">
+                        <div class="usu_mod-actions">
                             <div class="dropdown">
                                 <button 
-                                    class="btn-action-custom dropdown-toggle"
+                                    class="usu_mod-btn-action-custom dropdown-toggle"
                                     type="button"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false"
@@ -670,8 +670,8 @@
                             </div>
                         </div>
 
-                        <div class="bg-shape ${shapeColor}"></div>
-                        <div class="shape-icon"><i class="fas fa-user"></i></div>
+                        <div class="usu_mod-bg-shape ${shapeColor}"></div>
+                        <div class="usu_mod-shape-icon"><i class="fas fa-user"></i></div>
                     </div>
                 </div>
             `;
@@ -686,7 +686,7 @@
             const texto = $(this).val().toLowerCase().trim();
             let visibles = 0;
 
-            $('.user-item').each(function() {
+            $('.usu_mod-user-item').each(function() {
                 const contenido = String($(this).data('search') || '');
 
                 if (contenido.includes(texto)) {
@@ -714,24 +714,24 @@
         }
 
         function activarEventos() {
-            $('.btnAgregarOrg').off('click').on('click', function() {
+            $('.usu_mod-btnAgregarOrg').off('click').on('click', function() {
                 $('#agregarId').val($(this).data('id'));
                 new bootstrap.Modal(document.getElementById('modalAgregarOrg')).show();
             });
 
-            $('.btnBloquear').off('click').on('click', function() {
+            $('.usu_mod-btnBloquear').off('click').on('click', function() {
                 $('#bloqueoId').val($(this).data('id'));
                 $('#textoBloqueo').html("¿Deseas <b>cambiar el estado</b> de este usuario?");
                 new bootstrap.Modal(document.getElementById('modalBloqueo')).show();
             });
 
-            $('.btnCorreo').off('click').on('click', function() {
+            $('.usu_mod-btnCorreo').off('click').on('click', function() {
                 $('#correoId').val($(this).data('id'));
                 $('#nuevoCorreo').val("");
                 new bootstrap.Modal(document.getElementById('modalCorreo')).show();
             });
 
-            $('.btnPass').off('click').on('click', function() {
+            $('.usu_mod-btnPass').off('click').on('click', function() {
                 $('#passId').val($(this).data('id'));
                 $('#nuevoPass').val("");
                 $('#confirmPass').val("");

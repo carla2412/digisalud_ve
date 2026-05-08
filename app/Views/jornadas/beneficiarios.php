@@ -1036,10 +1036,10 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                             <li>
-                                <a class="dropdown-item" href="<?= base_url("beneficiarios/editar/{$b['id_beneficiario']}") ?>">
-                                    <i class="bi bi-pencil-square me-2 text-primary"></i>
-                                    Editar perfil
-                                </a>
+                                <a class="dropdown-item" href="<?= base_url("beneficiarios/editar/{$b['id_beneficiario']}?jornada_id={$jornada_id}") ?>">
+    <i class="bi bi-pencil-square me-2 text-primary"></i>
+    Editar perfil
+</a>
                             </li>
 
                             <li>

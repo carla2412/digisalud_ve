@@ -19,7 +19,10 @@ $observacion = $observacion ?? '';
         <div class="breadcrumb-digi"><a href="<?= base_url('jornadas') ?>">Jornadas</a> &gt; <span class="active">Editar beneficiario</span></div>
         <h4 class="create-title">Editar perfil del beneficiario</h4>
         <p class="create-sub"><?= esc(strtoupper($b['apellidos'] . ', ' . $b['nombres'])) ?></p>
-        <?php if (session('success')): ?><div class="alert alert-success alert-dismissible fade show auto-dismiss"><?= session('success') ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div><?php endif; ?>
+      
+
+
+
         <div class="id-preview">
             <div class="id-preview-label">ID Digisalud</div>
             <div class="id-preview-val" id="idPreview"><?= esc($b['id_digisalud']) ?></div>
@@ -160,7 +163,7 @@ $observacion = $observacion ?? '';
             <!-- BOTONES -->
             <div class="d-flex justify-content-end gap-3 mt-4 pt-3" style="border-top:1px solid #eee;">
                 <a href="javascript:history.back()" class="btn-cancelar">Cancelar</a>
-                <button type="submit" class="btn-guardar"><i class="bi bi-check-lg"></i> Guardar cambios</button>
+                <button type="submit" class="btn-guardar"> Guardar cambios</button>
             </div>
         </form>
     </div>
@@ -174,7 +177,7 @@ $observacion = $observacion ?? '';
     // ═══════════════════════════════════════════════════════
     // URLs AJAX — deben coincidir EXACTAMENTE con Routes.php
     // ═══════════════════════════════════════════════════════
-    const URL_BUSCAR_REP   = <?= json_encode(base_url('beneficiarios/buscar-ajax')) ?>;
+    const URL_BUSCAR_REP = <?= json_encode(base_url('beneficiarios/buscar-ajax')) ?>;
     const URL_ANTECEDENTES = <?= json_encode(base_url('beneficiarios/antecedentes-ajax')) ?>;
 
     function toggleSeccion(bar, id) {
@@ -221,9 +224,15 @@ $observacion = $observacion ?? '';
                 $e.append(`<option value="${e}" ${e===vE?'selected':''}>${e}</option>`);
             });
         }
-        $e.select2({ placeholder: 'Selecciona...' });
-        $m.select2({ placeholder: 'Selecciona...' });
-        $p.select2({ placeholder: 'Selecciona...' });
+        $e.select2({
+            placeholder: 'Selecciona...'
+        });
+        $m.select2({
+            placeholder: 'Selecciona...'
+        });
+        $p.select2({
+            placeholder: 'Selecciona...'
+        });
         if (vE && ubicaciones[vE]) {
             Object.keys(ubicaciones[vE]).forEach(m => {
                 $m.append(`<option value="${m}" ${m===vM?'selected':''}>${m}</option>`);
@@ -384,5 +393,30 @@ $observacion = $observacion ?? '';
 
     initBuscAnt('buscarAntecedente', 'antResultados', 'antSeleccionados', 'Antecedentes Clínicos');
     initBuscAnt('buscarSocioeconomico', 'socResultados', 'socSeleccionados', 'Datos Socioeconómicos');
+
+
+    <?php
+$jornadaIdRetorno = service('request')->getGet('jornada_id') ?? 2;
+?>
+
+ <?php if (session()->getFlashdata('success')): ?>
+    <?php $flashSuccess = session()->getFlashdata('success'); ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                title: "Beneficiario actualizado correctamente",
+                text: "",
+                icon: "success",
+                confirmButtonText: "Continuar",
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then(() => {
+             window.location.replace("<?= site_url('jornadas/' . $jornadaIdRetorno . '/beneficiarios') ?>");
+            });
+        });
+    </script>
+<?php endif; ?>
 </script>
 <?= $this->endSection() ?>

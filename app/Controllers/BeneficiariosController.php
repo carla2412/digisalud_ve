@@ -474,7 +474,69 @@ class BeneficiariosController extends BaseController
             'errors'     => session('errors') ?? [],
         ]);
     }
+    private function limpiarPartesNombre(?string $texto): array
+    {
+        $texto = trim((string) $texto);
 
+        if ($texto === '') {
+            return [];
+        }
+
+        // Divide por uno o más espacios y elimina valores vacíos
+        return array_values(array_filter(preg_split('/\s+/', $texto)));
+    }
+
+    private function normalizarFechaIdDigi(?string $fecha): string
+    {
+        $fecha = trim((string) $fecha);
+
+        if ($fecha === '') {
+            return '20000101';
+        }
+
+        // Si viene desde input type="date": YYYY-MM-DD
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
+            return str_replace('-', '', $fecha);
+        }
+
+        // Si llega como DD-MM-YYYY o DD/MM/YYYY
+        if (preg_match('/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/', $fecha, $m)) {
+            return $m[3] . $m[2] . $m[1];
+        }
+
+        // Fallback: deja solo números
+        return preg_replace('/\D/', '', $fecha);
+    }
+
+    private function construirIdDigi(
+        ?string $paisNacimiento,
+        ?string $sexo,
+        ?string $nombres,
+        ?string $apellidos,
+        ?string $fechaNacimiento
+    ): string {
+        $pais = strtoupper(substr($paisNacimiento ?: 'VE', 0, 2));
+        $sexo = strtoupper(substr($sexo ?: 'M', 0, 1));
+
+        $partesNombres   = $this->limpiarPartesNombre($nombres);
+        $partesApellidos = $this->limpiarPartesNombre($apellidos);
+
+        $primerNombre   = strtoupper(substr($partesNombres[0] ?? '', 0, 3));
+        $segundoNombre  = isset($partesNombres[1]) ? strtoupper(substr($partesNombres[1], 0, 1)) : '';
+
+        $primerApellido  = strtoupper(substr($partesApellidos[0] ?? '', 0, 3));
+        $segundoApellido = isset($partesApellidos[1]) ? strtoupper(substr($partesApellidos[1], 0, 1)) : '';
+
+        $fecha = $this->normalizarFechaIdDigi($fechaNacimiento ?: '2000-01-01');
+
+        return $pais
+            . $sexo
+            . $primerNombre
+            . $segundoNombre
+            . $primerApellido
+            . $segundoApellido
+            . $fecha;
+    }
     /**
      * ════════════════════════════════════════════════════════════════
      * STORE — Guardar nuevo beneficiario y asociarlo a la jornada
@@ -517,12 +579,16 @@ class BeneficiariosController extends BaseController
         // ══════════════════════════════════════
         // 2) BENEFICIARIO
         // ══════════════════════════════════════
-        $sexo   = strtoupper(substr($post['sexo'] ?? 'M', 0, 1));
-        $nombre = strtoupper(substr($post['nombres'] ?? '', 0, 3));
-        $apell  = strtoupper(substr($post['apellidos'] ?? '', 0, 3));
-        $fn     = $post['fecha_nacimiento'] ?? '2000-01-01';
-        $pais   = strtoupper(substr($post['pais_nacimiento'] ?? 'VE', 0, 2));
-        $idDigi = $pais . $sexo . $nombre . $apell . str_replace('-', '', $fn);
+        $sexo = strtoupper(substr($post['sexo'] ?? 'M', 0, 1));
+        $fn   = $post['fecha_nacimiento'] ?? '2000-01-01';
+
+        $idDigi = $this->construirIdDigi(
+            $post['pais_nacimiento'] ?? 'VE',
+            $sexo,
+            $post['nombres'] ?? '',
+            $post['apellidos'] ?? '',
+            $fn
+        );
 
         $id_beneficiario = $benefModel->insert([
             'id_digisalud'     => $idDigi,
@@ -565,12 +631,16 @@ class BeneficiariosController extends BaseController
         // ── Escenario B: crear representante como beneficiario nuevo ──
         if (empty($repId) && !empty(trim($post['rep_nombres'] ?? '')) && !empty(trim($post['rep_apellidos'] ?? ''))) {
 
-            $repSexo   = strtoupper(substr($post['rep_sexo'] ?? 'M', 0, 1));
-            $repNombre = strtoupper(substr(trim($post['rep_nombres']), 0, 3));
-            $repApell  = strtoupper(substr(trim($post['rep_apellidos']), 0, 3));
-            $repFn     = !empty($post['rep_fecha_nacimiento']) ? $post['rep_fecha_nacimiento'] : '1980-01-01';
-            $repPais   = strtoupper(substr($post['pais_nacimiento'] ?? 'VE', 0, 2));
-            $repIdDigi = $repPais . $repSexo . $repNombre . $repApell . str_replace('-', '', $repFn);
+            $repSexo = strtoupper(substr($post['rep_sexo'] ?? 'M', 0, 1));
+            $repFn   = !empty($post['rep_fecha_nacimiento']) ? $post['rep_fecha_nacimiento'] : '1980-01-01';
+
+            $repIdDigi = $this->construirIdDigi(
+                $post['pais_nacimiento'] ?? 'VE',
+                $repSexo,
+                $post['rep_nombres'] ?? '',
+                $post['rep_apellidos'] ?? '',
+                $repFn
+            );
 
             $repId = $benefModel->insert([
                 'id_digisalud'     => $repIdDigi,
@@ -812,12 +882,27 @@ class BeneficiariosController extends BaseController
         }
 
         // Actualizar beneficiario
+        // Recalcular ID DigiSalud cuando se edita perfil
+        $sexoUpdate = strtoupper(substr($post['sexo'] ?? $beneficiario['sexo'] ?? 'M', 0, 1));
+        $fechaUpdate = $post['fecha_nacimiento'] ?? $beneficiario['fecha_nacimiento'] ?? '2000-01-01';
+        $paisUpdate = $post['pais_nacimiento'] ?? $beneficiario['pais_nacimiento'] ?? 'Venezuela';
+
+        $idDigiUpdate = $this->construirIdDigi(
+            $paisUpdate,
+            $sexoUpdate,
+            $post['nombres'] ?? $beneficiario['nombres'] ?? '',
+            $post['apellidos'] ?? $beneficiario['apellidos'] ?? '',
+            $fechaUpdate
+        );
+
+        // Actualizar beneficiario
         $benefModel->update($id_beneficiario, [
+            'id_digisalud'     => $idDigiUpdate,
             'nombres'          => $post['nombres'],
             'apellidos'        => $post['apellidos'],
-            'fecha_nacimiento' => $post['fecha_nacimiento'],
-            'sexo'             => $post['sexo'] ?? $beneficiario['sexo'],
-            'pais_nacimiento'  => $post['pais_nacimiento'] ?? $beneficiario['pais_nacimiento'],
+            'fecha_nacimiento' => $fechaUpdate,
+            'sexo'             => $sexoUpdate === 'F' ? 'F' : 'M',
+            'pais_nacimiento'  => $paisUpdate,
             'telefono'         => $post['telefono'] ?? null,
             'correo'           => $post['correo'] ?? null,
             'direccion_id'     => $post['direccion_id'] ?? $beneficiario['direccion_id'],

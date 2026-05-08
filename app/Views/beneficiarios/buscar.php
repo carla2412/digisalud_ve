@@ -76,38 +76,38 @@
         background: linear-gradient(180deg, #f8fbff 0%, var(--ds-bg) 100%);
     }
 
-    .beneficiarios-page {
+    .benef-find-beneficiarios-page {
         max-width: 1440px;
         margin: 0 auto;
         padding: 26px 24px 40px;
         color: var(--ds-dark);
     }
 
-    .beneficiarios-breadcrumb {
+    .benef-find-beneficiarios-breadcrumb {
         font-size: 14px;
         color: var(--text-soft);
         margin-bottom: 26px;
     }
 
-    .beneficiarios-breadcrumb a {
+    .benef-find-beneficiarios-breadcrumb a {
         color: var(--text-soft);
         text-decoration: none;
     }
 
-    .beneficiarios-breadcrumb a:hover {
+    .benef-find-beneficiarios-breadcrumb a:hover {
         color: var(--ds-primary);
     }
 
-    .beneficiarios-breadcrumb span {
+    .benef-find-beneficiarios-breadcrumb span {
         color: var(--ds-dark);
         font-weight: 600;
     }
 
-    .beneficiarios-header {
+    .benef-find-beneficiarios-header {
         margin-bottom: 28px;
     }
 
-    .beneficiarios-header h1 {
+    .benef-find-beneficiarios-header h1 {
         margin: 0 0 8px;
         font-size: 28px;
         line-height: 1.2;
@@ -115,13 +115,13 @@
         font-weight: 600;
     }
 
-    .beneficiarios-header p {
+    .benef-find-beneficiarios-header p {
         margin: 0;
         color: var(--ds-muted);
         font-size: 15px;
     }
 
-    .beneficiarios-shell {
+    .benef-find-beneficiarios-shell {
         background: var(--white);
         border: 1px solid var(--ds-border);
         border-radius: 26px;
@@ -129,13 +129,13 @@
         padding: 18px;
     }
 
-    .beneficiarios-grid {
+    .benef-find-beneficiarios-grid {
         display: grid;
         grid-template-columns: minmax(0, 2.2fr) 380px;
         gap: 22px;
     }
 
-    .beneficiarios-panel {
+    .benef-find-beneficiarios-panel {
         background: var(--white);
         border: 1px solid var(--ds-border);
         border-radius: 20px;
@@ -143,11 +143,11 @@
         overflow: hidden;
     }
 
-    .beneficiarios-panel-body {
+    .benef-find-beneficiarios-panel-body {
         padding: 20px;
     }
 
-    .section-title {
+    .benef-find-section-title {
         font-size: 16px;
         font-weight: 600;
         color: var(--ds-dark);
@@ -156,7 +156,7 @@
         letter-spacing: 0.3px;
     }
 
-    .search-row {
+    .benef-find-search-row {
         display: grid;
         grid-template-columns: 1fr 174px;
         gap: 16px;
@@ -164,11 +164,11 @@
         margin-bottom: 22px;
     }
 
-    .input-wrap {
+    .benef-find-input-wrap {
         position: relative;
     }
 
-    .input-icon {
+    .benef-find-input-icon {
         position: absolute;
         left: 16px;
         top: 50%;
@@ -178,7 +178,7 @@
         pointer-events: none;
     }
 
-    .search-input {
+    .benef-find-search-input {
         width: 100%;
         height: 50px;
         padding: 0 16px 0 48px;
@@ -191,12 +191,12 @@
         transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .search-input:focus {
+    .benef-find-search-input:focus {
         border-color: var(--ds-primary);
         box-shadow: 0 0 0 4px rgba(54, 149, 245, 0.12);
     }
 
-    .ds-btn {
+    .benef-find-ds-btn {
         min-height: 50px;
         border: 0;
         border-radius: 14px;
@@ -213,33 +213,33 @@
         white-space: nowrap;
     }
 
-    .ds-btn:hover {
+    .benef-find-ds-btn:hover {
         transform: translateY(-1px);
         text-decoration: none;
     }
 
-    .ds-btn-primary {
+    .benef-find-ds-btn-primary {
         background: linear-gradient(180deg, var(--ds-primary) 0%, var(--ds-primary-dark) 100%);
         color: #fff;
         box-shadow: 0 10px 20px rgba(54, 149, 245, 0.22);
     }
 
-    .ds-btn-primary:hover {
+    .benef-find-ds-btn-primary:hover {
         color: #fff;
     }
 
-    .ds-btn-outline {
+    .benef-find-ds-btn-outline {
         background: #fff;
         border: 1px solid var(--ds-primary);
         color: var(--ds-primary);
     }
 
-    .ds-btn-outline:hover {
+    .benef-find-ds-btn-outline:hover {
         background: rgba(54, 149, 245, 0.08);
         color: var(--ds-primary-dark);
     }
 
-    .resultado-header {
+    .benef-find-resultado-header {
         display: none;
         align-items: center;
         justify-content: space-between;
@@ -247,14 +247,14 @@
         margin-bottom: 16px;
     }
 
-    .resultado-count {
+    .benef-find-resultado-count {
         color: var(--ds-dark);
         font-weight: 600;
         text-transform: uppercase;
         font-size: 14px;
     }
 
-    .empty-state {
+    .benef-find-empty-state {
         border: 1px dashed #d9e4f2;
         border-radius: 20px;
         background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
@@ -267,7 +267,7 @@
         margin-bottom: 28px;
     }
 
-    .empty-icon {
+    .benef-find-empty-icon {
         width: 94px;
         height: 94px;
         border-radius: 50%;
@@ -280,14 +280,14 @@
         margin: 0 auto 18px;
     }
 
-    .empty-state h3 {
+    .benef-find-empty-state h3 {
         margin: 0 0 10px;
         font-size: 18px;
         color: #334155;
         font-weight: 600;
     }
 
-    .empty-state p {
+    .benef-find-empty-state p {
         margin: 0;
         color: var(--text-soft);
         font-size: 15px;
@@ -300,8 +300,8 @@
         margin-bottom: 28px;
     }
 
-    .resultado-card,
-    .assigned-card {
+    .benef-find-resultado-card,
+    .benef-find-assigned-card {
         border: 1px solid var(--ds-border);
         border-radius: 18px;
         padding: 16px 18px;
@@ -313,21 +313,21 @@
         box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
     }
 
-    .resultado-card:hover,
-    .assigned-card:hover {
+    .benef-find-resultado-card:hover,
+    .benef-find-assigned-card:hover {
         border-color: rgba(54, 149, 245, 0.45);
         box-shadow: 0 12px 24px rgba(16, 26, 97, 0.08);
     }
 
-    .resultado-left,
-    .assigned-left {
+    .benef-find-resultado-left,
+    .benef-find-assigned-left {
         display: flex;
         align-items: center;
         gap: 16px;
         min-width: 0;
     }
 
-    .avatar {
+    .benef-find-avatar {
         width: 66px;
         height: 66px;
         border-radius: 50%;
@@ -340,11 +340,11 @@
         flex-shrink: 0;
     }
 
-    .user-meta {
+    .benef-find-user-meta {
         min-width: 0;
     }
 
-    .user-meta h4 {
+    .benef-find-user-meta h4 {
         margin: 0 0 10px;
         font-size: 18px;
         color: var(--ds-dark);
@@ -352,15 +352,15 @@
         word-break: break-word;
     }
 
-    .meta-row {
+    .benef-find-meta-row {
         display: flex;
         align-items: center;
         gap: 10px;
         flex-wrap: wrap;
     }
 
-    .badge-soft,
-    .badge-primary {
+    .benef-find-badge-soft,
+    .benef-find-badge-primary {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -371,23 +371,23 @@
         letter-spacing: 0.2px;
     }
 
-    .badge-primary {
+    .benef-find-badge-primary {
         background: linear-gradient(180deg, var(--ds-primary) 0%, var(--ds-primary-dark) 100%);
         color: #fff;
     }
 
-    .badge-soft {
+    .benef-find-badge-soft {
         background: #eef6ff;
         color: var(--ds-primary-dark);
     }
 
-    .company,
-    .meta-text {
+    .benef-find-company,
+    .benef-find-meta-text {
         color: var(--ds-muted);
         font-size: 14px;
     }
 
-    .subsection-title {
+    .benef-find-subsection-title {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -397,24 +397,24 @@
         color: var(--ds-dark);
     }
 
-    .side-panel {
+    .benef-find-side-panel {
         padding: 26px 20px;
     }
 
-    .org-title {
+    .benef-find-org-title {
         margin: 0 0 6px;
         font-size: 22px;
         color: var(--ds-dark);
         font-weight: 600;
     }
 
-    .org-subtitle {
+    .benef-find-org-subtitle {
         margin: 0 0 18px;
         font-size: 14px;
         color: var(--text-soft);
     }
 
-    .org-icon {
+    .benef-find-org-icon {
         width: 44px;
         height: 44px;
         border-radius: 50%;
@@ -427,29 +427,29 @@
         margin-bottom: 18px;
     }
 
-    .divider {
+    .benef-find-divider {
         height: 1px;
         background: var(--line);
         margin: 18px 0;
     }
 
-    .info-grid {
+    .benef-find-info-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 18px 14px;
     }
 
-    .info-item {
+    .benef-find-info-item {
         display: flex;
         gap: 12px;
         align-items: flex-start;
     }
 
-    .info-item.full {
+    .benef-find-info-item.benef-find-full {
         grid-column: 1 / -1;
     }
 
-    .info-icon {
+    .benef-find-info-icon {
         color: var(--ds-primary);
         font-size: 22px;
         line-height: 1;
@@ -457,20 +457,20 @@
         flex-shrink: 0;
     }
 
-    .info-copy small {
+    .benef-find-info-copy small {
         display: block;
         font-size: 12px;
         color: var(--text-soft);
         margin-bottom: 5px;
     }
 
-    .info-copy strong {
+    .benef-find-info-copy strong {
         font-size: 16px;
         color: var(--ds-dark);
         font-weight: 600;
     }
 
-    .status-pill {
+    .benef-find-status-pill {
         display: inline-flex;
         align-items: center;
         padding: 6px 10px;
@@ -481,17 +481,17 @@
         color: var(--ds-primary-dark);
     }
 
-    .status-pill.status-finalizada {
+    .benef-find-status-pill.benef-find-status-finalizada {
         background: rgba(239, 68, 68, 0.1);
         color: var(--danger);
     }
 
-    .status-pill.status-activa {
+    .benef-find-status-pill.benef-find-status-activa {
         background: rgba(22, 163, 74, 0.1);
         color: var(--success);
     }
 
-    .alert-search {
+    .benef-find-alert-search {
         border-radius: 16px;
         padding: 14px 16px;
         background: rgba(239, 68, 68, 0.08);
@@ -499,7 +499,7 @@
         border: 1px solid rgba(239, 68, 68, 0.2);
         margin-bottom: 16px;
     }
-    .pesquisas-icons {
+    .benef-find-pesquisas-icons {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -510,44 +510,44 @@
     margin: 16px 0 18px;
 }
     @media (max-width: 1120px) {
-        .beneficiarios-grid {
+        .benef-find-beneficiarios-grid {
             grid-template-columns: 1fr;
         }
 
-        .side-panel {
+        .benef-find-side-panel {
             padding: 22px 20px;
         }
     }
 
     @media (max-width: 768px) {
-        .beneficiarios-page {
+        .benef-find-beneficiarios-page {
             padding: 18px 16px 32px;
         }
 
-        .search-row {
+        .benef-find-search-row {
             grid-template-columns: 1fr;
         }
 
-        .resultado-header,
-        .resultado-card,
-        .assigned-card {
+        .benef-find-resultado-header,
+        .benef-find-resultado-card,
+        .benef-find-assigned-card {
             flex-direction: column;
             align-items: stretch;
         }
 
-        .info-grid {
+        .benef-find-info-grid {
             grid-template-columns: 1fr;
         }
 
-        .org-title {
+        .benef-find-org-title {
             font-size: 20px;
         }
 
-        .beneficiarios-header h1 {
+        .benef-find-beneficiarios-header h1 {
             font-size: 24px;
         }
 
-        .ds-btn {
+        .benef-find-ds-btn {
             width: 100%;
         }
     }
@@ -557,32 +557,32 @@ $pesquisaMap = [
     '1' => [
         'nombre' => 'Antropometría',
         'emoji'  => 'antropometria2.svg',
-        'clase'  => 'yellow'
+        'clase'  => 'benef-find-yellow'
     ],
     '2' => [
         'nombre' => 'Laboratorio',
         'emoji'  => 'sanguinea2.svg',
-        'clase'  => 'red'
+        'clase'  => 'benef-find-red'
     ],
     '3' => [
         'nombre' => 'Visual',
         'emoji'  => 'visual2.svg',
-        'clase'  => 'violet'
+        'clase'  => 'benef-find-violet'
     ],
     '4' => [
         'nombre' => 'Signos vitales',
         'emoji'  => 'signosVitales2.svg',
-        'clase'  => 'orange'
+        'clase'  => 'benef-find-orange'
     ],
     '5' => [
         'nombre' => 'Medicina general',
         'emoji'  => 'medicinaGeneral2.svg',
-        'clase'  => 'purple'
+        'clase'  => 'benef-find-purple'
     ],
     '6' => [
         'nombre' => 'Vacunación',
         'emoji'  => 'vacunacion2.svg',
-        'clase'  => 'blue'
+        'clase'  => 'benef-find-blue'
     ],
 ];
 
@@ -592,8 +592,8 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
     $pesquisas_jornada = array_map('trim', explode(',', $jornada['pesquisas']));
 }
 ?>
-<div class="beneficiarios-page">
-    <div class="beneficiarios-breadcrumb">
+<div class="benef-find-beneficiarios-page">
+    <div class="benef-find-beneficiarios-breadcrumb">
 
 <a href="<?= base_url('jornadas') ?>">Jornadas</a>
 &gt;
@@ -602,38 +602,38 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
 <span>Buscar o registrar</span>
     </div>
 
-    <div class="beneficiarios-header">
+    <div class="benef-find-beneficiarios-header">
         <h1>Busca tu beneficiario</h1>
         <p>Busca, registra y asocia beneficiarios a esta jornada.</p>
     </div>
 
-    <section class="beneficiarios-shell">
-        <div class="beneficiarios-grid">
-            <div class="beneficiarios-panel">
-                <div class="beneficiarios-panel-body">
+    <section class="benef-find-beneficiarios-shell">
+        <div class="benef-find-beneficiarios-grid">
+            <div class="benef-find-beneficiarios-panel">
+                <div class="benef-find-beneficiarios-panel-body">
                   
-                    <div class="search-row">
-                        <div class="input-wrap">
+                    <div class="benef-find-search-row">
+                        <div class="benef-find-input-wrap">
                              
                             <input
                                 type="text"
                                 id="campoBusqueda"
-                                class="search-input"
+                                class="benef-find-search-input"
                                 placeholder="Nombre, apellido o ID Digisalud..."
                                 autocomplete="off"
                             >
                         </div>
 
-                        <button type="button" class="ds-btn ds-btn-primary" onclick="ejecutarBusqueda()">
-                            <span>🔎</span>
+                        <button type="button" class="benef-find-ds-btn benef-find-ds-btn-primary" onclick="ejecutarBusqueda()">
+                            
                             <span>Buscar</span>
                         </button>
                     </div>
 
-                    <div class="resultado-header" id="resultadoHeader">
-                        <span class="resultado-count" id="resultadoCount"></span>
+                    <div class="benef-find-resultado-header" id="resultadoHeader">
+                        <span class="benef-find-resultado-count" id="resultadoCount"></span>
 
-                        <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/create") ?>" class="ds-btn ds-btn-outline">
+                        <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/create") ?>" class="benef-find-ds-btn benef-find-ds-btn-outline">
                             + Registrar nuevo
                         </a>
                     </div>
@@ -641,13 +641,13 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
                     <div id="resultados"></div>
 
                     <div id="sinResultados" style="display:none;">
-                        <div class="empty-state">
+                        <div class="benef-find-empty-state">
                             <div>
-                                <div class="empty-icon">👤</div>
+                                <div class="benef-find-empty-icon">👤</div>
                                 <h3>No se encontró ningún beneficiario</h3>
                                 <p class="mb-3">Puedes registrar uno nuevo y asociarlo a esta jornada.</p>
 
-                                <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/create") ?>" class="ds-btn ds-btn-primary">
+                                <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/create") ?>" class="benef-find-ds-btn benef-find-ds-btn-primary">
                                     + Registrar nuevo beneficiario
                                 </a>
                             </div>
@@ -655,9 +655,9 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
                     </div>
 
                     <div id="estadoInicial">
-                        <div class="empty-state">
+                        <div class="benef-find-empty-state">
                             <div>
-                                <div class="empty-icon">👥</div>
+                                <div class="benef-find-empty-icon">👥</div>
                                 <h3>Escribe al menos 2 caracteres y presiona Buscar</h3>
                                 <p>Usa el buscador para encontrar y asociar beneficiarios existentes a esta jornada.</p>
                             </div>
@@ -665,25 +665,23 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
                     </div>
 
                     <?php if (! empty($beneficiariosAsignados) && is_iterable($beneficiariosAsignados)): ?>
-                        <h3 class="subsection-title">
-                            <span>👥</span>
+                        <h3 class="benef-find-subsection-title">
+                             
                             <span>Beneficiarios asignados (<?= count($beneficiariosAsignados) ?>)</span>
                         </h3>
 
                         <?php foreach ($beneficiariosAsignados as $beneficiario): ?>
-                            <div class="assigned-card mb-3">
-                                <div class="assigned-left">
-                                    <div class="avatar">👤</div>
-
-                                    <div class="user-meta">
+                            <div class="benef-find-assigned-card mb-3">
+                                <div class="benef-find-assigned-left">
+                                        <div class="benef-find-user-meta">
                                         <h4>
                                             <?= esc(trim(($beneficiario['apellidos'] ?? '') . ', ' . ($beneficiario['nombres'] ?? ''))) ?>
                                         </h4>
-                                        <div class="meta-row">
-                                            <span class="badge-primary">
+                                        <div class="benef-find-meta-row">
+                                            <span class="benef-find-badge-primary">
                                                 <?= esc($beneficiario['id_digisalud'] ?? 'SIN ID') ?>
                                             </span>
-                                            <span class="company">
+                                            <span class="benef-find-company">
                                                 <?= esc($beneficiario['parentesco'] ?? 'Sin representante') ?>
                                             </span>
                                         </div>
@@ -695,18 +693,18 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
                 </div>
             </div>
 
-            <aside class="beneficiarios-panel">
-                <div class="side-panel">
-                    <h2 class="org-title"><?= esc($jornadaNombre) ?></h2>
+            <aside class="benef-find-beneficiarios-panel">
+                <div class="benef-find-side-panel">
+                    <h2 class="benef-find-org-title"><?= esc($jornadaNombre) ?></h2>
                     
 
-                    <div class="pesquisas-icons">
+                    <div class="benef-find-pesquisas-icons">
                         <?php if (!empty($pesquisas_jornada)): ?>
                             <?php foreach ($pesquisas_jornada as $idPesquisa): ?>
                                 <?php if (isset($pesquisaMap[$idPesquisa])): ?>
                                     <?php $pesquisa = $pesquisaMap[$idPesquisa]; ?>
 
-                                    <div class="pesquisa-icon <?= esc($pesquisa['clase']) ?>" title="<?= esc($pesquisa['nombre']) ?>">
+                                    <div class="benef-find-pesquisa-icon <?= esc($pesquisa['clase']) ?>" title="<?= esc($pesquisa['nombre']) ?>">
                                         <img height="30"
                                             src="<?= base_url('img/' . $pesquisa['emoji']) ?>" 
                                             alt="<?= esc($pesquisa['nombre']) ?>"
@@ -716,45 +714,45 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
                                 <?php endif; ?>
                             <?php endforeach; ?>
                         <?php else: ?>
-                            <div class="pesquisa-empty">
+                            <div class="benef-find-pesquisa-empty">
                                 Sin pesquisas asignadas
                             </div>
                         <?php endif; ?>
                     </div>
 
-                    <div class="divider"></div>
+                    <div class="benef-find-divider"></div>
 
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <div class="info-icon">📍</div>
-                            <div class="info-copy">
+                    <div class="benef-find-info-grid">
+                        <div class="benef-find-info-item">
+                            <div class="benef-find-info-icon">📍</div>
+                            <div class="benef-find-info-copy">
                                 <small>Ubicación</small>
                                 <strong><?= esc($jornadaUbicacion) ?></strong>
                             </div>
                         </div>
 
-                        <div class="info-item">
-                            <div class="info-icon">📅</div>
-                            <div class="info-copy">
+                        <div class="benef-find-info-item">
+                            <div class="benef-find-info-icon">📅</div>
+                            <div class="benef-find-info-copy">
                                 <small>Fecha Inicio</small>
                                 <strong><?= esc($fechaInicio) ?></strong>
                             </div>
                         </div>
 
-                        <div class="info-item">
-                            <div class="info-icon">🗓️</div>
-                            <div class="info-copy">
+                        <div class="benef-find-info-item">
+                            <div class="benef-find-info-icon">🗓️</div>
+                            <div class="benef-find-info-copy">
                                 <small>Fecha Fin</small>
                                 <strong><?= esc($fechaFin) ?></strong>
                             </div>
                         </div>
 
-                        <div class="info-item">
-                            <div class="info-icon">🚩</div>
-                            <div class="info-copy">
+                        <div class="benef-find-info-item">
+                            <div class="benef-find-info-icon">🚩</div>
+                            <div class="benef-find-info-copy">
                                 <small>Status</small>
                                 <strong>
-                                    <span class="status-pill <?= $statusRaw === '1' ? 'status-activa' : ($statusRaw === '2' ? 'status-finalizada' : '') ?>">
+                                    <span class="benef-find-status-pill <?= $statusRaw === '1' ? 'benef-find-status-activa' : ($statusRaw === '2' ? 'benef-find-status-finalizada' : '') ?>">
                                         <?= esc($statusTexto) ?>
                                     </span>
                                 </strong>
@@ -762,12 +760,12 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
                         </div>
                     </div>
 
-                    <div class="divider"></div>
+                    <div class="benef-find-divider"></div>
 
-                    <div class="info-item full">
-                        <div class="info-icon">👥</div>
-                        <div class="info-copy">
-                            <small>N° de beneficiarios asignados</small>
+                    <div class="benef-find-info-item benef-find-full">
+                        <div class="benef-find-info-icon">👥</div>
+                        <div class="benef-find-info-copy">
+                            <small>Total beneficiarios:</small>
                             <strong id="contadorAsignados"><?= (int) $cantidadAsignados ?></strong>
                         </div>
                     </div>
@@ -843,9 +841,9 @@ function ejecutarBusqueda() {
     header.style.display = 'none';
 
     contenedor.innerHTML = `
-        <div class="empty-state">
+        <div class="benef-find-empty-state">
             <div>
-                <div class="empty-icon">🔎</div>
+                <div class="benef-find-empty-icon">🔎</div>
                 <h3>Buscando beneficiarios...</h3>
                 <p>Estamos consultando coincidencias por nombre, apellido o ID Digisalud.</p>
             </div>
@@ -888,25 +886,25 @@ function ejecutarBusqueda() {
             const nombreCompleto = `${(b.apellidos || '').toUpperCase()}, ${(b.nombres || '').toUpperCase()}`.trim();
 
             html += `
-                <div class="resultado-card">
-                    <div class="resultado-left">
-                        <div class="avatar">👤</div>
+                <div class="benef-find-resultado-card">
+                    <div class="benef-find-resultado-left">
+                        <div class="benef-find-avatar">👤</div>
 
-                        <div class="user-meta">
+                        <div class="benef-find-user-meta">
                             <h4>${escaparHtml(nombreCompleto || 'Beneficiario sin nombre')}</h4>
 
-                            <div class="meta-row">
-                                <span class="badge-primary">${escaparHtml(b.id_digisalud || 'SIN ID')}</span>
-                                <span class="badge-soft">FN: ${escaparHtml(fecha)}</span>
-                                <span class="meta-text">${edad}</span>
-                                <span class="meta-text">Representante: ${parentesco}</span>
+                            <div class="benef-find-meta-row">
+                                <span class="benef-find-badge-primary">${escaparHtml(b.id_digisalud || 'SIN ID')}</span>
+                                <span class="benef-find-badge-soft">FN: ${escaparHtml(fecha)}</span>
+                                <span class="benef-find-meta-text">${edad}</span>
+                                <span class="benef-find-meta-text">Representante: ${parentesco}</span>
                             </div>
                         </div>
                     </div>
 
                     <form method="post" action="${asociarBaseUrl}/${jornadaId}/asociar/${b.id_beneficiario}" style="margin:0;">
                         <input type="hidden" name="${csrfName}" value="${csrfHash}">
-                        <button type="submit" class="ds-btn ds-btn-primary">
+                        <button type="submit" class="benef-find-ds-btn benef-find-ds-btn-primary">
                             + Agregar
                         </button>
                     </form>
@@ -920,7 +918,7 @@ function ejecutarBusqueda() {
         console.error(error);
 
         contenedor.innerHTML = `
-            <div class="alert-search">
+            <div class="benef-find-alert-search">
                 Ocurrió un error al buscar beneficiarios. Revisa la consola del navegador o valida la ruta <strong>beneficiarios/buscar-ajax</strong>.
             </div>
         `;
