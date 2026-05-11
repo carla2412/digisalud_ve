@@ -1409,8 +1409,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         confirmButtonText: 'Sí, cancelar',
         cancelButtonText: 'No, continuar',
         reverseButtons: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#1a237e'
+        confirmButtonColor: '#3695f5',
+        cancelButtonColor: '#38393a'
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = URL_RETORNO;

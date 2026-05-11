@@ -1636,12 +1636,21 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
     }
 
     function cancelForm() {
-        const shouldCancel = window.confirm('¿Desea cancelar la evaluación? Los cambios no guardados se perderán.');
-        if (!shouldCancel) return;
-
-        form.reset();
-        localStorage.removeItem(DRAFT_KEY);
-        window.location.href = URL_RETORNO;
+            Swal.fire({
+        title: '¿Desea cancelar la evaluación?',
+        text: 'Los cambios no guardados se perderán.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, cancelar',
+        cancelButtonText: 'No, continuar',
+        reverseButtons: true,
+        confirmButtonColor: '#3695f5',
+        cancelButtonColor: '#999b9c'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = URL_RETORNO;
+        }
+    });
     }
 
     function activarDependencias() {
