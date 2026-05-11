@@ -938,7 +938,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         <div class="jor_ben-title">
             <h1>
                 Beneficiarios de la jornada
-                <span class="jor_ben-counter"><?= $total ?? count($beneficiarios ?? []) ?></span>
+              
             </h1>
             <!-- <p>
                 Jornada:

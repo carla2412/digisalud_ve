@@ -133,14 +133,14 @@ $jsSections[] = $observacionesSection;
         --lab-actions-h: 22px;
     }
 
-    .lab-page {
+    .labo-page {
         display: grid;
         grid-template-columns: var(--lab-sidebar-w) minmax(0, 1fr);
         min-height: 100dvh;
         overflow: clip;
     }
 
-    .sidebar {
+    .labo-sidebar {
         background: var(--lab-primary);
         display: flex;
         flex-direction: column;
@@ -149,8 +149,8 @@ $jsSections[] = $observacionesSection;
         padding: 14px 0;
     }
 
-    .sidebar__logo,
-    .sidebar__item {
+    .labo-sidebar__logo,
+    .labo-sidebar__item {
         width: 42px;
         height: 42px;
         border-radius: 16px;
@@ -164,25 +164,25 @@ $jsSections[] = $observacionesSection;
         transition: .2s ease;
     }
 
-    .sidebar__item img {
+    .labo-sidebar__item img {
         width: 24px;
         height: 24px;
         filter: brightness(0) invert(1);
         opacity: .65;
     }
 
-    .sidebar__item:hover,
-    .sidebar__item.active {
+    .labo-sidebar__item:hover,
+    .labo-sidebar__item.active {
         background: #fff;
     }
 
-    .sidebar__item:hover img,
-    .sidebar__item.active img {
+    .labo-sidebar__item:hover img,
+    .labo-sidebar__item.active img {
         filter: none;
         opacity: 1;
     }
 
-    .sidebar__item.evaluado::after {
+    .labo-sidebar__item.labo-evaluado::after {
         content: '';
         position: absolute;
         right: -2px;
@@ -194,7 +194,7 @@ $jsSections[] = $observacionesSection;
         border: 2px solid var(--lab-primary);
     }
 
-    .sidebar__item[title]::before {
+    .labo-sidebar__item[title]::before {
         content: attr(title);
         position: absolute;
         left: 52px;
@@ -211,18 +211,18 @@ $jsSections[] = $observacionesSection;
         z-index: 30;
     }
 
-    .sidebar__item:hover[title]::before {
+    .labo-sidebar__item:hover[title]::before {
         opacity: 1;
     }
 
-    .lab-main {
+    .labo-main {
         display: flex;
         flex-direction: column;
         min-width: 0;
         padding: 22px 26px 88px;
     }
 
-    .lab-header {
+    .labo-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -230,25 +230,25 @@ $jsSections[] = $observacionesSection;
         margin-bottom: 16px;
         padding-bottom: calc(var(--lab-actions-h) + 12px);
     }
-    .lab-header h1 {
+    .labo-header h1 {
         margin: 0;
         color: var(--lab-primary);
         font-size: 1.35rem;
         font-weight: 900;
     }
 
-    .lab-header p {
+    .labo-header p {
         margin: 2px 0 0;
         color: var(--lab-muted);
         font-size: .9rem;
     }
-    .lab-title-row {
+    .labo-title-row {
         display: flex;
         align-items: center;
         gap: 12px;
     }
 
-    .lab-icon {
+    .labo-icon {
         width: 48px;
         height: 48px;
         border-radius: 18px;
@@ -258,14 +258,14 @@ $jsSections[] = $observacionesSection;
         box-shadow: 0 12px 24px rgba(15, 23, 42, .08);
     }
 
-    .lab-icon img {
+    .labo-icon img {
         width: 30px;
         height: 30px;
     }
 
 
 
-    .lab-badge {
+    .labo-badge {
         display: inline-flex;
         margin-top: 6px;
         padding: 3px 10px;
@@ -274,24 +274,24 @@ $jsSections[] = $observacionesSection;
         font-weight: 800;
     }
 
-    .lab-badge.new {
+    .labo-badge.labo-new {
         background: #dbeafe;
         color: #1b7ae2;
     }
 
-    .lab-badge.edit {
+    .labo-badge.labo-edit {
         background: #fef3c7;
         color: #92400e;
     }
 
-    .lab-progress {
+    .labo-progress {
         min-width: 280px;
         font-size: .78rem;
         font-weight: 700;
         color: var(--lab-muted);
     }
 
-    .progress-bar {
+    .labo-progress-bar {
         width: 100%;
         height: 9px;
         margin-top: 8px;
@@ -300,7 +300,7 @@ $jsSections[] = $observacionesSection;
         overflow: hidden;
     }
 
-    .progress-bar__fill {
+    .labo-progress-bar__fill {
         height: 100%;
         width: 0;
         border-radius: inherit;
@@ -308,25 +308,25 @@ $jsSections[] = $observacionesSection;
         transition: width .25s ease;
     }
 
-    .btn-volver {
+    .labo-btn-volver {
         color: var(--lab-muted);
         text-decoration: none;
         font-size: .85rem;
         font-weight: 700;
     }
 
-    .btn-volver:hover {
+    .labo-btn-volver:hover {
         color: var(--lab-primary);
     }
 
-    .stepper {
+    .labo-stepper {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
         margin-bottom: 18px;
     }
 
-    .step {
+    .labo-step {
         border: 1px solid var(--lab-border);
         background: #fff;
         color: var(--lab-muted);
@@ -341,7 +341,7 @@ $jsSections[] = $observacionesSection;
         transition: .2s ease;
     }
 
-    .step span {
+    .labo-step span {
         width: 24px;
         height: 24px;
         border-radius: 999px;
@@ -351,73 +351,73 @@ $jsSections[] = $observacionesSection;
         color: var(--lab-muted);
     }
 
-    .step.active,
-    .step.completed {
+    .labo-step.active,
+    .labo-step.labo-completed {
         border-color: var(--lab-primary);
         color: var(--lab-primary);
     }
 
-    .step.active span,
-    .step.completed span {
+    .labo-step.active span,
+    .labo-step.labo-completed span {
         background: var(--lab-primary);
         color: #fff;
     }
 
-    .lab-layout {
+    .labo-layout {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 320px;
         gap: 18px;
         align-items: start;
     }
 
-    .lab-content {
+    .labo-content {
         min-width: 0;
     }
 
-    .form-section {
+    .labo-form-section {
         display: none;
     }
 
-    .form-section.active {
+    .labo-form-section.active {
         display: block;
     }
 
-    .section-card,
-    .summary-card {
+    .labo-section-card,
+    .labo-summary-card {
         background: var(--lab-card);
         border: 1px solid var(--lab-border);
         border-radius: 22px;
         box-shadow: 0 16px 36px rgba(15, 23, 42, .06);
     }
 
-    .section-card {
+    .labo-section-card {
         padding: 22px;
     }
 
-    .section-header {
+    .labo-section-header {
         display: flex;
         justify-content: space-between;
         gap: 14px;
         margin-bottom: 18px;
     }
 
-    .section-header h2,
-    .summary-card h2,
-    .summary-card h3 {
+    .labo-section-header h2,
+    .labo-summary-card h2,
+    .labo-summary-card h3 {
         margin: 0;
         color: var(--lab-primary);
         font-size: 1rem;
         font-weight: 900;
     }
 
-    .section-header p {
+    .labo-section-header p {
         margin: 4px 0 0;
         color: var(--lab-muted);
         font-size: .84rem;
     }
 
-    .section-status,
-    .required-note {
+    .labo-section-status,
+    .labo-required-note {
         display: inline-flex;
         align-items: center;
         white-space: nowrap;
@@ -426,26 +426,26 @@ $jsSections[] = $observacionesSection;
         font-weight: 800;
     }
 
-    .required-note {
+    .labo-required-note {
         color: var(--lab-danger);
         margin-right: 8px;
     }
 
-    .form-grid {
+    .labo-form-grid {
         display: grid;
         grid-template-columns: repeat(12, 1fr);
         gap: 14px;
     }
 
-    .field {
+    .labo-field {
         grid-column: span 6;
     }
 
-    .field--full {
+    .labo-field--full {
         grid-column: 1 / -1;
     }
 
-    .field label {
+    .labo-field label {
         display: block;
         color: #334155;
         font-size: .78rem;
@@ -453,9 +453,9 @@ $jsSections[] = $observacionesSection;
         margin-bottom: 6px;
     }
 
-    .field input,
-    .field select,
-    .field textarea {
+    .labo-field input,
+    .labo-field select,
+    .labo-field textarea {
         width: 100%;
         border: 1.5px solid var(--lab-border);
         border-radius: 12px;
@@ -467,21 +467,21 @@ $jsSections[] = $observacionesSection;
         transition: .15s ease;
     }
 
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
+    .labo-field input:focus,
+    .labo-field select:focus,
+    .labo-field textarea:focus {
         border-color: var(--lab-primary);
         box-shadow: 0 0 0 3px rgba(16, 26, 97, .08);
     }
 
-    .field small {
+    .labo-field small {
         display: block;
         margin-top: 5px;
         color: var(--lab-muted);
         font-size: .72rem;
     }
 
-    .input-unit {
+    .labo-input-unit {
         display: flex;
         align-items: center;
         border: 1.5px solid var(--lab-border);
@@ -491,18 +491,18 @@ $jsSections[] = $observacionesSection;
         transition: .15s ease;
     }
 
-    .input-unit:focus-within {
+    .labo-input-unit:focus-within {
         border-color: var(--lab-primary);
         box-shadow: 0 0 0 3px rgba(16, 26, 97, .08);
     }
 
-    .input-unit input {
+    .labo-input-unit input {
         border: 0;
         border-radius: 0;
         box-shadow: none !important;
     }
 
-    .input-unit span {
+    .labo-input-unit span {
         padding: 0 12px;
         color: var(--lab-muted);
         font-size: .76rem;
@@ -511,13 +511,13 @@ $jsSections[] = $observacionesSection;
         white-space: nowrap;
     }
 
-    .segmented {
+    .labo-segmented {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
     }
 
-    .segmented label {
+    .labo-segmented label {
         margin: 0;
         display: inline-flex;
         align-items: center;
@@ -528,26 +528,26 @@ $jsSections[] = $observacionesSection;
         cursor: pointer;
     }
 
-    .field--error input,
-    .field--error select,
-    .field--error textarea,
-    .field--error .input-unit,
+    .labo-field--error input,
+    .labo-field--error select,
+    .labo-field--error textarea,
+    .labo-field--error .labo-input-unit,
     .is-invalid {
         border-color: var(--lab-danger) !important;
         box-shadow: 0 0 0 3px rgba(220, 38, 38, .08) !important;
     }
 
-    .field--warning input,
-    .field--warning .input-unit {
+    .labo-field--warning input,
+    .labo-field--warning .labo-input-unit {
         border-color: var(--lab-warning) !important;
         box-shadow: 0 0 0 3px rgba(245, 158, 11, .1) !important;
     }
 
-    .eval-campo-oculto {
+    .labo-eval-campo-oculto {
         display: none !important;
     }
 
-    .summary-panel {
+    .labo-summary-panel {
         display: flex;
         flex-direction: column;
         gap: 14px;
@@ -555,11 +555,11 @@ $jsSections[] = $observacionesSection;
         top: 16px;
     }
 
-    .summary-card {
+    .labo-summary-card {
         padding: 18px;
     }
 
-    .summary-row {
+    .labo-summary-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -569,15 +569,15 @@ $jsSections[] = $observacionesSection;
         font-size: .82rem;
     }
 
-    .summary-row:last-child {
+    .labo-summary-row:last-child {
         border-bottom: 0;
     }
 
-    .summary-row span {
+    .labo-summary-row span {
         color: var(--lab-muted);
     }
 
-    .summary-row strong {
+    .labo-summary-row strong {
         color: var(--lab-primary);
         text-align: right;
     }
@@ -589,7 +589,7 @@ $jsSections[] = $observacionesSection;
         word-break: break-word;
     }
 
-    .actions-bar {
+    .labo-actions-bar {
         position: sticky;
         bottom: 0;
         z-index: 20;
@@ -607,7 +607,7 @@ $jsSections[] = $observacionesSection;
         box-sizing: border-box;
     }
 
-    .actions-bar .btn {
+    .labo-actions-bar .btn {
         border: 1px solid var(--lab-border);
         min-height: 44px;
         padding: 0 18px;
@@ -618,22 +618,22 @@ $jsSections[] = $observacionesSection;
         transition: .2s ease;
     }
 
-    .actions-bar .btn:hover:not(:disabled) {
+    .labo-actions-bar .btn:hover:not(:disabled) {
         transform: translateY(-1px);
         box-shadow: 0 10px 22px rgba(15, 23, 42, .10);
     }
 
-    .btn--primary {
+    .labo-btn--primary {
         background: var(--lab-primary);
         color: #fff;
     }
 
-    .btn--secondary {
+    .labo-btn--secondary {
         background: var(--lab-primary-soft);
         color: var(--lab-primary);
     }
 
-    .btn--ghost {
+    .labo-btn--ghost {
         background: transparent;
         color: var(--lab-muted);
     }
@@ -643,14 +643,14 @@ $jsSections[] = $observacionesSection;
         cursor: not-allowed;
     }
 
-    .eval-error-msg,
-    .toast {
+    .labo-eval-error-msg,
+    .labo-toast {
         border-radius: 12px;
         padding: 10px 12px;
         font-size: .82rem;
     }
 
-    .eval-error-msg {
+    .labo-eval-error-msg {
         display: none;
         margin-top: 12px;
         background: #fef2f2;
@@ -658,7 +658,7 @@ $jsSections[] = $observacionesSection;
         border: 1px solid #fecaca;
     }
 
-    .toast {
+    .labo-toast {
         position: fixed;
         right: 22px;
         bottom: 84px;
@@ -671,52 +671,52 @@ $jsSections[] = $observacionesSection;
         transition: .2s ease;
     }
 
-    .toast.show {
+    .labo-toast.show {
         transform: translateY(0);
         opacity: 1;
     }
 
     @media (max-width: 1100px) {
-        .lab-layout {
+        .labo-layout {
             grid-template-columns: 1fr;
         }
 
-        .summary-panel {
+        .labo-summary-panel {
             position: static;
         }
     }
 
     @media (max-width: 760px) {
-        .lab-page {
+        .labo-page {
             grid-template-columns: 1fr;
         }
 
-        .sidebar {
+        .labo-sidebar {
             flex-direction: row;
             overflow-x: auto;
             justify-content: flex-start;
             padding: 10px 12px;
         }
 
-        .lab-main {
+        .labo-main {
             padding: 18px 14px 92px;
         }
 
-        .lab-header {
+        .labo-header {
             align-items: flex-start;
             flex-direction: column;
         }
 
-        .lab-progress {
+        .labo-progress {
             min-width: 0;
             width: 100%;
         }
 
-        .field {
+        .labo-field {
             grid-column: 1 / -1;
         }
 
-        .actions-bar {
+        .labo-actions-bar {
             margin: 0 -14px -18px;
             flex-wrap: wrap;
             padding: 12px 14px;
@@ -733,34 +733,34 @@ $jsSections[] = $observacionesSection;
         background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
     }
 
-    .lab-page {
+    .labo-page {
         background: transparent;
     }
 
-    .sidebar {
+    .labo-sidebar {
         background: linear-gradient(180deg, #102073 0%, #08144f 100%);
         box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
     }
 
-    .sidebar__logo,
-    .sidebar__item {
+    .labo-sidebar__logo,
+    .labo-sidebar__item {
         border-radius: 999px;
         border: 1px solid rgba(255, 255, 255, .10);
     }
 
-    .sidebar__item:hover,
-    .sidebar__item.active {
+    .labo-sidebar__item:hover,
+    .labo-sidebar__item.active {
         transform: translateY(-1px);
         box-shadow: 0 10px 22px rgba(0, 0, 0, .18);
     }
 
-    .lab-main {
+    .labo-main {
         max-width: 1720px;
         width: 100%;
         margin: 0 auto;
     }
 
-    .lab-header {
+    .labo-header {
         background: rgba(255, 255, 255, .86);
         border: 1px solid var(--lab-border);
         border-radius: 26px;
@@ -770,95 +770,95 @@ $jsSections[] = $observacionesSection;
         backdrop-filter: blur(10px);
     }
 
-    .lab-icon {
+    .labo-icon {
         border: 1px solid var(--lab-border);
         box-shadow: 0 12px 26px rgba(16, 26, 97, .10);
     }
 
-    .lab-badge {
+    .labo-badge {
         letter-spacing: .01em;
     }
 
-    .lab-progress {
+    .labo-progress {
         background: #f8fbff;
         border: 1px solid var(--lab-border);
         border-radius: 18px;
         padding: 14px;
     }
 
-    .progress-bar {
+    .labo-progress-bar {
         height: 10px;
         background: #e5ecf7;
     }
 
-    .stepper {
+    .labo-stepper {
         flex-wrap: nowrap;
         overflow-x: auto;
         padding: 0 2px 12px;
         scroll-snap-type: x proximity;
     }
 
-    .stepper::-webkit-scrollbar {
+    .labo-stepper::-webkit-scrollbar {
         height: 7px;
     }
 
-    .stepper::-webkit-scrollbar-thumb {
+    .labo-stepper::-webkit-scrollbar-thumb {
         background: #c8d4e8;
         border-radius: 999px;
     }
 
-    .step {
+    .labo-step {
         scroll-snap-align: start;
         min-height: 42px;
         background: rgba(255, 255, 255, .92);
         box-shadow: 0 8px 18px rgba(15, 23, 42, .04);
     }
 
-    .step:hover {
+    .labo-step:hover {
         border-color: var(--lab-primary);
         color: var(--lab-primary);
         transform: translateY(-1px);
     }
 
-    .step.completed span::after {
+    .labo-step.labo-completed span::after {
         content: '✓';
         font-size: .72rem;
         line-height: 1;
     }
 
-    .step.completed span {
+    .labo-step.labo-completed span {
         font-size: 0;
         background: var(--lab-success);
     }
 
-    .lab-layout {
+    .labo-layout {
         gap: 22px;
     }
 
-    .section-card,
-    .summary-card {
+    .labo-section-card,
+    .labo-summary-card {
         border-radius: 24px;
         box-shadow: 0 18px 44px rgba(15, 23, 42, .07);
     }
 
-    .section-card {
+    .labo-section-card {
         padding: 24px;
     }
 
-    .section-header {
+    .labo-section-header {
         align-items: flex-start;
         padding-bottom: 16px;
         border-bottom: 1px solid #edf2f7;
     }
 
-    .section-status {
+    .labo-section-status {
         background: var(--lab-primary-soft);
         color: var(--lab-primary);
         border-radius: 999px;
         padding: 6px 10px;
     }
 
-    .field {
+    .labo-field {
         background: #fbfdff;
         border: 1px solid #edf2f7;
         border-radius: 18px;
@@ -866,18 +866,18 @@ $jsSections[] = $observacionesSection;
         transition: .18s ease;
     }
 
-    .field:focus-within {
+    .labo-field:focus-within {
         background: #fff;
         border-color: rgba(16, 26, 97, .22);
         box-shadow: 0 12px 28px rgba(16, 26, 97, .08);
         transform: translateY(-1px);
     }
 
-    .field label {
+    .labo-field label {
         color: var(--lab-primary);
     }
 
-    .field small {
+    .labo-field small {
         background: #f1f5fb;
         border-radius: 999px;
         display: inline-flex;
@@ -885,25 +885,25 @@ $jsSections[] = $observacionesSection;
         margin-top: 8px;
     }
 
-    .field--warning small {
+    .labo-field--warning small {
         background: #fff7ed;
         color: #9a3412;
     }
 
-    .summary-panel {
+    .labo-summary-panel {
         top: 18px;
     }
 
-    .summary-card h2,
-    .summary-card h3 {
+    .labo-summary-card h2,
+    .labo-summary-card h3 {
         margin-bottom: 6px;
     }
 
-    .summary-row strong {
+    .labo-summary-row strong {
         font-weight: 900;
     }
 
-    .actions-bar {
+    .labo-actions-bar {
         position: sticky;
         bottom: 0;
         background: rgba(248, 251, 255, .92);
@@ -914,46 +914,46 @@ $jsSections[] = $observacionesSection;
         box-shadow: 0 -16px 36px rgba(15, 23, 42, .08);
     }
 
-    .actions-help {
+    .labo-actions-help {
         margin-right: auto;
         color: var(--lab-muted);
         font-size: .78rem;
         font-weight: 800;
     }
 
-    .btn--primary {
+    .labo-btn--primary {
         border-color: var(--lab-primary) !important;
         box-shadow: 0 10px 22px rgba(16, 26, 97, .18);
     }
 
-    .btn--secondary {
+    .labo-btn--secondary {
         border-color: transparent !important;
     }
 
-    .btn--ghost:hover {
+    .labo-btn--ghost:hover {
         background: #fff;
         color: var(--lab-primary);
     }
 
-    .toast {
+    .labo-toast {
         box-shadow: 0 18px 36px rgba(15, 23, 42, .22);
     }
 
     @media (max-width: 760px) {
-        .lab-header {
+        .labo-header {
             border-radius: 20px;
             padding: 18px;
         }
 
-        .section-card {
+        .labo-section-card {
             padding: 18px;
         }
 
-        .section-header {
+        .labo-section-header {
             flex-direction: column;
         }
 
-        .actions-help {
+        .labo-actions-help {
             flex: 1 0 100%;
             text-align: center;
             order: -1;
@@ -963,8 +963,8 @@ $jsSections[] = $observacionesSection;
 
 </style>
 
-<div class="lab-page" data-page="evaluacion">
-    <aside class="sidebar">
+<div class="labo-page" data-page="evaluacion">
+    <aside class="labo-sidebar">
         
 
         <?php foreach ($pesquisasActividad as $pid): ?>
@@ -974,9 +974,9 @@ $jsSections[] = $observacionesSection;
 
             $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
             $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
-            $clases      = 'sidebar__item';
+            $clases      = 'labo-sidebar__item';
             if ($esActiva)   $clases .= ' active';
-            if ($yaEvaluada) $clases .= ' evaluado';
+            if ($yaEvaluada) $clases .= ' labo-evaluado';
 
             $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}")
                 . ($jornadaId ? "?jornada_id={$jornadaId}" : "?centro_id={$centroId}");
@@ -991,44 +991,44 @@ $jsSections[] = $observacionesSection;
         <?php endforeach; ?>
     </aside>
 
-    <main class="lab-main">
-        <div class="lab-header">
-            <div class="lab-title-row">
-                <div class="lab-icon">
+    <main class="labo-main">
+        <div class="labo-header">
+            <div class="labo-title-row">
+                <div class="labo-icon">
                     <img src="<?= base_url('img/' . ($infoPesquisas[$tipoPesquisaId]['img'] ?? 'sanguinea2.svg')) ?>"
                         alt="<?= esc($nombrePesquisa) ?>">
                 </div>
                 <div>
                     <h1><?= esc($nombrePesquisa) ?></h1>
                     <p><?= $nombreCompleto ?></p>
-                    <span class="lab-badge <?= $esEdicion ? 'edit' : 'new' ?>">
+                    <span class="labo-badge <?= $esEdicion ? 'labo-edit' : 'labo-new' ?>">
                         <?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?>
                     </span>
                 </div>
             </div>
 
-            <div class="lab-progress">
+            <div class="labo-progress">
                 <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
                     <span id="progressText">Progreso: 0 de <?= count($jsSections) ?> secciones completadas</span>
                    
                 </div>
-                <div class="progress-bar">
-                    <div id="progressFill" class="progress-bar__fill"></div>
+                <div class="labo-progress-bar">
+                    <div id="progressFill" class="labo-progress-bar__fill"></div>
                 </div>
             </div>
         </div>
 
-        <nav class="stepper" aria-label="Secciones del formulario">
+        <nav class="labo-stepper" aria-label="Secciones del formulario">
             <?php foreach ($jsSections as $index => $section): ?>
-                <button class="step <?= $index === 0 ? 'active' : '' ?>" type="button" data-step="<?= esc($section['id']) ?>">
+                <button class="labo-step <?= $index === 0 ? 'active' : '' ?>" type="button" data-step="<?= esc($section['id']) ?>">
                     <span><?= $index + 1 ?></span>
                     <?= esc($section['title']) ?>
                 </button>
             <?php endforeach; ?>
         </nav>
 
-        <section class="lab-layout">
-            <div class="lab-content">
+        <section class="labo-layout">
+            <div class="labo-content">
                 <form id="formEvaluacion" autocomplete="off" novalidate>
                     <input type="hidden" name="beneficiario_id" value="<?= (int) $beneficiario['id_beneficiario'] ?>">
                     <input type="hidden" name="tipo_pesquisa_id" value="<?= (int) $tipoPesquisaId ?>">
@@ -1040,7 +1040,7 @@ $fechaEvaluacionRaw = $evaluacionExistente['fecha_evaluacion'] ?? date('Y-m-d');
 $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
 ?>
 
-<div class="field field--full" style="margin-bottom: 18px;">
+<div class="labo-field labo-field--full" style="margin-bottom: 18px;">
     <label for="eval_fecha_hidden">
         Fecha evaluación *
     </label>
@@ -1055,37 +1055,37 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
 
                     <?php foreach ($itemsFormulario as $sectionIndex => $items): ?>
                         <?php $nombreSeccion = $nombresSecciones[$sectionIndex] ?? ucfirst(str_replace('_', ' ', $sectionIndex)); ?>
-                        <section class="form-section <?= array_key_first($itemsFormulario) === $sectionIndex ? 'active' : '' ?>" data-section="<?= esc($sectionIndex) ?>">
-                            <div class="section-card">
-                                <div class="section-header">
+                        <section class="labo-form-section <?= array_key_first($itemsFormulario) === $sectionIndex ? 'active' : '' ?>" data-section="<?= esc($sectionIndex) ?>">
+                            <div class="labo-section-card">
+                                <div class="labo-section-header">
                                     <div>
                                         <h2><?= esc($nombreSeccion) ?></h2>
                                         <p>Complete los campos disponibles para esta sección.</p>
                                     </div>
                                     <div>
                                         <?php if (array_filter($items, static fn($item) => ! empty($item['obligatorio']))): ?>
-                                            <span class="required-note">* Campos obligatorios</span>
+                                            <span class="labo-required-note">* Campos obligatorios</span>
                                         <?php endif; ?>
-                                        <span class="section-status" data-status="<?= esc($sectionIndex) ?>">0/<?= count($items) ?> completados</span>
+                                        <span class="labo-section-status" data-status="<?= esc($sectionIndex) ?>">0/<?= count($items) ?> completados</span>
                                     </div>
                                 </div>
 
-                                <div class="form-grid">
+                                <div class="labo-form-grid">
                                     <?php foreach ($items as $item): ?>
                                         <?php
                                         $codigo     = $item['codigo'];
                                         $valorPrev  = $valoresExistentes[$codigo] ?? '';
-                                        $oculto     = ! empty($item['depende_de']) ? 'eval-campo-oculto' : '';
+                                        $oculto     = ! empty($item['depende_de']) ? 'labo-eval-campo-oculto' : '';
                                         $dependeAttr = '';
                                         if (! empty($item['depende_de'])) {
                                             $dependeAttr = 'data-depende-de="' . esc($item['depende_de']) . '" data-depende-valor="' . esc($item['depende_valor']) . '"';
                                         }
                                         $unidad = trim((string) ($item['unidad'] ?? ''));
                                         $ancho  = (int) ($item['ancho_col'] ?? 6);
-                                        $span   = $ancho >= 12 ? 'field--full' : '';
+                                        $span   = $ancho >= 12 ? 'labo-field--full' : '';
                                         ?>
 
-                                        <div class="field <?= $span ?> <?= $oculto ?>"
+                                        <div class="labo-field <?= $span ?> <?= $oculto ?>"
                                             id="wrap_<?= esc($codigo) ?>"
                                             data-code="<?= esc($codigo) ?>"
                                             <?= $dependeAttr ?>>
@@ -1095,7 +1095,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
 
                                             <?php if ($item['tipo_dato'] === 'number'): ?>
                                                 <?php if ($unidad !== ''): ?>
-                                                    <div class="input-unit">
+                                                    <div class="labo-input-unit">
                                                         <input type="number" step="any"
                                                             name="campos[<?= esc($codigo) ?>]"
                                                             id="campo_<?= esc($codigo) ?>"
@@ -1165,18 +1165,18 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
                         </section>
                     <?php endforeach; ?>
 
-                    <section class="form-section" data-section="observaciones">
-                        <div class="section-card">
-                            <div class="section-header">
+                    <section class="labo-form-section" data-section="observaciones">
+                        <div class="labo-section-card">
+                            <div class="labo-section-header">
                                 <div>
                                     <h2>Observaciones y remisión</h2>
                                     <p>Agregue comentarios generales y defina si requiere remisión.</p>
                                 </div>
-                                <span class="section-status" data-status="observaciones">0/<?= 1 + count($itemsCondicionesEspeciales) + ($itemRemitir ? 1 : 0) ?> completados</span>
+                                <span class="labo-section-status" data-status="observaciones">0/<?= 1 + count($itemsCondicionesEspeciales) + ($itemRemitir ? 1 : 0) ?> completados</span>
                             </div>
 
-                            <div class="form-grid">
-                                <div class="field field--full">
+                            <div class="labo-form-grid">
+                                <div class="labo-field labo-field--full">
                                     <label for="eval_observaciones">Observaciones generales</label>
                                     <textarea id="eval_observaciones"
                                         name="observaciones"
@@ -1191,17 +1191,17 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
                                     <?php
                                     $codigo     = $item['codigo'];
                                     $valorPrev  = $valoresExistentes[$codigo] ?? '';
-                                    $oculto     = ! empty($item['depende_de']) ? 'eval-campo-oculto' : '';
+                                    $oculto     = ! empty($item['depende_de']) ? 'labo-eval-campo-oculto' : '';
                                     $dependeAttr = '';
                                     if (! empty($item['depende_de'])) {
                                         $dependeAttr = 'data-depende-de="' . esc($item['depende_de']) . '" data-depende-valor="' . esc($item['depende_valor']) . '"';
                                     }
                                     $unidad = trim((string) ($item['unidad'] ?? ''));
                                     $ancho  = (int) ($item['ancho_col'] ?? 6);
-                                    $span   = $ancho >= 12 ? 'field--full' : '';
+                                    $span   = $ancho >= 12 ? 'labo-field--full' : '';
                                     ?>
 
-                                    <div class="field <?= $span ?> <?= $oculto ?>"
+                                    <div class="labo-field <?= $span ?> <?= $oculto ?>"
                                         id="wrap_<?= esc($codigo) ?>"
                                         data-code="<?= esc($codigo) ?>"
                                         <?= $dependeAttr ?>>
@@ -1211,7 +1211,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
 
                                         <?php if ($item['tipo_dato'] === 'number'): ?>
                                             <?php if ($unidad !== ''): ?>
-                                                <div class="input-unit">
+                                                <div class="labo-input-unit">
                                                     <input type="number" step="any"
                                                         name="campos[<?= esc($codigo) ?>]"
                                                         id="campo_<?= esc($codigo) ?>"
@@ -1279,7 +1279,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
 
                                 <?php if ($itemRemitir): ?>
                                     <?php $valorRemitir = $valoresExistentes[$itemRemitir['codigo']] ?? ''; ?>
-                                    <div class="field">
+                                    <div class="labo-field">
                                         <label for="campo_<?= esc($itemRemitir['codigo']) ?>">Remitir a especialista</label>
                                         <select name="campos[<?= esc($itemRemitir['codigo']) ?>]"
                                             id="campo_<?= esc($itemRemitir['codigo']) ?>"
@@ -1300,32 +1300,32 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
                 </form>
             </div>
 
-            <aside class="summary-panel">
-                <div class="summary-card">
+            <aside class="labo-summary-panel">
+                <div class="labo-summary-card">
                     <h2>Resumen de evaluación</h2>
 
-                    <div class="summary-row">
+                    <div class="labo-summary-row">
                         <span>Fecha de evaluación</span>
                         <strong id="summaryFecha"> <?= date('d/m/Y', strtotime($fechaEvaluacionInput)) ?></strong>
                     </div>
 
-                    <div class="summary-row">
+                    <div class="labo-summary-row">
                         <span>Secciones completadas</span>
                         <strong id="summarySecciones">0/<?= count($jsSections) ?></strong>
                     </div>
 
-                    <div class="summary-row">
+                    <div class="labo-summary-row">
                         <span>Alertas</span>
                         <strong id="summaryAlertas">0</strong>
                     </div>
 
-                    <div class="summary-row">
+                    <div class="labo-summary-row">
                         <span>Remisión a especialista</span>
                         <strong id="summaryRemision">No definida</strong>
                     </div>
                 </div>
 
-                <div class="summary-card">
+                <div class="labo-summary-card">
                     <h3>Observaciones</h3>
                     <p id="summaryObservaciones">Sin observaciones registradas.</p>
                 </div>
@@ -1336,20 +1336,20 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
     'centroId'     => $centroId,
 ]) ?>
     <?php endif; ?>                                   
-                <div class="eval-error-msg" id="evalErrorMsg">
+                <div class="labo-eval-error-msg" id="evalErrorMsg">
                     <i class="bi bi-exclamation-triangle me-1"></i>
                     <span id="evalErrorText"></span>
                 </div>
             </aside>
         </section>
 
-        <div class="actions-bar">
-            <div class="actions-help" aria-live="polite">Navegación rápida: usa ← Anterior y → Siguiente.</div>
-            <button id="btnCancelar" type="button" class="btn btn--ghost">Cancelar</button>
+        <div class="labo-actions-bar">
+            <div class="labo-actions-help" aria-live="polite">Navegación rápida: usa ← Anterior y → Siguiente.</div>
+            <button id="btnCancelar" type="button" class="btn labo-btn--ghost">Cancelar</button>
 
-            <button id="btnAnterior" type="button" class="btn btn--secondary">Anterior</button>
-            <button id="btnSiguiente" type="button" class="btn btn--primary">Siguiente</button>
-            <button id="btnGuardarEval" type="button" class="btn btn--primary" hidden>Guardar evaluación</button>
+            <button id="btnAnterior" type="button" class="btn labo-btn--secondary">Anterior</button>
+            <button id="btnSiguiente" type="button" class="btn labo-btn--primary">Siguiente</button>
+            <button id="btnGuardarEval" type="button" class="btn labo-btn--primary" hidden>Guardar evaluación</button>
         </div>
     </main>
 </div>
@@ -1370,8 +1370,8 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
     let currentSectionIndex = 0;
 
     const form = document.getElementById('formEvaluacion');
-    const sectionEls = Array.from(document.querySelectorAll('.form-section'));
-    const stepEls = Array.from(document.querySelectorAll('.step'));
+    const sectionEls = Array.from(document.querySelectorAll('.labo-form-section'));
+    const stepEls = Array.from(document.querySelectorAll('.labo-step'));
 
     const progressText = document.getElementById('progressText');
     const progressFill = document.getElementById('progressFill');
@@ -1453,7 +1453,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
             const isCompleted = isSectionCompleted(LAB_SECTIONS[index]);
 
             stepEl.classList.toggle('active', isActive);
-            stepEl.classList.toggle('completed', isCompleted);
+            stepEl.classList.toggle('labo-completed', isCompleted);
         });
 
         updateButtons();
@@ -1494,16 +1494,16 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
             const field = getFieldElement(fieldName);
             if (!field) return;
 
-            const fieldWrapper = field.closest('.field');
+            const fieldWrapper = field.closest('.labo-field');
             const value = getFieldValue(fieldName);
 
             if (!value) {
                 isValid = false;
                 field.classList.add('is-invalid');
-                fieldWrapper?.classList.add('field--error');
+                fieldWrapper?.classList.add('labo-field--error');
             } else {
                 field.classList.remove('is-invalid');
-                fieldWrapper?.classList.remove('field--error');
+                fieldWrapper?.classList.remove('labo-field--error');
             }
         });
 
@@ -1574,11 +1574,11 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
             const field = getFieldElement(fieldName);
             if (!field) return;
 
-            const fieldWrapper = field.closest('.field');
+            const fieldWrapper = field.closest('.labo-field');
             const rawValue = getFieldValue(fieldName);
             const value = Number(rawValue);
 
-            fieldWrapper?.classList.remove('field--warning');
+            fieldWrapper?.classList.remove('labo-field--warning');
 
             if (!rawValue || Number.isNaN(value)) return;
 
@@ -1586,7 +1586,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
             const overMax = range.max !== null && value > Number(range.max);
 
             if (underMin || overMax) {
-                fieldWrapper?.classList.add('field--warning');
+                fieldWrapper?.classList.add('labo-field--warning');
             }
         });
     }
@@ -1654,7 +1654,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
 
             const verificar = () => {
                 const debeMostrar = getFieldValue(codigoPadre) === valorRequerido;
-                wrap.classList.toggle('eval-campo-oculto', !debeMostrar);
+                wrap.classList.toggle('labo-eval-campo-oculto', !debeMostrar);
 
                 if (!debeMostrar) {
                     const input = wrap.querySelector('input, select, textarea');
@@ -1679,7 +1679,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
 
         errorDiv.style.display = 'none';
         form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-        form.querySelectorAll('.field--error').forEach(el => el.classList.remove('field--error'));
+        form.querySelectorAll('.labo-field--error').forEach(el => el.classList.remove('labo-field--error'));
 
         btnGuardar.disabled = true;
         btnGuardar.textContent = 'Guardando...';
@@ -1701,7 +1701,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
                     const campoErr = getFieldElement(data.campo);
                     if (campoErr) {
                         campoErr.classList.add('is-invalid');
-                        campoErr.closest('.field')?.classList.add('field--error');
+                        campoErr.closest('.labo-field')?.classList.add('labo-field--error');
                         campoErr.scrollIntoView({
                             behavior: 'smooth',
                             block: 'center'
@@ -1738,11 +1738,11 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
     }
 
     function showToast(message) {
-        let toast = document.querySelector('.toast');
+        let toast = document.querySelector('.labo-toast');
 
         if (!toast) {
             toast = document.createElement('div');
-            toast.className = 'toast';
+            toast.className = 'labo-toast';
             toast.setAttribute('role', 'status');
             toast.setAttribute('aria-live', 'polite');
             document.body.appendChild(toast);

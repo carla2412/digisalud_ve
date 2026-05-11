@@ -80,7 +80,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   }
  
  
-    .sidebar {
+    .sig_vit-sidebar {
         background: var(--primary);
         display: flex;
         flex-direction: column;
@@ -89,8 +89,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         padding: 14px 0;
     }
 
-    .sidebar__logo,
-    .sidebar__item {
+    .sig_vit-sidebar__logo,
+    .sig_vit-sidebar__item {
         width: 42px;
         height: 42px;
         border-radius: 16px;
@@ -104,25 +104,25 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         transition: .2s ease;
     }
 
-    .sidebar__item img {
+    .sig_vit-sidebar__item img {
         width: 24px;
         height: 24px;
         filter: brightness(0) invert(1);
         opacity: .65;
     }
 
-    .sidebar__item:hover,
-    .sidebar__item.active {
+    .sig_vit-sidebar__item:hover,
+    .sig_vit-sidebar__item.active {
         background: #fff;
     }
 
-    .sidebar__item:hover img,
-    .sidebar__item.active img {
+    .sig_vit-sidebar__item:hover img,
+    .sig_vit-sidebar__item.active img {
         filter: none;
         opacity: 1;
     }
 
-    .sidebar__item.evaluado::after {
+    .sig_vit-sidebar__item.sig_vit-evaluado::after {
         content: '';
         position: absolute;
         right: -2px;
@@ -134,7 +134,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         border: 2px solid var(--primary);
     }
 
-    .sidebar__item[title]::before {
+    .sig_vit-sidebar__item[title]::before {
         content: attr(title);
         position: absolute;
         left: 52px;
@@ -151,7 +151,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         z-index: 30;
     }
 
-    .sidebar__item:hover[title]::before {
+    .sig_vit-sidebar__item:hover[title]::before {
         opacity: 1;
     }
   .nav-item {
@@ -188,7 +188,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     opacity: 1;
   }
 
-  .nav-item.has-dot::after {
+  .nav-item.sig_vit-has-dot::after {
     content: "";
     width: 9px;
     height: 9px;
@@ -200,20 +200,20 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     border: 2px solid var(--primary);
   }
 
-  .main {
+  .sig_vit-main {
     display: flex;
     flex-direction: column;
     min-width: 0;
   }
 
- .lab-main {
+ .sig_vit-lab-main {
     display: flex;
     flex-direction: column;
     min-width: 0;
     padding: 22px 26px 88px;
 }
 
-.lab-header {
+.sig_vit-lab-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -221,13 +221,13 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     margin-bottom: 18px;
 }
 
-.lab-title-row {
+.sig_vit-lab-title-row {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.lab-icon {
+.sig_vit-lab-icon {
     width: 48px;
     height: 48px;
     border-radius: 18px;
@@ -237,25 +237,25 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     box-shadow: 0 12px 24px rgba(15, 23, 42, .08);
 }
 
-.lab-icon img {
+.sig_vit-lab-icon img {
     width: 30px;
     height: 30px;
 }
 
-.lab-header h1 {
+.sig_vit-lab-header h1 {
     margin: 0;
     color: var(--lab-primary);
     font-size: 1.35rem;
     font-weight: 900;
 }
 
-.lab-header p {
+.sig_vit-lab-header p {
     margin: 2px 0 0;
     color: var(--lab-muted);
     font-size: .9rem;
 }
 
-.lab-badge {
+.sig_vit-lab-badge {
     display: inline-flex;
     margin-top: 6px;
     padding: 3px 10px;
@@ -264,44 +264,44 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     font-weight: 800;
 }
 
-.lab-badge.new {
+.sig_vit-lab-badge.sig_vit-new {
     background: #dbeafe;
     color: #1e40af;
 }
 
-.lab-badge.edit {
+.sig_vit-lab-badge.sig_vit-edit {
     background: #fef3c7;
     color: #92400e;
 }
 
-.btn-volver {
+.sig_vit-btn-volver {
     color: var(--lab-muted);
     text-decoration: none;
     font-size: .85rem;
     font-weight: 700;
 }
 
-.btn-volver:hover {
+.sig_vit-btn-volver:hover {
     color: var(--lab-primary);
 }
 
 @media (max-width: 760px) {
-    .lab-main {
+    .sig_vit-lab-main {
         padding: 18px 14px 92px;
     }
 
-    .lab-header {
+    .sig_vit-lab-header {
         align-items: flex-start;
         flex-direction: column;
     }
 }
-  .title-wrap {
+  .sig_vit-title-wrap {
     display: flex;
     align-items: center;
     gap: 14px;
   }
 
-  .title-icon {
+  .sig_vit-title-icon {
     width: 46px;
     height: 46px;
     border-radius: 50%;
@@ -319,7 +319,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     line-height: 1.1;
   }
 
-  .patient-row {
+  .sig_vit-patient-row {
     margin-top: 4px;
     display: flex;
     align-items: center;
@@ -337,44 +337,44 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     font-size: 12px;
   }
 
-  .badge.new {
+  .badge.sig_vit-new {
     background: #dbeafe;
     color: #1e40af;
   }
 
-  .back-link {
+  .sig_vit-back-link {
     color: #53627c;
     text-decoration: none;
     font-size: 14px;
   }
 
-  .content {
+  .sig_vit-content {
     padding: 24px 28px;
     display: flex;
     flex-direction: column;
     gap: 22px;
   }
 
-  .top-grid {
+  .sig_vit-top-grid {
     display: grid;
     grid-template-columns: minmax(340px, 0.95fr) minmax(560px, 1.3fr);
     gap: 16px;
   }
 
-  .tip-card,
-  .summary-card,
-  .form-card {
+  .sig_vit-tip-card,
+  .sig_vit-summary-card,
+  .sig_vit-form-card {
     background: var(--card);
     border: 1px solid #e6edf6;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
   }
 
-  .tip-card {
+  .sig_vit-tip-card {
     padding: 18px;
   }
 
-  .tip-box {
+  .sig_vit-tip-box {
     min-height: 80px;
     border-radius: 10px;
     border: 1px solid var(--info-border);
@@ -387,7 +387,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     line-height: 1.45;
   }
 
-  .tip-icon {
+  .sig_vit-tip-icon {
     width: 26px;
     height: 26px;
     border-radius: 50%;
@@ -399,24 +399,24 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     flex: 0 0 auto;
   }
 
-  .summary-card {
+  .sig_vit-summary-card {
     padding: 18px 22px;
   }
 
-  .summary-card h2 {
+  .sig_vit-summary-card h2 {
     margin: 0 0 16px;
     font-size: 18px;
     color: #0f172a;
   }
 
-  .summary-row {
+  .sig_vit-summary-row {
     display: grid;
     grid-template-columns: 230px repeat(5, 1fr);
     align-items: center;
     gap: 16px;
   }
 
-  .status-pill {
+  .sig_vit-status-pill {
     background: var(--success-bg);
     border: 1px solid #acdcb9;
     border-radius: 10px;
@@ -429,24 +429,24 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     min-height: 54px;
   }
 
-  .status-pill.warning {
+  .sig_vit-status-pill.sig_vit-warning {
     background: var(--warning-bg);
     border-color: #fedf89;
     color: var(--warning);
   }
 
-  .status-pill.danger {
+  .sig_vit-status-pill.sig_vit-danger {
     background: var(--danger-bg);
     border-color: #fecdca;
     color: var(--danger);
   }
 
-  .status-pill strong {
+  .sig_vit-status-pill strong {
     display: block;
     color: inherit;
   }
 
-  .metric {
+  .sig_vit-metric {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -455,49 +455,49 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     padding-left: 16px;
   }
 
-  .metric:first-of-type {
+  .sig_vit-metric:first-of-type {
     border-left: 0;
   }
 
-  .metric-icon {
+  .sig_vit-metric-icon {
     font-size: 27px;
     line-height: 1;
   }
 
-  .metric-value {
+  .sig_vit-metric-value {
     font-weight: 800;
     font-size: 17px;
     color: #0f172a;
     line-height: 1.1;
   }
 
-  .metric-unit {
+  .sig_vit-metric-unit {
     color: var(--muted);
     font-size: 12px;
     margin-top: 2px;
   }
 
-  .cards-grid {
+  .sig_vit-cards-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 18px;
     align-items: stretch;
   }
 
-  .form-card {
+  .sig_vit-form-card {
     padding: 22px;
     min-height: 350px;
     max-height: 600px;
   }
 
-  .card-title {
+  .sig_vit-card-title {
     display: flex;
     align-items: center;
     gap: 14px;
     margin-bottom: 22px;
   }
 
-  .card-icon {
+  .sig_vit-card-icon {
     width: 48px;
     height: 48px;
     border-radius: 25px;
@@ -506,31 +506,31 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     font-size: 24px;
   }
 
-  .card-icon.purple {
+  .sig_vit-card-icon.sig_vit-purple {
     background: #ffe9fa;
     
   }
-    .card-icon.purple>img {
+    .sig_vit-card-icon.sig_vit-purple>img {
     width: 3rem;
   }
 
-  .card-icon.green {
+  .sig_vit-card-icon.sig_vit-green {
     background: #e8f8ed;
     color: #12a150;
   }
 
-  .card-icon.blue {
+  .sig_vit-card-icon.sig_vit-blue {
     background: #e9f4ff;
     color: #1f7ae0;
   }
 
-  .card-title h3 {
+  .sig_vit-card-title h3 {
     margin: 0;
     color: #11184f;
     font-size: 19px;
   }
 
-  .field {
+  .sig_vit-field {
     margin-bottom: 18px;
   }
 
@@ -542,11 +542,11 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     font-size: 15px;
   }
 
-  .required {
+  .sig_vit-required {
     color: #f04438;
   }
 
-  .input-wrap {
+  .sig_vit-input-wrap {
     height: 43px;
     display: flex;
     align-items: center;
@@ -583,7 +583,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     padding-right: 36px;
   }
 
-  .unit {
+  .sig_vit-unit {
     min-width: 72px;
     height: 22px;
     display: grid;
@@ -595,7 +595,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     margin-right: 8px;
   }
 
-  .calendar {
+  .sig_vit-calendar {
     width: 42px;
     display: grid;
     place-items: center;
@@ -603,7 +603,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     font-size: 17px;
   }
 
-  .hint {
+  .sig_vit-hint {
     color: #64748b;
     margin-top: 7px;
     font-size: 13px;
@@ -619,14 +619,14 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     display: block;
   }
 
-  .textarea-footer {
+  .sig_vit-textarea-footer {
     text-align: right;
     color: #64748b;
     font-size: 12px;
     margin-top: 5px;
   }
 
-  .actions {
+  .sig_vit-actions {
     display: flex;
     justify-content: flex-end;
     gap: 14px;
@@ -644,18 +644,18 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         transition: .2s ease;
   }
 
-  .btn.secondary {
+  .btn.sig_vit-secondary {
     background: #fff;
     color: #344054;
     border: 1px solid #d8e0ed;
   }
 
-  .btn.soft {
+  .btn.sig_vit-soft {
     background: #e9edff;
     color: var(--primary);
   }
 
-  .btn.primary {
+  .btn.sig_vit-primary {
     background: var(--primary);
     color: #fff;
     min-width: 210px;
@@ -665,7 +665,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     filter: brightness(0.97);
   }
 
-  .input-wrap.is-invalid,
+  .sig_vit-input-wrap.is-invalid,
   textarea.is-invalid,
   input.is-invalid,
   select.is-invalid {
@@ -673,50 +673,50 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     box-shadow: 0 0 0 3px rgba(240, 68, 56, .08);
   }
 
-  .input-wrap.is-warning {
+  .sig_vit-input-wrap.sig_vit-is-warning {
     border-color: #f59e0b !important;
     box-shadow: 0 0 0 3px rgba(245, 158, 11, .10);
   }
 
-  .field-error {
+  .sig_vit-field-error {
     color: #b42318;
     margin-top: 7px;
     font-size: 12px;
     display: none;
   }
 
-  .field-error.show {
+  .sig_vit-field-error.show {
     display: block;
   }
 
   @media (max-width: 1280px) {
-    .top-grid {
+    .sig_vit-top-grid {
       grid-template-columns: 1fr;
     }
 
-    .summary-row {
+    .sig_vit-summary-row {
       grid-template-columns: repeat(3, 1fr);
     }
 
-    .status-pill {
+    .sig_vit-status-pill {
       grid-column: 1 / -1;
     }
 
-    .cards-grid {
+    .sig_vit-cards-grid {
       grid-template-columns: 1fr;
     }
 
-    .form-card {
+    .sig_vit-form-card {
       min-height: auto;
     }
   }
 
   @media (max-width: 768px) {
-    .app {
+    .sig_vit-app {
       grid-template-columns: 1fr;
     }
 
-    .sidebar {
+    .sig_vit-sidebar {
             flex-direction: row;
             overflow-x: auto;
             justify-content: flex-start;
@@ -724,35 +724,47 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         }
    
 
-    .content {
+    .sig_vit-content {
       padding: 18px;
     }
 
-    .summary-row {
+    .sig_vit-summary-row {
       grid-template-columns: 1fr 1fr;
     }
 
-    .actions {
+    .sig_vit-actions {
       flex-direction: column;
     }
 
     .btn,
-    .btn.primary {
+    .btn.sig_vit-primary {
       width: 100%;
     }
   }
 
   
-    .lab-page {
+    .sig_vit-lab-page {
         display: grid;
         grid-template-columns: var(--lab-sidebar-w) minmax(0, 1fr);
         min-height: 100dvh;
         overflow: clip;
     }
+    @media (max-width: 768px) {
+    .sig_vit-lab-page {
+        grid-template-columns: 1fr;
+    }
+
+    .sig_vit-sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 10px 12px;
+    }
+}
 </style>
 
-<div class="lab-page" data-page="evaluacion">
- <aside class="sidebar">
+<div class="sig_vit-lab-page" data-page="evaluacion">
+ <aside class="sig_vit-sidebar">
         
 
         <?php foreach ($pesquisasActividad as $pid): ?>
@@ -762,9 +774,9 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
             $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
             $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
-            $clases      = 'sidebar__item';
+            $clases      = 'sig_vit-sidebar__item';
             if ($esActiva)   $clases .= ' active';
-            if ($yaEvaluada) $clases .= ' evaluado';
+            if ($yaEvaluada) $clases .= ' sig_vit-evaluado';
 
             $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}")
                 . ($jornadaId ? "?jornada_id={$jornadaId}" : "?centro_id={$centroId}");
@@ -779,20 +791,20 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         <?php endforeach; ?>
     </aside>
 
-<main class="lab-main">
+<main class="sig_vit-lab-main">
 
  
 
         
 
-    <section class="content">
-      <div class="top-grid">
-        <div class="tip-card">
+    <section class="sig_vit-content">
+      <div class="sig_vit-top-grid">
+        <div class="sig_vit-tip-card">
           <div  >
            
-             <div class="lab-header">
-        <div class="lab-title-row">
-            <div class="lab-icon">
+             <div class="sig_vit-lab-header">
+        <div class="sig_vit-lab-title-row">
+            <div class="sig_vit-lab-icon">
                 <img src="<?= base_url('img/' . $iconoPesquisa) ?>"
                     alt="<?= esc($nombrePesquisa) ?>">
             </div>
@@ -801,7 +813,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
                 <h1><?= esc($nombrePesquisa) ?></h1>
                 <p><?= $nombreCompleto ?></p>
 
-                <span class="lab-badge <?= $esEdicion ? 'edit' : 'new' ?>">
+                <span class="sig_vit-lab-badge <?= $esEdicion ? 'sig_vit-edit' : 'sig_vit-new' ?>">
                     <?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?>
                 </span>
             </div>
@@ -811,11 +823,11 @@ $formatoNumeroVista = static function ($valor, $default = '') {
           </div>
         </div>
 
-        <div class="summary-card">
+        <div class="sig_vit-summary-card">
           <h2>Resumen rápido</h2>
 
-          <div class="summary-row">
-            <div class="status-pill" id="estadoGeneralSignos">
+          <div class="sig_vit-summary-row">
+            <div class="sig_vit-status-pill" id="estadoGeneralSignos">
               <span id="estadoGeneralIcon">✓</span>
               <div>
                 <strong id="estadoGeneralTitle">Estado general:</strong>
@@ -823,44 +835,44 @@ $formatoNumeroVista = static function ($valor, $default = '') {
               </div>
             </div>
 
-            <div class="metric">
-              <div class="metric-icon"  ><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit_120_off.png") ?>" alt=""></div>
+            <div class="sig_vit-metric">
+              <div class="sig_vit-metric-icon"  ><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit_120_off.png") ?>" alt=""></div>
               <div>
                 
-                <div class="metric-value" id="summaryPressure">120/80</div>
-                <div class="metric-unit">mmHg</div>
+                <div class="sig_vit-metric-value" id="summaryPressure">120/80</div>
+                <div class="sig_vit-metric-unit">mmHg</div>
               </div>
             </div>
 
-            <div class="metric">
-              <div class="metric-icon" ><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit.png") ?>" alt=""></div>
+            <div class="sig_vit-metric">
+              <div class="sig_vit-metric-icon" ><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit.png") ?>" alt=""></div>
               <div>
-                <div class="metric-value" id="summaryHeart">72</div>
-                <div class="metric-unit">lpm</div>
+                <div class="sig_vit-metric-value" id="summaryHeart">72</div>
+                <div class="sig_vit-metric-unit">lpm</div>
               </div>
             </div>
 
-            <div class="metric">
-              <div class="metric-icon" ><img style="width: 30px;" src="<?= base_url("img/icon/lungs_4981940.png") ?>" alt=""></div>
+            <div class="sig_vit-metric">
+              <div class="sig_vit-metric-icon" ><img style="width: 30px;" src="<?= base_url("img/icon/lungs_4981940.png") ?>" alt=""></div>
               <div>
-                <div class="metric-value" id="summaryResp">16</div>
-                <div class="metric-unit">rpm</div>
+                <div class="sig_vit-metric-value" id="summaryResp">16</div>
+                <div class="sig_vit-metric-unit">rpm</div>
               </div>
             </div>
 
-            <div class="metric">
-              <div class="metric-icon"  ><img style="width: 30px;" src="<?= base_url("img/icon/thermometer.png") ?>" alt=""></div>
+            <div class="sig_vit-metric">
+              <div class="sig_vit-metric-icon"  ><img style="width: 30px;" src="<?= base_url("img/icon/thermometer.png") ?>" alt=""></div>
               <div>
-                <div class="metric-value" id="summaryTemp">37</div>
-                <div class="metric-unit">°C</div>
+                <div class="sig_vit-metric-value" id="summaryTemp">37</div>
+                <div class="sig_vit-metric-unit">°C</div>
               </div>
             </div>
 
-            <div class="metric">
-              <div class="metric-icon" style="color:#ec4899;"><img style="width: 35px;" src="<?= base_url("img/icon/oximeter.png") ?>" alt=""></div>
+            <div class="sig_vit-metric">
+              <div class="sig_vit-metric-icon" style="color:#ec4899;"><img style="width: 35px;" src="<?= base_url("img/icon/oximeter.png") ?>" alt=""></div>
               <div>
-                <div class="metric-value" id="summaryOxygen">97</div>
-                <div class="metric-unit">%</div>
+                <div class="sig_vit-metric-value" id="summaryOxygen">97</div>
+                <div class="sig_vit-metric-unit">%</div>
               </div>
             </div>
           </div>
@@ -875,122 +887,122 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         <input type="hidden" name="evaluacion_id" value="<?= esc($evalId) ?>">
         <input type="hidden" id="fechaEvaluacionIso" value="<?= esc($fechaEvaluacionIso) ?>">
 
-        <div class="cards-grid">
-          <section class="form-card">
-            <div class="card-title">
-              <div class="card-icon purple"><img src="<?= base_url('img/icon/icon_vit_120_off.png') ?>"></div>
+        <div class="sig_vit-cards-grid">
+          <section class="sig_vit-form-card">
+            <div class="sig_vit-card-title">
+              <div class="sig_vit-card-icon sig_vit-purple"><img src="<?= base_url('img/icon/icon_vit_120_off.png') ?>"></div>
               <h3>Presión arterial</h3>
             </div>
 
-            <div class="field">
-              <label for="evaluationDate">Fecha evaluación <span class="required">*</span></label>
-              <div class="input-wrap">
+            <div class="sig_vit-field">
+              <label for="evaluationDate">Fecha evaluación <span class="sig_vit-required">*</span></label>
+              <div class="sig_vit-input-wrap">
                 <input id="evaluationDate" name="fecha_evaluacion" data-codigo="fecha_evaluacion" value="<?= esc($fechaEvaluacionVista) ?>" required />
-                <span class="calendar">🗓️</span>
+                <span class="sig_vit-calendar">🗓️</span>
               </div>
-              <div class="field-error">La fecha de evaluación es obligatoria.</div>
+              <div class="sig_vit-field-error">La fecha de evaluación es obligatoria.</div>
             </div>
 
-            <div class="field">
-              <label for="systolic">Tensión arterial sistólica <span class="required">*</span></label>
-              <div class="input-wrap">
-                <input id="systolic" name="campos[tension_sistolica]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['tension_sistolica'] ?? '', '120,0000') ?>" class="campo-signo-vital" data-codigo="tension_sistolica" data-label="Tensión sistólica" data-unidad="mmHg" data-min="70" data-max="180" data-alerta-min="90" data-alerta-max="140" required />
-                <span class="unit">mmHg</span>
+            <div class="sig_vit-field">
+              <label for="systolic">Tensión arterial sistólica <span class="sig_vit-required">*</span></label>
+              <div class="sig_vit-input-wrap">
+                <input id="systolic" name="campos[tension_sistolica]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['tension_sistolica'] ?? '', '120,0000') ?>" class="sig_vit-campo-signo-vital" data-codigo="tension_sistolica" data-label="Tensión sistólica" data-unidad="mmHg" data-min="70" data-max="180" data-alerta-min="90" data-alerta-max="140" required />
+                <span class="sig_vit-unit">mmHg</span>
               </div>
-              <div class="hint">Rango esperado: 90 - 140 mmHg.</div>
-              <div class="field-error"></div>
+              <div class="sig_vit-hint">Rango esperado: 90 - 140 mmHg.</div>
+              <div class="sig_vit-field-error"></div>
             </div>
 
-            <div class="field">
-              <label for="diastolic">Tensión arterial diastólica <span class="required">*</span></label>
-              <div class="input-wrap">
-                <input id="diastolic" name="campos[tension_diastolica]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['tension_diastolica'] ?? '', '80,00') ?>" class="campo-signo-vital" data-codigo="tension_diastolica" data-label="Tensión diastólica" data-unidad="mmHg" data-min="40" data-max="120" data-alerta-min="60" data-alerta-max="90" required />
-                <span class="unit">mmHg</span>
+            <div class="sig_vit-field">
+              <label for="diastolic">Tensión arterial diastólica <span class="sig_vit-required">*</span></label>
+              <div class="sig_vit-input-wrap">
+                <input id="diastolic" name="campos[tension_diastolica]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['tension_diastolica'] ?? '', '80,00') ?>" class="sig_vit-campo-signo-vital" data-codigo="tension_diastolica" data-label="Tensión diastólica" data-unidad="mmHg" data-min="40" data-max="120" data-alerta-min="60" data-alerta-max="90" required />
+                <span class="sig_vit-unit">mmHg</span>
               </div>
-              <div class="hint">Rango esperado: 60 - 90 mmHg.</div>
-              <div class="field-error"></div>
+              <div class="sig_vit-hint">Rango esperado: 60 - 90 mmHg.</div>
+              <div class="sig_vit-field-error"></div>
             </div>
           </section>
 
-          <section class="form-card">
-            <div class="card-title">
-              <div class="card-icon green"><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit.png") ?>" alt=""></div>
+          <section class="sig_vit-form-card">
+            <div class="sig_vit-card-title">
+              <div class="sig_vit-card-icon sig_vit-green"><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit.png") ?>" alt=""></div>
               <h3>Frecuencias</h3>
             </div>
 
-            <div class="field">
-              <label for="heartRate">Frecuencia cardíaca <span class="required">*</span></label>
-              <div class="input-wrap">
-                <input id="heartRate" name="campos[frecuencia_cardiaca]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['frecuencia_cardiaca'] ?? '', '72,0000') ?>" class="campo-signo-vital" data-codigo="frecuencia_cardiaca" data-label="Frecuencia cardíaca" data-unidad="lpm" data-min="30" data-max="220" data-alerta-min="60" data-alerta-max="100" required />
-                <span class="unit">lpm</span>
+            <div class="sig_vit-field">
+              <label for="heartRate">Frecuencia cardíaca <span class="sig_vit-required">*</span></label>
+              <div class="sig_vit-input-wrap">
+                <input id="heartRate" name="campos[frecuencia_cardiaca]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['frecuencia_cardiaca'] ?? '', '72,0000') ?>" class="sig_vit-campo-signo-vital" data-codigo="frecuencia_cardiaca" data-label="Frecuencia cardíaca" data-unidad="lpm" data-min="30" data-max="220" data-alerta-min="60" data-alerta-max="100" required />
+                <span class="sig_vit-unit">lpm</span>
               </div>
-              <div class="hint">Rango esperado: 60 - 100 lpm.</div>
-              <div class="field-error"></div>
+              <div class="sig_vit-hint">Rango esperado: 60 - 100 lpm.</div>
+              <div class="sig_vit-field-error"></div>
             </div>
 
-            <div class="field">
-              <label for="respiratoryRate">Frecuencia respiratoria <span class="required">*</span></label>
-              <div class="input-wrap">
-                <input id="respiratoryRate" name="campos[frecuencia_respiratoria]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['frecuencia_respiratoria'] ?? '', '16,0000') ?>" class="campo-signo-vital" data-codigo="frecuencia_respiratoria" data-label="Frecuencia respiratoria" data-unidad="rpm" data-min="5" data-max="60" data-alerta-min="12" data-alerta-max="20" required />
-                <span class="unit">rpm</span>
+            <div class="sig_vit-field">
+              <label for="respiratoryRate">Frecuencia respiratoria <span class="sig_vit-required">*</span></label>
+              <div class="sig_vit-input-wrap">
+                <input id="respiratoryRate" name="campos[frecuencia_respiratoria]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['frecuencia_respiratoria'] ?? '', '16,0000') ?>" class="sig_vit-campo-signo-vital" data-codigo="frecuencia_respiratoria" data-label="Frecuencia respiratoria" data-unidad="rpm" data-min="5" data-max="60" data-alerta-min="12" data-alerta-max="20" required />
+                <span class="sig_vit-unit">rpm</span>
               </div>
-              <div class="hint">Rango esperado: 12 - 20 rpm.</div>
-              <div class="field-error"></div>
+              <div class="sig_vit-hint">Rango esperado: 12 - 20 rpm.</div>
+              <div class="sig_vit-field-error"></div>
             </div>
           </section>
 
-          <section class="form-card">
-            <div class="card-title">
-              <div class="card-icon blue"><img style="width: 35px;" src="<?= base_url("img/icon/thermometer.png") ?>" alt=""></div>
+          <section class="sig_vit-form-card">
+            <div class="sig_vit-card-title">
+              <div class="sig_vit-card-icon sig_vit-blue"><img style="width: 35px;" src="<?= base_url("img/icon/thermometer.png") ?>" alt=""></div>
               <h3>Temperatura y seguimiento</h3>
             </div>
 
-            <div class="field">
-              <label for="temperature">Temperatura <span class="required">*</span></label>
-              <div class="input-wrap">
-                <input id="temperature" name="campos[temperatura]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['temperatura'] ?? '', '37,0000') ?>" class="campo-signo-vital" data-codigo="temperatura" data-label="Temperatura" data-unidad="°C" data-min="30" data-max="45" data-alerta-min="36" data-alerta-max="37.5" required />
-                <span class="unit">°C</span>
+            <div class="sig_vit-field">
+              <label for="temperature">Temperatura <span class="sig_vit-required">*</span></label>
+              <div class="sig_vit-input-wrap">
+                <input id="temperature" name="campos[temperatura]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['temperatura'] ?? '', '37,0000') ?>" class="sig_vit-campo-signo-vital" data-codigo="temperatura" data-label="Temperatura" data-unidad="°C" data-min="30" data-max="45" data-alerta-min="36" data-alerta-max="37.5" required />
+                <span class="sig_vit-unit">°C</span>
               </div>
-              <div class="hint">Rango esperado: 36.0 - 37.5 °C.</div>
-              <div class="field-error"></div>
+              <div class="sig_vit-hint">Rango esperado: 36.0 - 37.5 °C.</div>
+              <div class="sig_vit-field-error"></div>
             </div>
 
-            <div class="field">
+            <div class="sig_vit-field">
               <label for="oxygen">Saturación de oxígeno</label>
-              <div class="input-wrap">
-                <input id="oxygen" name="campos[saturacion_o2]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['saturacion_o2'] ?? '', '97,0000') ?>" class="campo-signo-vital" data-codigo="saturacion_o2" data-label="Saturación de oxígeno" data-unidad="%" data-min="50" data-max="100" data-alerta-min="95" data-alerta-max="100" />
-                <span class="unit">%</span>
+              <div class="sig_vit-input-wrap">
+                <input id="oxygen" name="campos[saturacion_o2]" type="text" value="<?= $formatoNumeroVista($valoresExistentes['saturacion_o2'] ?? '', '97,0000') ?>" class="sig_vit-campo-signo-vital" data-codigo="saturacion_o2" data-label="Saturación de oxígeno" data-unidad="%" data-min="50" data-max="100" data-alerta-min="95" data-alerta-max="100" />
+                <span class="sig_vit-unit">%</span>
               </div>
-              <div class="hint">Rango esperado: 95 - 100%.</div>
-              <div class="field-error"></div>
+              <div class="sig_vit-hint">Rango esperado: 95 - 100%.</div>
+              <div class="sig_vit-field-error"></div>
             </div>
 
-            <div class="field">
+            <div class="sig_vit-field">
               <label for="referral">¿Requiere remisión?</label>
-              <div class="input-wrap">
-                <select id="referral" name="campos[especialista_vitales]" class="campo-signo-vital" data-codigo="especialista_vitales" data-label="Remisión" data-unidad="">
+              <div class="sig_vit-input-wrap">
+                <select id="referral" name="campos[especialista_vitales]" class="sig_vit-campo-signo-vital" data-codigo="especialista_vitales" data-label="Remisión" data-unidad="">
                   <option value="n" <?= (($valoresExistentes['especialista_vitales'] ?? 'n') === 'n') ? 'selected' : '' ?>>No requiere remisión</option>
                   <option value="s" <?= (($valoresExistentes['especialista_vitales'] ?? '') === 's') ? 'selected' : '' ?>>Requiere remisión</option>
                   <option value="seguimiento" <?= (($valoresExistentes['especialista_vitales'] ?? '') === 'seguimiento') ? 'selected' : '' ?>>Seguimiento médico</option>
                 </select>
               </div>
-              <div class="hint">Usa esta opción si los signos vitales sugieren seguimiento médico.</div>
+              <div class="sig_vit-hint">Usa esta opción si los signos vitales sugieren seguimiento médico.</div>
             </div>
 
-            <div class="field">
+            <div class="sig_vit-field">
               <label for="observations">Observaciones</label>
-              <textarea id="observations" name="campos[observaciones_vitales]" class="campo-signo-vital" data-codigo="observaciones_vitales" data-label="Observaciones" data-unidad="" maxlength="200"><?= $valorCampo('observaciones_vitales', '') ?></textarea>
-              <div class="textarea-footer">
+              <textarea id="observations" name="campos[observaciones_vitales]" class="sig_vit-campo-signo-vital" data-codigo="observaciones_vitales" data-label="Observaciones" data-unidad="" maxlength="200"><?= $valorCampo('observaciones_vitales', '') ?></textarea>
+              <div class="sig_vit-textarea-footer">
                 <span id="charCount">0</span> / 200
               </div>
             </div>
           </section>
         </div>
 
-        <div class="actions">
-          <button type="button" id="btnCancelarSignos" class="btn secondary">Cancelar</button>
-          <button type="button" id="btnLimpiarSignos" class="btn soft">Limpiar</button>
-          <button type="button" id="btnGuardarSignos" class="btn primary">Guardar</button>
+        <div class="sig_vit-actions">
+          <button type="button" id="btnCancelarSignos" class="btn sig_vit-secondary">Cancelar</button>
+          <button type="button" id="btnLimpiarSignos" class="btn sig_vit-soft">Limpiar</button>
+          <button type="button" id="btnGuardarSignos" class="btn sig_vit-primary">Guardar</button>
         </div>
       </form>
     </section>
@@ -1000,6 +1012,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   (function() {
     const $ = (selector) => document.querySelector(selector);
@@ -1033,7 +1046,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
       statusText: $('#estadoGeneralText')
     };
 
-    const campos = Array.from(document.querySelectorAll('.campo-signo-vital'));
+    const campos = Array.from(document.querySelectorAll('.sig_vit-campo-signo-vital'));
 
     function normalizeValue(value) {
       return String(value || '').replace(',', '.').trim();
@@ -1055,12 +1068,12 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     }
 
     function setFieldState(input, state, message) {
-      const field = input.closest('.field');
-      const wrap = input.closest('.input-wrap');
-      const error = field ? field.querySelector('.field-error') : null;
+      const field = input.closest('.sig_vit-field');
+      const wrap = input.closest('.sig_vit-input-wrap');
+      const error = field ? field.querySelector('.sig_vit-field-error') : null;
 
       input.classList.remove('is-invalid');
-      if (wrap) wrap.classList.remove('is-invalid', 'is-warning');
+      if (wrap) wrap.classList.remove('is-invalid', 'sig_vit-is-warning');
       if (error) {
         error.textContent = '';
         error.classList.remove('show');
@@ -1076,7 +1089,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
       }
 
       if (state === 'warning' && wrap) {
-        wrap.classList.add('is-warning');
+        wrap.classList.add('sig_vit-is-warning');
       }
     }
 
@@ -1096,8 +1109,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
     function validarFecha() {
       const value = fields.evaluationDate.value.trim();
-      const wrap = fields.evaluationDate.closest('.input-wrap');
-      const error = fields.evaluationDate.closest('.field').querySelector('.field-error');
+      const wrap = fields.evaluationDate.closest('.sig_vit-input-wrap');
+      const error = fields.evaluationDate.closest('.sig_vit-field').querySelector('.sig_vit-field-error');
       wrap.classList.remove('is-invalid');
       error.classList.remove('show');
 
@@ -1194,10 +1207,10 @@ $formatoNumeroVista = static function ($valor, $default = '') {
       });
       const listaAlertas = generarAlertas();
 
-      summary.status.className = 'status-pill';
+      summary.status.className = 'sig_vit-status-pill';
 
       if (numericWithValue.length === 0) {
-        summary.status.classList.add('warning');
+        summary.status.classList.add('sig_vit-warning');
         summary.statusIcon.textContent = 'i';
         summary.statusTitle.textContent = 'Pendiente:';
         summary.statusText.textContent = 'completa los signos vitales para ver el estado general.';
@@ -1211,7 +1224,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         return;
       }
 
-      summary.status.classList.add('warning');
+      summary.status.classList.add('sig_vit-warning');
       summary.statusIcon.textContent = '!';
       summary.statusTitle.textContent = 'Revisar:';
       summary.statusText.textContent = `se detectaron ${listaAlertas.length} valor(es) fuera del rango esperado.`;
@@ -1266,7 +1279,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
     async function guardarEvaluacion() {
       if (!validarFormulario()) {
-        summary.status.className = 'status-pill danger';
+        summary.status.className = 'sig_vit-status-pill sig_vit-danger';
         summary.statusIcon.textContent = '!';
         summary.statusTitle.textContent = 'Faltan datos:';
         summary.statusText.textContent = 'revisa los campos marcados antes de guardar.';
@@ -1288,7 +1301,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         const data = await resp.json();
 
         if (data.ok) {
-          summary.status.className = 'status-pill';
+          summary.status.className = 'sig_vit-status-pill';
           summary.statusIcon.textContent = '✓';
           summary.statusTitle.textContent = 'Listo:';
           summary.statusText.textContent = data.mensaje || 'evaluación guardada correctamente.';
@@ -1310,7 +1323,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
           return;
         }
 
-        summary.status.className = 'status-pill danger';
+        summary.status.className = 'sig_vit-status-pill sig_vit-danger';
         summary.statusIcon.textContent = '!';
         summary.statusTitle.textContent = 'Error:';
         summary.statusText.textContent = data.mensaje || 'no se pudo guardar.';
@@ -1333,7 +1346,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         }
       } catch (err) {
         console.error('Error guardando evaluación:', err);
-        summary.status.className = 'status-pill danger';
+        summary.status.className = 'sig_vit-status-pill sig_vit-danger';
         summary.statusIcon.textContent = '!';
         summary.statusTitle.textContent = 'Error:';
         summary.statusText.textContent = 'no se pudo conectar con el servidor.';
@@ -1360,8 +1373,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         setFieldState(campo, 'clean');
       });
 
-      const dateWrap = fields.evaluationDate.closest('.input-wrap');
-      const dateError = fields.evaluationDate.closest('.field').querySelector('.field-error');
+      const dateWrap = fields.evaluationDate.closest('.sig_vit-input-wrap');
+      const dateError = fields.evaluationDate.closest('.sig_vit-field').querySelector('.sig_vit-field-error');
       dateWrap.classList.remove('is-invalid');
       dateError.classList.remove('show');
 
@@ -1388,10 +1401,22 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     }
 
     function cancelarSignos() {
-      if (confirm('¿Desea cancelar la evaluación? Los cambios no guardados se perderán.')) {
-        window.location.href = URL_RETORNO;
-      }
-    }
+    Swal.fire({
+        title: '¿Desea cancelar la evaluación?',
+        text: 'Los cambios no guardados se perderán.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, cancelar',
+        cancelButtonText: 'No, continuar',
+        reverseButtons: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#1a237e'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = URL_RETORNO;
+        }
+    });
+}
 
     campos.forEach((campo) => {
       campo.addEventListener('input', () => {

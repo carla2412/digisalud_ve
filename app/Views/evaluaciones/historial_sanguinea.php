@@ -30,29 +30,28 @@ function labValor(array $resultados, array $codigos, string $fallback = '—'): 
 function estadoHemoglobina($valor): array
 {
     if ($valor === null || $valor === '' || !is_numeric($valor)) {
-        return ['Sin dato', 'neutral'];
+        return ['Sin dato', 'hist_lab-neutral'];
     }
 
     $v = (float) $valor;
 
     if ($v < 12) {
-        return ['Hemoglobina baja', 'danger'];
+        return ['Hemoglobina baja', 'hist_lab-danger'];
     }
 
     if ($v > 17.5) {
-        return ['Hemoglobina alta', 'warning'];
+        return ['Hemoglobina alta', 'hist_lab-warning'];
     }
 
-    return ['Hemoglobina normal', 'success'];
+    return ['Hemoglobina normal', 'hist_lab-success'];
 }
 ?>
 
 <style>
     :root {
-        --ds-primary: #176be8;
+        --ds-primary: #3695f5;
         --ds-dark: #101a61;
-        --ds-bg: #f5f8fc;
-        --ds-border: #e0e6ed;
+        --ds-border: #f5f8fc;
         --ds-text: #1f2937;
         --ds-muted: #64748b;
         --ds-danger: #ef2f1b;
@@ -64,18 +63,18 @@ function estadoHemoglobina($valor): array
         background: var(--ds-bg);
     }
 
-    .blood-page {
+    .hist_lab-blood-page {
         width: min(1180px, calc(100% - 48px));
         margin: 0 auto;
         padding: 28px 0 42px;
     }
 
-    .blood-hero {
-        background: linear-gradient(135deg, #1558c8, #176be8);
+    .hist_lab-blood-hero {
+        background: #fff;
         border-radius: 24px;
         padding: 26px 30px;
-        color: #fff;
-        box-shadow: 0 18px 34px rgba(23, 107, 232, .22);
+        color: #101a61;
+          box-shadow: 0 8px 20px rgba(16, 26, 97, .06);
         display: flex;
         justify-content: space-between;
         gap: 22px;
@@ -83,13 +82,13 @@ function estadoHemoglobina($valor): array
         margin-bottom: 24px;
     }
 
-    .blood-person {
+    .hist_lab-blood-person {
         display: flex;
         align-items: center;
         gap: 18px;
     }
 
-    .blood-avatar {
+    .hist_lab-blood-avatar {
         width: 76px;
         height: 76px;
         border-radius: 50%;
@@ -103,20 +102,20 @@ function estadoHemoglobina($valor): array
         border: 4px solid rgba(255,255,255,.35);
     }
 
-    .blood-person h1 {
+    .hist_lab-blood-person h1 {
         margin: 0 0 4px;
         font-size: 28px;
         font-weight: 700;
         text-transform: uppercase;
     }
 
-    .blood-person p {
+    .hist_lab-blood-person p {
         margin: 0;
         opacity: .92;
         font-size: 15px;
     }
 
-    .blood-back {
+    .hist_lab-blood-back {
         border: 1px solid rgba(255,255,255,.5);
         color: #fff;
         text-decoration: none;
@@ -125,7 +124,7 @@ function estadoHemoglobina($valor): array
         font-weight: 600;
     }
 
-    .blood-title {
+    .hist_lab-blood-title {
         background: #fff;
         border: 1px solid var(--ds-border);
         border-radius: 18px;
@@ -134,7 +133,7 @@ function estadoHemoglobina($valor): array
         box-shadow: 0 8px 20px rgba(16, 26, 97, .06);
     }
 
-    .blood-title h2 {
+    .hist_lab-blood-title h2 {
         color: var(--ds-dark);
         margin: 0;
         letter-spacing: .08em;
@@ -142,7 +141,7 @@ function estadoHemoglobina($valor): array
         text-transform: uppercase;
     }
 
-    .blood-title-bar {
+    .hist_lab-blood-title-bar {
         width: 180px;
         height: 6px;
         background: #7654b7;
@@ -150,13 +149,13 @@ function estadoHemoglobina($valor): array
         margin-top: 16px;
     }
 
-    .blood-grid {
+    .hist_lab-blood-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
         gap: 18px;
     }
 
-    .blood-card {
+    .hist_lab-blood-card {
         background: #fff;
         border-radius: 20px;
         border: 1px solid var(--ds-border);
@@ -165,19 +164,19 @@ function estadoHemoglobina($valor): array
         position: relative;
     }
 
-    .blood-card-head {
+    .hist_lab-blood-card-head {
         padding: 22px 22px 14px;
         border-bottom: 1px solid #edf1f7;
         position: relative;
     }
 
-    .blood-date {
+    .hist_lab-blood-date {
         color: #536580;
         font-weight: 700;
         margin-bottom: 8px;
     }
 
-    .blood-card h3 {
+    .hist_lab-blood-card h3 {
         color: var(--ds-danger);
         font-size: 23px;
         letter-spacing: .06em;
@@ -186,14 +185,14 @@ function estadoHemoglobina($valor): array
         font-weight: 800;
     }
 
-    .blood-center {
+    .hist_lab-blood-center {
         color: #536580;
         font-weight: 700;
         font-size: 14px;
         text-transform: uppercase;
     }
 
-    .blood-drop {
+    .hist_lab-blood-drop {
         width: 58px;
         height: 58px;
         border-radius: 50%;
@@ -208,7 +207,7 @@ function estadoHemoglobina($valor): array
         font-size: 28px;
     }
 
-    .blood-row {
+    .hist_lab-blood-row {
         display: flex;
         justify-content: space-between;
         gap: 18px;
@@ -218,12 +217,12 @@ function estadoHemoglobina($valor): array
         font-weight: 700;
     }
 
-    .blood-row strong {
+    .hist_lab-blood-row strong {
         color: #334155;
         text-align: right;
     }
 
-    .blood-status {
+    .hist_lab-blood-status {
         padding: 12px 22px;
         color: #fff;
         text-transform: uppercase;
@@ -231,27 +230,27 @@ function estadoHemoglobina($valor): array
         letter-spacing: -.02em;
     }
 
-    .blood-status.success {
+    .hist_lab-blood-status.hist_lab-success {
         background: var(--ds-success);
     }
 
-    .blood-status.warning {
+    .hist_lab-blood-status.hist_lab-warning {
         background: var(--ds-warning);
     }
 
-    .blood-status.danger {
+    .hist_lab-blood-status.hist_lab-danger {
         background: var(--ds-danger);
     }
 
-    .blood-status.neutral {
+    .hist_lab-blood-status.hist_lab-neutral {
         background: #64748b;
     }
 
-    .blood-extra {
+    .hist_lab-blood-extra {
         padding: 14px 22px 20px;
     }
 
-    .blood-extra-title {
+    .hist_lab-blood-extra-title {
         font-size: 13px;
         color: var(--ds-muted);
         font-weight: 700;
@@ -259,13 +258,13 @@ function estadoHemoglobina($valor): array
         text-transform: uppercase;
     }
 
-    .blood-tags {
+    .hist_lab-blood-tags {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
     }
 
-    .blood-tag {
+    .hist_lab-blood-tag {
         background: #f1f5f9;
         border: 1px solid #e2e8f0;
         color: #334155;
@@ -275,7 +274,7 @@ function estadoHemoglobina($valor): array
         font-weight: 700;
     }
 
-    .empty-history {
+    .hist_lab-empty-history {
         background: #fff;
         border: 1px dashed #cbd5e1;
         border-radius: 20px;
@@ -285,30 +284,30 @@ function estadoHemoglobina($valor): array
     }
 
     @media (max-width: 720px) {
-        .blood-page {
+        .hist_lab-blood-page {
             width: min(100% - 28px, 100%);
         }
 
-        .blood-hero {
+        .hist_lab-blood-hero {
             flex-direction: column;
             align-items: flex-start;
         }
 
-        .blood-person {
+        .hist_lab-blood-person {
             align-items: flex-start;
         }
 
-        .blood-person h1 {
+        .hist_lab-blood-person h1 {
             font-size: 22px;
         }
     }
 </style>
 
-<main class="blood-page">
+<main class="hist_lab-blood-page">
 
-    <section class="blood-hero">
-        <div class="blood-person">
-            <div class="blood-avatar">
+    <section class="hist_lab-blood-hero">
+        <div class="hist_lab-blood-person">
+            <div class="hist_lab-blood-avatar">
                 <?= esc(mb_substr($beneficiario['nombres'] ?? 'B', 0, 1)) ?>
             </div>
 
@@ -324,23 +323,23 @@ function estadoHemoglobina($valor): array
             </div>
         </div>
 
-        <a class="blood-back" href="<?= base_url('jornadas/' . $jornadaId . '/beneficiarios') ?>">
+        <a class="hist_lab-blood-back" href="<?= base_url('jornadas/' . $jornadaId . '/beneficiarios') ?>">
             ← Volver
         </a>
     </section>
 
-    <section class="blood-title">
+    <section class="hist_lab-blood-title">
         <h2>Historial sanguíneo</h2>
-        <div class="blood-title-bar"></div>
+        <div class="hist_lab-blood-title-bar"></div>
     </section>
 
     <?php if (empty($historial)): ?>
-        <div class="empty-history">
+        <div class="hist_lab-empty-history">
             No hay evaluaciones sanguíneas registradas para este beneficiario.
         </div>
     <?php else: ?>
 
-        <section class="blood-grid">
+        <section class="hist_lab-blood-grid">
             <?php foreach ($historial as $eval): ?>
                 <?php
                 $r = $eval['resultados'];
@@ -367,44 +366,44 @@ function estadoHemoglobina($valor): array
                 $glucosa = labValor($r, ['glucosa', 'glicemia']);
                 ?>
 
-                <article class="blood-card">
-                    <div class="blood-card-head">
-                        <div class="blood-date"><?= esc($fecha) ?></div>
+                <article class="hist_lab-blood-card">
+                    <div class="hist_lab-blood-card-head">
+                        <div class="hist_lab-blood-date"><?= esc($fecha) ?></div>
                         <h3>Sanguíneo</h3>
-                        <div class="blood-center"><?= esc($centro) ?></div>
-                        <div class="blood-drop">
+                        <div class="hist_lab-blood-center"><?= esc($centro) ?></div>
+                        <div class="hist_lab-blood-drop">
                             <i class="bi bi-droplet"></i>
                         </div>
                     </div>
 
-                    <div class="blood-row">
+                    <div class="hist_lab-blood-row">
                         <span>Edad</span>
                         <strong><?= esc($edad) ?></strong>
                     </div>
 
-                    <div class="blood-row">
+                    <div class="hist_lab-blood-row">
                         <span>Hemoglobina</span>
                         <strong><?= esc($hemoglobina) ?></strong>
                     </div>
 
-                    <div class="blood-status <?= esc($estadoClase) ?>">
+                    <div class="hist_lab-blood-status <?= esc($estadoClase) ?>">
                         <?= esc($estadoHb) ?>
                     </div>
 
-                    <div class="blood-row">
+                    <div class="hist_lab-blood-row">
                         <span>Glucosa</span>
                         <strong><?= esc($glucosa) ?></strong>
                     </div>
 
-                    <div class="blood-extra">
-                        <div class="blood-extra-title">Otros resultados</div>
+                    <div class="hist_lab-blood-extra">
+                        <div class="hist_lab-blood-extra-title">Otros resultados</div>
 
-                        <div class="blood-tags">
+                        <div class="hist_lab-blood-tags">
                             <?php foreach ($r as $codigo => $item): ?>
                                 <?php if (in_array($codigo, ['hemoglobina', 'hb', 'hgb', 'glucosa', 'glicemia'])) continue; ?>
                                 <?php if ($item['valor'] === null || $item['valor'] === '') continue; ?>
 
-                                <span class="blood-tag">
+                                <span class="hist_lab-blood-tag">
                                     <?= esc($item['nombre']) ?>:
                                     <?= esc(trim($item['valor'] . ' ' . ($item['unidad'] ?? ''))) ?>
                                 </span>
