@@ -124,6 +124,7 @@ class EvaluacionesController extends BaseController
         // tipo_pesquisa_id = 4 → Signos vitales (vista dedicada)
         $vistasPorPesquisa = [
             4 => 'evaluaciones/signos_vitales',
+            6 => 'evaluaciones/vacunacion',
             // Futuro: 1 => 'evaluaciones/antropometria',
             // Futuro: 3 => 'evaluaciones/visual',
         ];

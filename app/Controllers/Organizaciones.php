@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\OrganizacionModel;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\UsuarioModel;
+use App\Models\RolesUsuariosContextoModel;
 
 /**
  * Controlador Organizaciones
@@ -139,17 +141,21 @@ class Organizaciones extends BaseController
             session()->setFlashdata('error', 'No tienes permisos para crear organizaciones.');
             return redirect()->to(base_url('organizaciones'));
         }
+
         if (! $this->verificarAcceso()) {
             return $this->response;
         }
 
         $rules = [
-            'nombre_org'         => 'required|max_length[120]',
-            'tipo'               => 'required|max_length[50]',
-            'categoria'          => 'required|max_length[80]',
-            'telefono'           => 'required|max_length[30]',
-            'email'             => 'required|valid_email|max_length[120]',
-            'nombre_responsable' => 'permit_empty|max_length[120]',
+            'nombre_org'            => 'required|max_length[120]',
+            'tipo'                  => 'required|max_length[50]',
+            'categoria'             => 'required|max_length[80]',
+            'telefono'              => 'required|max_length[30]',
+            'email'                 => 'required|valid_email|max_length[120]',
+            'responsable_nombres'   => 'required|max_length[80]',
+            'responsable_apellidos' => 'required|max_length[80]',
+            'password'              => 'required|min_length[6]|max_length[255]',
+            'confirmar_password'    => 'required|matches[password]',
         ];
 
         if (! $this->validate($rules)) {
@@ -159,7 +165,9 @@ class Organizaciones extends BaseController
                 ->with('errors', $this->validator->getErrors());
         }
 
-        // Procesar logo si fue cargado
+        $db = \Config\Database::connect();
+        $db->transStart();
+
         $logoUrl = null;
         $archivo = $this->request->getFile('logo');
 
@@ -176,17 +184,19 @@ class Organizaciones extends BaseController
             $logoUrl = $resultado['filename'];
         }
 
-        // Procesar dirección si la sección fue activada
         $direccionId = $this->procesarDireccion();
 
-        // Preparar datos para inserción
+        $responsableNombres = trim((string) $this->request->getPost('responsable_nombres'));
+        $responsableApellidos = trim((string) $this->request->getPost('responsable_apellidos'));
+        $nombreResponsable = trim($responsableNombres . ' ' . $responsableApellidos);
+
         $datos = [
             'nombre_org'         => $this->request->getPost('nombre_org'),
             'tipo'               => $this->request->getPost('tipo'),
             'categoria'          => $this->request->getPost('categoria'),
             'telefono'           => $this->request->getPost('telefono'),
-            'email'             => $this->request->getPost('email'),
-            'nombre_responsable' => $this->request->getPost('nombre_responsable'),
+            'email'              => $this->request->getPost('email'),
+            'nombre_responsable' => $nombreResponsable,
             'direccion_id'       => $direccionId,
             'logo_url'           => $logoUrl,
             'status_org'         => 1,
@@ -195,6 +205,44 @@ class Organizaciones extends BaseController
         ];
 
         $this->model->skipValidation(true)->insert($datos);
+        $organizacionId = $this->model->getInsertID();
+
+        $usuarioModel = new UsuarioModel();
+        $rolesContexto = new RolesUsuariosContextoModel();
+
+        $email = trim((string) $this->request->getPost('email'));
+        $username = explode('@', $email)[0];
+
+        $usuarioModel->insert([
+            'nombres'         => $responsableNombres,
+            'apellidos'       => $responsableApellidos,
+            'email'           => $email,
+            'username'        => $username,
+            'password_hash'   => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'telefono'        => $this->request->getPost('telefono'),
+            'direccion_id'    => $direccionId,
+            'organizacion_id' => $organizacionId,
+            'status_usu'      => 1,
+            'creado_en'       => date('Y-m-d H:i:s'),
+            'creado_por'      => (int) session()->get('id_usuario'),
+        ]);
+
+        $usuarioId = $usuarioModel->getInsertID();
+
+        $rolesContexto->insert([
+            'id_usuario'      => $usuarioId,
+            'id_rol'          => 3,
+            'organizacion_id' => $organizacionId,
+            'tipo_contexto'   => 'GLOBAL',
+            'status_urc'      => 1,
+        ]);
+
+        $db->transComplete();
+
+        if (! $db->transStatus()) {
+            session()->setFlashdata('error', 'No se pudo crear la organización.');
+            return redirect()->back()->withInput();
+        }
 
         session()->setFlashdata('success', 'Organización creada exitosamente.');
         return redirect()->to(base_url('organizaciones'));
@@ -252,12 +300,15 @@ class Organizaciones extends BaseController
         }
 
         $rules = [
-            'nombre_org'         => 'required|max_length[120]',
-            'tipo'               => 'required|max_length[50]',
-            'categoria'          => 'required|max_length[80]',
-            'telefono'           => 'required|max_length[30]',
-            'email'             => 'required|valid_email|max_length[120]',
-            'nombre_responsable' => 'permit_empty|max_length[120]',
+            'nombre_org'            => 'required|max_length[120]',
+            'tipo'                  => 'required|max_length[50]',
+            'categoria'             => 'required|max_length[80]',
+            'telefono'              => 'required|max_length[30]',
+            'email'                 => 'required|valid_email|max_length[120]',
+            'responsable_nombres'   => 'required|max_length[80]',
+            'responsable_apellidos' => 'required|max_length[80]',
+            'password'              => 'permit_empty|min_length[6]|max_length[255]',
+            'confirmar_password'    => 'matches[password]',
         ];
 
         if (! $this->validate($rules)) {
@@ -290,19 +341,46 @@ class Organizaciones extends BaseController
 
         // Procesar dirección
         $direccionId = $this->procesarDireccion($organizacion['direccion_id']);
-
+        $responsableNombres = trim((string) $this->request->getPost('responsable_nombres'));
+        $responsableApellidos = trim((string) $this->request->getPost('responsable_apellidos'));
+        $nombreResponsable = trim($responsableNombres . ' ' . $responsableApellidos);
         $datos = [
             'nombre_org'         => $this->request->getPost('nombre_org'),
             'tipo'               => $this->request->getPost('tipo'),
             'categoria'          => $this->request->getPost('categoria'),
             'telefono'           => $this->request->getPost('telefono'),
             'email'             => $this->request->getPost('email'),
-            'nombre_responsable' => $this->request->getPost('nombre_responsable'),
+            'nombre_responsable' => $nombreResponsable,
             'direccion_id'       => $direccionId,
             'logo_url'           => $logoUrl,
         ];
 
         $this->model->skipValidation(true)->update($id, $datos);
+        $usuarioModel = new UsuarioModel();
+
+        $responsable = $usuarioModel
+            ->where('organizacion_id', $id)
+            ->where('status_usu', 1)
+            ->orderBy('id_usuario', 'ASC')
+            ->first();
+
+        if ($responsable) {
+            $email = trim((string) $this->request->getPost('email'));
+
+            $userData = [
+                'nombres'   => $responsableNombres,
+                'apellidos' => $responsableApellidos,
+                'email'     => $email,
+                'username'  => explode('@', $email)[0],
+                'telefono'  => $this->request->getPost('telefono'),
+            ];
+
+            if ($this->request->getPost('password')) {
+                $userData['password_hash'] = password_hash($this->request->getPost('password'), PASSWORD_DEFAULT);
+            }
+
+            $usuarioModel->update($responsable['id_usuario'], $userData);
+        }
 
         session()->setFlashdata('success', 'Organización actualizada correctamente.');
         return redirect()->to(base_url('organizaciones'));
