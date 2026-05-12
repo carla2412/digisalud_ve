@@ -129,7 +129,7 @@ class EvaluacionesController extends BaseController
             // Futuro: 3 => 'evaluaciones/visual',
         ];
 
-        $vistaFormulario = $vistasPorPesquisa[$tipoPesquisaId] ?? 'evaluaciones/formulario';
+        $vistaFormulario = $vistasPorPesquisa[$tipoPesquisaId] ?? 'evaluaciones/sanguineo';
 
         return view($vistaFormulario, [
             'beneficiario'         => $beneficiario,
@@ -264,6 +264,9 @@ class EvaluacionesController extends BaseController
         $mapaCodigo = [];
 
         foreach ($itemsCatalogo as $item) {
+            if ($this->esCampoGeneralDosisVacunacion($tipoPesquisaId, $item)) {
+                continue;
+            }
             $mapaCodigo[$item['codigo']] = $item;
         }
 
@@ -443,7 +446,45 @@ class EvaluacionesController extends BaseController
             ]);
         }
     }
+ /**
+     * Identifica campos generales de dosis en la aplicación de vacunación.
+     *
+     * Dosis y próxima dosis pertenecen a cada vacuna aplicada; por eso no se
+     * validan ni guardan como datos globales de la sección "Aplicación actual".
+     */
+    private function esCampoGeneralDosisVacunacion(int $tipoPesquisaId, array $item): bool
+    {
+        if ($tipoPesquisaId !== 6 || ($item['seccion'] ?? '') !== 'aplicacion') {
+            return false;
+        }
 
+        $codigo = $this->normalizarTextoVacunacion((string) ($item['codigo'] ?? ''));
+        $nombre = $this->normalizarTextoVacunacion((string) ($item['nombre'] ?? ''));
+
+        $camposGenerales = [
+            'dosis',
+            'dosis aplicada',
+            'numero dosis',
+            'nro dosis',
+            'proxima dosis',
+            'fecha proxima dosis',
+            'fecha proxima',
+        ];
+
+        return in_array($codigo, $camposGenerales, true)
+            || in_array($nombre, $camposGenerales, true)
+            || strpos($codigo, 'proxima dosis') !== false
+            || strpos($nombre, 'proxima dosis') !== false;
+    }
+
+    private function normalizarTextoVacunacion(string $texto): string
+    {
+        $texto = strtr(strtolower(trim($texto)), [
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u', 'ñ' => 'n',
+        ]);
+
+        return trim(preg_replace('/[^a-z0-9]+/', ' ', $texto) ?? '');
+    }
     /**
      * Mapa de nombres legibles por sección.
      */
