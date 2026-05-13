@@ -123,8 +123,10 @@ class EvaluacionesController extends BaseController
         // ── Vista especializada por tipo de pesquisa ──
         // tipo_pesquisa_id = 4 → Signos vitales (vista dedicada)
         $vistasPorPesquisa = [
+            3=> 'evaluaciones/visual',
             4 => 'evaluaciones/signos_vitales',
             6 => 'evaluaciones/vacunacion',
+            
             // Futuro: 1 => 'evaluaciones/antropometria',
             // Futuro: 3 => 'evaluaciones/visual',
         ];
@@ -268,6 +270,9 @@ class EvaluacionesController extends BaseController
                 continue;
             }
             $mapaCodigo[$item['codigo']] = $item;
+        }
+        if ($tipoPesquisaId === 6) {
+            $campos = $this->compatibilizarCamposVacunacion($campos, $mapaCodigo);
         }
 
         // Validar campos obligatorios
@@ -447,11 +452,32 @@ class EvaluacionesController extends BaseController
         }
     }
  /**
-     * Identifica campos generales de dosis en la aplicación de vacunación.
+     * Compatibiliza la vista especializada de vacunación con catálogos anteriores.
      *
-     * Dosis y próxima dosis pertenecen a cada vacuna aplicada; por eso no se
-     * validan ni guardan como datos globales de la sección "Aplicación actual".
+     * La pantalla actual envía la dosis por vacuna como {codigo}_dosis. Algunas
+     * instalaciones aún tienen el item histórico con el código base de la vacuna
+     * (por ejemplo, bcg) para guardar si fue aplicada. En esos casos copiamos la
+     * dosis seleccionada al código base para que la edición vuelva a precargarla.
      */
+    private function compatibilizarCamposVacunacion(array $campos, array $mapaCodigo): array
+    {
+        foreach ($campos as $codigo => $valor) {
+            if (! is_string($codigo) || substr($codigo, -6) !== '_dosis') {
+                continue;
+            }
+
+            if ($valor === '' || $valor === null || isset($mapaCodigo[$codigo])) {
+                continue;
+            }
+
+            $codigoBase = substr($codigo, 0, -6);
+            if ($codigoBase !== '' && isset($mapaCodigo[$codigoBase])) {
+                $campos[$codigoBase] = $valor;
+            }
+        }
+
+        return $campos;
+    }
     private function esCampoGeneralDosisVacunacion(int $tipoPesquisaId, array $item): bool
     {
         if ($tipoPesquisaId !== 6 || ($item['seccion'] ?? '') !== 'aplicacion') {

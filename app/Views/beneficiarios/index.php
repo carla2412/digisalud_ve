@@ -24,8 +24,8 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        background: #eef0ff;
-        color: #1f2f78;
+        background:  var(--ds-bg) ;
+        color:  var(--ds-dark) ;
         border-radius: 999px;
         padding: 10px 20px;
         font-weight: 700;
@@ -42,8 +42,8 @@
         display: flex;
         align-items: center;
         gap: 6px;
-        background: #10b981;
-        color: #fff;
+        background: var(--ds-success) ;
+        color: var(--ds-light) ;
         border: 0;
         border-radius: 8px;
         padding: 10px 18px;
@@ -54,16 +54,16 @@
     }
 
     .btn-export:hover {
-        background: #059669;
-        color: #fff;
+        background:  var(--ds-success) ;
+        color:var(--ds-light) ;
     }
 
     .total-beneficiarios {
         display: flex;
         align-items: center;
         gap: 6px;
-        background: #f0f4ff;
-        color: #101a61;
+        background:  var(--ds-bg) ;
+        color:  var(--ds-dark) 1;
         border-radius: 999px;
         padding: 10px 18px;
         font-weight: 800;
@@ -79,8 +79,8 @@
 
     /* PANEL FILTROS */
     .filters-panel {
-        background: #fff;
-        border: 1px solid #e5e7eb;
+        background: var(--ds-light) ;
+        border: 1px solid  var(--ds-border) ;
         border-radius: 12px;
         padding: 20px;
         height: fit-content;
@@ -97,12 +97,12 @@
 
     .filters-header h5 {
         margin: 0;
-        color: #1f2f78;
+        color:  var(--ds-dark) ;
         font-weight: 800;
     }
 
     .filters-header a {
-        color: #6366f1;
+        color:var(--ds-morado) ;
         text-decoration: none;
         font-size: .85rem;
     }
@@ -114,7 +114,7 @@
     .filter-group label {
         display: block;
         margin-bottom: 7px;
-        color: #6b7280;
+        color: var(--ds-secondary) ;
         font-size: .88rem;
         font-weight: 600;
     }
@@ -125,8 +125,8 @@
         border: 1px solid #d9deea;
         border-radius: 7px;
         padding: 0 12px;
-        color: #334155;
-        background: #fff;
+        color:var(--ds-secondary) ;
+        background:var(--ds-light) ;
     }
 
     .search-control {
@@ -142,15 +142,15 @@
         right: 13px;
         top: 50%;
         transform: translateY(-50%);
-        color: #64748b;
+        color:   var(--ds-secondary) ;
     }
 
     .btn-filter {
         width: 100%;
         height: 46px;
         border: 0;
-        background: #3695f5;
-        color: #fff;
+        background:  var(--ds-primary) ;
+        color: var(--ds-light) ;
         border-radius: 8px;
         font-weight: 800;
         cursor: pointer;
@@ -158,7 +158,7 @@
     }
 
     .btn-filter:hover {
-        background: #1b7ae2;
+        background:  var(--ds-primary-dark) ;
     }
 
     /* PANEL LISTA */
@@ -184,12 +184,12 @@
         margin: 0;
         font-size: 1.75rem;
         font-weight: 800;
-        color: #1f2f78;
+        color:  var(--ds-dark) ;
     }
 
     .result-badge {
-        background: #eef0ff;
-        color: #4f46e5;
+        background:  var(--ds-bg) ;
+        color:   var(--ds-morado) ;
         border-radius: 999px;
         padding: 6px 12px;
         font-weight: 700;
@@ -202,8 +202,8 @@
         grid-template-columns: 60px 1fr auto auto;
         gap: 16px;
         align-items: center;
-        background: #fff;
-        border: 1px solid #e5e7eb;
+        background: var(--ds-light) ;
+        border: 1px solid  var(--ds-border) ;
         border-radius: 12px;
         padding: 18px 20px;
         margin-bottom: 12px;
@@ -223,33 +223,33 @@
         justify-content: center;
         font-weight: 800;
         font-size: 1rem;
-        color: #fff;
+        color: var(--ds-light) ;
     }
 
     .avatar-m {
-        background: #3b82f6;
+        background:   var(--ds-primary) ;
     }
 
     .avatar-f {
-        background: #ec4899;
+        background:var(--ds-danger) ;
     }
 
     .benef-info h3 {
         margin: 0 0 4px;
         font-size: 1rem;
         font-weight: 700;
-        color: #1e293b;
+        color:  var(--ds-dark) ;
     }
 
     .benef-info small {
-        color: #64748b;
+        color:var(--ds-secondary) ;
         font-size: .82rem;
     }
 
     .benef-info .org-tag {
         display: inline-block;
-        background: #f0f4ff;
-        color: #3b5998;
+        background:   var(--ds-bg) ;
+        color:var(--ds-morado) ;
         border-radius: 4px;
         padding: 2px 8px;
         font-size: .75rem;
@@ -260,12 +260,12 @@
     .status-box {
         text-align: center;
         padding: 0 16px;
-        border-left: 1px solid #e5e7eb;
+        border-left: 1px solid  var(--ds-border) ;
     }
 
     .status-box small {
         display: block;
-        color: #6b7280;
+        color:var(--ds-secondary) ;
     }
 
     .card-actions {
@@ -276,8 +276,8 @@
     }
 
     .btn-history {
-        border: 1px solid #3695f5;
-        color: #2563eb;
+        border: 1px solid  var(--ds-primary) ;
+        color:  var(--ds-primary-dark) ;
         background: #fff;
         border-radius: 7px;
         padding: 9px 14px;
@@ -289,15 +289,15 @@
     }
 
     .btn-history:hover {
-        background: #1b7ae2;
+        background:  var(--ds-primary-dark) ;
         color: #fff;
     }
 
     .empty-state {
         text-align: center;
-        color: #94a3b8;
+        color: var(--ds-secondary) ;
         padding: 45px;
-        border: 1px dashed #d9deea;
+        border: 1px dashed var(--ds-secondary) ;
         border-radius: 10px;
     }
 
@@ -308,7 +308,7 @@
         align-items: center;
         gap: 16px;
         margin-top: 22px;
-        color: #64748b;
+        color: var(--ds-secondary) ;
     }
 
     .pagination-nav {
@@ -334,15 +334,15 @@
     }
 
     .pagination-nav a:hover {
-        background: #eef0ff;
-        border-color: #3695f5;
-        color: #4f46e5;
+        background:  var(--ds-bg) ;
+        border-color:  var(--ds-primary) ;
+        color: var(--ds-morado) ;
     }
 
     .pagination-nav .pg-active {
-        background: #101a61;
+        background:  var(--ds-dark) 1;
         color: #fff;
-        border-color: #101a61;
+        border-color:  var(--ds-dark) 1;
     }
 
     .pagination-nav .pg-disabled {

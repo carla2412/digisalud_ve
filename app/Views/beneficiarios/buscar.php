@@ -54,23 +54,7 @@
 ?>
 
 <style>
-    :root {
-        --ds-primary: #3695f5;
-        --ds-primary-dark: #1b7ae2;
-        --ds-dark: #101a61;
-        --ds-bg: #f5f8fc;
-        --ds-light: #f8f9fa;
-        --ds-border: #e0e6ed;
-        --ds-muted: #38393a;
-        --line: #e0e6ed;
-        --white: #ffffff;
-        --text-soft: #6b7280;
-        --danger: #ef4444;
-        --warning: #f4b400;
-        --success: #16a34a;
-        --shadow-sm: 0 6px 18px rgba(16, 26, 97, 0.06);
-        --shadow-md: 0 12px 28px rgba(16, 26, 97, 0.08);
-    }
+ 
 
     body {
         background: linear-gradient(180deg, #f8fbff 0%, var(--ds-bg) 100%);
@@ -122,7 +106,7 @@
     }
 
     .benef-find-beneficiarios-shell {
-        background: var(--white);
+        background: var(--ds-light);
         border: 1px solid var(--ds-border);
         border-radius: 26px;
         box-shadow: var(--shadow-md);
@@ -136,7 +120,7 @@
     }
 
     .benef-find-beneficiarios-panel {
-        background: var(--white);
+        background: var(--ds-light);
         border: 1px solid var(--ds-border);
         border-radius: 20px;
         box-shadow: var(--shadow-sm);
@@ -220,16 +204,16 @@
 
     .benef-find-ds-btn-primary {
         background: linear-gradient(180deg, var(--ds-primary) 0%, var(--ds-primary-dark) 100%);
-        color: #fff;
+        color: var(--ds-light);
         box-shadow: 0 10px 20px rgba(54, 149, 245, 0.22);
     }
 
     .benef-find-ds-btn-primary:hover {
-        color: #fff;
+        color:var(--ds-light);
     }
 
     .benef-find-ds-btn-outline {
-        background: #fff;
+        background: var(--ds-light);
         border: 1px solid var(--ds-primary);
         color: var(--ds-primary);
     }
@@ -255,7 +239,7 @@
     }
 
     .benef-find-empty-state {
-        border: 1px dashed #d9e4f2;
+        border: 1px dashed var(--ds-border);
         border-radius: 20px;
         background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
         min-height: 260px;
@@ -309,7 +293,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        background: #fff;
+        background: var(--ds-light);
         box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
     }
 
@@ -373,7 +357,7 @@
 
     .benef-find-badge-primary {
         background: linear-gradient(180deg, var(--ds-primary) 0%, var(--ds-primary-dark) 100%);
-        color: #fff;
+        color: var(--ds-light);
     }
 
     .benef-find-badge-soft {

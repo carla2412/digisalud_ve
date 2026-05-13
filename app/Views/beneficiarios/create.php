@@ -3,27 +3,7 @@
 <?= $this->section('css') ?>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <style>
-    :root {
-        --ds-primary: #3695f5;
-        --ds-primary-dark: #1b7ae2;
-        --ds-dark: #101a61;
-        --ds-bg: #f5f8fc;
-        --ds-light: #f8f9fa;
-        --ds-border: #e0e6ed;
-        --ds-muted: #38393a;
-        --line: #e0e6ed;
-
-        --white: #ffffff;
-        --success: #29b35b;
-        --danger: #e5484d;
-        --warning: #f59e0b;
-        --text-soft: #6b7280;
-        --shadow-sm: 0 4px 16px rgba(16, 26, 97, 0.06);
-        --shadow-md: 0 10px 30px rgba(16, 26, 97, 0.08);
-        --radius-lg: 20px;
-        --radius-md: 14px;
-        --radius-sm: 10px;
-    }
+ 
 
     body {
         background: linear-gradient(180deg, #f7faff 0%, #f5f8fc 100%);
@@ -831,7 +811,7 @@ $openFamiliar     = old('familiar_activo') === '1';
                                     class="form-control"
                                     value="<?= old('pais') ?: 'Venezuela' ?>"
                                     readonly
-                                    style="background:#f8f9fa;">
+                                    style="background:var(--ds-light);">
                             </div>
 
                             <div class="col-md-6">
@@ -1016,7 +996,7 @@ $openFamiliar     = old('familiar_activo') === '1';
 
                             <div class="col-12" id="repNuevoBox" style="display:none;">
                                 <div class="rep-nuevo-form">
-                                    <p style="font-size:.82rem;font-weight:800;color:#101a61;margin-bottom:10px;">
+                                    <p style="font-size:.82rem;font-weight:800;color:var(--ds-dark);margin-bottom:10px;">
                                         <i class="bi bi-person-plus me-1"></i> Registrar representante nuevo
                                     </p>
 
@@ -1084,14 +1064,14 @@ $openFamiliar     = old('familiar_activo') === '1';
 
                         <hr class="my-3">
 
-                        <label class="form-label" style="font-size:.86rem;color:#6c757d;">Buscar antecedente clínico:</label>
+                        <label class="form-label" style="font-size:.86rem;color:var(--ds-secondary);">Buscar antecedente clínico:</label>
                         <input type="text" id="buscarAntecedente" class="form-control" placeholder="Ej: diabetes, asma, hipertensión...">
                         <div id="antResultados" class="mt-2" style="max-height:200px;overflow-y:auto;"></div>
                         <div class="tag-container" id="antSeleccionados"></div>
 
                         <hr class="my-3">
 
-                        <label class="form-label" style="font-size:.86rem;color:#6c757d;">Buscar dato socioeconómico:</label>
+                        <label class="form-label" style="font-size:.86rem;color:var(--ds-secondary);">Buscar dato socioeconómico:</label>
                         <input type="text" id="buscarSocioeconomico" class="form-control" placeholder="Ej: aguas, techo, electricidad...">
                         <div id="socResultados" class="mt-2" style="max-height:200px;overflow-y:auto;"></div>
                         <div class="tag-container" id="socSeleccionados"></div>
@@ -1520,7 +1500,7 @@ $openFamiliar     = old('familiar_activo') === '1';
                                     data-digi="${escapeHtml(idDigi)}"
                                     onclick="seleccionarRepDesdeElemento(this)">
                                     <strong>${escapeHtml(String(apellidos).toUpperCase())}, ${escapeHtml(String(nombres).toUpperCase())}</strong>
-                                    <span style="color:#888;font-size:.72rem;">— ${escapeHtml(idDigi)}</span>
+                                    <span style="color:var(--ds-secondary);font-size:.72rem;">— ${escapeHtml(idDigi)}</span>
                                 </div>
                             `;
                             });
@@ -1566,8 +1546,8 @@ $openFamiliar     = old('familiar_activo') === '1';
             <div class="rep-selected">
                 <i class="bi bi-check-circle-fill text-success me-1"></i>
                 <strong>${escapeHtml(nombre)}</strong>
-                <span style="color:#888;font-size:.75rem;">(${escapeHtml(idDigi)})</span>
-                <span style="cursor:pointer;float:right;color:#dc3545;" onclick="limpiarRep()">✕</span>
+                <span style="color:var(--ds-secondary);font-size:.75rem;">(${escapeHtml(idDigi)})</span>
+                <span style="cursor:pointer;float:right;color:var(--ds-danger);" onclick="limpiarRep()">✕</span>
             </div>
         `;
         };
@@ -1629,7 +1609,7 @@ $openFamiliar     = old('familiar_activo') === '1';
                         .then(safeJson)
                         .then(function(data) {
                             if (!Array.isArray(data) || data.length === 0) {
-                                resultados.innerHTML = '<p style="font-size:.82rem;color:#888;" class="mt-2">Sin resultados</p>';
+                                resultados.innerHTML = '<p style="font-size:.82rem;color:var(--ds-secondary);" class="mt-2">Sin resultados</p>';
                                 return;
                             }
 
@@ -1651,12 +1631,12 @@ $openFamiliar     = old('familiar_activo') === '1';
                                     data-input="${escapeHtml(inputId)}"
                                     onclick="addAntDesdeElemento(this)">
                                     ${escapeHtml(descripcion)}
-                                    <span style="color:#888;font-size:.72rem;">(${escapeHtml(tipoAnt)})</span>
+                                    <span style="color:var(--ds-secondary);font-size:.72rem;">(${escapeHtml(tipoAnt)})</span>
                                 </div>
                             `;
                             });
 
-                            resultados.innerHTML = html || '<p style="font-size:.82rem;color:#888;" class="mt-2">Ya seleccionaste todos los resultados encontrados.</p>';
+                            resultados.innerHTML = html || '<p style="font-size:.82rem;color:var(--ds-secondary);" class="mt-2">Ya seleccionaste todos los resultados encontrados.</p>';
                         })
                         .catch(function(error) {
                             console.error(error);

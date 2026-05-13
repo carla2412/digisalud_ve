@@ -20,7 +20,7 @@
         </section>
 
         <section class="col-lg-5 d-flex align-items-center justify-content-center bg-white p-4">
-            <div class="login-card">
+            <div class="login-card ">
 
                 <div class="text-center d-lg-none mb-4">
 
@@ -29,8 +29,8 @@
 
                 </div>
 
-                <h2 class="fw-bold text-dark mb-2">Iniciar Sesión</h2>
-                <p class="text-muted mb-4">Ingresa tus credenciales para acceder al sistema.</p>
+                <h2 class="fw-bold text-dark mb-2 text-center ">Iniciar Sesión</h2>
+                <p class="text-muted mb-4"> </p>
 
                 <?php if (session()->getFlashdata('error')): ?>
                     <div class="alert alert-danger alert-dismissible fade show rounded-3 border-0" role="alert">

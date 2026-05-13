@@ -32,7 +32,7 @@
     }
 
     .usu_mod-org-breadcrumb span {
-        color: #3695f5;
+        color:  var(--ds-primary) 
         font-weight: 600;
     }
 
@@ -155,13 +155,13 @@
     }
 
     .usu_mod-blue {
-        background: #dce8ff;
-        color: #3695f5;
+        background:  var(--ds-bg) ;
+        color:  var(--ds-primary) ;
     }
 
     .usu_mod-green {
         background: #dff4e7;
-        color: #22c55e;
+        color:  var(--ds-success) ;
     }
 
     .usu_mod-purple {
@@ -190,7 +190,7 @@
 
     .usu_mod-tag.usu_mod-blue {
         background: #e7f0ff;
-        color: #3695f5;
+        color:  var(--ds-primary) 
     }
 
     .usu_mod-tag.usu_mod-green {
@@ -255,7 +255,7 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        color: #3695f5;
+        color:  var(--ds-primary) 
     }
 
     .usu_mod-btn-action-custom:hover {

@@ -65,39 +65,62 @@ $camposAplicacion = [
 ];
 
 // Campos de la sección "control" que se renderizan en el step 3
-$camposControl = [
-    'proximo_control',
-    'reaccion_observada',
-    'descripcion_reaccion',
-    'recomendaciones',
-    'observaciones_finales',
-    'no_se_aplico',
-    'observaciones_vacunacion',
+# REEMPLAZAR POR:
+$camposAplicacion = [
+    'responsable_aplicacion',
+    'cargo_responsable',
+    'lugar_aplicacion',
+    'sitio_aplicacion',
 ];
-
 // Helper: obtener valor existente de un campo
 function evalVacValor($codigo, $valoresExistentes)
 {
     return $valoresExistentes[$codigo] ?? '';
 }
+
+// Helper: normalizar dosis de vacunación guardadas por versiones anteriores
+function evalVacNormalizarDosis($valor)
+{
+    $valor = trim((string) $valor);
+    $mapa = [
+        '1_dosis' => '1_dosis',
+        '1ra' => '1_dosis',
+        'primera' => '1_dosis',
+        'primera_dosis' => '1_dosis',
+        '2_dosis' => '2_dosis',
+        '2da' => '2_dosis',
+        'segunda' => '2_dosis',
+        'segunda_dosis' => '2_dosis',
+        '3_dosis' => '3_dosis',
+        '3ra' => '3_dosis',
+        'tercera' => '3_dosis',
+        'tercera_dosis' => '3_dosis',
+        'dosis_unica' => 'dosis_unica',
+        'unica' => 'dosis_unica',
+        'única' => 'dosis_unica',
+        'refuerzo' => 'dosis_unica',
+        'aplicada' => 'aplicada',
+        'aplicado' => 'aplicada',
+        'si' => 'aplicada',
+        'sí' => 'aplicada',
+        's' => 'aplicada',
+        '1' => 'aplicada',
+        'true' => 'aplicada',
+    ];
+
+    $normalizado = mb_strtolower($valor, 'UTF-8');
+    $normalizado = str_replace([' ', '-'], '_', $normalizado);
+
+    if (isset($mapa[$normalizado])) {
+        return $mapa[$normalizado];
+    }
+
+    return '';
+}
 ?>
 
 <style>
-    :root {
-        --eval_vac_primary: #101a61;
-        --eval_vac_primary_dark: #08144f;
-        --eval_vac_primary_soft: #e8edff;
-        --eval_vac_bg: #f4f7fb;
-        --eval_vac_card: #ffffff;
-        --eval_vac_text: #172033;
-        --eval_vac_muted: #64748b;
-        --eval_vac_border: #dbe3ef;
-        --eval_vac_success: #16a34a;
-        --eval_vac_warning: #f59e0b;
-        --eval_vac_danger: #dc2626;
-        --eval_vac_info: #1b7ae2;
-        --eval_vac_radius: 22px;
-    }
+ 
 
     * {
         box-sizing: border-box;
@@ -114,7 +137,7 @@ function evalVacValor($codigo, $valoresExistentes)
     }
 
     .eval_vac_sidebar {
-        background: linear-gradient(180deg, var(--eval_vac_primary) 0%, var(--eval_vac_primary_dark) 100%);
+        background:  var(--ds-dark );
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -144,7 +167,7 @@ function evalVacValor($codigo, $valoresExistentes)
 
     .eval_vac_sidebar_item_active {
         background: #ffffff;
-        color: var(--eval_vac_primary);
+        color: var(--ds-primary);
         box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
     }
 
@@ -155,8 +178,8 @@ function evalVacValor($codigo, $valoresExistentes)
         bottom: -2px;
         width: 13px;
         height: 13px;
-        background: var(--eval_vac_success);
-        border: 2px solid var(--eval_vac_primary);
+        background: var(--ds-success);
+        border: 2px solid var(--ds-primary);
         border-radius: 999px;
     }
 
@@ -179,7 +202,7 @@ function evalVacValor($codigo, $valoresExistentes)
         gap: 24px;
         align-items: center;
         background: rgba(255, 255, 255, 0.9);
-        border: 1px solid var(--eval_vac_border);
+        border: 1px solid var(--ds-border);
         border-radius: 28px;
         padding: 22px;
         margin-bottom: 18px;
@@ -198,8 +221,8 @@ function evalVacValor($codigo, $valoresExistentes)
         width: 58px;
         height: 58px;
         border-radius: 20px;
-        background: var(--eval_vac_primary_soft);
-        color: var(--eval_vac_primary);
+        background: var(--ds-primary-light);
+        color: var(--ds-primary);
         display: grid;
         place-items: center;
         flex: 0 0 auto;
@@ -212,14 +235,14 @@ function evalVacValor($codigo, $valoresExistentes)
 
     .eval_vac_title {
         margin: 0;
-        color: var(--eval_vac_primary);
+        color: var(--ds-dark);
         font-size: 1.55rem;
         font-weight: 900;
     }
 
     .eval_vac_subtitle {
         margin: 4px 0 0;
-        color: var(--eval_vac_muted);
+        color: var(--ds-muted);
         font-size: 0.92rem;
     }
 
@@ -239,7 +262,7 @@ function evalVacValor($codigo, $valoresExistentes)
 
     .eval_vac_badge_edit {
         background: #fef3c7;
-        color: #92400e;
+        color: var(--ds-orange);
     }
 
     .eval_vac_header_meta {
@@ -252,7 +275,7 @@ function evalVacValor($codigo, $valoresExistentes)
     .eval_vac_date_box,
     .eval_vac_progress_box {
         background: #f8fbff;
-        border: 1px solid var(--eval_vac_border);
+        border: 1px solid var(--ds-border);
         border-radius: 18px;
         padding: 14px;
     }
@@ -270,7 +293,7 @@ function evalVacValor($codigo, $valoresExistentes)
     .eval_vac_textarea,
     .eval_vac_select {
         width: 100%;
-        border: 1.5px solid var(--eval_vac_border);
+        border: 1.5px solid var(--ds-border);
         border-radius: 12px;
         background: #fff;
         color: var(--eval_vac_text);
@@ -284,7 +307,7 @@ function evalVacValor($codigo, $valoresExistentes)
     .eval_vac_search_input:focus,
     .eval_vac_textarea:focus,
     .eval_vac_select:focus {
-        border-color: var(--eval_vac_primary);
+        border-color: var(--ds-primary);
         box-shadow: 0 0 0 3px rgba(16, 26, 97, 0.08);
     }
 
@@ -297,14 +320,14 @@ function evalVacValor($codigo, $valoresExistentes)
         display: flex;
         justify-content: space-between;
         gap: 12px;
-        color: var(--eval_vac_muted);
+        color: var(--ds-muted);
         font-size: 0.78rem;
         font-weight: 900;
         margin-bottom: 9px;
     }
 
     .eval_vac_progress_text strong {
-        color: var(--eval_vac_primary);
+        color: var(--ds-primary);
     }
 
     .eval_vac_progress_bar {
@@ -319,7 +342,7 @@ function evalVacValor($codigo, $valoresExistentes)
         height: 100%;
         width: 0;
         border-radius: inherit;
-        background: var(--eval_vac_primary);
+        background: var(--ds-primary);
         transition: width 0.2s ease;
     }
 
@@ -332,9 +355,9 @@ function evalVacValor($codigo, $valoresExistentes)
     }
 
     .eval_vac_step {
-        border: 1px solid var(--eval_vac_border);
+        border: 1px solid var(--ds-border);
         background: #fff;
-        color: var(--eval_vac_muted);
+        color: var(--ds-muted);
         border-radius: 999px;
         padding: 8px 14px 8px 8px;
         font-size: 0.82rem;
@@ -354,7 +377,7 @@ function evalVacValor($codigo, $valoresExistentes)
         background: #eef2f7;
         display: grid;
         place-items: center;
-        color: var(--eval_vac_muted);
+        color: var(--ds-muted);
     }
 
     .eval_vac_step:hover {
@@ -363,14 +386,14 @@ function evalVacValor($codigo, $valoresExistentes)
     }
 
     .eval_vac_step_active {
-        background: var(--eval_vac_primary);
+        background: var(--ds-primary);
         color: #fff;
-        border-color: var(--eval_vac_primary);
+        border-color: var(--ds-primary);
     }
 
     .eval_vac_step_active span {
         background: #fff;
-        color: var(--eval_vac_primary);
+        color: var(--ds-primary);
     }
 
     .eval_vac_step_panel {
@@ -390,8 +413,8 @@ function evalVacValor($codigo, $valoresExistentes)
 
     .eval_vac_card,
     .eval_vac_summary_card {
-        background: var(--eval_vac_card);
-        border: 1px solid var(--eval_vac_border);
+        background: var(--ds-light);
+        border: 1px solid var(--ds-border);
         border-radius: 24px;
         box-shadow: 0 18px 44px rgba(15, 23, 42, 0.07);
     }
@@ -413,7 +436,7 @@ function evalVacValor($codigo, $valoresExistentes)
     .eval_vac_card_title,
     .eval_vac_summary_title {
         margin: 0;
-        color: var(--eval_vac_primary);
+        color: var(--ds-dark);
         font-size: 1.05rem;
         font-weight: 900;
     }
@@ -421,7 +444,7 @@ function evalVacValor($codigo, $valoresExistentes)
     .eval_vac_card_description,
     .eval_vac_summary_text {
         margin: 5px 0 0;
-        color: var(--eval_vac_muted);
+        color: var(--ds-muted);
         font-size: 0.84rem;
     }
 
@@ -457,9 +480,9 @@ function evalVacValor($codigo, $valoresExistentes)
     }
 
     .eval_vac_filter {
-        border: 1px solid var(--eval_vac_border);
+        border: 1px solid var(--ds-border);
         background: #fff;
-        color: var(--eval_vac_muted);
+        color: var(--ds-muted);
         border-radius: 999px;
         padding: 9px 13px;
         font-size: 0.78rem;
@@ -469,9 +492,9 @@ function evalVacValor($codigo, $valoresExistentes)
     }
 
     .eval_vac_filter_active {
-        background: var(--eval_vac_primary);
+        background: var(--ds-primary);
         color: #fff;
-        border-color: var(--eval_vac_primary);
+        border-color: var(--ds-primary);
     }
 
     .eval_vac_table_header {
@@ -514,14 +537,14 @@ function evalVacValor($codigo, $valoresExistentes)
 
     .eval_vac_name strong {
         display: block;
-        color: var(--eval_vac_text);
+        color: var(--ds-text);
         font-size: 0.92rem;
     }
 
     .eval_vac_name small {
         display: block;
         margin-top: 4px;
-        color: var(--eval_vac_muted);
+        color: var(--ds-muted);
         font-size: 0.74rem;
     }
 
@@ -587,7 +610,7 @@ function evalVacValor($codigo, $valoresExistentes)
         align-items: center;
         padding: 13px 0;
         border-bottom: 1px solid #edf2f7;
-        color: var(--eval_vac_muted);
+        color: var(--ds-muted);
         font-size: 0.86rem;
     }
 
@@ -596,7 +619,7 @@ function evalVacValor($codigo, $valoresExistentes)
     }
 
     .eval_vac_summary_row strong {
-        color: var(--eval_vac_primary);
+        color: var(--ds-dark);
         font-size: 1.15rem;
         font-weight: 900;
     }
@@ -621,8 +644,8 @@ function evalVacValor($codigo, $valoresExistentes)
         margin: 16px 0 0;
         padding: 14px;
         border-radius: 16px;
-        background: var(--eval_vac_primary_soft);
-        color: var(--eval_vac_primary);
+        background: var(--ds-primary-light);
+        color: var(--ds-primary);
         font-size: 0.86rem;
         font-weight: 800;
     }
@@ -639,14 +662,14 @@ function evalVacValor($codigo, $valoresExistentes)
         padding: 12px;
         background: rgba(248, 251, 255, 0.94);
         backdrop-filter: blur(10px);
-        border: 1px solid var(--eval_vac_border);
+        border: 1px solid var(--ds-border);
         border-radius: 20px 20px 0 0;
         box-shadow: 0 -16px 36px rgba(15, 23, 42, 0.08);
     }
 
     .eval_vac_actions_help {
         margin: 0 auto 0 0;
-        color: var(--eval_vac_muted);
+        color: var(--ds-muted);
         font-size: 0.8rem;
         font-weight: 800;
     }
@@ -655,7 +678,7 @@ function evalVacValor($codigo, $valoresExistentes)
         min-height: 44px;
         border-radius: 12px;
         padding: 0 18px;
-        border: 1px solid var(--eval_vac_border);
+        border: 1px solid var(--ds-border);
         font-size: 0.86rem;
         font-weight: 900;
         cursor: pointer;
@@ -668,14 +691,14 @@ function evalVacValor($codigo, $valoresExistentes)
     }
 
     .eval_vac_btn_primary {
-        background: var(--eval_vac_primary);
+        background: var(--ds-primary);
         color: #fff;
-        border-color: var(--eval_vac_primary);
+        border-color: var(--ds-primary);
     }
 
     .eval_vac_btn_secondary {
-        background: var(--eval_vac_primary_soft);
-        color: var(--eval_vac_primary);
+        background: var(--ds-primary-light);
+        color: var(--ds-primary);
         border-color: transparent;
     }
 
@@ -897,7 +920,7 @@ function evalVacValor($codigo, $valoresExistentes)
                     </div>
                 </div>
             </div>
-                    </div>
+        </div>
 
         <!-- ── STEPS NAV ── -->
         <nav class="eval_vac_steps" aria-label="Secciones de evaluación">
@@ -905,7 +928,7 @@ function evalVacValor($codigo, $valoresExistentes)
                 <span>1</span> Estado de vacunas
             </button>
             <button type="button" class="eval_vac_step" data-step="2">
-                <span>2</span> Aplicación actual
+                <span>2</span> Datos generales
             </button>
             <button type="button" class="eval_vac_step" data-step="3">
                 <span>3</span> Control y observaciones
@@ -983,7 +1006,14 @@ function evalVacValor($codigo, $valoresExistentes)
                                 // También checar el valor del select original de la BD (Aplicada/No aplicada)
                                 // para backward compatibility
                                 $valorOriginal = evalVacValor($codigoVac, $valoresExistentes);
-
+                                $valorDosis = evalVacNormalizarDosis($valorDosis);
+                                if ($valorDosis === '' && $valorOriginal !== '') {
+                                    $valorDosis = evalVacNormalizarDosis($valorOriginal);
+                                    $dosisGeneral = evalVacNormalizarDosis(evalVacValor('dosis', $valoresExistentes));
+                                    if ($valorDosis === 'aplicada' && $dosisGeneral !== '' && $dosisGeneral !== 'aplicada') {
+                                        $valorDosis = $dosisGeneral;
+                                    }
+                                }
                                 $tieneSeleccion = !empty($valorDosis);
                                 $extraClase     = $tieneSeleccion ? '' : 'eval_vac_extra_fields_hidden';
                                 $alertaClase    = $tieneSeleccion ? 'eval_vac_alert_success' : 'eval_vac_alert_warning';
@@ -993,6 +1023,7 @@ function evalVacValor($codigo, $valoresExistentes)
                                 elseif ($valorDosis === '2_dosis')   $alertaTexto = '2° Dosis';
                                 elseif ($valorDosis === '3_dosis')   $alertaTexto = '3° Dosis';
                                 elseif ($valorDosis === 'dosis_unica') $alertaTexto = 'Dosis Única';
+                                elseif ($valorDosis === 'aplicada') $alertaTexto = 'Aplicada';
                                 ?>
                                 <article class="eval_vac_row" data-vaccine-row data-codigo="<?= esc($codigoVac) ?>">
                                     <div class="eval_vac_name">
@@ -1008,6 +1039,7 @@ function evalVacValor($codigo, $valoresExistentes)
                                             <option value="2_dosis" <?= $valorDosis === '2_dosis'      ? 'selected' : '' ?>>2° Dosis</option>
                                             <option value="3_dosis" <?= $valorDosis === '3_dosis'      ? 'selected' : '' ?>>3° Dosis</option>
                                             <option value="dosis_unica" <?= $valorDosis === 'dosis_unica'  ? 'selected' : '' ?>>Dosis Única</option>
+                                            <option value="aplicada" <?= $valorDosis === 'aplicada' ? 'selected' : '' ?>>Aplicada</option>
                                         </select>
                                     </div>
 
@@ -1082,9 +1114,9 @@ function evalVacValor($codigo, $valoresExistentes)
                 <section class="eval_vac_card">
                     <div class="eval_vac_card_header">
                         <div>
-                            <h2 class="eval_vac_card_title">Aplicación actual</h2>
+                            <h2 class="eval_vac_card_title">Datos generales</h2>
                             <p class="eval_vac_card_description">
-                                Registra únicamente los datos generales de la aplicación. La fecha corresponde a la fecha de evaluación y el lote se captura por cada vacuna seleccionada.
+                                Datos del responsable de la aplicación, lugar y vacuna aplicada durante esta jornada.
                             </p>
                         </div>
                     </div>
@@ -1119,61 +1151,32 @@ function evalVacValor($codigo, $valoresExistentes)
                         </div>
                     </div>
 
-                    <div class="eval_vac_grid_3" style="margin-top:14px;">
-                        <div class="eval_vac_field_group">
-                            <label class="eval_vac_label" for="eval_vac_dosis_aplicada">Dosis</label>
-                            <select id="eval_vac_dosis_aplicada"
-                                class="eval_vac_select"
-                                name="campos[dosis]">
-                                <?php
-                                $opcionesDosis = [
-                                    ''         => 'Seleccione',
-                                    '1ra'      => '1ra dosis',
-                                    '2da'      => '2da dosis',
-                                    '3ra'      => '3ra dosis',
-                                    'refuerzo' => 'Refuerzo',
-                                    'unica'    => 'Dosis única',
-                                ];
-                                $valorDosisAp = evalVacValor('dosis', $valoresExistentes);
-                                foreach ($opcionesDosis as $val => $txt):
-                                ?>
-                                    <option value="<?= esc($val) ?>" <?= $valorDosisAp === $val ? 'selected' : '' ?>><?= esc($txt) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="eval_vac_field_group">
-                            <label class="eval_vac_label" for="eval_vac_sitio_ap">Sitio de aplicación</label>
-                            <select id="eval_vac_sitio_ap"
-                                class="eval_vac_select"
-                                name="campos[sitio_aplicacion]">
-                                <?php
-                                $opcionesSitio = [
-                                    ''           => 'Seleccione',
-                                    'brazo_izq'  => 'Brazo izquierdo',
-                                    'brazo_der'  => 'Brazo derecho',
-                                    'muslo_izq'  => 'Muslo izquierdo',
-                                    'muslo_der'  => 'Muslo derecho',
-                                    'oral'       => 'Oral',
-                                ];
-                                $valorSitio = evalVacValor('sitio_aplicacion', $valoresExistentes);
-                                foreach ($opcionesSitio as $val => $txt):
-                                ?>
-                                    <option value="<?= esc($val) ?>" <?= $valorSitio === $val ? 'selected' : '' ?>><?= esc($txt) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="eval_vac_field_group">
-                            <label class="eval_vac_label" for="eval_vac_proxima_dosis">Fecha próxima dosis</label>
-                            <input id="eval_vac_proxima_dosis"
-                                class="eval_vac_input"
-                                type="date"
-                                name="campos[proxima_dosis]"
-                                value="<?= esc(evalVacValor('proxima_dosis', $valoresExistentes)) ?>">
-                        </div>
+                    <div class="eval_vac_field_group" style="margin-top:14px;">
+                        <label class="eval_vac_label" for="eval_vac_sitio_ap">Zona anatómica de aplicación</label>
+                        <select id="eval_vac_sitio_ap"
+                            class="eval_vac_select"
+                            name="campos[sitio_aplicacion]">
+                            <?php
+                            $opcionesSitio = [
+                                ''                  => 'Seleccione',
+                                'deltoides_izq'     => 'Deltoides izquierdo (brazo)',
+                                'deltoides_der'     => 'Deltoides derecho (brazo)',
+                                'vasto_externo_izq' => 'Vasto externo izquierdo (muslo)',
+                                'vasto_externo_der' => 'Vasto externo derecho (muslo)',
+                                'gluteo'            => 'Glúteo',
+                                'oral'              => 'Vía oral',
+                                'intranasal'        => 'Vía intranasal',
+                                'intradermica'      => 'Intradérmica (antebrazo)',
+                            ];
+                            $valorSitio = evalVacValor('sitio_aplicacion', $valoresExistentes);
+                            foreach ($opcionesSitio as $val => $txt):
+                            ?>
+                                <option value="<?= esc($val) ?>" <?= $valorSitio === $val ? 'selected' : '' ?>><?= esc($txt) ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
-
                     <p class="eval_vac_panel_note">
-                        La fecha de evaluación ubicada en el encabezado aplica para las vacunas registradas en esta jornada. El lote se registra individualmente en el listado de vacunas.
+                        La dosis y fecha de vencimiento se registran individualmente en el paso 1 (Estado de vacunas).
                     </p>
                 </section>
             </section>
@@ -1364,7 +1367,7 @@ function evalVacValor($codigo, $valoresExistentes)
 
         var evalVacStepTitles = {
             1: 'Estado de vacunas',
-            2: 'Aplicación actual',
+            2: 'Datos generales',
             3: 'Control y observaciones'
         };
 
@@ -1379,7 +1382,8 @@ function evalVacValor($codigo, $valoresExistentes)
                 '1_dosis': '1° Dosis',
                 '2_dosis': '2° Dosis',
                 '3_dosis': '3° Dosis',
-                'dosis_unica': 'Dosis Única'
+                'dosis_unica': 'Dosis Única',
+                'aplicada': 'Aplicada'
             };
             return labels[value] || '';
         }
