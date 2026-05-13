@@ -118,71 +118,45 @@ $jsSections[] = $observacionesSection;
 ?>
 
 <style>
-    :root {
-        --lab-primary: #101a61;
-        --lab-primary-soft: #e8edff;
-        --lab-bg: #f4f7fb;
-        --lab-card: #ffffff;
-        --lab-text: #172033;
-        --lab-muted: #64748b;
-        --lab-border: #dbe3ef;
-        --lab-danger: #dc2626;
-        --lab-warning: #f59e0b;
-        --lab-success: #16a34a;
-        --lab-sidebar-w: 72px;
-        --lab-actions-h: 22px;
-    }
+ 
 
     .labo-page {
         display: grid;
-        grid-template-columns: var(--lab-sidebar-w) minmax(0, 1fr);
+        grid-template-columns: 72 minmax(0, 1fr);
         min-height: 100dvh;
         overflow: clip;
     }
 
     .labo-sidebar {
-        background: var(--lab-primary);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        padding: 14px 0;
+            background: var(--ds-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 0;
     }
 
-    .labo-sidebar__logo,
-    .labo-sidebar__item {
-        width: 42px;
-        height: 42px;
-        border-radius: 16px;
-        border: 0;
-        display: grid;
-        place-items: center;
-        color: #fff;
-        background: rgba(255, 255, 255, .1);
-        text-decoration: none;
-        position: relative;
-        transition: .2s ease;
-    }
+     
 
-    .labo-sidebar__item img {
+    .labo-sidebar_item img {
         width: 24px;
         height: 24px;
         filter: brightness(0) invert(1);
         opacity: .65;
     }
 
-    .labo-sidebar__item:hover,
-    .labo-sidebar__item.active {
+    .labo-sidebar_item:hover,
+    .labo-sidebar_item.active {
         background: #fff;
     }
 
     .labo-sidebar__item:hover img,
-    .labo-sidebar__item.active img {
+    .labo-sidebar_item.active img {
         filter: none;
         opacity: 1;
     }
 
-    .labo-sidebar__item.labo-evaluado::after {
+    .labo-sidebar_item.labo-evaluado::after {
         content: '';
         position: absolute;
         right: -2px;
@@ -190,11 +164,11 @@ $jsSections[] = $observacionesSection;
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background: var(--lab-success);
-        border: 2px solid var(--lab-primary);
+        background: var(--ds-success);
+        border: 2px solid var(--ds-primary);
     }
 
-    .labo-sidebar__item[title]::before {
+    .labo-sidebar_item[title]::before {
         content: attr(title);
         position: absolute;
         left: 52px;
@@ -211,7 +185,7 @@ $jsSections[] = $observacionesSection;
         z-index: 30;
     }
 
-    .labo-sidebar__item:hover[title]::before {
+    .labo-sidebar_item:hover[title]::before {
         opacity: 1;
     }
 
@@ -228,18 +202,18 @@ $jsSections[] = $observacionesSection;
         justify-content: space-between;
         gap: 16px;
         margin-bottom: 16px;
-        padding-bottom: calc(var(--lab-actions-h) + 12px);
+        padding-bottom: calc( 22px + 12px);
     }
     .labo-header h1 {
         margin: 0;
-        color: var(--lab-primary);
+        color: var(--ds-primary);
         font-size: 1.35rem;
         font-weight: 900;
     }
 
     .labo-header p {
         margin: 2px 0 0;
-        color: var(--lab-muted);
+        color: var(--ds-muted);
         font-size: .9rem;
     }
     .labo-title-row {
@@ -288,7 +262,7 @@ $jsSections[] = $observacionesSection;
         min-width: 280px;
         font-size: .78rem;
         font-weight: 700;
-        color: var(--lab-muted);
+        color: var(--ds-muted);
     }
 
     .labo-progress-bar {
@@ -304,19 +278,19 @@ $jsSections[] = $observacionesSection;
         height: 100%;
         width: 0;
         border-radius: inherit;
-        background: var(--lab-primary);
+        background: var(--ds-primary);
         transition: width .25s ease;
     }
 
     .labo-btn-volver {
-        color: var(--lab-muted);
+        color: var(--ds-muted);
         text-decoration: none;
         font-size: .85rem;
         font-weight: 700;
     }
 
     .labo-btn-volver:hover {
-        color: var(--lab-primary);
+        color: var(--ds-primary);
     }
 
     .labo-stepper {
@@ -327,9 +301,9 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-step {
-        border: 1px solid var(--lab-border);
+        border: 1px solid var(--ds-border);
         background: #fff;
-        color: var(--lab-muted);
+        color: var(--ds-muted);
         border-radius: 999px;
         padding: 8px 12px 8px 8px;
         font-size: .78rem;
@@ -348,18 +322,18 @@ $jsSections[] = $observacionesSection;
         background: #eef2f7;
         display: grid;
         place-items: center;
-        color: var(--lab-muted);
+        color: var(--ds-muted);
     }
 
     .labo-step.active,
     .labo-step.labo-completed {
-        border-color: var(--lab-primary);
-        color: var(--lab-primary);
+        border-color: var(--ds-primary);
+        color: var(--ds-primary);
     }
 
     .labo-step.active span,
     .labo-step.labo-completed span {
-        background: var(--lab-primary);
+        background: var(--ds-primary);
         color: #fff;
     }
 
@@ -384,7 +358,7 @@ $jsSections[] = $observacionesSection;
 
     .labo-section-card,
     .labo-summary-card {
-        background: var(--lab-card);
+        background: var(--ds-bg);
         border: 1px solid var(--lab-border);
         border-radius: 22px;
         box-shadow: 0 16px 36px rgba(15, 23, 42, .06);
@@ -405,14 +379,14 @@ $jsSections[] = $observacionesSection;
     .labo-summary-card h2,
     .labo-summary-card h3 {
         margin: 0;
-        color: var(--lab-primary);
+        color: var(--ds-primary);
         font-size: 1rem;
         font-weight: 900;
     }
 
     .labo-section-header p {
         margin: 4px 0 0;
-        color: var(--lab-muted);
+        color: var(--ds-muted);
         font-size: .84rem;
     }
 
@@ -421,13 +395,13 @@ $jsSections[] = $observacionesSection;
         display: inline-flex;
         align-items: center;
         white-space: nowrap;
-        color: var(--lab-muted);
+        color: var(--ds-muted);
         font-size: .76rem;
         font-weight: 800;
     }
 
     .labo-required-note {
-        color: var(--lab-danger);
+        color: var(--ds-danger);
         margin-right: 8px;
     }
 
@@ -457,10 +431,10 @@ $jsSections[] = $observacionesSection;
     .labo-field select,
     .labo-field textarea {
         width: 100%;
-        border: 1.5px solid var(--lab-border);
+        border: 1.5px solid var(--ds-border);
         border-radius: 12px;
         background: #fff;
-        color: var(--lab-text);
+        color: var(--ds-text);
         font-size: .86rem;
         padding: 10px 12px;
         outline: none;
@@ -470,21 +444,21 @@ $jsSections[] = $observacionesSection;
     .labo-field input:focus,
     .labo-field select:focus,
     .labo-field textarea:focus {
-        border-color: var(--lab-primary);
+        border-color: var(--ds-primary);
         box-shadow: 0 0 0 3px rgba(16, 26, 97, .08);
     }
 
     .labo-field small {
         display: block;
         margin-top: 5px;
-        color: var(--lab-muted);
+        color: var(--ds-muted);
         font-size: .72rem;
     }
 
     .labo-input-unit {
         display: flex;
         align-items: center;
-        border: 1.5px solid var(--lab-border);
+        border: 1.5px solid var(--ds-border);
         border-radius: 12px;
         overflow: hidden;
         background: #fff;
@@ -492,7 +466,7 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-input-unit:focus-within {
-        border-color: var(--lab-primary);
+        border-color: var(--ds-primary);
         box-shadow: 0 0 0 3px rgba(16, 26, 97, .08);
     }
 
@@ -504,10 +478,10 @@ $jsSections[] = $observacionesSection;
 
     .labo-input-unit span {
         padding: 0 12px;
-        color: var(--lab-muted);
+        color: var(--ds-muted);
         font-size: .76rem;
         font-weight: 800;
-        border-left: 1px solid var(--lab-border);
+        border-left: 1px solid var(--ds-border);
         white-space: nowrap;
     }
 
@@ -522,7 +496,7 @@ $jsSections[] = $observacionesSection;
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        border: 1px solid var(--lab-border);
+        border: 1px solid var(--ds-border);
         border-radius: 999px;
         padding: 8px 12px;
         cursor: pointer;
@@ -533,13 +507,13 @@ $jsSections[] = $observacionesSection;
     .labo-field--error textarea,
     .labo-field--error .labo-input-unit,
     .is-invalid {
-        border-color: var(--lab-danger) !important;
+        border-color: var(--ds-danger) !important;
         box-shadow: 0 0 0 3px rgba(220, 38, 38, .08) !important;
     }
 
     .labo-field--warning input,
     .labo-field--warning .labo-input-unit {
-        border-color: var(--lab-warning) !important;
+        border-color: var(--ds-warning) !important;
         box-shadow: 0 0 0 3px rgba(245, 158, 11, .1) !important;
     }
 
@@ -574,16 +548,16 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-summary-row span {
-        color: var(--lab-muted);
+        color: var(--ds-muted);
     }
 
     .labo-summary-row strong {
-        color: var(--lab-primary);
+        color: var(--ds-primary);
         text-align: right;
     }
 
     #summaryObservaciones {
-        color: var(--lab-muted);
+        color: var(--ds-muted);
         font-size: .84rem;
         margin: 10px 0 0;
         word-break: break-word;
@@ -599,16 +573,16 @@ $jsSections[] = $observacionesSection;
         gap: 10px;
         width: 100%;
         max-width: 100%;
-        min-height: var(--lab-actions-h);
+        min-height: 22px;
         margin: 18px 0 0;
         padding: 14px 0 0;
         background: transparent;
-        border-top: 1px solid var(--lab-border);
+        border-top: 1px solid var(--ds-border);
         box-sizing: border-box;
     }
 
     .labo-actions-bar .btn {
-        border: 1px solid var(--lab-border);
+        border: 1px solid var(--ds-border);
         min-height: 44px;
         padding: 0 18px;
         border-radius: 12px;
@@ -624,18 +598,18 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-btn--primary {
-        background: var(--lab-primary);
+        background: var(--ds-primary);
         color: #fff;
     }
 
     .labo-btn--secondary {
-        background: var(--lab-primary-soft);
-        color: var(--lab-primary);
+        background: var(--ds-primary-light);
+        color: var(--ds-primary);
     }
 
     .labo-btn--ghost {
         background: transparent;
-        color: var(--lab-muted);
+        color: var(--ds-muted);
     }
 
     .btn:disabled {
@@ -741,15 +715,10 @@ $jsSections[] = $observacionesSection;
         background: linear-gradient(180deg, #102073 0%, #08144f 100%);
         box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
     }
+ 
 
-    .labo-sidebar__logo,
-    .labo-sidebar__item {
-        border-radius: 999px;
-        border: 1px solid rgba(255, 255, 255, .10);
-    }
-
-    .labo-sidebar__item:hover,
-    .labo-sidebar__item.active {
+    .labo-sidebar_item:hover,
+    .labo-sidebar_item.active {
         transform: translateY(-1px);
         box-shadow: 0 10px 22px rgba(0, 0, 0, .18);
     }
@@ -762,7 +731,7 @@ $jsSections[] = $observacionesSection;
 
     .labo-header {
         background: rgba(255, 255, 255, .86);
-        border: 1px solid var(--lab-border);
+        border: 1px solid var(--ds-border);
         border-radius: 26px;
         padding: 22px;
         margin-bottom: 18px;
@@ -771,7 +740,7 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-icon {
-        border: 1px solid var(--lab-border);
+        border: 1px solid var(--ds-border);
         box-shadow: 0 12px 26px rgba(16, 26, 97, .10);
     }
 
@@ -781,7 +750,7 @@ $jsSections[] = $observacionesSection;
 
     .labo-progress {
         background: #f8fbff;
-        border: 1px solid var(--lab-border);
+        border: 1px solid var(--ds-border);
         border-radius: 18px;
         padding: 14px;
     }
@@ -815,8 +784,8 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-step:hover {
-        border-color: var(--lab-primary);
-        color: var(--lab-primary);
+        border-color: var(--ds-primary-dark);
+        color: var(--ds-primary-dark);
         transform: translateY(-1px);
     }
 
@@ -828,7 +797,7 @@ $jsSections[] = $observacionesSection;
 
     .labo-step.labo-completed span {
         font-size: 0;
-        background: var(--lab-success);
+        background: var(--ds-success);
     }
 
     .labo-layout {
@@ -852,8 +821,8 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-section-status {
-        background: var(--lab-primary-soft);
-        color: var(--lab-primary);
+        background: var(--ds-primary-light);
+        color: var(--ds-primary);
         border-radius: 999px;
         padding: 6px 10px;
     }
@@ -874,7 +843,7 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-field label {
-        color: var(--lab-primary);
+        color: var(--ds-primary);
     }
 
     .labo-field small {
@@ -908,7 +877,7 @@ $jsSections[] = $observacionesSection;
         bottom: 0;
         background: rgba(248, 251, 255, .92);
         backdrop-filter: blur(10px);
-        border: 1px solid var(--lab-border);
+        border: 1px solid var(--ds-border);
         border-radius: 20px 20px 0 0;
         padding: 12px;
         box-shadow: 0 -16px 36px rgba(15, 23, 42, .08);
@@ -922,7 +891,7 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-btn--primary {
-        border-color: var(--lab-primary) !important;
+        border-color: var(--ds-primary) !important;
         box-shadow: 0 10px 22px rgba(16, 26, 97, .18);
     }
 
@@ -932,7 +901,7 @@ $jsSections[] = $observacionesSection;
 
     .labo-btn--ghost:hover {
         background: #fff;
-        color: var(--lab-primary);
+        color: var(--ds-primary);
     }
 
     .labo-toast {
@@ -974,7 +943,7 @@ $jsSections[] = $observacionesSection;
 
             $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
             $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
-            $clases      = 'labo-sidebar__item';
+            $clases      = 'labo-sidebar_item';
             if ($esActiva)   $clases .= ' active';
             if ($yaEvaluada) $clases .= ' labo-evaluado';
 

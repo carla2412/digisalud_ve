@@ -129,7 +129,7 @@ function evalVacNormalizarDosis($valor)
 
     .eval_vac_page {
         display: grid;
-        grid-template-columns: 78px minmax(0, 1fr);
+        grid-template-columns: 72px minmax(0, 1fr);
         width: 100%;
         min-height: calc(100vh - var(--app-header-height, 0px));
         position: relative;
@@ -141,15 +141,15 @@ function evalVacNormalizarDosis($valor)
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 12px;
+        gap: 8px;
         padding: 18px 0;
         box-shadow: 8px 0 28px rgba(8, 20, 79, 0.14);
     }
 
     .eval_vac_sidebar_item {
-        width: 48px;
-        height: 48px;
-        border-radius: 999px;
+        width: 42px;
+        height: 42px;
+        border-radius: 16px;
         display: grid;
         place-items: center;
         text-decoration: none;

@@ -8,7 +8,7 @@ $nombreCompleto = trim(esc($beneficiario['nombres'] ?? '') . ' ' . esc($benefici
 $infoPesquisaActual = $infoPesquisas[$tipoPesquisaId] ?? [];
 
 $nombrePesquisa = $infoPesquisaActual['nombre']
-    ?? ($tipoPesquisa['descripcion_view'] ?? $tipoPesquisa['nombre_tipo'] ?? 'Signos vitales');
+  ?? ($tipoPesquisa['descripcion_view'] ?? $tipoPesquisa['nombre_tipo'] ?? 'Signos vitales');
 
 $iconoPesquisa = $infoPesquisaActual['img'] ?? 'signosVitales2.svg';
 
@@ -19,54 +19,32 @@ $obsExistente = $evaluacionExistente['observaciones'] ?? '';
 
 $fechaEvaluacionRaw = $evaluacionExistente['fecha_evaluacion'] ?? date('Y-m-d');
 $fechaEvaluacionIso = ! empty($fechaEvaluacionRaw)
-    ? date('Y-m-d', strtotime($fechaEvaluacionRaw))
-    : date('Y-m-d');
+  ? date('Y-m-d', strtotime($fechaEvaluacionRaw))
+  : date('Y-m-d');
 $fechaEvaluacionVista = ! empty($fechaEvaluacionRaw)
-    ? date('d/m/Y', strtotime($fechaEvaluacionRaw))
-    : date('d/m/Y');
+  ? date('d/m/Y', strtotime($fechaEvaluacionRaw))
+  : date('d/m/Y');
 
 $urlRetorno = $jornadaId
-    ? base_url("jornadas/{$jornadaId}/beneficiarios")
-    : base_url("centros/{$centroId}/beneficiarios");
+  ? base_url("jornadas/{$jornadaId}/beneficiarios")
+  : base_url("centros/{$centroId}/beneficiarios");
 
 $valorCampo = static function (string $codigo, $default = '') use ($valoresExistentes) {
-    return esc($valoresExistentes[$codigo] ?? $default);
+  return esc($valoresExistentes[$codigo] ?? $default);
 };
 
 $formatoNumeroVista = static function ($valor, $default = '') {
-    if ($valor === '' || $valor === null) {
-        return esc($default);
-    }
+  if ($valor === '' || $valor === null) {
+    return esc($default);
+  }
 
-    $numero = (float) str_replace(',', '.', (string) $valor);
-    return esc(number_format($numero, 4, ',', ''));
+  $numero = (float) str_replace(',', '.', (string) $valor);
+  return esc(number_format($numero, 4, ',', ''));
 };
 ?>
 
 <style>
-  :root {
-    --primary: #101a61;
-    --primary-soft: #f5f8fc;
-    --accent: #dc2626;
-    --bg: #f8f9fa;
-    --card: #ffffff;
-    --text: #101828;
-    --muted: #38393a;
-    --border: #e0e6ed;
-    --success-bg: #dff5e6;
-    --success: #16a34a;
-    --warning-bg: #fff4d6;
-    --warning: #b54708;
-    --danger-bg: #fee4e2;
-    --danger: #b42318;
-    --info-bg: #e8f8ff;
-    --info-border: #83daf4;
-    --shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
-    --radius: 16px;
-    
  
-    --lab-sidebar-w: 72px;
-  }
 
   * {
     box-sizing: border-box;
@@ -74,86 +52,87 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
   body {
     margin: 0;
-    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: var(--bg);
-    color: var(--text);
+   
+    background: var(--ds-bg);
+    color: var(--ds-text);
   }
- 
- 
-    .sig_vit-sidebar {
-        background: var(--primary);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        padding: 14px 0;
-    }
 
-    .sig_vit-sidebar__logo,
-    .sig_vit-sidebar__item {
-        width: 42px;
-        height: 42px;
-        border-radius: 16px;
-        border: 0;
-        display: grid;
-        place-items: center;
-        color: #fff;
-        background: rgba(255, 255, 255, .1);
-        text-decoration: none;
-        position: relative;
-        transition: .2s ease;
-    }
 
-    .sig_vit-sidebar__item img {
-        width: 24px;
-        height: 24px;
-        filter: brightness(0) invert(1);
-        opacity: .65;
-    }
+  .sig_vit-sidebar {
+    background: var(--ds-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 0;
+  }
 
-    .sig_vit-sidebar__item:hover,
-    .sig_vit-sidebar__item.active {
-        background: #fff;
-    }
+  .sig_vit-sidebar__logo,
+  .sig_vit-sidebar__item {
+    width: 42px;
+    height: 42px;
+    border-radius: 16px;
+    border: 0;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: rgba(255, 255, 255, .1);
+    text-decoration: none;
+    position: relative;
+    transition: .2s ease;
+  }
 
-    .sig_vit-sidebar__item:hover img,
-    .sig_vit-sidebar__item.active img {
-        filter: none;
-        opacity: 1;
-    }
+  .sig_vit-sidebar__item img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+    opacity: .65;
+  }
 
-    .sig_vit-sidebar__item.sig_vit-evaluado::after {
-        content: '';
-        position: absolute;
-        right: -2px;
-        bottom: -2px;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: var(--success);
-        border: 2px solid var(--primary);
-    }
+  .sig_vit-sidebar__item:hover,
+  .sig_vit-sidebar__item.active {
+    background: #fff;
+  }
 
-    .sig_vit-sidebar__item[title]::before {
-        content: attr(title);
-        position: absolute;
-        left: 52px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: #111827;
-        color: #fff;
-        border-radius: 8px;
-        padding: 6px 10px;
-        font-size: .75rem;
-        white-space: nowrap;
-        opacity: 0;
-        pointer-events: none;
-        z-index: 30;
-    }
+  .sig_vit-sidebar__item:hover img,
+  .sig_vit-sidebar__item.active img {
+    filter: none;
+    opacity: 1;
+  }
 
-    .sig_vit-sidebar__item:hover[title]::before {
-        opacity: 1;
-    }
+  .sig_vit-sidebar__item.sig_vit-evaluado::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ds-success);
+    border: 2px solid var(--ds-primary);
+  }
+
+  .sig_vit-sidebar__item[title]::before {
+    content: attr(title);
+    position: absolute;
+    left: 52px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #111827;
+    color: #fff;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: .75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 30;
+  }
+
+  .sig_vit-sidebar__item:hover[title]::before {
+    opacity: 1;
+  }
+
   .nav-item {
     width: 46px;
     height: 46px;
@@ -179,7 +158,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
   .nav-item.active {
     background: #ffffff;
-    color: var(--accent);
+    color: var(--ds-dark);
     outline: 4px solid #1fc7ff;
   }
 
@@ -197,7 +176,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     position: absolute;
     right: -1px;
     bottom: 5px;
-    border: 2px solid var(--primary);
+    border: 2px solid var(--ds-primary);
   }
 
   .sig_vit-main {
@@ -206,28 +185,28 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     min-width: 0;
   }
 
- .sig_vit-lab-main {
+  .sig_vit-lab-main {
     display: flex;
     flex-direction: column;
     min-width: 0;
     padding: 22px 26px 88px;
-}
+  }
 
-.sig_vit-lab-header {
+  .sig_vit-lab-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
     margin-bottom: 18px;
-}
+  }
 
-.sig_vit-lab-title-row {
+  .sig_vit-lab-title-row {
     display: flex;
     align-items: center;
     gap: 12px;
-}
+  }
 
-.sig_vit-lab-icon {
+  .sig_vit-lab-icon {
     width: 48px;
     height: 48px;
     border-radius: 18px;
@@ -235,66 +214,67 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     place-items: center;
     background: #fff;
     box-shadow: 0 12px 24px rgba(15, 23, 42, .08);
-}
+  }
 
-.sig_vit-lab-icon img {
+  .sig_vit-lab-icon img {
     width: 30px;
     height: 30px;
-}
+  }
 
-.sig_vit-lab-header h1 {
+  .sig_vit-lab-header h1 {
     margin: 0;
-    color: var(--lab-primary);
+    color: var(--ds-primary);
     font-size: 1.35rem;
     font-weight: 900;
-}
+  }
 
-.sig_vit-lab-header p {
+  .sig_vit-lab-header p {
     margin: 2px 0 0;
-    color: var(--lab-muted);
+    color: var(--ds-muted);
     font-size: .9rem;
-}
+  }
 
-.sig_vit-lab-badge {
+  .sig_vit-lab-badge {
     display: inline-flex;
     margin-top: 6px;
     padding: 3px 10px;
     border-radius: 999px;
     font-size: .72rem;
     font-weight: 800;
-}
+  }
 
-.sig_vit-lab-badge.sig_vit-new {
+  .sig_vit-lab-badge.sig_vit-new {
     background: #dbeafe;
     color: #1e40af;
-}
+  }
 
-.sig_vit-lab-badge.sig_vit-edit {
+  .sig_vit-lab-badge.sig_vit-edit {
     background: #fef3c7;
     color: #92400e;
-}
+  }
 
-.sig_vit-btn-volver {
-    color: var(--lab-muted);
+  .sig_vit-btn-volver {
+    color: var(--ds-muted);
     text-decoration: none;
     font-size: .85rem;
     font-weight: 700;
-}
+  }
 
-.sig_vit-btn-volver:hover {
-    color: var(--lab-primary);
-}
+  .sig_vit-btn-volver:hover {
+    color: var(--ds-primary);
+  }
 
-@media (max-width: 760px) {
+  @media (max-width: 760px) {
     .sig_vit-lab-main {
-        padding: 18px 14px 92px;
+      padding: 18px 14px 92px;
     }
 
     .sig_vit-lab-header {
-        align-items: flex-start;
-        flex-direction: column;
+      align-items: flex-start;
+      flex-direction: column;
     }
-}
+  }
+
   .sig_vit-title-wrap {
     display: flex;
     align-items: center;
@@ -305,7 +285,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     width: 46px;
     height: 46px;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--ds-dark);
     color: #fff;
     display: grid;
     place-items: center;
@@ -315,7 +295,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   h1 {
     margin: 0;
     font-size: 24px;
-    color: var(--primary);
+    color: var(--ds-primary);
     line-height: 1.1;
   }
 
@@ -366,8 +346,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   .sig_vit-form-card {
     background: var(--card);
     border: 1px solid #e6edf6;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+    border-radius: 12px;
+    box-shadow: var(--ds-secondary-light);
   }
 
   .sig_vit-tip-card {
@@ -377,8 +357,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   .sig_vit-tip-box {
     min-height: 80px;
     border-radius: 10px;
-    border: 1px solid var(--info-border);
-    background: var(--info-bg);
+    border: 1px solid var(--ds-border);
+    background: var(--ds-bg);
     display: flex;
     align-items: center;
     gap: 14px;
@@ -417,7 +397,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   }
 
   .sig_vit-status-pill {
-    background: var(--success-bg);
+    background: var(--ds-bg);
     border: 1px solid #acdcb9;
     border-radius: 10px;
     padding: 12px 14px;
@@ -430,13 +410,13 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   }
 
   .sig_vit-status-pill.sig_vit-warning {
-    background: var(--warning-bg);
+    background: var(--ds-warning);
     border-color: #fedf89;
     color: var(--warning);
   }
 
   .sig_vit-status-pill.sig_vit-danger {
-    background: var(--danger-bg);
+    background: var(--ds-danger);
     border-color: #fecdca;
     color: var(--danger);
   }
@@ -451,7 +431,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     align-items: center;
     gap: 10px;
     min-width: 0;
-    border-left: 1px solid var(--border);
+    border-left: 1px solid var(--ds-border);
     padding-left: 16px;
   }
 
@@ -472,7 +452,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   }
 
   .sig_vit-metric-unit {
-    color: var(--muted);
+    color: var(--ds-muted);
     font-size: 12px;
     margin-top: 2px;
   }
@@ -508,9 +488,10 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
   .sig_vit-card-icon.sig_vit-purple {
     background: #ffe9fa;
-    
+
   }
-    .sig_vit-card-icon.sig_vit-purple>img {
+
+  .sig_vit-card-icon.sig_vit-purple>img {
     width: 3rem;
   }
 
@@ -551,7 +532,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     display: flex;
     align-items: center;
     background: #fff;
-    border: 1px solid var(--border);
+    border: 1px solid var(--ds-border);
     border-radius: 10px;
     overflow: hidden;
   }
@@ -588,7 +569,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     height: 22px;
     display: grid;
     place-items: center;
-    border-left: 1px solid var(--border);
+    border-left: 1px solid var(--ds-border);
     color: #53627c;
     font-weight: 700;
     font-size: 13px;
@@ -614,7 +595,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     min-height: 88px;
     resize: vertical;
     padding: 12px 14px;
-    border: 1px solid var(--border);
+    border: 1px solid var(--ds-border);
     border-radius: 10px;
     display: block;
   }
@@ -634,14 +615,14 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   }
 
   .btn {
- border: 1 ;
-         
-        min-height: 42px;
-        padding: 0 16px;
-        
-       
-        cursor: pointer;
-        transition: .2s ease;
+    border: 1;
+
+    min-height: 42px;
+    padding: 0 16px;
+
+
+    cursor: pointer;
+    transition: .2s ease;
   }
 
   .btn.sig_vit-secondary {
@@ -652,11 +633,11 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
   .btn.sig_vit-soft {
     background: #e9edff;
-    color: var(--primary);
+    color: var(--ds-primary);
   }
 
   .btn.sig_vit-primary {
-    background: var(--primary);
+    background: var(--ds-primary);
     color: #fff;
     min-width: 210px;
   }
@@ -717,12 +698,12 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     }
 
     .sig_vit-sidebar {
-            flex-direction: row;
-            overflow-x: auto;
-            justify-content: flex-start;
-            padding: 10px 12px;
-        }
-   
+      flex-direction: row;
+      overflow-x: auto;
+      justify-content: flex-start;
+      padding: 10px 12px;
+    }
+
 
     .sig_vit-content {
       padding: 18px;
@@ -742,84 +723,85 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     }
   }
 
-  
+
+  .sig_vit-lab-page {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    min-height: 100dvh;
+    overflow: clip;
+  }
+
+  @media (max-width: 768px) {
     .sig_vit-lab-page {
-        display: grid;
-        grid-template-columns: var(--lab-sidebar-w) minmax(0, 1fr);
-        min-height: 100dvh;
-        overflow: clip;
-    }
-    @media (max-width: 768px) {
-    .sig_vit-lab-page {
-        grid-template-columns: 1fr;
+      grid-template-columns: 1fr;
     }
 
     .sig_vit-sidebar {
-        flex-direction: row;
-        overflow-x: auto;
-        justify-content: flex-start;
-        padding: 10px 12px;
+      flex-direction: row;
+      overflow-x: auto;
+      justify-content: flex-start;
+      padding: 10px 12px;
     }
-}
+  }
 </style>
 
 <div class="sig_vit-lab-page" data-page="evaluacion">
- <aside class="sig_vit-sidebar">
-        
+  <aside class="sig_vit-sidebar">
 
-        <?php foreach ($pesquisasActividad as $pid): ?>
-            <?php
-            $info = $infoPesquisas[$pid] ?? null;
-            if (! $info) continue;
 
-            $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
-            $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
-            $clases      = 'sig_vit-sidebar__item';
-            if ($esActiva)   $clases .= ' active';
-            if ($yaEvaluada) $clases .= ' sig_vit-evaluado';
+    <?php foreach ($pesquisasActividad as $pid): ?>
+      <?php
+      $info = $infoPesquisas[$pid] ?? null;
+      if (! $info) continue;
 
-            $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}")
-                . ($jornadaId ? "?jornada_id={$jornadaId}" : "?centro_id={$centroId}");
-            ?>
-            <a href="<?= $urlPesquisa ?>"
-                class="<?= $clases ?>"
-                title="<?= esc($info['nombre']) ?>"
-                aria-label="<?= esc($info['nombre']) ?>">
-                <img src="<?= base_url('img/' . ($esActiva ? $info['img'] : $info['gris'])) ?>"
-                    alt="<?= esc($info['nombre']) ?>">
-            </a>
-        <?php endforeach; ?>
-    </aside>
+      $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
+      $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
+      $clases      = 'sig_vit-sidebar__item';
+      if ($esActiva)   $clases .= ' active';
+      if ($yaEvaluada) $clases .= ' sig_vit-evaluado';
 
-<main class="sig_vit-lab-main">
+      $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}")
+        . ($jornadaId ? "?jornada_id={$jornadaId}" : "?centro_id={$centroId}");
+      ?>
+      <a href="<?= $urlPesquisa ?>"
+        class="<?= $clases ?>"
+        title="<?= esc($info['nombre']) ?>"
+        aria-label="<?= esc($info['nombre']) ?>">
+        <img src="<?= base_url('img/' . ($esActiva ? $info['img'] : $info['gris'])) ?>"
+          alt="<?= esc($info['nombre']) ?>">
+      </a>
+    <?php endforeach; ?>
+  </aside>
 
- 
+  <main class="sig_vit-lab-main">
 
-        
+
+
+
 
     <section class="sig_vit-content">
       <div class="sig_vit-top-grid">
         <div class="sig_vit-tip-card">
-          <div  >
-           
-             <div class="sig_vit-lab-header">
-        <div class="sig_vit-lab-title-row">
-            <div class="sig_vit-lab-icon">
-                <img src="<?= base_url('img/' . $iconoPesquisa) ?>"
+          <div>
+
+            <div class="sig_vit-lab-header">
+              <div class="sig_vit-lab-title-row">
+                <div class="sig_vit-lab-icon">
+                  <img src="<?= base_url('img/' . $iconoPesquisa) ?>"
                     alt="<?= esc($nombrePesquisa) ?>">
-            </div>
+                </div>
 
-            <div>
-                <h1><?= esc($nombrePesquisa) ?></h1>
-                <p><?= $nombreCompleto ?></p>
+                <div>
+                  <h1><?= esc($nombrePesquisa) ?></h1>
+                  <p><?= $nombreCompleto ?></p>
 
-                <span class="sig_vit-lab-badge <?= $esEdicion ? 'sig_vit-edit' : 'sig_vit-new' ?>">
+                  <span class="sig_vit-lab-badge <?= $esEdicion ? 'sig_vit-edit' : 'sig_vit-new' ?>">
                     <?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?>
-                </span>
+                  </span>
+                </div>
+              </div>
+
             </div>
-        </div>
- 
-    </div>
           </div>
         </div>
 
@@ -836,16 +818,16 @@ $formatoNumeroVista = static function ($valor, $default = '') {
             </div>
 
             <div class="sig_vit-metric">
-              <div class="sig_vit-metric-icon"  ><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit_120_off.png") ?>" alt=""></div>
+              <div class="sig_vit-metric-icon"><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit_120_off.png") ?>" alt=""></div>
               <div>
-                
+
                 <div class="sig_vit-metric-value" id="summaryPressure">120/80</div>
                 <div class="sig_vit-metric-unit">mmHg</div>
               </div>
             </div>
 
             <div class="sig_vit-metric">
-              <div class="sig_vit-metric-icon" ><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit.png") ?>" alt=""></div>
+              <div class="sig_vit-metric-icon"><img style="width: 35px;" src="<?= base_url("img/icon/icon_vit.png") ?>" alt=""></div>
               <div>
                 <div class="sig_vit-metric-value" id="summaryHeart">72</div>
                 <div class="sig_vit-metric-unit">lpm</div>
@@ -853,7 +835,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
             </div>
 
             <div class="sig_vit-metric">
-              <div class="sig_vit-metric-icon" ><img style="width: 30px;" src="<?= base_url("img/icon/lungs_4981940.png") ?>" alt=""></div>
+              <div class="sig_vit-metric-icon"><img style="width: 30px;" src="<?= base_url("img/icon/lungs_4981940.png") ?>" alt=""></div>
               <div>
                 <div class="sig_vit-metric-value" id="summaryResp">16</div>
                 <div class="sig_vit-metric-unit">rpm</div>
@@ -861,7 +843,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
             </div>
 
             <div class="sig_vit-metric">
-              <div class="sig_vit-metric-icon"  ><img style="width: 30px;" src="<?= base_url("img/icon/thermometer.png") ?>" alt=""></div>
+              <div class="sig_vit-metric-icon"><img style="width: 30px;" src="<?= base_url("img/icon/thermometer.png") ?>" alt=""></div>
               <div>
                 <div class="sig_vit-metric-value" id="summaryTemp">37</div>
                 <div class="sig_vit-metric-unit">°C</div>
@@ -1401,7 +1383,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     }
 
     function cancelarSignos() {
-    Swal.fire({
+      Swal.fire({
         title: '¿Desea cancelar la evaluación?',
         text: 'Los cambios no guardados se perderán.',
         icon: 'warning',
@@ -1411,12 +1393,12 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         reverseButtons: true,
         confirmButtonColor: '#3695f5',
         cancelButtonColor: '#38393a'
-    }).then((result) => {
+      }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = URL_RETORNO;
+          window.location.href = URL_RETORNO;
         }
-    });
-}
+      });
+    }
 
     campos.forEach((campo) => {
       campo.addEventListener('input', () => {

@@ -5,7 +5,7 @@
      --ds-primary-light: #e6f1fb;
      /* para fondos de badges y hovers */
      --ds-dark: #101a61;
-     --ds-bg: #f5f8fc;
+     --ds-bg: #fff;
      --ds-light: #f8f9fa;
      --ds-border: #e0e6ed;
      --ds-muted: #595b5c;
@@ -24,7 +24,6 @@
      --footer-height: 46px;
      --shadow-sm: 0 6px 18px rgba(16, 26, 97, 0.06);
      --shadow-md: 0 12px 28px rgba(16, 26, 97, 0.08);
-
      --radius-lg: 18px;
    }
 

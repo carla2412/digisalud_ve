@@ -636,7 +636,66 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
       font-size: 14px;
       font-weight: 600;
     }
+/* Layout con sidebar */
+.visual-page {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);  /* reemplaza min-height: 100vh */
+    min-height: 100dvh;
+    overflow: clip;
+}
 
+/* Sidebar */
+.visual-sidebar {
+    background: var(--ds-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 0;
+    box-shadow: 8px 0 28px rgba(8, 20, 79, 0.14);
+}
+
+.visual-sidebar-item {
+    width: 42px;
+    height: 42px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: 0.18s ease;
+}
+
+.visual-sidebar-item:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.visual-sidebar-item.active {
+    background: #ffffff;
+    color: var(--ds-primary);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+}
+
+.visual-sidebar-item.done::after {
+    content: "";
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 13px;
+    height: 13px;
+    background: var(--ds-success);
+    border: 2px solid var(--ds-primary);
+    border-radius: 999px;
+}
+
+.visual-sidebar-icon {
+    width: 26px;
+    height: 26px;
+}
     @media (max-width: 900px) {
       .visual-beneficiario-card {
         flex-direction: column;
@@ -693,7 +752,37 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
 <?= $this->section('content') ?>
 
 <div class="visual-page">
+  <aside class="visual-sidebar" aria-label="Menú de pesquisas">
+    <?php foreach ($pesquisasActividad as $pid): ?>
+        <?php
+        $info = $infoPesquisas[$pid] ?? null;
+        if (!$info) continue;
 
+        $esActiva   = ((int) $pid === (int) $tipoPesquisaId);
+        $yaEvaluada = in_array($pid, $pesquisasEvaluadasStr);
+
+        $clases = 'visual-sidebar-item';
+        if ($esActiva)   $clases .= ' active';
+        if ($yaEvaluada) $clases .= ' done';
+
+        $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}")
+            . ($jornadaId ? "?jornada_id={$jornadaId}" : '')
+            . ($centroId  ? (($jornadaId ? '&' : '?') . "centro_id={$centroId}") : '');
+
+        $imgFile = $esActiva ? ($info['img'] ?? '') : ($info['gris'] ?? '');
+        ?>
+        <a class="<?= $clases ?>"
+           href="<?= esc($urlPesquisa) ?>"
+           aria-label="<?= esc($info['nombre']) ?>"
+           title="<?= esc($info['nombre']) ?>">
+            <img class="visual-sidebar-icon"
+                 src="<?= base_url("img/{$imgFile}") ?>"
+                 alt="<?= esc($info['nombre']) ?>">
+        </a>
+    <?php endforeach; ?>
+</aside>
+
+<main>
   <!-- ── Barra beneficiario ── -->
   <section class="visual-beneficiario-card">
     <div class="visual-beneficiario-info">
@@ -1000,6 +1089,7 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
       </div>
     </section>
   </form>
+    </main>
 </div>
 
 <?= $this->endSection() ?>
