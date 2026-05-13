@@ -120,8 +120,6 @@ function evalVacNormalizarDosis($valor)
 ?>
 
 <style>
- 
-
     * {
         box-sizing: border-box;
         font-family: "Roboto", sans-serif;
@@ -137,7 +135,7 @@ function evalVacNormalizarDosis($valor)
     }
 
     .eval_vac_sidebar {
-        background:  var(--ds-dark );
+        background: var(--ds-dark);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -147,41 +145,38 @@ function evalVacNormalizarDosis($valor)
     }
 
     .eval_vac_sidebar_item {
-        width: 42px;
-        height: 42px;
-        border-radius: 16px;
-        display: grid;
-        place-items: center;
-        text-decoration: none;
-        color: #fff;
-        background: rgba(255, 255, 255, 0.1);
-        position: relative;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        transition: 0.18s ease;
+       width: 42px;
+    height: 42px;
+    border-radius: 16px;
+    border: 0;
+    display: grid;
+    place-items: center;
+     
+    background: rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+    position: relative;
+    transition: .2s ease;
+        
+    }
+  
+
+ .eval_vac_sidebar_item img {
+         filter: brightness(0) invert(1); 
+             opacity: .65;
+        
     }
 
-    .eval_vac_sidebar_item:hover {
-        transform: translateY(-1px);
-        background: rgba(255, 255, 255, 0.18);
-    }
-
+    .eval_vac_sidebar_item:hover,
     .eval_vac_sidebar_item_active {
-        background: #ffffff;
-        color: var(--ds-primary);
-        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+     
+        background: #fff;
     }
+  .eval_vac_sidebar_item:hover img,
+  .eval_vac_sidebar_item.active img {
+    filter: none;
+    opacity: 1;
+  }
 
-    .eval_vac_sidebar_item_done::after {
-        content: "";
-        position: absolute;
-        right: -2px;
-        bottom: -2px;
-        width: 13px;
-        height: 13px;
-        background: var(--ds-success);
-        border: 2px solid var(--ds-primary);
-        border-radius: 999px;
-    }
 
     .eval_vac_sidebar_icon {
         width: 26px;
@@ -201,7 +196,7 @@ function evalVacNormalizarDosis($valor)
         justify-content: space-between;
         gap: 24px;
         align-items: center;
-        background: rgba(255, 255, 255, 0.9);
+        background: var(--ds-bg-light);
         border: 1px solid var(--ds-border);
         border-radius: 28px;
         padding: 22px;
@@ -221,23 +216,19 @@ function evalVacNormalizarDosis($valor)
         width: 58px;
         height: 58px;
         border-radius: 20px;
-        background: var(--ds-primary-light);
+        background: var(--ds-bg);
         color: var(--ds-primary);
         display: grid;
         place-items: center;
         flex: 0 0 auto;
     }
-
-    .eval_vac_header_icon img {
-        width: 32px;
-        height: 32px;
-    }
+ 
 
     .eval_vac_title {
         margin: 0;
         color: var(--ds-dark);
         font-size: 1.55rem;
-        font-weight: 900;
+        font-weight: 600;
     }
 
     .eval_vac_subtitle {
@@ -252,7 +243,7 @@ function evalVacNormalizarDosis($valor)
         padding: 4px 11px;
         border-radius: 999px;
         font-size: 0.74rem;
-        font-weight: 900;
+        font-weight: 600;
     }
 
     .eval_vac_badge_new {
@@ -284,7 +275,7 @@ function evalVacNormalizarDosis($valor)
         display: block;
         color: #334155;
         font-size: 0.78rem;
-        font-weight: 900;
+        font-weight: 600;
         margin-bottom: 6px;
     }
 
@@ -322,7 +313,7 @@ function evalVacNormalizarDosis($valor)
         gap: 12px;
         color: var(--ds-muted);
         font-size: 0.78rem;
-        font-weight: 900;
+        font-weight: 600;
         margin-bottom: 9px;
     }
 
@@ -361,7 +352,7 @@ function evalVacNormalizarDosis($valor)
         border-radius: 999px;
         padding: 8px 14px 8px 8px;
         font-size: 0.82rem;
-        font-weight: 900;
+        font-weight: 600;
         cursor: pointer;
         display: inline-flex;
         align-items: center;
@@ -413,7 +404,7 @@ function evalVacNormalizarDosis($valor)
 
     .eval_vac_card,
     .eval_vac_summary_card {
-        background: var(--ds-light);
+        background: var(--ds-bg-light);
         border: 1px solid var(--ds-border);
         border-radius: 24px;
         box-shadow: 0 18px 44px rgba(15, 23, 42, 0.07);
@@ -438,7 +429,7 @@ function evalVacNormalizarDosis($valor)
         margin: 0;
         color: var(--ds-dark);
         font-size: 1.05rem;
-        font-weight: 900;
+        font-weight: 600;
     }
 
     .eval_vac_card_description,
@@ -486,7 +477,7 @@ function evalVacNormalizarDosis($valor)
         border-radius: 999px;
         padding: 9px 13px;
         font-size: 0.78rem;
-        font-weight: 900;
+        font-weight: 600;
         cursor: pointer;
         transition: 0.15s ease;
     }
@@ -507,7 +498,7 @@ function evalVacNormalizarDosis($valor)
         border-radius: 14px;
         padding: 13px 16px;
         font-size: 0.78rem;
-        font-weight: 900;
+        font-weight: 600;
         margin-bottom: 10px;
     }
 
@@ -567,7 +558,7 @@ function evalVacNormalizarDosis($valor)
         border-radius: 999px;
         padding: 6px 10px;
         font-size: 0.72rem;
-        font-weight: 900;
+        font-weight: 600;
         text-align: center;
     }
 
@@ -621,7 +612,7 @@ function evalVacNormalizarDosis($valor)
     .eval_vac_summary_row strong {
         color: var(--ds-dark);
         font-size: 1.15rem;
-        font-weight: 900;
+        font-weight: 600;
     }
 
     .eval_vac_field_group {
@@ -647,7 +638,7 @@ function evalVacNormalizarDosis($valor)
         background: var(--ds-primary-light);
         color: var(--ds-primary);
         font-size: 0.86rem;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .eval_vac_actions {
@@ -671,7 +662,7 @@ function evalVacNormalizarDosis($valor)
         margin: 0 auto 0 0;
         color: var(--ds-muted);
         font-size: 0.8rem;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .eval_vac_btn {
@@ -680,7 +671,7 @@ function evalVacNormalizarDosis($valor)
         padding: 0 18px;
         border: 1px solid var(--ds-border);
         font-size: 0.86rem;
-        font-weight: 900;
+        font-weight: 600;
         cursor: pointer;
         transition: 0.18s ease;
     }
@@ -719,7 +710,7 @@ function evalVacNormalizarDosis($valor)
         border-radius: 12px;
         padding: 12px 14px;
         font-size: 0.86rem;
-        font-weight: 800;
+        font-weight: 600;
         transform: translateY(12px);
         opacity: 0;
         pointer-events: none;
@@ -886,7 +877,7 @@ function evalVacNormalizarDosis($valor)
                     <img src="<?= base_url('img/vacunacion2.svg') ?>" alt="Vacunación" style="width:32px;height:32px;">
                 </div>
                 <div>
-                    <h1 class="eval_vac_title">Evaluación de Vacunación</h1>
+                    <h1 class="eval_vac_title">Vacunación</h1>
                     <p class="eval_vac_subtitle">
                         Beneficiario: <?= esc($beneficiario['nombres'] . ' ' . $beneficiario['apellidos']) ?>
                         <?php if ($jornadaId): ?>
@@ -1284,9 +1275,6 @@ function evalVacNormalizarDosis($valor)
                             placeholder="Observaciones generales..."><?= esc($observaciones) ?></textarea>
                     </div>
 
-                    <p class="eval_vac_panel_note">
-                        Puedes navegar entre secciones con los botones Anterior / Siguiente.
-                    </p>
                 </section>
             </section>
 

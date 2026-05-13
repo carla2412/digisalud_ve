@@ -6,7 +6,8 @@
      /* para fondos de badges y hovers */
      --ds-dark: #101a61;
      --ds-bg: #fff;
-     --ds-light: #f8f9fa;
+     --ds-light: #e6f2fa;
+     --ds-bg-light: #f1f7fb;
      --ds-border: #e0e6ed;
      --ds-muted: #595b5c;
      --line: #e0e6ed;
@@ -34,7 +35,7 @@
    body {
      height: 100%;
      margin: 0;
-     background-color: var(--ds-light);
+     background-color: var(--ds-bg);
      display: flex;
      flex-direction: column;
      font-family: "Roboto", sans-serif;
@@ -44,7 +45,7 @@
      font-variation-settings:
        "wdth" 100;
      max-width: 100%;
-     overflow-x: hidden !important;
+     overflow-x: clip;
    }
 
    .card {

@@ -44,15 +44,13 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 ?>
 
 <style>
- 
-
   * {
     box-sizing: border-box;
   }
 
   body {
     margin: 0;
-   
+
     background: var(--ds-bg);
     color: var(--ds-text);
   }
@@ -67,40 +65,40 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     padding: 14px 0;
   }
 
-  .sig_vit-sidebar__logo,
-  .sig_vit-sidebar__item {
+  .sig_vit-sidebar_logo,
+  .sig_vit-sidebar_item {
     width: 42px;
     height: 42px;
     border-radius: 16px;
     border: 0;
     display: grid;
     place-items: center;
-    color: #fff;
-    background: rgba(255, 255, 255, .1);
+     
+    background: rgba(255, 255, 255, 0.1);
     text-decoration: none;
     position: relative;
     transition: .2s ease;
   }
 
-  .sig_vit-sidebar__item img {
+  .sig_vit-sidebar_item img {
     width: 24px;
     height: 24px;
     filter: brightness(0) invert(1);
     opacity: .65;
   }
 
-  .sig_vit-sidebar__item:hover,
-  .sig_vit-sidebar__item.active {
+  .sig_vit-sidebar_item:hover,
+  .sig_vit-sidebar_item.active {
     background: #fff;
   }
 
-  .sig_vit-sidebar__item:hover img,
-  .sig_vit-sidebar__item.active img {
+  .sig_vit-sidebar_item:hover img,
+  .sig_vit-sidebar_item.active img {
     filter: none;
     opacity: 1;
   }
 
-  .sig_vit-sidebar__item.sig_vit-evaluado::after {
+  .sig_vit-sidebar_item.sig_vit-evaluado::after {
     content: '';
     position: absolute;
     right: -2px;
@@ -112,7 +110,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     border: 2px solid var(--ds-primary);
   }
 
-  .sig_vit-sidebar__item[title]::before {
+  .sig_vit-sidebar_item[title]::before {
     content: attr(title);
     position: absolute;
     left: 52px;
@@ -129,7 +127,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     z-index: 30;
   }
 
-  .sig_vit-sidebar__item:hover[title]::before {
+  .sig_vit-sidebar_item:hover[title]::before {
     opacity: 1;
   }
 
@@ -223,7 +221,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
   .sig_vit-lab-header h1 {
     margin: 0;
-    color: var(--ds-primary);
+    color: var(--ds-dark);
     font-size: 1.35rem;
     font-weight: 900;
   }
@@ -344,7 +342,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   .sig_vit-tip-card,
   .sig_vit-summary-card,
   .sig_vit-form-card {
-    background: var(--card);
+    background: var(--ds-bg-light);
     border: 1px solid #e6edf6;
     border-radius: 12px;
     box-shadow: var(--ds-secondary-light);
@@ -487,7 +485,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   }
 
   .sig_vit-card-icon.sig_vit-purple {
-    background: #ffe9fa;
+    background: #fff;
 
   }
 
@@ -496,13 +494,13 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   }
 
   .sig_vit-card-icon.sig_vit-green {
-    background: #e8f8ed;
-    color: #12a150;
+    background: #fff;
+
   }
 
   .sig_vit-card-icon.sig_vit-blue {
-    background: #e9f4ff;
-    color: #1f7ae0;
+    background: #fff;
+
   }
 
   .sig_vit-card-title h3 {
@@ -543,7 +541,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     width: 100%;
     border: 0;
     outline: 0;
-    background: transparent;
+
     font: inherit;
     color: #172033;
   }
@@ -625,25 +623,37 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     transition: .2s ease;
   }
 
-  .btn.sig_vit-secondary {
+  .sig_vit-secondary {
     background: #fff;
     color: #344054;
     border: 1px solid #d8e0ed;
   }
 
-  .btn.sig_vit-soft {
+  .sig_vit-soft {
     background: #e9edff;
     color: var(--ds-primary);
   }
 
-  .btn.sig_vit-primary {
+  .sig_vit-primary {
     background: var(--ds-primary);
     color: #fff;
-    min-width: 210px;
+    border-color: var(--ds-primary);
   }
 
-  .btn:hover {
-    filter: brightness(0.97);
+  .sig_vit_btn {
+    min-height: 44px;
+    border-radius: 12px;
+    padding: 0 18px;
+    border: 1px solid var(--ds-border);
+    font-size: 0.86rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.18s ease;
+  }
+
+  .sig_vit-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
   }
 
   .sig_vit-input-wrap.is-invalid,
@@ -660,7 +670,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   }
 
   .sig_vit-field-error {
-    color: #b42318;
+    color: var(--ds-danger);
     margin-top: 7px;
     font-size: 12px;
     display: none;
@@ -717,8 +727,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
       flex-direction: column;
     }
 
-    .btn,
-    .btn.sig_vit-primary {
+    .sig_vit-primary {
       width: 100%;
     }
   }
@@ -729,6 +738,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     grid-template-columns: 72px minmax(0, 1fr);
     min-height: 100dvh;
     overflow: clip;
+
   }
 
   @media (max-width: 768px) {
@@ -756,7 +766,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
       $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
       $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
-      $clases      = 'sig_vit-sidebar__item';
+      $clases      = 'sig_vit-sidebar_item';
       if ($esActiva)   $clases .= ' active';
       if ($yaEvaluada) $clases .= ' sig_vit-evaluado';
 
@@ -879,7 +889,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
             <div class="sig_vit-field">
               <label for="evaluationDate">Fecha evaluación <span class="sig_vit-required">*</span></label>
               <div class="sig_vit-input-wrap">
-                <input id="evaluationDate" name="fecha_evaluacion" data-codigo="fecha_evaluacion" value="<?= esc($fechaEvaluacionVista) ?>" required />
+                <input type="date" id="evaluationDate" name="fecha_evaluacion" data-codigo="fecha_evaluacion" value="<?= esc($fechaEvaluacionVista) ?>" required />
                 <span class="sig_vit-calendar">🗓️</span>
               </div>
               <div class="sig_vit-field-error">La fecha de evaluación es obligatoria.</div>
@@ -982,9 +992,9 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         </div>
 
         <div class="sig_vit-actions">
-          <button type="button" id="btnCancelarSignos" class="btn sig_vit-secondary">Cancelar</button>
-          <button type="button" id="btnLimpiarSignos" class="btn sig_vit-soft">Limpiar</button>
-          <button type="button" id="btnGuardarSignos" class="btn sig_vit-primary">Guardar</button>
+          <button type="button" id="btnCancelarSignos" class=" sig_vit_btn  sig_vit-secondary">Cancelar</button>
+          <button type="button" id="btnLimpiarSignos" class=" sig_vit_btn sig_vit-soft">Limpiar</button>
+          <button type="button" id="btnGuardarSignos" class="  sig_vit_btn sig_vit-primary">Guardar Evalución</button>
         </div>
       </form>
     </section>

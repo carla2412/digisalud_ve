@@ -118,44 +118,72 @@ $jsSections[] = $observacionesSection;
 ?>
 
 <style>
- 
-
-    .labo-page {
-        display: grid;
-        grid-template-columns: 72 minmax(0, 1fr);
-        min-height: 100dvh;
-        overflow: clip;
-    }
-
-    .labo-sidebar {
-            background: var(--ds-dark);
+   .labo-page {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    width: 100%;
+    min-height: calc(100vh - var(--app-header-height, 0px));
+    position: relative;
+    z-index: 0;
+}
+.labo-sidebar {
+    background: var(--ds-dark);
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    padding: 14px 0;
-    }
-
-     
+    padding: 18px 0;
+    box-shadow: 8px 0 28px rgba(8, 20, 79, 0.14);
+}
+.labo-sidebar_item {
+    width: 42px;
+    height: 42px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transition: 0.18s ease;
+}
 
     .labo-sidebar_item img {
         width: 24px;
         height: 24px;
+        object-fit: contain;
         filter: brightness(0) invert(1);
         opacity: .65;
     }
 
-    .labo-sidebar_item:hover,
-    .labo-sidebar_item.active {
-        background: #fff;
-    }
+    .labo-sidebar_item:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.18);
+}
+.labo-sidebar_item.active {
+    background: #ffffff;
+    color: var(--ds-primary);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+}
 
-    .labo-sidebar__item:hover img,
+    .labo-sidebar_item:hover img,
     .labo-sidebar_item.active img {
         filter: none;
         opacity: 1;
     }
 
+.labo-sidebar_item.done::after {
+    content: "";
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 13px;
+    height: 13px;
+    background: var(--ds-success);
+    border: 2px solid var(--ds-primary);
+    border-radius: 999px;
+}
     .labo-sidebar_item.labo-evaluado::after {
         content: '';
         position: absolute;
@@ -190,10 +218,11 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-main {
-        display: flex;
-        flex-direction: column;
         min-width: 0;
-        padding: 22px 26px 88px;
+    width: 100%;
+    max-width: 1720px;
+    margin: 0 auto;
+    padding: 24px 28px 96px;
     }
 
     .labo-header {
@@ -202,11 +231,12 @@ $jsSections[] = $observacionesSection;
         justify-content: space-between;
         gap: 16px;
         margin-bottom: 16px;
-        padding-bottom: calc( 22px + 12px);
+        padding-bottom: calc(22px + 12px);
     }
+
     .labo-header h1 {
         margin: 0;
-        color: var(--ds-primary);
+        color: var(--ds-dark);
         font-size: 1.35rem;
         font-weight: 900;
     }
@@ -216,6 +246,7 @@ $jsSections[] = $observacionesSection;
         color: var(--ds-muted);
         font-size: .9rem;
     }
+
     .labo-title-row {
         display: flex;
         align-items: center;
@@ -379,7 +410,7 @@ $jsSections[] = $observacionesSection;
     .labo-summary-card h2,
     .labo-summary-card h3 {
         margin: 0;
-        color: var(--ds-primary);
+        color: var(--ds-dark);
         font-size: 1rem;
         font-weight: 900;
     }
@@ -421,7 +452,7 @@ $jsSections[] = $observacionesSection;
 
     .labo-field label {
         display: block;
-        color: #334155;
+        color: var(--ds-dark);
         font-size: .78rem;
         font-weight: 800;
         margin-bottom: 6px;
@@ -715,7 +746,7 @@ $jsSections[] = $observacionesSection;
         background: linear-gradient(180deg, #102073 0%, #08144f 100%);
         box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
     }
- 
+
 
     .labo-sidebar_item:hover,
     .labo-sidebar_item.active {
@@ -841,11 +872,7 @@ $jsSections[] = $observacionesSection;
         box-shadow: 0 12px 28px rgba(16, 26, 97, .08);
         transform: translateY(-1px);
     }
-
-    .labo-field label {
-        color: var(--ds-primary);
-    }
-
+ 
     .labo-field small {
         background: #f1f5fb;
         border-radius: 999px;
@@ -929,36 +956,41 @@ $jsSections[] = $observacionesSection;
             margin: 0 0 4px;
         }
     }
-
 </style>
 
 <div class="labo-page" data-page="evaluacion">
-    <aside class="labo-sidebar">
-        
-
+      <aside class="labo-sidebar" aria-label="Menú de pesquisas">
         <?php foreach ($pesquisasActividad as $pid): ?>
             <?php
             $info = $infoPesquisas[$pid] ?? null;
-            if (! $info) continue;
+            if (!$info) continue;
 
-            $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
-            $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
-            $clases      = 'labo-sidebar_item';
+            $esActiva   = ((int) $pid === (int) $tipoPesquisaId);
+            $yaEvaluada = in_array($pid, $pesquisasEvaluadas);
+
+            $clases = 'labo-sidebar_item';
             if ($esActiva)   $clases .= ' active';
-            if ($yaEvaluada) $clases .= ' labo-evaluado';
+            if ($yaEvaluada) $clases .= ' done';
 
             $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}")
-                . ($jornadaId ? "?jornada_id={$jornadaId}" : "?centro_id={$centroId}");
+                . ($jornadaId ? "?jornada_id={$jornadaId}" : '')
+                . ($centroId  ? (($jornadaId ? '&' : '?') . "centro_id={$centroId}") : '');
+
+            $imgFile = $esActiva
+                ? ($info['img'] ?? 'laboratorio.svg')
+                : ($info['gris'] ?? 'laboratorio-gris.svg');
             ?>
-            <a href="<?= $urlPesquisa ?>"
-                class="<?= $clases ?>"
-                title="<?= esc($info['nombre']) ?>"
-                aria-label="<?= esc($info['nombre']) ?>">
-                <img src="<?= base_url('img/' . ($esActiva ? $info['img'] : $info['gris'])) ?>"
-                    alt="<?= esc($info['nombre']) ?>">
+
+            <a class="<?= esc($clases) ?>"
+               href="<?= esc($urlPesquisa) ?>"
+               title="<?= esc($info['nombre']) ?>"
+               aria-label="<?= esc($info['nombre']) ?>">
+                <img src="<?= base_url("img/{$imgFile}") ?>"
+                     alt="<?= esc($info['nombre']) ?>">
             </a>
         <?php endforeach; ?>
     </aside>
+
 
     <main class="labo-main">
         <div class="labo-header">
@@ -979,7 +1011,7 @@ $jsSections[] = $observacionesSection;
             <div class="labo-progress">
                 <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
                     <span id="progressText">Progreso: 0 de <?= count($jsSections) ?> secciones completadas</span>
-                   
+
                 </div>
                 <div class="labo-progress-bar">
                     <div id="progressFill" class="labo-progress-bar__fill"></div>
@@ -1004,23 +1036,22 @@ $jsSections[] = $observacionesSection;
                     <input type="hidden" name="jornada_id" value="<?= (int) $jornadaId ?>">
                     <input type="hidden" name="centro_id" value="<?= (int) $centroId ?>">
                     <input type="hidden" name="evaluacion_id" value="<?= esc($evalId) ?>">
-<?php
-$fechaEvaluacionRaw = $evaluacionExistente['fecha_evaluacion'] ?? date('Y-m-d');
-$fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
-?>
+                    <?php
+                    $fechaEvaluacionRaw = $evaluacionExistente['fecha_evaluacion'] ?? date('Y-m-d');
+                    $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
+                    ?>
 
-<div class="labo-field labo-field--full" style="margin-bottom: 18px;">
-    <label for="eval_fecha_hidden">
-        Fecha evaluación *
-    </label>
-    <input
-        type="date"
-        name="fecha_evaluacion"
-        id="eval_fecha_hidden"
-        value="<?= esc($fechaEvaluacionInput) ?>"
-        required
-    >
-</div><br>
+                    <div class="labo-field labo-field--full" style="margin-bottom: 18px;">
+                        <label for="eval_fecha_hidden">
+                            Fecha evaluación *
+                        </label>
+                        <input
+                            type="date"
+                            name="fecha_evaluacion"
+                            id="eval_fecha_hidden"
+                            value="<?= esc($fechaEvaluacionInput) ?>"
+                            required>
+                    </div><br>
 
                     <?php foreach ($itemsFormulario as $sectionIndex => $items): ?>
                         <?php $nombreSeccion = $nombresSecciones[$sectionIndex] ?? ucfirst(str_replace('_', ' ', $sectionIndex)); ?>
@@ -1298,13 +1329,13 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
                     <h3>Observaciones</h3>
                     <p id="summaryObservaciones">Sin observaciones registradas.</p>
                 </div>
-                 <?php if ((int) $tipoPesquisaId === 2): ?>
-      <?= view('partials/lab_badges', [
-    'beneficiario' => $beneficiario,
-    'jornadaId'    => $jornadaId,
-    'centroId'     => $centroId,
-]) ?>
-    <?php endif; ?>                                   
+                <?php if ((int) $tipoPesquisaId === 2): ?>
+                    <?= view('partials/lab_badges', [
+                        'beneficiario' => $beneficiario,
+                        'jornadaId'    => $jornadaId,
+                        'centroId'     => $centroId,
+                    ]) ?>
+                <?php endif; ?>
                 <div class="labo-eval-error-msg" id="evalErrorMsg">
                     <i class="bi bi-exclamation-triangle me-1"></i>
                     <span id="evalErrorText"></span>
@@ -1344,7 +1375,7 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
 
     const progressText = document.getElementById('progressText');
     const progressFill = document.getElementById('progressFill');
-   
+
     const summarySecciones = document.getElementById('summarySecciones');
     const summaryAlertas = document.getElementById('summaryAlertas');
     const summaryRemision = document.getElementById('summaryRemision');
@@ -1359,19 +1390,20 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
     const btnGuardar = document.getElementById('btnGuardarEval');
 
     const btnCancelar = document.getElementById('btnCancelar');
-     const fechaEvaluacionInput = document.getElementById('eval_fecha_hidden');
+    const fechaEvaluacionInput = document.getElementById('eval_fecha_hidden');
     const summaryFecha = document.getElementById('summaryFecha');
     if (fechaEvaluacionInput && summaryFecha) {
-  fechaEvaluacionInput.addEventListener('change', () => {
-    if (!fechaEvaluacionInput.value) {
-      summaryFecha.textContent = 'Pendiente';
-      return;
+        fechaEvaluacionInput.addEventListener('change', () => {
+            if (!fechaEvaluacionInput.value) {
+                summaryFecha.textContent = 'Pendiente';
+                return;
+            }
+
+            const [y, m, d] = fechaEvaluacionInput.value.split('-');
+            summaryFecha.textContent = `${d}/${m}/${y}`;
+        });
     }
 
-    const [y, m, d] = fechaEvaluacionInput.value.split('-');
-    summaryFecha.textContent = `${d}/${m}/${y}`;
-  });
-}
     function getFieldElement(fieldName) {
         if (fieldName === 'observaciones') {
             return document.getElementById('eval_observaciones');
@@ -1605,21 +1637,21 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
     }
 
     function cancelForm() {
-            Swal.fire({
-        title: '¿Desea cancelar la evaluación?',
-        text: 'Los cambios no guardados se perderán.',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, cancelar',
-        cancelButtonText: 'No, continuar',
-        reverseButtons: true,
-        confirmButtonColor: '#3695f5',
-        cancelButtonColor: '#999b9c'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = URL_RETORNO;
-        }
-    });
+        Swal.fire({
+            title: '¿Desea cancelar la evaluación?',
+            text: 'Los cambios no guardados se perderán.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cancelar',
+            cancelButtonText: 'No, continuar',
+            reverseButtons: true,
+            confirmButtonColor: '#3695f5',
+            cancelButtonColor: '#999b9c'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = URL_RETORNO;
+            }
+        });
     }
 
     function activarDependencias() {
@@ -1770,10 +1802,9 @@ $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
     activarDependencias();
     setSection(LAB_SECTIONS[0]?.id || 'observaciones');
     updateSummary();
-  
 </script>
 <?php if ((int) $tipoPesquisaId === 2): ?>
-<script src="<?= base_url('js/lab-interpretacion.js') ?>"></script>
+    <script src="<?= base_url('js/lab-interpretacion.js') ?>"></script>
 <?php endif; ?>
 
 <?= $this->endSection() ?>
