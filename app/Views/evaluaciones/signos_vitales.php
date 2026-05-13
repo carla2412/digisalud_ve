@@ -75,13 +75,14 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   body {
     margin: 0;
     font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: var(--bg);
+    background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
     color: var(--text);
   }
  
  
     .sig_vit-sidebar {
-        background: var(--primary);
+        background: linear-gradient(180deg, #102073 0%, #08144f 100%);
+        box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -93,8 +94,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     .sig_vit-sidebar__item {
         width: 42px;
         height: 42px;
-        border-radius: 16px;
-        border: 0;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, .10);
         display: grid;
         place-items: center;
         color: #fff;
@@ -114,6 +115,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     .sig_vit-sidebar__item:hover,
     .sig_vit-sidebar__item.active {
         background: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, .18);
     }
 
     .sig_vit-sidebar__item:hover img,
@@ -131,7 +134,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         height: 12px;
         border-radius: 50%;
         background: var(--success);
-        border: 2px solid var(--primary);
+        border: 2px solid #08144f;
     }
 
     .sig_vit-sidebar__item[title]::before {
@@ -748,19 +751,23 @@ $formatoNumeroVista = static function ($valor, $default = '') {
         grid-template-columns: var(--lab-sidebar-w) minmax(0, 1fr);
         min-height: 100dvh;
         overflow: clip;
-    }
-    @media (max-width: 768px) {
-    .sig_vit-lab-page {
-        grid-template-columns: 1fr;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-top: -1.5rem;
     }
 
-    .sig_vit-sidebar {
-        flex-direction: row;
-        overflow-x: auto;
-        justify-content: flex-start;
-        padding: 10px 12px;
+    @media (max-width: 760px) {
+        .sig_vit-lab-page {
+            grid-template-columns: 1fr;
+        }
+
+        .sig_vit-sidebar {
+            flex-direction: row;
+            overflow-x: auto;
+            justify-content: flex-start;
+            padding: 10px 12px;
+        }
     }
-}
 </style>
 
 <div class="sig_vit-lab-page" data-page="evaluacion">

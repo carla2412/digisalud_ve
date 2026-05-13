@@ -127,23 +127,29 @@ function evalVacNormalizarDosis($valor)
         font-family: "Roboto", sans-serif;
     }
 
+    body {
+        background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+    }
+
     .eval_vac_page {
         display: grid;
         grid-template-columns: 78px minmax(0, 1fr);
         width: 100%;
-        min-height: calc(100vh - var(--app-header-height, 0px));
-        position: relative;
-        z-index: 0;
+        min-height: 100dvh;
+        overflow: clip;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-top: -1.5rem;
     }
 
     .eval_vac_sidebar {
-        background:  var(--ds-dark );
+        background: linear-gradient(180deg, #102073 0%, #08144f 100%);
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 12px;
         padding: 18px 0;
-        box-shadow: 8px 0 28px rgba(8, 20, 79, 0.14);
+        box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
     }
 
     .eval_vac_sidebar_item {

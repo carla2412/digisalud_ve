@@ -51,9 +51,104 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
 <style>
     
 
+    body {
+      background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+    }
+
     .visual-page {
-      min-height: 100vh;
-      background: var(--visual-gris-fondo);
+        display: grid;
+        grid-template-columns: 72px minmax(0, 1fr);
+        min-height: 100dvh;
+        overflow: clip;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-top: -1.5rem;
+    }
+
+    .visual-sidebar {
+        background: linear-gradient(180deg, #102073 0%, #08144f 100%);
+        box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 0;
+    }
+
+    .visual-sidebar__item {
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, .10);
+        display: grid;
+        place-items: center;
+        color: #fff;
+        background: rgba(255, 255, 255, .1);
+        text-decoration: none;
+        position: relative;
+        transition: .2s ease;
+    }
+
+    .visual-sidebar__item img {
+        width: 24px;
+        height: 24px;
+        filter: brightness(0) invert(1);
+        opacity: .65;
+    }
+
+    .visual-sidebar__item:hover,
+    .visual-sidebar__item.active {
+        background: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, .18);
+    }
+
+    .visual-sidebar__item:hover img,
+    .visual-sidebar__item.active img {
+        filter: none;
+        opacity: 1;
+    }
+
+    .visual-sidebar__item.visual-evaluado::after {
+        content: '';
+        position: absolute;
+        right: -2px;
+        bottom: -2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--ds-success);
+        border: 2px solid #08144f;
+    }
+
+    .visual-sidebar__item[title]::before {
+        content: attr(title);
+        position: absolute;
+        left: 52px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #111827;
+        color: #fff;
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: .75rem;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 30;
+    }
+
+    .visual-sidebar__item:hover[title]::before {
+        opacity: 1;
+    }
+
+    .visual-main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        max-width: 1720px;
+        width: 100%;
+        margin: 0 auto;
     }
 
     .visual-topbar {
@@ -667,6 +762,17 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
     }
 
     @media (max-width: 760px) {
+      .visual-page {
+        grid-template-columns: 1fr;
+      }
+
+      .visual-sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 10px 12px;
+      }
+
       .visual-topbar {
         height: auto;
         padding: 22px;
@@ -688,11 +794,40 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
       }
     }
 </style>
-<?= $this->endSection() ?>
-
-<?= $this->section('content') ?>
 
 <div class="visual-page">
+
+  <!-- ── Sidebar de navegación (pesquisas) ── -->
+  <aside class="visual-sidebar" aria-label="Menú de pesquisas">
+    <?php foreach ($pesquisasActividad as $pid): ?>
+      <?php
+        $info = $infoPesquisas[$pid] ?? null;
+        if (!$info) continue;
+
+        $esActiva   = ((int) $pid === (int) $tipoPesquisaId);
+        $yaEvaluada = in_array((string) $pid, $pesquisasEvaluadasStr);
+
+        $clases = 'visual-sidebar__item';
+        if ($esActiva)   $clases .= ' active';
+        if ($yaEvaluada) $clases .= ' visual-evaluado';
+
+        $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}")
+            . ($jornadaId ? "?jornada_id={$jornadaId}" : '')
+            . ($centroId  ? (($jornadaId ? '&' : '?') . "centro_id={$centroId}") : '');
+
+        $imgFile = $esActiva ? ($info['img'] ?? '') : ($info['gris'] ?? '');
+      ?>
+      <a class="<?= $clases ?>"
+         href="<?= esc($urlPesquisa) ?>"
+         aria-label="<?= esc($info['nombre']) ?>"
+         title="<?= esc($info['nombre']) ?>">
+        <img src="<?= base_url("img/{$imgFile}") ?>"
+             alt="<?= esc($info['nombre']) ?>">
+      </a>
+    <?php endforeach; ?>
+  </aside>
+
+  <main class="visual-main">
 
   <!-- ── Barra beneficiario ── -->
   <section class="visual-beneficiario-card">
@@ -1000,6 +1135,8 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
       </div>
     </section>
   </form>
+
+  </main><!-- .visual-main -->
 </div>
 
 <?= $this->endSection() ?>
