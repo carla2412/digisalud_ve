@@ -787,18 +787,7 @@ background: #fff;
     opacity: 1;
     background: #fff;
 }
-
-.visual-sidebar-item.done::after {
-    content: '';
-    position: absolute;
-    right: -2px;
-    bottom: -2px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--ds-success);
-    border: 2px solid var(--ds-primary);
-}
+ 
 
 @media (max-width: 1180px) {
     .visual-page {

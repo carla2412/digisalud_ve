@@ -172,29 +172,7 @@ $jsSections[] = $observacionesSection;
         filter: none;
         opacity: 1;
     }
-
-.labo-sidebar_item.done::after {
-    content: "";
-    position: absolute;
-    right: -2px;
-    bottom: -2px;
-    width: 13px;
-    height: 13px;
-    background: var(--ds-success);
-    border: 2px solid var(--ds-primary);
-    border-radius: 999px;
-}
-    .labo-sidebar_item.labo-evaluado::after {
-        content: '';
-        position: absolute;
-        right: -2px;
-        bottom: -2px;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: var(--ds-success);
-        border: 2px solid var(--ds-primary);
-    }
+ 
 
     .labo-sidebar_item[title]::before {
         content: attr(title);
@@ -957,8 +935,7 @@ $jsSections[] = $observacionesSection;
         }
     }
     
-
-    /* Aside homologado con vacunación */
+ /* Aside homologado con vacunación */
     .labo-sidebar {
         background: var(--ds-dark);
         display: flex;
@@ -1007,20 +984,13 @@ $jsSections[] = $observacionesSection;
         opacity: 1;
     }
 
-    .labo-sidebar_item.done::after,
-    .labo-sidebar_item.labo-evaluado::after {
-        content: '';
-        position: absolute;
-        right: -2px;
-        bottom: -2px;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: var(--ds-success);
-        border: 2px solid var(--ds-primary);
-    }
+     
 
     @media (max-width: 1180px) {
+        .labo-page {
+            grid-template-columns: 1fr;
+        }
+
         .labo-sidebar {
             flex-direction: row;
             overflow-x: auto;

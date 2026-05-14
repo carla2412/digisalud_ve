@@ -101,17 +101,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     opacity: 1;
   }
 
-  .sig_vit-sidebar_item.sig_vit-evaluado::after {
-    content: '';
-    position: absolute;
-    right: -2px;
-    bottom: -2px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--ds-success);
-    border: 2px solid var(--ds-primary);
-  }
+ 
 
   .sig_vit-sidebar_item[title]::before {
     content: attr(title);
@@ -806,17 +796,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     opacity: 1;
   }
 
-  .sig_vit-sidebar_item.sig_vit-evaluado::after {
-    content: '';
-    position: absolute;
-    right: -2px;
-    bottom: -2px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--ds-success);
-    border: 2px solid var(--ds-primary);
-  }
+ 
 
   @media (max-width: 1180px) {
     .sig_vit-sidebar {
