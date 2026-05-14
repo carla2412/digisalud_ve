@@ -746,6 +746,79 @@ background: #fff;
         padding: 22px;
       }
     }
+
+    /* Aside homologado con vacunación */
+.visual-sidebar {
+    background: var(--ds-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 0;
+    box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
+}
+
+.visual-sidebar-item {
+    width: 42px;
+    height: 42px;
+    border-radius: 16px;
+    border: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+    position: relative;
+    transition: .2s ease;
+    filter: brightness(0) invert(1);
+}
+
+.visual-sidebar-icon {
+    width: 26px;
+    height: 26px;
+}
+
+.visual-sidebar-item.active {
+    filter: brightness(1) invert(0);
+    background: #fff;
+}
+
+.visual-sidebar-item:hover {
+    filter: none;
+    opacity: 1;
+    background: #fff;
+}
+
+.visual-sidebar-item.done::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--ds-success);
+    border: 2px solid var(--ds-primary);
+}
+
+@media (max-width: 1180px) {
+    .visual-page {
+        grid-template-columns: 1fr;
+    }
+
+    .visual-sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        box-shadow: 0 8px 24px rgba(8, 20, 79, 0.14);
+    }
+
+    .visual-sidebar-item {
+        flex: 0 0 48px;
+    }
+}
 </style>
 <?= $this->endSection() ?>
 

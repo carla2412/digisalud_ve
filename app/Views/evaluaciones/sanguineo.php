@@ -956,6 +956,85 @@ $jsSections[] = $observacionesSection;
             margin: 0 0 4px;
         }
     }
+    
+
+    /* Aside homologado con vacunación */
+    .labo-sidebar {
+        background: var(--ds-dark);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 18px 0;
+        box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
+    }
+
+    .labo-sidebar_item {
+        width: 42px;
+        height: 42px;
+        border-radius: 16px;
+        border: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        text-decoration: none;
+        position: relative;
+        transition: .2s ease;
+        filter: brightness(0) invert(1);
+    }
+
+    .labo-sidebar_item img {
+        width: 26px;
+        height: 26px;
+        opacity: 1;
+        filter: none;
+    }
+
+    .labo-sidebar_item.active {
+        filter: brightness(1) invert(0);
+        background: #fff;
+    }
+
+    .labo-sidebar_item:hover {
+        filter: none;
+        opacity: 1;
+        background: #fff;
+    }
+
+    .labo-sidebar_item:hover img,
+    .labo-sidebar_item.active img {
+        filter: none;
+        opacity: 1;
+    }
+
+    .labo-sidebar_item.done::after,
+    .labo-sidebar_item.labo-evaluado::after {
+        content: '';
+        position: absolute;
+        right: -2px;
+        bottom: -2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--ds-success);
+        border: 2px solid var(--ds-primary);
+    }
+
+    @media (max-width: 1180px) {
+        .labo-sidebar {
+            flex-direction: row;
+            overflow-x: auto;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            box-shadow: 0 8px 24px rgba(8, 20, 79, 0.14);
+        }
+
+        .labo-sidebar_item {
+            flex: 0 0 48px;
+        }
+    }
 </style>
 
 <div class="labo-page" data-page="evaluacion">
