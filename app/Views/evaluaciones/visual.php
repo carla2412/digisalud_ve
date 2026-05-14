@@ -669,28 +669,28 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
     transition: 0.18s ease;
 }
 
+.visual-sidebar-item   {
+ filter: brightness(0) invert(1); 
+ 
+
+}
 .visual-sidebar-item:hover {
     transform: translateY(-1px);
     background: rgba(255, 255, 255, 0.18);
+    filter: none;
+opacity: 1;
+background: #fff;
+    
 }
 
 .visual-sidebar-item.active {
     background: #ffffff;
     color: var(--ds-primary);
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+     filter: brightness(1) invert(0); 
 }
 
-.visual-sidebar-item.done::after {
-    content: "";
-    position: absolute;
-    right: -2px;
-    bottom: -2px;
-    width: 13px;
-    height: 13px;
-    background: var(--ds-success);
-    border: 2px solid var(--ds-primary);
-    border-radius: 999px;
-}
+ 
 
 .visual-sidebar-icon {
     width: 26px;

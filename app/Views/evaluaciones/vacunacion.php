@@ -129,9 +129,12 @@ function evalVacNormalizarDosis($valor)
         display: grid;
         grid-template-columns: 72px minmax(0, 1fr);
         width: 100%;
-        min-height: calc(100vh - var(--app-header-height, 0px));
-        position: relative;
-        z-index: 0;
+            min-height: 100dvh;
+        overflow: clip;
+        margin-left: -12px;
+        margin-right: -12px;
+        margin-top: -1.5rem;
+        
     }
 
     .eval_vac_sidebar {
@@ -141,7 +144,7 @@ function evalVacNormalizarDosis($valor)
         align-items: center;
         gap: 8px;
         padding: 18px 0;
-        box-shadow: 8px 0 28px rgba(8, 20, 79, 0.14);
+        box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
     }
 
     .eval_vac_sidebar_item {
@@ -159,24 +162,23 @@ function evalVacNormalizarDosis($valor)
         
     }
   
+.eval_vac_sidebar_item   {
+ filter: brightness(0) invert(1); 
+ 
 
- .eval_vac_sidebar_item img {
-         filter: brightness(0) invert(1); 
-             opacity: .65;
-        
-    }
+}
 
-    .eval_vac_sidebar_item:hover,
-    .eval_vac_sidebar_item_active {
-     
-        background: #fff;
-    }
-  .eval_vac_sidebar_item:hover img,
-  .eval_vac_sidebar_item.active img {
-    filter: none;
-    opacity: 1;
-  }
-
+.eval_vac_sidebar_item_active {
+ filter: brightness(1) invert(0); 
+ 
+background: #fff;
+}
+ 
+.eval_vac_sidebar_item:hover    {
+filter: none;
+opacity: 1;
+background: #fff;
+}
 
     .eval_vac_sidebar_icon {
         width: 26px;

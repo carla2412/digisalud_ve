@@ -11,11 +11,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 ?>
 <style>
  
-
-    body {
-        background: var(--ds-bg);
-    }
-
+ 
     .jor_ben-page {
         width: min(1480px, calc(100% - 48px));
         margin: 0 auto;
@@ -172,7 +168,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
     .jor_ben-card {
         position: relative;
-        background: var(--ds-light);
+        background: var(--ds-bg-light);
         border: 1px solid var(--ds-border);
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-sm);

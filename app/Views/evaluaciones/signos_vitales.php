@@ -63,6 +63,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     align-items: center;
     gap: 8px;
     padding: 14px 0;
+      box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
   }
 
   .sig_vit-sidebar_logo,
@@ -90,6 +91,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   .sig_vit-sidebar_item:hover,
   .sig_vit-sidebar_item.active {
     background: #fff;
+    transform: translateY(-1px);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, .18);
   }
 
   .sig_vit-sidebar_item:hover img,
@@ -262,7 +265,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     color: var(--ds-primary);
   }
 
-  @media (max-width: 760px) {
+  @media (max-width: 1180px) {
     .sig_vit-lab-main {
       padding: 18px 14px 92px;
     }
@@ -741,7 +744,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1180px) {
     .sig_vit-lab-page {
       grid-template-columns: 1fr;
     }
