@@ -750,6 +750,24 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
     }
 
     @media (max-width: 1180px) {
+      .visual-page {
+        grid-template-columns: 1fr;
+      }
+
+      .visual-sidebar {
+        flex-direction: row;
+        overflow-x: auto;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        box-shadow: 0 8px 24px rgba(8, 20, 79, .14);
+      }
+
+      .visual-sidebar__item {
+        flex: 0 0 42px;
+      }
+
       .visual-grid {
         grid-template-columns: 1fr;
       }
@@ -762,17 +780,6 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
     }
 
     @media (max-width: 760px) {
-      .visual-page {
-        grid-template-columns: 1fr;
-      }
-
-      .visual-sidebar {
-        flex-direction: row;
-        overflow-x: auto;
-        justify-content: flex-start;
-        padding: 10px 12px;
-      }
-
       .visual-topbar {
         height: auto;
         padding: 22px;
