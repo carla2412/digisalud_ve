@@ -103,7 +103,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
     .jor_ben-divider {
         width: 1px;
         height: 36px;
-        background: #b9c3d0;
+        background: var(--ds-border);
     }
 
     .jor_ben-ds-btn-primary {
@@ -401,7 +401,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        border: 1.6px solid var(--ds-seccondary);
+        border: 1.6px solid var(--ds-border);
         background:var(--ds-light);
         color:var(--ds-seccondary);
         cursor: pointer;
@@ -451,7 +451,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
     .jor_ben-empty-state {
         background: #fff;
-        border: 1px dashed #cbd5e1;
+        border: 1px dashed var(--ds-border);
         border-radius: 18px;
         padding: 44px 24px;
         text-align: center;
@@ -710,7 +710,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         height: 76px;
         border-radius: 50%;
         background: #eef6ff;
-        border: 1px solid #c8defd;
+        border: 1px solid var(--ds-border);
         display: flex;
         align-items: center;
         justify-content: center;

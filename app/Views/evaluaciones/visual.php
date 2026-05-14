@@ -122,7 +122,7 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
     }
 
     .visual-card {
-      background:#fff;
+      background:var(--ds-bg-light);
       border: 1px solid var(--visual-gris-borde);
       border-radius: 16px;
       box-shadow: var(--visual-sombra);
@@ -165,7 +165,7 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
       border: 1px solid #cbd7ed;
       border-radius: 12px;
       outline: none;
-      background: #f8faff;
+    
       color: #21345c;
       font-size: 15px;
     }
@@ -640,8 +640,12 @@ $pesquisasEvaluadasStr = array_map('strval', $pesquisasEvaluadas);
 .visual-page {
     display: grid;
     grid-template-columns: 72px minmax(0, 1fr);  /* reemplaza min-height: 100vh */
+    width: 100%;
     min-height: 100dvh;
     overflow: clip;
+    margin-left: -12px;
+    margin-right: -12px;
+    margin-top: -1.5rem;
 }
 
 /* Sidebar */
@@ -746,8 +750,7 @@ background: #fff;
         padding: 22px;
       }
     }
-
-    /* Aside homologado con vacunación */
+ /* Aside homologado con vacunación */
 .visual-sidebar {
     background: var(--ds-dark);
     display: flex;
@@ -787,7 +790,7 @@ background: #fff;
     opacity: 1;
     background: #fff;
 }
- 
+
 
 @media (max-width: 1180px) {
     .visual-page {
@@ -808,6 +811,183 @@ background: #fff;
         flex: 0 0 48px;
     }
 }
+
+
+    .eval_vac_header {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: center;
+        background: var(--ds-bg-light);
+        border: 1px solid var(--ds-border);
+        border-radius: 28px;
+        padding: 22px;
+        margin-bottom: 18px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+        backdrop-filter: blur(10px);
+    }
+
+    .eval_vac_header_info {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        min-width: 0;
+    }
+
+    .eval_vac_header_icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 20px;
+        background: var(--ds-bg);
+        color: var(--ds-primary);
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+    }
+
+    .eval_vac_header_icon img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+    }
+
+    .eval_vac_title {
+        margin: 0;
+        color: var(--ds-dark);
+        font-size: 1.55rem;
+        font-weight: 600;
+    }
+
+    .eval_vac_subtitle {
+        margin: 4px 0 0;
+        color: var(--ds-muted);
+        font-size: 0.92rem;
+    }
+
+    .eval_vac_badge {
+        display: inline-flex;
+        margin-top: 8px;
+        padding: 4px 11px;
+        border-radius: 999px;
+        font-size: 0.74rem;
+        font-weight: 600;
+    }
+
+    .eval_vac_badge_new {
+        background: #dbeafe;
+        color: var(--eval_vac_info, #1b7ae2);
+    }
+
+    .eval_vac_badge_edit {
+        background: #fef3c7;
+        color: var(--ds-orange, #92400e);
+    }
+
+    .eval_vac_header_meta {
+        display: grid;
+        grid-template-columns: 220px 260px;
+        gap: 16px;
+        align-items: end;
+    }
+
+    .eval_vac_date_box,
+    .eval_vac_progress_box {
+        background: #f8fbff;
+        border: 1px solid var(--ds-border);
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .eval_vac_label {
+        display: block;
+        color: #334155;
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .eval_vac_input {
+        width: 100%;
+        border: 1.5px solid var(--ds-border);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--eval_vac_text, var(--ds-text));
+        font-size: 0.88rem;
+        padding: 10px 12px;
+        outline: none;
+        transition: 0.15s ease;
+    }
+
+    .eval_vac_input:focus {
+        border-color: var(--ds-primary);
+        box-shadow: 0 0 0 3px rgba(16, 26, 97, 0.08);
+    }
+
+    .eval_vac_progress_text {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--ds-muted);
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-bottom: 9px;
+    }
+
+    .eval_vac_progress_text strong {
+        color: var(--ds-primary);
+    }
+
+    .eval_vac_progress_bar {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #e5ecf7;
+    }
+
+    .eval_vac_progress_fill {
+        height: 100%;
+        width: 0;
+        border-radius: inherit;
+        background: var(--ds-primary);
+        transition: width 0.2s ease;
+    }
+
+    @media (max-width: 940px) {
+        .eval_vac_header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .eval_vac_header_meta {
+            width: 100%;
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .eval_vac_header {
+            border-radius: 20px;
+        }
+
+        .eval_vac_header_info {
+            align-items: flex-start;
+        }
+
+        .eval_vac_header_icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .eval_vac_title {
+            font-size: 1.2rem;
+        }
+    }
+
+
+    .visual-eval-header {
+      margin: 20px 20px 0;
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -844,33 +1024,50 @@ background: #fff;
     <?php endforeach; ?>
 </aside>
 
-<main>
+<main >
   <!-- ── Barra beneficiario ── -->
-  <section class="visual-beneficiario-card">
-    <div class="visual-beneficiario-info">
-      <div class="visual-beneficiario-icon">
+   <section class="eval_vac_header visual-eval-header">
+    <div class="eval_vac_header_info">
+      <div class="eval_vac_header_icon">
         <img src="<?= esc($iconoPesquisa) ?>" alt="<?= esc($nombrePesquisa) ?>">
       </div>
+  <div>
+        <h1 class="eval_vac_title"><?= esc($nombrePesquisa) ?></h1>
+        <p class="eval_vac_subtitle">
+          Beneficiario: <?= esc($nombreCompleto) ?>
+          <?php if ($jornadaId): ?>
+            · Jornada #<?= esc($jornadaId) ?>
+          <?php endif; ?>
+        </p>
 
-      <div class="visual-beneficiario-texto">
-        <h2><?= esc($nombrePesquisa) ?></h2>
-        <p><?= esc($nombreCompleto) ?></p>
-
-        <span class="visual-beneficiario-badge <?= $esEdicion ? 'visual-edit-badge' : '' ?>">
+        <span class="eval_vac_badge <?= $esEdicion ? 'eval_vac_badge_edit' : 'eval_vac_badge_new' ?>">
           <?= $esEdicion ? 'Editando evaluación' : 'Nueva evaluación' ?>
         </span>
       </div>
     </div>
 
-    <div class="visual-beneficiario-detalle">
-      <div>
-        <span>Edad</span>
-        <strong><?= esc($edadTexto) ?></strong>
+     <div class="eval_vac_header_meta">
+      <div class="eval_vac_date_box">
+        <label class="eval_vac_label" for="visual-fecha-evaluacion">Fecha de evaluación</label>
+        <input
+          type="date"
+          id="visual-fecha-evaluacion"
+          name="fecha_evaluacion"
+          form="visual-form"
+          class="eval_vac_input"
+          value="<?= esc($fechaEval) ?>"
+          required
+        />
       </div>
 
-      <div>
-        <span>Jornada</span>
-        <strong><?= esc($jornadaNombre) ?></strong>
+           <div class="eval_vac_progress_box">
+        <div class="eval_vac_progress_text">
+          <span>Progreso</span>
+          <strong id="visual_progress_text">0 / 4 campos</strong>
+        </div>
+        <div class="eval_vac_progress_bar">
+          <div id="visual_progress_fill" class="eval_vac_progress_fill"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -891,16 +1088,7 @@ background: #fff;
           <div class="visual-card-inner">
             <h2>Datos de evaluación</h2>
 
-            <div class="visual-block">
-              <label class="visual-label" for="visual-fecha-evaluacion">Fecha</label>
-              <input
-                type="date"
-                id="visual-fecha-evaluacion"
-                name="fecha_evaluacion"
-                class="visual-input visual-input-date"
-                value="<?= esc($fechaEvalVista) ?>"
-              />
-            </div>
+           
 
             <div class="visual-block">
               <span class="visual-label">Paciente usa lentes</span>
@@ -1181,18 +1369,22 @@ background: #fff;
   var elRemitir       = document.getElementById('visual-remitir-especialista');
   var elSeguimiento   = document.getElementById('visual-programar-seguimiento');
   var btnGuardar      = document.getElementById('visual-guardar');
-
+  var elProgressText  = document.getElementById('visual_progress_text');
+  var elProgressFill  = document.getElementById('visual_progress_fill');
   // ── Eventos ──
   elDistancia.addEventListener('change', calcularAgudeza);
   elOjoIzq.addEventListener('change', calcularAgudeza);
   elOjoDer.addEventListener('change', calcularAgudeza);
+    document.querySelectorAll('input[name="campos[usa_lentes]"], input[name="campos[remitir_especialista_visual]"]').forEach(function(input) {
+    input.addEventListener('change', actualizarProgresoVisual);
+  });
   elAgujeroSi.addEventListener('change', toggleAgujero);
   elAgujeroNo.addEventListener('change', toggleAgujero);
   btnGuardar.addEventListener('click', guardarEvaluacion);
 
   // ── Calcular al cargar si hay valores existentes ──
   calcularAgudeza();
-
+  actualizarProgresoVisual();
   // ═══ CÁLCULO AGUDEZA VISUAL SNELLEN ═══
   function calcularAgudeza() {
     var distanciaMap = { '6': 20, '3': 10 };
@@ -1201,7 +1393,7 @@ background: #fff;
 
     var ojoIzqVal = parseFloat(elOjoIzq.value);
     var ojoDerVal = parseFloat(elOjoDer.value);
-
+ actualizarProgresoVisual();
     if (!distanciaPies || !ojoIzqVal || !ojoDerVal) {
       actualizarResultado('Esperando valor', 'Complete los datos de agudeza visual', 'gray');
       actualizarResumen(false, 'Complete la distancia y línea reconocida.');
@@ -1306,7 +1498,21 @@ background: #fff;
     document.getElementById('visual-mejora-si').checked = false;
     document.getElementById('visual-mejora-no').checked = false;
   }
+  function actualizarProgresoVisual() {
+    var usaLentes = document.querySelector('input[name="campos[usa_lentes]"]:checked');
+    var seguimiento = document.querySelector('input[name="campos[remitir_especialista_visual]"]:checked');
+    var completos = [
+      usaLentes,
+      elDistancia && elDistancia.value,
+      elOjoIzq && elOjoIzq.value && elOjoDer && elOjoDer.value,
+      seguimiento
+    ].filter(Boolean).length;
+    var total = 4;
+    var porcentaje = Math.round((completos / total) * 100);
 
+    if (elProgressText) elProgressText.textContent = completos + ' / ' + total + ' campos';
+    if (elProgressFill) elProgressFill.style.width = porcentaje + '%';
+  }
   // ═══ VALIDACIÓN ═══
   function validarFormulario() {
     var usaLentes   = document.querySelector('input[name="campos[usa_lentes]"]:checked');

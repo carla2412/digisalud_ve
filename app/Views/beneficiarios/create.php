@@ -3,11 +3,7 @@
 <?= $this->section('css') ?>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 <style>
- 
-
-    body {
-        background: linear-gradient(180deg, #f7faff 0%, #f5f8fc 100%);
-    }
+  
 
     .beneficiario-page {
         max-width: 1240px;
@@ -33,7 +29,7 @@
 
     .breadcrumb-digi .active {
         color: var(--ds-dark);
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .beneficiario-shell {
@@ -59,7 +55,7 @@
         font-size: 28px;
         line-height: 1.2;
         color: var(--ds-dark);
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .title-area p {

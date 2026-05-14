@@ -14,17 +14,18 @@ $idRol = (int) session()->get('id_rol');
   }
 
   .org-page {
-    background: #eef2f7;
+    background: #ffffff;
     padding: 20px;
   }
 
   .org-container {
     max-width: 1600px;
     margin: 0 auto;
-    background: #f9fbff;
+    background: #f3f6fd;
     border-radius: 24px;
     padding: 28px 32px 34px;
-    box-shadow: 0 8px 30px rgba(31, 42, 68, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .06);
+    border: 1px solid var(--ds-border);
   }
 
   .org-breadcrumb {
@@ -97,7 +98,7 @@ $idRol = (int) session()->get('id_rol');
 
   .org-input-custom {
     background: #fff;
-    border: 1px solid #dbe3f0;
+    border: 1px solid var(--ds-border);
     border-radius: 16px;
     height: 56px;
     display: flex;
@@ -132,7 +133,7 @@ $idRol = (int) session()->get('id_rol');
     min-height: 320px;
     box-shadow: 0 10px 28px rgba(31, 42, 68, 0.08);
     overflow: hidden;
-    border: 1px solid #eef2f8;
+    border: 1px solid var(--ds-border);
     transition: all 0.25s ease;
   }
 
@@ -321,7 +322,7 @@ $idRol = (int) session()->get('id_rol');
   .org-empty-state {
     grid-column: 1 / -1;
     background: #fff;
-    border: 1px dashed #cbd5e1;
+    border: 1px dashed var(--ds-border);
     border-radius: 20px;
     padding: 40px 20px;
     text-align: center;

@@ -2,14 +2,7 @@
 
 <?= $this->section('css') ?>
 <style>
-    .org_edit-page-wrapper {
-        --ds-primary: #3695f5;
-        --ds-dark: #1b7ae2;
-        --ds-text: #101a61;
-        --ds-muted: #6c757d;
-        --ds-border: #e6eaf0;
-        --ds-success: #16a34a;
-    }
+ 
 
     .org_edit-page-wrapper {
         max-width: 1180px;
@@ -58,7 +51,7 @@
         align-items: center;
         gap: 10px;
         background: #eef7ff;
-        border: 1px solid #cfe9ff;
+        border: 1px solid var(--ds-border);
         padding: 12px 16px;
         border-radius: 14px;
         min-width: 260px;
@@ -307,7 +300,7 @@
 
     .org_edit-drop-zone {
         margin-top: 16px;
-        border: 2px dashed #d1d5db;
+        border: 2px dashed var(--ds-border);
         background: #fff;
         border-radius: 16px;
         padding: 22px;
@@ -328,7 +321,7 @@
         border-radius: 50%;
         object-fit: cover;
         margin-top: 14px;
-        border: 4px solid #fff;
+        border: 4px solid var(--ds-border);
         box-shadow: 0 8px 18px rgba(15, 23, 42, .12);
     }
 

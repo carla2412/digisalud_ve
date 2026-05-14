@@ -128,7 +128,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     width: 46px;
     height: 46px;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--ds-border);
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
     display: grid;
@@ -158,18 +158,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     opacity: 1;
   }
 
-  .nav-item.sig_vit-has-dot::after {
-    content: "";
-    width: 9px;
-    height: 9px;
-    background: #23d160;
-    border-radius: 50%;
-    position: absolute;
-    right: -1px;
-    bottom: 5px;
-    border: 2px solid var(--ds-primary);
-  }
-
+   
   .sig_vit-main {
     display: flex;
     flex-direction: column;
@@ -331,12 +320,14 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     grid-template-columns: minmax(340px, 0.95fr) minmax(560px, 1.3fr);
     gap: 16px;
   }
-
+.sig_vit-top-grid.sig_vit-summary-only {
+    grid-template-columns: 1fr;
+  }
   .sig_vit-tip-card,
   .sig_vit-summary-card,
   .sig_vit-form-card {
     background: var(--ds-bg-light);
-    border: 1px solid #e6edf6;
+    border: 1px solid var(--ds-border);
     border-radius: 12px;
     box-shadow: var(--ds-secondary-light);
   }
@@ -389,7 +380,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
   .sig_vit-status-pill {
     background: var(--ds-bg);
-    border: 1px solid #acdcb9;
+    border: 1px solid var(--ds-border);
     border-radius: 10px;
     padding: 12px 14px;
     color: var(--success);
@@ -619,7 +610,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   .sig_vit-secondary {
     background: #fff;
     color: #344054;
-    border: 1px solid #d8e0ed;
+    border: 1px solid var(--ds-border);
   }
 
   .sig_vit-soft {
@@ -731,7 +722,10 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     grid-template-columns: 72px minmax(0, 1fr);
     min-height: 100dvh;
     overflow: clip;
-
+ width: 100%;
+     margin-left: -12px;
+    margin-right: -12px;
+    margin-top: -1.5rem;
   }
 
   @media (max-width: 1180px) {
@@ -747,6 +741,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     }
   }
   
+   
   /* Aside homologado con vacunación */
   .sig_vit-sidebar {
     background: var(--ds-dark);
@@ -796,7 +791,6 @@ $formatoNumeroVista = static function ($valor, $default = '') {
     opacity: 1;
   }
 
- 
 
   @media (max-width: 1180px) {
     .sig_vit-sidebar {
@@ -813,10 +807,182 @@ $formatoNumeroVista = static function ($valor, $default = '') {
       flex: 0 0 48px;
     }
   }
+
+
+    .eval_vac_header {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: center;
+        background: var(--ds-bg-light);
+        border: 1px solid var(--ds-border);
+        border-radius: 28px;
+        padding: 22px;
+        margin-bottom: 18px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+        backdrop-filter: blur(10px);
+    }
+
+    .eval_vac_header_info {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        min-width: 0;
+    }
+
+    .eval_vac_header_icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 20px;
+        background: var(--ds-bg);
+        color: var(--ds-primary);
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+    }
+
+    .eval_vac_header_icon img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+    }
+
+    .eval_vac_title {
+        margin: 0;
+        color: var(--ds-dark);
+        font-size: 1.55rem;
+        font-weight: 600;
+    }
+
+    .eval_vac_subtitle {
+        margin: 4px 0 0;
+        color: var(--ds-muted);
+        font-size: 0.92rem;
+    }
+
+    .eval_vac_badge {
+        display: inline-flex;
+        margin-top: 8px;
+        padding: 4px 11px;
+        border-radius: 999px;
+        font-size: 0.74rem;
+        font-weight: 600;
+    }
+
+    .eval_vac_badge_new {
+        background: #dbeafe;
+        color: var(--eval_vac_info, #1b7ae2);
+    }
+
+    .eval_vac_badge_edit {
+        background: #fef3c7;
+        color: var(--ds-orange, #92400e);
+    }
+
+    .eval_vac_header_meta {
+        display: grid;
+        grid-template-columns: 220px 260px;
+        gap: 16px;
+        align-items: end;
+    }
+
+    .eval_vac_date_box,
+    .eval_vac_progress_box {
+        background: #fff;
+        border: 1px solid var(--ds-border);
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .eval_vac_label {
+        display: block;
+        color: #334155;
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .eval_vac_input {
+        width: 100%;
+        border: 1.5px solid var(--ds-border);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--eval_vac_text, var(--ds-text));
+        font-size: 0.88rem;
+        padding: 10px 12px;
+        outline: none;
+        transition: 0.15s ease;
+    }
+
+    .eval_vac_input:focus {
+        border-color: var(--ds-primary);
+        box-shadow: 0 0 0 3px rgba(16, 26, 97, 0.08);
+    }
+
+    .eval_vac_progress_text {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--ds-muted);
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-bottom: 9px;
+    }
+
+    .eval_vac_progress_text strong {
+        color: var(--ds-primary);
+    }
+
+    .eval_vac_progress_bar {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #e5ecf7;
+    }
+
+    .eval_vac_progress_fill {
+        height: 100%;
+        width: 0;
+        border-radius: inherit;
+        background: var(--ds-primary);
+        transition: width 0.2s ease;
+    }
+
+    @media (max-width: 940px) {
+        .eval_vac_header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .eval_vac_header_meta {
+            width: 100%;
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .eval_vac_header {
+            border-radius: 20px;
+        }
+
+        .eval_vac_header_info {
+            align-items: flex-start;
+        }
+
+        .eval_vac_header_icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .eval_vac_title {
+            font-size: 1.2rem;
+        }
+    }
 </style>
 
 <div class="sig_vit-lab-page" data-page="evaluacion">
-  <aside class="sig_vit-sidebar">
+   <aside class="sig_vit-sidebar" aria-label="Menú de pesquisas">
 
 
     <?php foreach ($pesquisasActividad as $pid): ?>
@@ -825,13 +991,14 @@ $formatoNumeroVista = static function ($valor, $default = '') {
       if (! $info) continue;
 
       $esActiva    = ((int) $pid === (int) $tipoPesquisaId);
-      $yaEvaluada  = in_array($pid, $pesquisasEvaluadas);
+      
       $clases      = 'sig_vit-sidebar_item';
       if ($esActiva)   $clases .= ' active';
-      if ($yaEvaluada) $clases .= ' sig_vit-evaluado';
+  
 
       $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}")
-        . ($jornadaId ? "?jornada_id={$jornadaId}" : "?centro_id={$centroId}");
+        . ($jornadaId ? "?jornada_id={$jornadaId}" : '')
+        . ($centroId  ? (($jornadaId ? '&' : '?') . "centro_id={$centroId}") : '');
       ?>
       <a href="<?= $urlPesquisa ?>"
         class="<?= $clases ?>"
@@ -844,36 +1011,48 @@ $formatoNumeroVista = static function ($valor, $default = '') {
   </aside>
 
   <main class="sig_vit-lab-main">
+  <div class="eval_vac_header">
+      <div class="eval_vac_header_info">
+        <div class="eval_vac_header_icon">
+          <img src="<?= base_url('img/' . $iconoPesquisa) ?>" alt="<?= esc($nombrePesquisa) ?>">
+        </div>
+        <div>
+          <h1 class="eval_vac_title"><?= esc($nombrePesquisa) ?></h1>
+          <p class="eval_vac_subtitle">
+            Beneficiario: <?= $nombreCompleto ?>
+            <?php if ($jornadaId): ?>
+              · Jornada #<?= esc($jornadaId) ?>
+            <?php endif; ?>
+          </p>
+          <span class="eval_vac_badge <?= $esEdicion ? 'eval_vac_badge_edit' : 'eval_vac_badge_new' ?>">
+            <?= $esEdicion ? 'Editando evaluación' : 'Nueva evaluación' ?>
+          </span>
+        </div>
+      </div>
+ 
+        <div class="eval_vac_header_meta">
+        <div class="eval_vac_date_box sig_vit-field">
+          <label class="eval_vac_label" for="evaluationDate">Fecha de evaluación</label>
+          <div class="sig_vit-input-wrap">
+            <input type="date" id="evaluationDate" name="fecha_evaluacion" form="formSignosVitales" data-codigo="fecha_evaluacion" class="eval_vac_input" value="<?= esc($fechaEvaluacionIso) ?>" required />
+          </div>
+          <div class="sig_vit-field-error">La fecha de evaluación es obligatoria.</div>
+        </div>
 
 
-
-
-
-    <section class="sig_vit-content">
-      <div class="sig_vit-top-grid">
-        <div class="sig_vit-tip-card">
-          <div>
-
-            <div class="sig_vit-lab-header">
-              <div class="sig_vit-lab-title-row">
-                <div class="sig_vit-lab-icon">
-                  <img src="<?= base_url('img/' . $iconoPesquisa) ?>"
-                    alt="<?= esc($nombrePesquisa) ?>">
-                </div>
-
-                <div>
-                  <h1><?= esc($nombrePesquisa) ?></h1>
-                  <p><?= $nombreCompleto ?></p>
-
-                  <span class="sig_vit-lab-badge <?= $esEdicion ? 'sig_vit-edit' : 'sig_vit-new' ?>">
-                    <?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?>
-                  </span>
-                </div>
-              </div>
-
-            </div>
+         <div class="eval_vac_progress_box">
+          <div class="eval_vac_progress_text">
+            <span>Progreso</span>
+            <strong id="sig_vit_progress_text">0 / 5 signos</strong>
+          </div>
+          <div class="eval_vac_progress_bar">
+            <div id="sig_vit_progress_fill" class="eval_vac_progress_fill"></div>
           </div>
         </div>
+      </div>
+    </div>
+    <section class="sig_vit-content">
+      <div class="sig_vit-top-grid sig_vit-summary-only">
 
         <div class="sig_vit-summary-card">
           <h2>Resumen rápido</h2>
@@ -946,14 +1125,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
               <h3>Presión arterial</h3>
             </div>
 
-            <div class="sig_vit-field">
-              <label for="evaluationDate">Fecha evaluación <span class="sig_vit-required">*</span></label>
-              <div class="sig_vit-input-wrap">
-                <input type="date" id="evaluationDate" name="fecha_evaluacion" data-codigo="fecha_evaluacion" value="<?= esc($fechaEvaluacionVista) ?>" required />
-                <span class="sig_vit-calendar">🗓️</span>
-              </div>
-              <div class="sig_vit-field-error">La fecha de evaluación es obligatoria.</div>
-            </div>
+          
 
             <div class="sig_vit-field">
               <label for="systolic">Tensión arterial sistólica <span class="sig_vit-required">*</span></label>
@@ -1092,6 +1264,8 @@ $formatoNumeroVista = static function ($valor, $default = '') {
       respiratory: $('#summaryResp'),
       temperature: $('#summaryTemp'),
       oxygen: $('#summaryOxygen'),
+      progressText: $('#sig_vit_progress_text'),
+      progressFill: $('#sig_vit_progress_fill'),
       status: $('#estadoGeneralSignos'),
       statusIcon: $('#estadoGeneralIcon'),
       statusTitle: $('#estadoGeneralTitle'),
@@ -1152,6 +1326,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
       summary.temperature.textContent = compactValue(fields.temperature.value);
       summary.oxygen.textContent = compactValue(fields.oxygen.value);
       updateCharCount();
+       updateVitalsProgress();
       updateStatus();
     }
 
@@ -1175,7 +1350,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
       if (!toIsoDate(value)) {
         wrap.classList.add('is-invalid');
-        error.textContent = 'Usa el formato dd/mm/aaaa.';
+       error.textContent = 'Selecciona una fecha válida.';
         error.classList.add('show');
         return false;
       }
@@ -1252,7 +1427,20 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
       return listaAlertas;
     }
+function updateVitalsProgress() {
+      const completed = [
+        fields.systolic.value.trim() && fields.diastolic.value.trim(),
+        fields.heartRate.value.trim(),
+        fields.respiratoryRate.value.trim(),
+        fields.temperature.value.trim(),
+        fields.oxygen.value.trim()
+      ].filter(Boolean).length;
+      const total = 5;
+      const percent = Math.round((completed / total) * 100);
 
+      if (summary.progressText) summary.progressText.textContent = `${completed} / ${total} signos`;
+      if (summary.progressFill) summary.progressFill.style.width = `${percent}%`;
+    }
     function updateStatus() {
       const numericWithValue = campos.filter((campo) => {
         return campo.tagName !== 'SELECT' && campo.tagName !== 'TEXTAREA' && campo.value.trim() !== '';
@@ -1419,7 +1607,7 @@ $formatoNumeroVista = static function ($valor, $default = '') {
 
     function ejecutarLimpieza() {
       form.reset();
-      fields.evaluationDate.value = $('#fechaEvaluacionIso').value.split('-').reverse().join('/');
+      fields.evaluationDate.value = $('#fechaEvaluacionIso').value;
 
       campos.forEach((campo) => {
         setFieldState(campo, 'clean');

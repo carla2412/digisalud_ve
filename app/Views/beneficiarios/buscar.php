@@ -120,7 +120,7 @@
     }
 
     .benef-find-beneficiarios-panel {
-        background: var(--ds-light);
+        background: var(--ds-bg);
         border: 1px solid var(--ds-border);
         border-radius: 20px;
         box-shadow: var(--shadow-sm);

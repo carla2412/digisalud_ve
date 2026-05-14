@@ -7,8 +7,8 @@
      --ds-dark: #101a61;
      --ds-bg: #fff;
      --ds-light: #e6f2fa;
-     --ds-bg-light: #f1f7fb;
-     --ds-border: #e0e6ed;
+     --ds-bg-light: #f3f6fd;
+     --ds-border: #dce8ff;
      --ds-muted: #595b5c;
      --line: #e0e6ed;
      --ds-primary-light: #e6f1fb;
@@ -166,7 +166,7 @@
 
    .active>.page-link {
      background-color: #88d8f8;
-     border: #88d8f8;
+     border: var(--ds-border);
    }
 
 
@@ -496,7 +496,7 @@
      flex: 1;
      min-width: 200px;
      padding: 10px 16px;
-     border: 1.5px solid #c5cad0;
+     border: 1.5px solid var(--ds-border);
      border-radius: 25px;
      font-size: .9rem
    }
@@ -804,7 +804,7 @@
      align-items: center;
      gap: 4px;
      background: var(--ds-primary-light);
-     border: 1px solidvar(--ds-primary);
+     border: 1px solid var(--ds-primary);
      border-radius: 20px;
      padding: 4px 12px;
      font-size: .78rem;
@@ -871,7 +871,7 @@
 
    .chk-lentes {
      background: var(--ds-primary-light);
-     border: 1px solid #85B7EB;
+     border: 1px solid var(--ds-border);
      border-radius: 8px;
      padding: 10px 14px;
      margin-top: 12px;
@@ -1079,7 +1079,7 @@
 
    .chk-lentes {
      background: var(--ds-primary-light);
-     border: 1px solid #85B7EB;
+     border: 1px solid var(--ds-border);
      border-radius: 8px;
      padding: 10px 14px;
      margin-top: 12px;
@@ -1171,7 +1171,7 @@
    .ds-brand-icon {
      width: 42px;
      height: 42px;
-     border: 2px solid rgba(255, 255, 255, .75);
+     border: 2px solid  var(--ds-border);
      border-radius: 14px;
      display: grid;
      place-items: center;
@@ -1292,7 +1292,7 @@
    .ds-footer-icon {
      width: 28px;
      height: 28px;
-     border: 2px solid var(--ds-secondary);
+     border: 2px solid var(--ds-border);
      border-radius: 50%;
      display: grid;
      place-items: center;

@@ -5,20 +5,8 @@ $esEdicion = isset($organizacion) && !empty($organizacion);
 $org = $organizacion ?? [];
 ?>
 <style>
-    /* public/assets/css/style.css */
-
-/* Estilos globales para el "Friendly Look" de DigiSalud */
-:root {
-    --ds-primary: #007bff; /* Azul DigiSalud */
-    --ds-secondary: #6c757d;
-    --ds-body-bg: #f8f9fc;
-    --ds-card-border-radius: 12px;
-}
-
-body {
-    background-color: var(--ds-body-bg);
-}
-
+ 
+ 
 /* Tarjetas con estilo amigable */
 .org-form-friendly-card {
     border: none;

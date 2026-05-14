@@ -118,36 +118,42 @@ $jsSections[] = $observacionesSection;
 ?>
 
 <style>
-   .labo-page {
-    display: grid;
-    grid-template-columns: 72px minmax(0, 1fr);
-    width: 100%;
-    min-height: calc(100vh - var(--app-header-height, 0px));
-    position: relative;
-    z-index: 0;
-}
-.labo-sidebar {
-    background: var(--ds-dark);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 18px 0;
-    box-shadow: 8px 0 28px rgba(8, 20, 79, 0.14);
-}
-.labo-sidebar_item {
-    width: 42px;
-    height: 42px;
-    border-radius: 16px;
-    display: grid;
-    place-items: center;
-    text-decoration: none;
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    transition: 0.18s ease;
-}
+    .labo-page {
+        display: grid;
+        grid-template-columns: 72px minmax(0, 1fr);
+        width: 100%;
+        min-height: calc(100vh - var(--app-header-height, 0px));
+        position: relative;
+        z-index: 0;
+        margin-left: -12px;
+    margin-right: -12px;
+    margin-top: -1.5rem;
+    background: #fff;
+    }
+
+    .labo-sidebar {
+        background: var(--ds-dark);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 18px 0;
+        box-shadow: 8px 0 28px rgba(8, 20, 79, 0.14);
+    }
+
+    .labo-sidebar_item {
+        width: 42px;
+        height: 42px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        text-decoration: none;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+        position: relative;
+        border: 1px solid var(--ds-border);
+        transition: 0.18s ease;
+    }
 
     .labo-sidebar_item img {
         width: 24px;
@@ -158,21 +164,22 @@ $jsSections[] = $observacionesSection;
     }
 
     .labo-sidebar_item:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, 0.18);
-}
-.labo-sidebar_item.active {
-    background: #ffffff;
-    color: var(--ds-primary);
-    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
-}
+        transform: translateY(-1px);
+        background: rgba(255, 255, 255, 0.18);
+    }
+
+    .labo-sidebar_item.active {
+        background: #ffffff;
+        color: var(--ds-primary);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    }
 
     .labo-sidebar_item:hover img,
     .labo-sidebar_item.active img {
         filter: none;
         opacity: 1;
     }
- 
+
 
     .labo-sidebar_item[title]::before {
         content: attr(title);
@@ -197,10 +204,11 @@ $jsSections[] = $observacionesSection;
 
     .labo-main {
         min-width: 0;
-    width: 100%;
-    max-width: 1720px;
-    margin: 0 auto;
-    padding: 24px 28px 96px;
+        width: 100%;
+        max-width: 1720px;
+        margin: 0 auto;
+        padding: 24px 28px 96px;
+        background:#fff;
     }
 
     .labo-header {
@@ -367,8 +375,8 @@ $jsSections[] = $observacionesSection;
 
     .labo-section-card,
     .labo-summary-card {
-        background: var(--ds-bg);
-        border: 1px solid var(--lab-border);
+        background: var(--ds-bg-light);
+       border: 1px solid var(--ds-border);
         border-radius: 22px;
         box-shadow: 0 16px 36px rgba(15, 23, 42, .06);
     }
@@ -548,7 +556,7 @@ $jsSections[] = $observacionesSection;
         justify-content: space-between;
         gap: 10px;
         padding: 12px 0;
-        border-bottom: 1px solid #edf2f7;
+        border-bottom: 1px solid var(--ds-border);
         font-size: .82rem;
     }
 
@@ -638,7 +646,7 @@ $jsSections[] = $observacionesSection;
         margin-top: 12px;
         background: #fef2f2;
         color: #991b1b;
-        border: 1px solid #fecaca;
+        border: 1px solid var(--ds-border);
     }
 
     .labo-toast {
@@ -716,10 +724,7 @@ $jsSections[] = $observacionesSection;
         background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
     }
 
-    .labo-page {
-        background: transparent;
-    }
-
+   
     .labo-sidebar {
         background: linear-gradient(180deg, #102073 0%, #08144f 100%);
         box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
@@ -826,7 +831,7 @@ $jsSections[] = $observacionesSection;
     .labo-section-header {
         align-items: flex-start;
         padding-bottom: 16px;
-        border-bottom: 1px solid #edf2f7;
+        border-bottom: 1px solid var(--ds-border);
     }
 
     .labo-section-status {
@@ -838,7 +843,7 @@ $jsSections[] = $observacionesSection;
 
     .labo-field {
         background: #fbfdff;
-        border: 1px solid #edf2f7;
+        border: 1px solid var(--ds-border);
         border-radius: 18px;
         padding: 14px;
         transition: .18s ease;
@@ -850,7 +855,7 @@ $jsSections[] = $observacionesSection;
         box-shadow: 0 12px 28px rgba(16, 26, 97, .08);
         transform: translateY(-1px);
     }
- 
+
     .labo-field small {
         background: #f1f5fb;
         border-radius: 999px;
@@ -934,8 +939,8 @@ $jsSections[] = $observacionesSection;
             margin: 0 0 4px;
         }
     }
-    
- /* Aside homologado con vacunación */
+
+    /* Aside homologado con vacunación */
     .labo-sidebar {
         background: var(--ds-dark);
         display: flex;
@@ -984,7 +989,7 @@ $jsSections[] = $observacionesSection;
         opacity: 1;
     }
 
-     
+
 
     @media (max-width: 1180px) {
         .labo-page {
@@ -1005,10 +1010,251 @@ $jsSections[] = $observacionesSection;
             flex: 0 0 48px;
         }
     }
+
+    /* Aside homologado con vacunación */
+    .labo-sidebar {
+        background: var(--ds-dark);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 18px 0;
+        box-shadow: 8px 0 28px rgba(8, 20, 79, .12);
+    }
+
+    .labo-sidebar_item {
+        width: 42px;
+        height: 42px;
+        border-radius: 16px;
+        border: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        text-decoration: none;
+        position: relative;
+        transition: .2s ease;
+        filter: brightness(0) invert(1);
+    }
+
+    .labo-sidebar_item img {
+        width: 26px;
+        height: 26px;
+        opacity: 1;
+        filter: none;
+    }
+
+    .labo-sidebar_item.active {
+        filter: brightness(1) invert(0);
+        background: #fff;
+    }
+
+    .labo-sidebar_item:hover {
+        filter: none;
+        opacity: 1;
+        background: #fff;
+    }
+
+    .labo-sidebar_item:hover img,
+    .labo-sidebar_item.active img {
+        filter: none;
+        opacity: 1;
+    }
+
+    @media (max-width: 1180px) {
+        .labo-page {
+            grid-template-columns: 1fr;
+        }
+
+        .labo-sidebar {
+            flex-direction: row;
+            overflow-x: auto;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            box-shadow: 0 8px 24px rgba(8, 20, 79, 0.14);
+        }
+
+        .labo-sidebar_item {
+            flex: 0 0 48px;
+        }
+    }
+
+
+    .eval_vac_header {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+        align-items: center;
+        background: var(--ds-bg-light);
+        border: 1px solid var(--ds-border);
+        border-radius: 28px;
+        padding: 22px;
+        margin-bottom: 18px;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, 0.07);
+        backdrop-filter: blur(10px);
+    }
+
+    .eval_vac_header_info {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        min-width: 0;
+    }
+
+    .eval_vac_header_icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 20px;
+        background: var(--ds-bg);
+        color: var(--ds-primary);
+        display: grid;
+        place-items: center;
+        flex: 0 0 auto;
+    }
+
+    .eval_vac_header_icon img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+    }
+
+    .eval_vac_title {
+        margin: 0;
+        color: var(--ds-dark);
+        font-size: 1.55rem;
+        font-weight: 600;
+    }
+
+    .eval_vac_subtitle {
+        margin: 4px 0 0;
+        color: var(--ds-muted);
+        font-size: 0.92rem;
+    }
+
+    .eval_vac_badge {
+        display: inline-flex;
+        margin-top: 8px;
+        padding: 4px 11px;
+        border-radius: 999px;
+        font-size: 0.74rem;
+        font-weight: 600;
+    }
+
+    .eval_vac_badge_new {
+        background: #dbeafe;
+        color: var(--eval_vac_info, #1b7ae2);
+    }
+
+    .eval_vac_badge_edit {
+        background: #fef3c7;
+        color: var(--ds-orange, #92400e);
+    }
+
+    .eval_vac_header_meta {
+        display: grid;
+        grid-template-columns: 220px 260px;
+        gap: 16px;
+        align-items: end;
+    }
+
+    .eval_vac_date_box,
+    .eval_vac_progress_box {
+        background: #fff;
+       border: 1px solid var(--ds-border);
+        border-radius: 18px;
+        padding: 14px;
+    }
+
+    .eval_vac_label {
+        display: block;
+        color: #334155;
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .eval_vac_input {
+        width: 100%;
+        border: 1.5px solid var(--ds-border);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--eval_vac_text, var(--ds-text));
+        font-size: 0.88rem;
+        padding: 10px 12px;
+        outline: none;
+        transition: 0.15s ease;
+    }
+
+    .eval_vac_input:focus {
+        border-color: var(--ds-primary);
+        box-shadow: 0 0 0 3px rgba(16, 26, 97, 0.08);
+    }
+
+    .eval_vac_progress_text {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--ds-muted);
+        font-size: 0.78rem;
+        font-weight: 600;
+        margin-bottom: 9px;
+    }
+
+    .eval_vac_progress_text strong {
+        color: var(--ds-primary);
+    }
+
+    .eval_vac_progress_bar {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #e5ecf7;
+    }
+
+    .eval_vac_progress_fill {
+        height: 100%;
+        width: 0;
+        border-radius: inherit;
+        background: var(--ds-primary);
+        transition: width 0.2s ease;
+    }
+
+    @media (max-width: 940px) {
+        .eval_vac_header {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .eval_vac_header_meta {
+            width: 100%;
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .eval_vac_header {
+            border-radius: 20px;
+        }
+
+        .eval_vac_header_info {
+            align-items: flex-start;
+        }
+
+        .eval_vac_header_icon {
+            width: 48px;
+            height: 48px;
+        }
+
+        .eval_vac_title {
+            font-size: 1.2rem;
+        }
+    }
 </style>
 
 <div class="labo-page" data-page="evaluacion">
-      <aside class="labo-sidebar" aria-label="Menú de pesquisas">
+    <aside class="labo-sidebar" aria-label="Menú de pesquisas">
         <?php foreach ($pesquisasActividad as $pid): ?>
             <?php
             $info = $infoPesquisas[$pid] ?? null;
@@ -1031,39 +1277,63 @@ $jsSections[] = $observacionesSection;
             ?>
 
             <a class="<?= esc($clases) ?>"
-               href="<?= esc($urlPesquisa) ?>"
-               title="<?= esc($info['nombre']) ?>"
-               aria-label="<?= esc($info['nombre']) ?>">
+                href="<?= esc($urlPesquisa) ?>"
+                title="<?= esc($info['nombre']) ?>"
+                aria-label="<?= esc($info['nombre']) ?>">
                 <img src="<?= base_url("img/{$imgFile}") ?>"
-                     alt="<?= esc($info['nombre']) ?>">
+                    alt="<?= esc($info['nombre']) ?>">
             </a>
         <?php endforeach; ?>
     </aside>
 
 
     <main class="labo-main">
-        <div class="labo-header">
-            <div class="labo-title-row">
-                <div class="labo-icon">
+        <?php
+        $fechaEvaluacionRaw = $evaluacionExistente['fecha_evaluacion'] ?? date('Y-m-d');
+        $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
+        ?>
+        <div class="eval_vac_header">
+            <div class="eval_vac_header_info">
+                <div class="eval_vac_header_icon">
                     <img src="<?= base_url('img/' . ($infoPesquisas[$tipoPesquisaId]['img'] ?? 'sanguinea2.svg')) ?>"
                         alt="<?= esc($nombrePesquisa) ?>">
                 </div>
                 <div>
-                    <h1><?= esc($nombrePesquisa) ?></h1>
-                    <p><?= $nombreCompleto ?></p>
-                    <span class="labo-badge <?= $esEdicion ? 'labo-edit' : 'labo-new' ?>">
-                        <?= $esEdicion ? 'Editando' : 'Nueva evaluación' ?>
+                    <h1 class="eval_vac_title"><?= esc($nombrePesquisa) ?></h1>
+                    <p class="eval_vac_subtitle">
+                        Beneficiario: <?= $nombreCompleto ?>
+                        <?php if ($jornadaId): ?>
+                            · Jornada #<?= esc($jornadaId) ?>
+                        <?php endif; ?>
+                    </p>
+                    <span class="eval_vac_badge <?= $esEdicion ? 'eval_vac_badge_edit' : 'eval_vac_badge_new' ?>">
+                        <?= $esEdicion ? 'Editando evaluación' : 'Nueva evaluación' ?>
+
                     </span>
                 </div>
             </div>
 
-            <div class="labo-progress">
-                <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
-                    <span id="progressText">Progreso: 0 de <?= count($jsSections) ?> secciones completadas</span>
+            <div class="eval_vac_header_meta">
+                <div class="eval_vac_date_box">
+                    <label class="eval_vac_label" for="eval_fecha_hidden">Fecha de evaluación</label>
+                    <input
+                        type="date"
+                        name="fecha_evaluacion"
+                        id="eval_fecha_hidden"
+                        form="formEvaluacion"
+                        class="eval_vac_input"
+                        value="<?= esc($fechaEvaluacionInput) ?>"
+                        required>
 
                 </div>
-                <div class="labo-progress-bar">
-                    <div id="progressFill" class="labo-progress-bar__fill"></div>
+                <div class="eval_vac_progress_box">
+                    <div class="eval_vac_progress_text">
+                        <span>Progreso</span>
+                        <strong id="progressText">0 de <?= count($jsSections) ?> secciones completadas</strong>
+                    </div>
+                    <div class="eval_vac_progress_bar">
+                        <div id="progressFill" class="eval_vac_progress_fill"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1085,22 +1355,7 @@ $jsSections[] = $observacionesSection;
                     <input type="hidden" name="jornada_id" value="<?= (int) $jornadaId ?>">
                     <input type="hidden" name="centro_id" value="<?= (int) $centroId ?>">
                     <input type="hidden" name="evaluacion_id" value="<?= esc($evalId) ?>">
-                    <?php
-                    $fechaEvaluacionRaw = $evaluacionExistente['fecha_evaluacion'] ?? date('Y-m-d');
-                    $fechaEvaluacionInput = date('Y-m-d', strtotime($fechaEvaluacionRaw));
-                    ?>
 
-                    <div class="labo-field labo-field--full" style="margin-bottom: 18px;">
-                        <label for="eval_fecha_hidden">
-                            Fecha evaluación *
-                        </label>
-                        <input
-                            type="date"
-                            name="fecha_evaluacion"
-                            id="eval_fecha_hidden"
-                            value="<?= esc($fechaEvaluacionInput) ?>"
-                            required>
-                    </div><br>
 
                     <?php foreach ($itemsFormulario as $sectionIndex => $items): ?>
                         <?php $nombreSeccion = $nombresSecciones[$sectionIndex] ?? ucfirst(str_replace('_', ' ', $sectionIndex)); ?>

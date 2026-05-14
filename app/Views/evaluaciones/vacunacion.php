@@ -4,17 +4,7 @@
 
 
 <?php
-
-/**
- * Vista: evaluaciones/vacunacion.php
- * Evaluación de Vacunación — tipo_pesquisa_id = 6
- *
- * Variables recibidas del controlador (EvaluacionesController::formulario):
- *   $beneficiario, $tipoPesquisa, $tipoPesquisaId, $jornadaId, $centroId,
- *   $itemsAgrupados, $nombresSecciones, $evaluacionExistente, $valoresExistentes,
- *   $pesquisasActividad, $pesquisasEvaluadas, $infoPesquisas
- */
-
+ 
 // ── Helpers ──
 $esEdicion     = !empty($evaluacionExistente);
 $evaluacionId  = $esEdicion ? $evaluacionExistente['id_evaluacion'] : '';
@@ -120,11 +110,7 @@ function evalVacNormalizarDosis($valor)
 ?>
 
 <style>
-    * {
-        box-sizing: border-box;
-        font-family: "Roboto", sans-serif;
-    }
-
+  
     .eval_vac_page {
         display: grid;
         grid-template-columns: 72px minmax(0, 1fr);
