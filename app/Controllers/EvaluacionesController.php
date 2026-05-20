@@ -6,6 +6,8 @@ use App\Models\PesquisaItemModel;
 use App\Models\PesquisaEvaluacionModel;
 use App\Models\PesquisaResultadoModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use App\Models\AntropometriaZscoreModel;
+
 
 class EvaluacionesController extends BaseController
 {
@@ -123,15 +125,20 @@ class EvaluacionesController extends BaseController
         // ── Vista especializada por tipo de pesquisa ──
         // tipo_pesquisa_id = 4 → Signos vitales (vista dedicada)
         $vistasPorPesquisa = [
-            3=> 'evaluaciones/visual',
+            1 => 'evaluaciones/antropometria',
+            3 => 'evaluaciones/visual',
             4 => 'evaluaciones/signos_vitales',
             6 => 'evaluaciones/vacunacion',
-            
+
             // Futuro: 1 => 'evaluaciones/antropometria',
             // Futuro: 3 => 'evaluaciones/visual',
         ];
 
         $vistaFormulario = $vistasPorPesquisa[$tipoPesquisaId] ?? 'evaluaciones/sanguineo';
+        $zscoreManifest = [];
+        if ((int) $tipoPesquisaId === 1) {
+            $zscoreManifest = (new AntropometriaZscoreModel())->getManifest();
+        }
 
         return view($vistaFormulario, [
             'beneficiario'         => $beneficiario,
@@ -146,6 +153,7 @@ class EvaluacionesController extends BaseController
             'pesquisasActividad'   => $pesquisasActividad,
             'pesquisasEvaluadas'   => $pesquisasEvaluadas,
             'infoPesquisas'        => $infoPesquisas,
+            'zscoreManifest' => $zscoreManifest,
         ]);
     }
 
@@ -451,7 +459,7 @@ class EvaluacionesController extends BaseController
             ]);
         }
     }
- /**
+    /**
      * Compatibiliza la vista especializada de vacunación con catálogos anteriores.
      *
      * La pantalla actual envía la dosis por vacuna como {codigo}_dosis. Algunas
@@ -506,7 +514,13 @@ class EvaluacionesController extends BaseController
     private function normalizarTextoVacunacion(string $texto): string
     {
         $texto = strtr(strtolower(trim($texto)), [
-            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u', 'ñ' => 'n',
+            'á' => 'a',
+            'é' => 'e',
+            'í' => 'i',
+            'ó' => 'o',
+            'ú' => 'u',
+            'ü' => 'u',
+            'ñ' => 'n',
         ]);
 
         return trim(preg_replace('/[^a-z0-9]+/', ' ', $texto) ?? '');
@@ -553,5 +567,60 @@ class EvaluacionesController extends BaseController
             'aplicacion'          => 'Aplicación actual',
             'control'             => 'Control',
         ];
+    }
+
+    public function historialAntropometria(int $beneficiarioId)
+    {
+        $jornadaId = (int) $this->request->getGet('jornada_id');
+        $tipoPesquisaId = 1;
+        $db = \Config\Database::connect();
+
+        $beneficiario = $db->table('beneficiarios')
+            ->where('id_beneficiario', $beneficiarioId)
+            ->get()
+            ->getRowArray();
+
+        if (! $beneficiario) {
+            return redirect()->back()->with('error', 'Beneficiario no encontrado.');
+        }
+
+        $historial = $this->evalModel
+            ->select('pesquisa_evaluaciones.*, jornadas.nombre_jornada, centros.nombre_centro')
+            ->join('jornadas', 'jornadas.id_jornada = pesquisa_evaluaciones.jornada_id', 'left')
+            ->join('centros', 'centros.id_centro = pesquisa_evaluaciones.centro_id', 'left')
+            ->where('pesquisa_evaluaciones.beneficiario_id', $beneficiarioId)
+            ->where('pesquisa_evaluaciones.tipo_pesquisa_id', $tipoPesquisaId)
+            ->where('pesquisa_evaluaciones.status_eval', 1)
+            ->orderBy('pesquisa_evaluaciones.fecha_evaluacion', 'DESC')
+            ->findAll();
+
+        $historialConResultados = [];
+        foreach ($historial as $evaluacion) {
+            $resultados = $this->resultModel->getResultadosConItems((int) $evaluacion['id_evaluacion']);
+            $valores = [];
+            foreach ($resultados as $r) {
+                $valor = match ($r['tipo_dato']) {
+                    'number'  => $r['valor_numero'],
+                    'boolean' => $r['valor_booleano'],
+                    'date'    => $r['valor_fecha'],
+                    default   => $r['valor_texto'],
+                };
+                $valores[$r['codigo']] = [
+                    'nombre' => $r['nombre'],
+                    'valor' => $valor,
+                    'unidad' => $r['unidad'],
+                    'seccion' => $r['seccion'],
+                    'codigo' => $r['codigo'],
+                ];
+            }
+            $evaluacion['resultados'] = $valores;
+            $historialConResultados[] = $evaluacion;
+        }
+
+        return view('evaluaciones/historial_antropometria', [
+            'beneficiario' => $beneficiario,
+            'historial' => $historialConResultados,
+            'jornadaId' => $jornadaId,
+        ]);
     }
 }

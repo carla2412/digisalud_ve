@@ -127,4 +127,6 @@ $routes->group('evaluaciones', ['filter' => 'auth'], function ($routes) {
 });
 
 $routes->get('evaluaciones/historial-sanguinea/(:num)', 'EvaluacionesController::historialSanguinea/$1');
- 
+
+// Si prefieres dejarlo fuera del grupo, igual que historial-sanguinea actual:
+$routes->get('evaluaciones/historial-antropometria/(:num)', 'EvaluacionesController::historialAntropometria/$1');

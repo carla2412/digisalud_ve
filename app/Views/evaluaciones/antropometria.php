@@ -1,0 +1,2125 @@
+<?= $this->extend('layouts/main') ?>
+<?= $this->section('content') ?>
+
+<?php
+$nombreCompleto = trim(esc($beneficiario['nombres'] ?? '') . ' ' . esc($beneficiario['apellidos'] ?? ''));
+
+$infoPesquisaActual = $infoPesquisas[$tipoPesquisaId] ?? [];
+$nombrePesquisa = $infoPesquisaActual['nombre'] ?? ($tipoPesquisa['descripcion_view'] ?? $tipoPesquisa['nombre_tipo'] ?? 'Antropometría');
+$iconoPesquisa = $infoPesquisaActual['img'] ?? 'antropometria2.svg';
+
+$esEdicion = ! empty($evaluacionExistente);
+$evalId = $evaluacionExistente['id_evaluacion'] ?? '';
+$obsExistente = $evaluacionExistente['observaciones'] ?? '';
+
+$fechaEvaluacionRaw = $evaluacionExistente['fecha_evaluacion'] ?? date('Y-m-d');
+$fechaEvaluacionIso = ! empty($fechaEvaluacionRaw) ? date('Y-m-d', strtotime($fechaEvaluacionRaw)) : date('Y-m-d');
+
+$urlRetorno = $jornadaId
+  ? base_url("jornadas/{$jornadaId}/beneficiarios")
+  : base_url("centros/{$centroId}/beneficiarios");
+
+$valorCampo = static function (string $codigo, $default = '') use ($valoresExistentes) {
+  return esc($valoresExistentes[$codigo] ?? $default);
+};
+
+$sexoRaw = strtoupper((string)($beneficiario['sexo'] ?? $beneficiario['genero'] ?? $beneficiario['sexo_biologico'] ?? ''));
+$sexoAntro = str_starts_with($sexoRaw, 'F') || str_contains($sexoRaw, 'MUJ') ? 'F' : 'M';
+
+$fechaNacimiento = $beneficiario['fecha_nacimiento'] ?? '';
+$zscoreManifest = $zscoreManifest ?? [];
+?>
+
+<style>
+  :root {
+    --antro-primary: #2f8df0;
+    --antro-primary-dark: #0b63ce;
+    --antro-dark: #071761;
+    --antro-bg: #f4f8fd;
+    --antro-card: #ffffff;
+    --antro-soft: #eaf4ff;
+    --antro-border: #cfe0fb;
+    --antro-border-2: #d7e7ff;
+    --antro-muted: #6b7280;
+    --antro-text: #152238;
+    --antro-warning-bg: #fff7ed;
+    --antro-warning-border: #ffd4a8;
+    --antro-warning-text: #8a3d00;
+    --antro-danger: #ef4444;
+    --antro-success: #16a34a;
+    --antro-shadow: 0 16px 40px rgba(7, 23, 97, 0.08);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  .antro-page {
+    min-height: calc(100vh - var(--app-header-height, 0px));
+    margin: -1.5rem -12px 0;
+    padding: 24px;
+    padding-bottom: 132px;
+    background: var(--antro-bg);
+    color: var(--antro-text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .antro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    background: var(--antro-card);
+    border: 1px solid var(--antro-border);
+    border-radius: 30px;
+    padding: 26px 34px;
+    box-shadow: var(--antro-shadow);
+    margin-bottom: 18px;
+  }
+
+  .antro-header-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 0;
+  }
+
+  .antro-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #ffc107;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .antro-icon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+
+  .antro-title {
+    margin: 0;
+    color: var(--antro-dark);
+    font-size: 30px;
+    line-height: 1.1;
+    font-weight: 800;
+  }
+
+  .antro-subtitle {
+    margin: 8px 0 10px;
+    color: #374151;
+    font-size: 16px;
+  }
+
+  .antro-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 26px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: var(--antro-soft);
+    color: var(--antro-primary-dark);
+    font-weight: 800;
+    font-size: 13px;
+  }
+
+  .antro-chip-edit {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .antro-header-right {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .antro-mini-card {
+    min-width: 220px;
+    background: #f9fbff;
+    border: 1px solid var(--antro-border-2);
+    border-radius: 20px;
+    padding: 16px 18px;
+  }
+
+  .antro-mini-card label {
+    display: block;
+    color: var(--antro-dark);
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .antro-date-input,
+  .antro-input,
+  .antro-input-wrap input,
+  .antro-input-wrap select,
+  .antro-textarea {
+    width: 100%;
+    border: 1px solid var(--antro-border);
+    border-radius: 14px;
+    background: #fff;
+    color: #111827;
+    font-size: 15px;
+    outline: 0;
+  }
+
+  .antro-date-input,
+  .antro-input {
+    min-height: 44px;
+    padding: 0 14px;
+  }
+
+  .antro-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .antro-tag {
+    padding: 7px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    background: var(--antro-soft);
+    color: var(--antro-primary-dark);
+  }
+
+  .antro-tag-warning {
+    background: #fff1e6;
+    color: #c15b00;
+  }
+
+  .antro-pesquisas-strip {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-bottom: 18px;
+    padding-bottom: 4px;
+  }
+
+  .antro-pesquisa-link {
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
+    background: #ffffff;
+    border: 1px solid var(--antro-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    text-decoration: none;
+    transition: .2s ease;
+  }
+
+  .antro-pesquisa-link img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+
+  .antro-pesquisa-link.active,
+  .antro-pesquisa-link:hover {
+    border-color: var(--antro-primary);
+    box-shadow: 0 12px 26px rgba(47, 141, 240, .18);
+    transform: translateY(-1px);
+  }
+
+  .antro-layout {
+    display: grid;
+    grid-template-columns: 310px minmax(0, 1fr) 360px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .antro-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: sticky;
+    top: 20px;
+  }
+
+  .antro-step {
+    width: 100%;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid var(--antro-border-2);
+    border-radius: 999px;
+    background: #fff;
+    padding: 10px 16px;
+    cursor: pointer;
+    color: #334155;
+    font-weight: 800;
+    text-align: left;
+    transition: .2s ease;
+  }
+
+  .antro-step:hover {
+    border-color: var(--antro-primary);
+    background: #f8fbff;
+  }
+
+  .antro-step-active {
+    border: 2px solid var(--antro-primary);
+    background: var(--antro-soft);
+    color: var(--antro-primary-dark);
+  }
+
+  .antro-step-number {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef3f9;
+    color: var(--antro-muted);
+    flex: 0 0 auto;
+  }
+
+  .antro-step-active .antro-step-number {
+    background: var(--antro-primary);
+    color: #fff;
+  }
+
+  .antro-card {
+    background: var(--antro-card);
+    border: 1px solid var(--antro-border);
+    border-radius: 26px;
+    box-shadow: var(--antro-shadow);
+    padding: 30px;
+  }
+
+  .antro-section {
+    display: none;
+  }
+
+  .antro-section-active {
+    display: block;
+  }
+
+  .antro-section-title {
+    margin: 0;
+    color: var(--antro-dark);
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .antro-section-help {
+    margin: 8px 0 22px;
+    color: #4b5563;
+    font-size: 15px;
+  }
+
+  .antro-alert-box {
+    border: 1px solid var(--antro-warning-border);
+    background: var(--antro-warning-bg);
+    color: var(--antro-warning-text);
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    line-height: 1.35;
+  }
+
+  .antro-alert-box strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 16px;
+  }
+
+  .antro-alert-info {
+    background: #f0f7ff;
+    border-color: #b7d8ff;
+    color: #123f80;
+  }
+
+  .antro-alert-danger {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+  }
+
+  .antro-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .antro-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+
+  .antro-field {
+    border: 1px solid var(--antro-border-2);
+    background: #fdfefe;
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .antro-field-full {
+    grid-column: 1 / -1;
+  }
+
+  .antro-field label,
+  .antro-radio-box-label {
+    display: block;
+    color: var(--antro-dark);
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .antro-required {
+    color: var(--antro-danger);
+    font-weight: 900;
+  }
+
+  .antro-input-wrap {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    border: 1px solid var(--antro-border);
+    border-radius: 14px;
+    background: #fff;
+    overflow: hidden;
+  }
+
+  .antro-input-wrap input,
+  .antro-input-wrap select {
+    width: 100%;
+    min-height: 48px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    padding: 0 14px;
+    font-size: 16px;
+  }
+
+  .antro-input-wrap input[readonly] {
+    background: #fbfdff;
+    color: var(--antro-primary-dark);
+    font-weight: 800;
+  }
+
+  .antro-unit {
+    min-width: 52px;
+    padding: 0 12px;
+    text-align: center;
+    color: var(--antro-muted);
+    font-size: 13px;
+    font-weight: 800;
+    border-left: 1px solid var(--antro-border);
+  }
+
+  .antro-radio-box {
+    border: 1px solid var(--antro-border-2);
+    background: #fdfefe;
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .antro-radio-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .antro-radio-pill {
+    min-height: 42px;
+    border: 1px solid #9fc7ff;
+    border-radius: 999px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 12px;
+    cursor: pointer;
+    color: var(--antro-dark);
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .antro-radio-pill input {
+    accent-color: var(--antro-primary);
+  }
+
+  .antro-radio-pill:has(input:checked) {
+    background: var(--antro-soft);
+  }
+
+  .antro-calculated-strip {
+    background: #f8fbff;
+    border: 1px solid var(--antro-border-2);
+    border-radius: 20px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    margin: 20px 0;
+  }
+
+  .antro-kpi {
+    border-right: 1px solid #dbe7f7;
+    padding-right: 14px;
+  }
+
+  .antro-kpi:last-child {
+    border-right: 0;
+  }
+
+  .antro-kpi span {
+    display: block;
+    color: #4b5563;
+    font-size: 13px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .antro-kpi strong {
+    display: block;
+    color: var(--antro-primary);
+    font-size: 22px;
+    font-weight: 900;
+  }
+
+  .antro-actions-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+    margin-top: 18px;
+  }
+
+  .antro-btn {
+    min-height: 46px;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    padding: 0 22px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 15px;
+    transition: .2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .antro-btn-primary {
+    background: var(--antro-primary);
+    color: #fff;
+  }
+
+  .antro-btn-primary:hover {
+    background: var(--antro-primary-dark);
+    color: #fff;
+  }
+
+  .antro-btn-soft {
+    background: #eef6ff;
+    color: var(--antro-primary-dark);
+    border-color: #b7d8ff;
+  }
+
+  .antro-btn-muted {
+    background: #f3f6fb;
+    color: #6b7280;
+    border-color: var(--antro-border-2);
+  }
+
+  .antro-btn-outline {
+    background: #fff;
+    color: #374151;
+    border-color: var(--antro-border);
+  }
+
+  .antro-note {
+    display: block;
+    width: 100%;
+    color: var(--antro-muted);
+    font-size: 12px;
+    margin-top: -4px;
+  }
+
+  .antro-summary {
+    position: sticky;
+    top: 20px;
+  }
+
+  .antro-summary h3 {
+    margin: 0;
+    color: var(--antro-dark);
+    font-size: 22px;
+  }
+
+  .antro-summary p {
+    margin: 8px 0 22px;
+    color: #4b5563;
+    font-size: 14px;
+  }
+
+  .antro-summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 15px 0;
+    border-bottom: 1px solid #dbe7f7;
+    color: var(--antro-muted);
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  .antro-summary-row strong {
+    color: var(--antro-primary);
+    text-align: right;
+  }
+
+  .antro-summary-row .antro-danger {
+    color: var(--antro-danger);
+  }
+
+  .antro-next-action {
+    margin-top: 24px;
+    background: #f0f7ff;
+    border: 1px solid #b7d8ff;
+    border-radius: 18px;
+    padding: 20px;
+  }
+
+  .antro-next-action strong {
+    display: block;
+    color: var(--antro-dark);
+    margin-bottom: 10px;
+  }
+
+  .antro-next-action p {
+    margin: 0 0 16px;
+    color: #334155;
+  }
+
+  .antro-textarea {
+    min-height: 130px;
+    resize: vertical;
+    padding: 14px;
+    font-family: inherit;
+  }
+
+  .antro-hidden {
+    display: none !important;
+  }
+
+  .antro-footer {
+    position: fixed;
+    left: 24px;
+    right: 24px;
+    bottom: 18px;
+    z-index: 50;
+    background: #fff;
+    border: 1px solid var(--antro-border);
+    border-radius: 22px;
+    padding: 20px 24px;
+    box-shadow: var(--antro-shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .antro-progress-title {
+    color: var(--antro-dark);
+    font-weight: 900;
+    margin-bottom: 10px;
+  }
+
+  .antro-progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .antro-progress-track {
+    width: min(520px, 40vw);
+    height: 16px;
+    background: var(--antro-soft);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .antro-progress-bar {
+    height: 100%;
+    width: 0;
+    background: var(--antro-primary);
+    border-radius: 999px;
+    transition: .2s ease;
+  }
+
+  .antro-progress-text {
+    color: var(--antro-primary);
+    font-size: 14px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .antro-footer-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .antro-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(7, 23, 97, .32);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+  }
+
+  .antro-modal-backdrop.antro-modal-open {
+    display: flex;
+  }
+
+  .antro-modal {
+    width: min(760px, 100%);
+    max-height: 90vh;
+    overflow: auto;
+    background: #fff;
+    border-radius: 24px;
+    border: 1px solid var(--antro-border);
+    box-shadow: 0 24px 80px rgba(7, 23, 97, .22);
+    padding: 28px;
+  }
+
+  .antro-modal-wide {
+    width: min(920px, 100%);
+  }
+
+  .antro-modal-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .antro-modal-title {
+    margin: 0;
+    color: var(--antro-dark);
+    font-size: 22px;
+    font-weight: 900;
+  }
+
+  .antro-modal-close {
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: #eef3ff;
+    color: var(--antro-dark);
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .antro-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid var(--antro-border);
+  }
+
+  .antro-table th,
+  .antro-table td {
+    padding: 13px;
+    border-bottom: 1px solid #e2ecfb;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .antro-table th {
+    background: #f0f7ff;
+    color: var(--antro-dark);
+    font-weight: 900;
+  }
+
+  .antro-table td {
+    color: #334155;
+  }
+
+  .antro-step-disabled {
+    display: none !important;
+  }
+
+  .antro-section-disabled {
+    display: none !important;
+  }
+
+  @media (max-width: 1500px) {
+    .antro-layout {
+      grid-template-columns: 240px minmax(0, 1fr) 310px;
+      gap: 18px;
+    }
+
+    .antro-card {
+      padding: 24px;
+    }
+
+    .antro-summary {
+      display: block;
+      visibility: visible;
+    }
+  }
+
+  @media (max-width: 1180px) {
+    .antro-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .antro-steps,
+    .antro-summary {
+      position: static;
+    }
+
+    .antro-steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .antro-summary {
+      order: 3;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .antro-page {
+      padding: 14px;
+      padding-bottom: 210px;
+    }
+
+    .antro-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .antro-header-right,
+    .antro-header-left {
+      justify-content: flex-start;
+    }
+
+    .antro-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .antro-steps,
+    .antro-summary {
+      position: static;
+    }
+
+    .antro-steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .antro-grid-3,
+    .antro-grid-2,
+    .antro-calculated-strip {
+      grid-template-columns: 1fr;
+    }
+
+    .antro-kpi {
+      border-right: 0;
+      border-bottom: 1px solid #dbe7f7;
+      padding-bottom: 14px;
+    }
+
+    .antro-kpi:last-child {
+      border-bottom: 0;
+    }
+
+    .antro-footer {
+      left: 14px;
+      right: 14px;
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .antro-progress-track {
+      width: 100%;
+    }
+
+    .antro-footer-actions {
+      justify-content: stretch;
+    }
+
+    .antro-footer-actions .antro-btn {
+      flex: 1;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .antro-steps {
+      grid-template-columns: 1fr;
+    }
+
+    .antro-radio-options {
+      grid-template-columns: 1fr;
+    }
+
+    .antro-mini-card {
+      min-width: 100%;
+    }
+  }
+</style>
+
+<div class="antro-page" data-page="antropometria">
+  <form id="formAntropometria" method="post" action="<?= base_url('evaluaciones/guardar') ?>">
+    <?= csrf_field() ?>
+
+    <input type="hidden" name="beneficiario_id" value="<?= esc($beneficiario['id_beneficiario']) ?>">
+    <input type="hidden" name="tipo_pesquisa_id" value="<?= esc($tipoPesquisaId) ?>">
+    <input type="hidden" name="jornada_id" value="<?= esc($jornadaId) ?>">
+    <input type="hidden" name="centro_id" value="<?= esc($centroId) ?>">
+    <input type="hidden" name="evaluacion_id" value="<?= esc($evalId) ?>">
+
+    <input type="hidden" id="antroSexo" value="<?= esc($sexoAntro) ?>">
+    <input type="hidden" id="antroFechaNacimiento" value="<?= esc($fechaNacimiento) ?>">
+    <input type="hidden" id="antroJsonManifest" value='<?= esc(json_encode($zscoreManifest, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)) ?>'>
+
+    <?php foreach (
+      [
+        'imc',
+        'zpe',
+        'zpe_percentil',
+        'zte',
+        'zte_percentil',
+        'zpt',
+        'zpt_percentil',
+        'zimce',
+        'zimce_percentil',
+        'zcc',
+        'zcc_percentil',
+        'zcbi',
+        'zcbi_percentil',
+        'zptri',
+        'zptri_percentil',
+        'zpsub',
+        'zpsub_percentil',
+        'grupo_edad_reporte',
+        'clasificacion_imc_talla',
+        'estado_nutricional_agregado',
+        'edad_dias_medicion',
+        'edad_meses_medicion',
+        'embarazo_semanas',
+        'embarazo_imc_pregestacional',
+        'embarazo_ganancia_kg'
+      ] as $codigo
+    ): ?>
+      <input type="hidden" id="<?= $codigo ?>" name="campos[<?= $codigo ?>]" value="<?= $valorCampo($codigo) ?>">
+    <?php endforeach; ?>
+
+    <div class="antro-header">
+      <div class="antro-header-left">
+        <div class="antro-icon">
+          <img src="<?= base_url('img/' . $iconoPesquisa) ?>" alt="<?= esc($nombrePesquisa) ?>">
+        </div>
+
+        <div>
+          <h1 class="antro-title"><?= esc($nombrePesquisa) ?></h1>
+          <p class="antro-subtitle">
+            Beneficiario: <?= $nombreCompleto ?><?= $jornadaId ? ' · Jornada #' . esc($jornadaId) : '' ?>
+          </p>
+
+          <span class="antro-chip <?= $esEdicion ? 'antro-chip-edit' : '' ?>">
+            <?= $esEdicion ? 'Editando evaluación' : 'Nueva evaluación' ?>
+          </span>
+        </div>
+      </div>
+
+      <div class="antro-header-right">
+        <div class="antro-mini-card">
+          <label for="fecha_evaluacion">Fecha de evaluación</label>
+          <input class="antro-date-input" type="date" id="fecha_evaluacion" name="fecha_evaluacion" value="<?= esc($fechaEvaluacionIso) ?>" required>
+        </div>
+
+        <div class="antro-mini-card">
+          <label>Estado</label>
+          <div class="antro-tags">
+            <span class="antro-tag" id="antroTagEdad">—</span>
+            <span class="antro-tag antro-tag-warning" id="antroTagImc">IMC pendiente</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="antro-pesquisas-strip" aria-label="Pesquisas de la jornada">
+      <?php foreach ($pesquisasActividad as $pid): ?>
+        <?php
+        $info = $infoPesquisas[$pid] ?? null;
+        if (! $info) {
+          continue;
+        }
+
+        $esActiva = ((int)$pid === (int)$tipoPesquisaId);
+        $query = [];
+
+        if ($jornadaId) {
+          $query['jornada_id'] = $jornadaId;
+        }
+
+        if ($centroId) {
+          $query['centro_id'] = $centroId;
+        }
+
+        $urlPesquisa = base_url("evaluaciones/formulario/{$beneficiario['id_beneficiario']}/{$pid}");
+        $urlPesquisa .= ! empty($query) ? '?' . http_build_query($query) : '';
+        ?>
+
+        <a href="<?= $urlPesquisa ?>"
+          class="antro-pesquisa-link <?= $esActiva ? 'active' : '' ?>"
+          title="<?= esc($info['nombre']) ?>"
+          aria-label="<?= esc($info['nombre']) ?>">
+          <img src="<?= base_url('img/' . ($esActiva ? $info['img'] : $info['gris'])) ?>" alt="<?= esc($info['nombre']) ?>">
+        </a>
+      <?php endforeach; ?>
+    </div>
+
+    <main class="antro-layout">
+      <nav class="antro-steps" aria-label="Secciones de evaluación">
+  <button class="antro-step antro-step-active" type="button" data-step="1">
+    <span class="antro-step-number">1</span>
+    <span>Mediciones</span>
+  </button>
+
+  <button class="antro-step" type="button" data-step="2" id="stepCondiciones">
+    <span class="antro-step-number">2</span>
+    <span>Condiciones</span>
+  </button>
+
+  <button class="antro-step" type="button" data-step="3">
+    <span class="antro-step-number">3</span>
+    <span>Observaciones</span>
+  </button>
+</nav>
+
+      <section class="antro-card">
+        <div class="antro-section antro-section-active" data-section="1">
+          <h2 class="antro-section-title">Mediciones básicas</h2>
+          <p class="antro-section-help">
+            Vista simplificada: primero los datos obligatorios, luego opciones clínicas.
+          </p>
+
+          <div class="antro-alert-box" id="antroInterpretacionBox">
+            <strong>Interpretación combinada</strong>
+            <span id="antroInterpretacionTexto">
+              Completa peso y talla para calcular la interpretación combinada.
+            </span>
+          </div>
+
+          <div class="antro-grid-3">
+            <div class="antro-field">
+              <label for="peso">Peso <span class="antro-required">*</span></label>
+              <div class="antro-input-wrap">
+                <input type="number" step="0.1" min="0.9" max="275" id="peso" name="campos[peso]" value="<?= $valorCampo('peso') ?>" required>
+                <span class="antro-unit">kg</span>
+              </div>
+            </div>
+
+            <div class="antro-field">
+              <label for="talla">Talla / longitud <span class="antro-required">*</span></label>
+              <div class="antro-input-wrap">
+                <input type="number" step="0.1" min="30" max="230" id="talla" name="campos[talla]" value="<?= $valorCampo('talla') ?>" required>
+                <span class="antro-unit">cm</span>
+              </div>
+            </div>
+
+            <div class="antro-field" id="campoCintura">
+              <label for="circ_cintura">Circunferencia cintura <span class="antro-required">*</span></label>
+              <div class="antro-input-wrap">
+                <input type="number" step="0.1" min="30" max="220" id="circ_cintura" name="campos[circ_cintura]" value="<?= $valorCampo('circ_cintura') ?>">
+                <span class="antro-unit">cm</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="antro-grid-2">
+            <div class="antro-radio-box">
+              <span class="antro-radio-box-label">Método de medición de talla</span>
+              <div class="antro-radio-options">
+                <label class="antro-radio-pill">
+                  <input type="radio" name="campos[metodo_medicion_talla]" value="de_pie" <?= $valorCampo('metodo_medicion_talla') === 'de_pie' ? 'checked' : '' ?>>
+                  De pie
+                </label>
+
+                <label class="antro-radio-pill">
+                  <input type="radio" name="campos[metodo_medicion_talla]" value="acostado" <?= $valorCampo('metodo_medicion_talla', 'acostado') === 'acostado' ? 'checked' : '' ?>>
+                  Acostado
+                </label>
+              </div>
+            </div>
+
+            <div class="antro-radio-box">
+              <span class="antro-radio-box-label">Edema</span>
+              <div class="antro-radio-options">
+                <label class="antro-radio-pill">
+                  <input type="radio" name="campos[edema]" value="0" <?= $valorCampo('edema', '0') === '0' ? 'checked' : '' ?>>
+                  No
+                </label>
+
+                <label class="antro-radio-pill">
+                  <input type="radio" name="campos[edema]" value="1" <?= $valorCampo('edema') === '1' ? 'checked' : '' ?>>
+                  Sí
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="antro-grid-2" id="medicionesMenor5">
+            <div class="antro-field" data-menor5>
+              <label for="circ_cefalica">Circunferencia cefálica</label>
+              <div class="antro-input-wrap">
+                <input type="number" step="0.1" min="0" id="circ_cefalica" name="campos[circ_cefalica]" value="<?= $valorCampo('circ_cefalica') ?>">
+                <span class="antro-unit">cm</span>
+              </div>
+            </div>
+
+            <div class="antro-field" data-menor5>
+              <label for="circ_brazo_izq">Circunferencia brazo izquierdo</label>
+              <div class="antro-input-wrap">
+                <input type="number" step="0.1" min="0" id="circ_brazo_izq" name="campos[circ_brazo_izq]" value="<?= $valorCampo('circ_brazo_izq') ?>">
+                <span class="antro-unit">cm</span>
+              </div>
+            </div>
+
+            <div class="antro-field" data-menor5>
+              <label for="pliegue_tricipital">Pliegue tricipital</label>
+              <div class="antro-input-wrap">
+                <input type="number" step="0.1" min="0" id="pliegue_tricipital" name="campos[pliegue_tricipital]" value="<?= $valorCampo('pliegue_tricipital') ?>">
+                <span class="antro-unit">mm</span>
+              </div>
+            </div>
+
+            <div class="antro-field" data-menor5>
+              <label for="pliegue_subescapular">Pliegue subescapular</label>
+              <div class="antro-input-wrap">
+                <input type="number" step="0.1" min="0" id="pliegue_subescapular" name="campos[pliegue_subescapular]" value="<?= $valorCampo('pliegue_subescapular') ?>">
+                <span class="antro-unit">mm</span>
+              </div>
+            </div>
+          </div>
+          <div class="antro-calculated-strip">
+            <div class="antro-kpi">
+              <span>IMC</span>
+              <strong id="imcPreview">—</strong>
+            </div>
+
+            <div class="antro-kpi">
+              <span>Grupo reporte</span>
+              <strong id="grupoReportePreview">—</strong>
+            </div>
+
+            <div class="antro-kpi">
+              <span>ZIMC/E</span>
+              <strong id="zimcePreview">—</strong>
+            </div>
+
+            <div class="antro-kpi">
+              <span>ZTE</span>
+              <strong id="ztePreview">—</strong>
+            </div>
+          </div>
+
+          <div class="antro-actions-inline">
+            <button class="antro-btn antro-btn-soft" type="button" id="btnZscore">
+              Ver Percentil / Z-Score
+            </button>
+
+            <button class="antro-btn antro-btn-muted antro-hidden" type="button" id="btnPesoDiferencia">
+              Peso por diferencia
+            </button>
+
+            <small class="antro-note" id="notaPesoDiferencia">
+              Peso por diferencia solo se muestra para menores de 2 años.
+            </small>
+          </div>
+        </div>
+        <div class="antro-section" data-section="2" id="sectionCondiciones">
+  <h2 class="antro-section-title" id="condicionesTitulo">Condiciones especiales</h2>
+  <p class="antro-section-help" id="condicionesHelp">
+    Flujo para embarazo, lactancia y discapacidad según edad y sexo.
+  </p>
+
+  <div class="antro-alert-box antro-alert-info antro-hidden" id="condicionesNoAplican">
+    <strong>No aplica</strong>
+    <span>Embarazo y discapacidad no aplican para menores de 2 años.</span>
+  </div>
+
+  <div id="bloqueCondicionesEspeciales">
+    <div class="antro-grid-2">
+      <div class="antro-radio-box" id="bloqueLactante">
+        <span class="antro-radio-box-label">Mujer lactante</span>
+        <div class="antro-radio-options">
+          <label class="antro-radio-pill">
+            <input type="radio" name="campos[lactante]" value="0" <?= $valorCampo('lactante', '0') === '0' ? 'checked' : '' ?>>
+            No
+          </label>
+
+          <label class="antro-radio-pill">
+            <input type="radio" name="campos[lactante]" value="1" <?= $valorCampo('lactante') === '1' ? 'checked' : '' ?>>
+            Sí
+          </label>
+        </div>
+      </div>
+
+      <div class="antro-radio-box" id="bloqueEmbarazada">
+        <span class="antro-radio-box-label">Mujer embarazada</span>
+        <div class="antro-radio-options">
+          <label class="antro-radio-pill">
+            <input type="radio" name="campos[embarazada]" value="0" <?= $valorCampo('embarazada', '0') === '0' ? 'checked' : '' ?>>
+            No
+          </label>
+
+          <label class="antro-radio-pill">
+            <input type="radio" name="campos[embarazada]" value="1" <?= $valorCampo('embarazada') === '1' ? 'checked' : '' ?>>
+            Sí
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="antro-grid-2 antro-hidden" id="embarazoCampos">
+      <div class="antro-field">
+        <label for="fum">Fecha última menstruación</label>
+        <div class="antro-input-wrap">
+          <input type="date" id="fum" name="campos[embarazo_fum]" value="<?= $valorCampo('embarazo_fum') ?>">
+        </div>
+      </div>
+
+      <div class="antro-field">
+        <label for="fechaEco">Fecha último eco</label>
+        <div class="antro-input-wrap">
+          <input type="date" id="fechaEco" name="campos[embarazo_fecha_eco]" value="<?= $valorCampo('embarazo_fecha_eco') ?>">
+        </div>
+      </div>
+
+      <div class="antro-field">
+        <label for="semanasEco">Semanas por último eco</label>
+        <div class="antro-input-wrap">
+          <input type="number" step="0.1" min="0" id="semanasEco" name="campos[embarazo_semanas_eco]" value="<?= $valorCampo('embarazo_semanas_eco') ?>">
+          <span class="antro-unit">sem</span>
+        </div>
+      </div>
+
+      <div class="antro-field">
+        <label for="embarazo_imc_pregestacional_vista">IMC pregestacional</label>
+        <div class="antro-input-wrap">
+          <input type="number" step="0.01" min="0" id="embarazo_imc_pregestacional_vista" value="<?= $valorCampo('embarazo_imc_pregestacional') ?>">
+        </div>
+      </div>
+    </div>
+
+    <div class="antro-grid-2">
+      <div class="antro-radio-box">
+        <span class="antro-radio-box-label">Discapacidad</span>
+        <div class="antro-radio-options">
+          <label class="antro-radio-pill">
+            <input type="radio" name="campos[discapacidad]" value="0" <?= $valorCampo('discapacidad', '0') === '0' ? 'checked' : '' ?>>
+            No
+          </label>
+
+          <label class="antro-radio-pill">
+            <input type="radio" name="campos[discapacidad]" value="1" <?= $valorCampo('discapacidad') === '1' ? 'checked' : '' ?>>
+            Sí
+          </label>
+        </div>
+      </div>
+
+      <div class="antro-radio-box antro-hidden" id="bloqueErguido">
+        <span class="antro-radio-box-label">Se mantiene erguido</span>
+        <div class="antro-radio-options">
+          <label class="antro-radio-pill">
+            <input type="radio" name="campos[se_mantiene_erguido]" value="1" <?= $valorCampo('se_mantiene_erguido', '1') === '1' ? 'checked' : '' ?>>
+            Sí
+          </label>
+
+          <label class="antro-radio-pill">
+            <input type="radio" name="campos[se_mantiene_erguido]" value="0" <?= $valorCampo('se_mantiene_erguido') === '0' ? 'checked' : '' ?>>
+            No
+          </label>
+        </div>
+      </div>
+
+      <div class="antro-radio-box antro-hidden" id="bloqueAusencia">
+        <span class="antro-radio-box-label">Ausencia de extremidades</span>
+        <div class="antro-radio-options">
+          <label class="antro-radio-pill">
+            <input type="radio" name="campos[ausencia_extremidades]" value="0" <?= $valorCampo('ausencia_extremidades', '0') === '0' ? 'checked' : '' ?>>
+            No
+          </label>
+
+          <label class="antro-radio-pill">
+            <input type="radio" name="campos[ausencia_extremidades]" value="1" <?= $valorCampo('ausencia_extremidades') === '1' ? 'checked' : '' ?>>
+            Sí
+          </label>
+        </div>
+      </div>
+
+      <div class="antro-field antro-hidden" id="campoTallaEstimada">
+        <label for="talla_estimada">Talla estimada</label>
+        <div class="antro-input-wrap">
+          <input type="number" step="0.1" min="0" id="talla_estimada" name="campos[talla_estimada]" value="<?= $valorCampo('talla_estimada') ?>">
+          <span class="antro-unit">cm</span>
+        </div>
+      </div>
+
+      <div class="antro-field antro-hidden" id="campoPesoAjustado">
+        <label for="peso_ajustado">Peso ajustado</label>
+        <div class="antro-input-wrap">
+          <input type="number" step="0.1" min="0" id="peso_ajustado" name="campos[peso_ajustado]" value="<?= $valorCampo('peso_ajustado') ?>">
+          <span class="antro-unit">kg</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+
+        <div class="antro-section" data-section="3">
+          <h2 class="antro-section-title">Observaciones y remisión</h2>
+          <p class="antro-section-help">
+            Registra remisión, observaciones clínicas y comentarios finales.
+          </p>
+
+          <div class="antro-grid-2">
+            <div class="antro-field antro-field-full">
+              <label for="remision">Remisión</label>
+              <div class="antro-input-wrap">
+                <select id="remision" name="campos[remision]">
+                  <option value="" <?= $valorCampo('remision') === '' ? 'selected' : '' ?>>Sin remisión</option>
+                  <option value="nutricion" <?= $valorCampo('remision') === 'nutricion' ? 'selected' : '' ?>>Nutrición</option>
+                  <option value="medicina_general" <?= $valorCampo('remision') === 'medicina_general' ? 'selected' : '' ?>>Medicina general</option>
+                  <option value="pediatria" <?= $valorCampo('remision') === 'pediatria' ? 'selected' : '' ?>>Pediatría</option>
+                  <option value="gineco_obstetricia" <?= $valorCampo('remision') === 'gineco_obstetricia' ? 'selected' : '' ?>>Gineco-obstetricia</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="antro-field">
+            <label for="observaciones">Observaciones</label>
+            <textarea class="antro-textarea" id="observaciones" name="observaciones"><?= esc($obsExistente) ?></textarea>
+          </div>
+        </div>
+      </section>
+
+      <aside class="antro-card antro-summary">
+        <h3>Resumen clínico</h3>
+        <p>Datos clave siempre visibles.</p>
+
+        <div class="antro-summary-row">
+          <span>Peso</span>
+          <strong id="resPeso">—</strong>
+        </div>
+
+        <div class="antro-summary-row">
+          <span>Talla</span>
+          <strong id="resTalla">—</strong>
+        </div>
+
+        <div class="antro-summary-row">
+          <span>IMC</span>
+          <strong id="resImc">—</strong>
+        </div>
+
+        <div class="antro-summary-row" id="resCinturaRow">
+          <span>Cintura</span>
+          <strong id="resCintura" class="antro-danger">Pendiente</strong>
+        </div>
+
+        <div class="antro-summary-row">
+          <span>Edema</span>
+          <strong id="resEdema">No</strong>
+        </div>
+
+        <div class="antro-summary-row">
+          <span>ZIMC/E</span>
+          <strong id="resZimce">—</strong>
+        </div>
+
+        <div class="antro-summary-row">
+          <span>ZTE</span>
+          <strong id="resZte">—</strong>
+        </div>
+
+        <div class="antro-summary-row">
+          <span>ZPT/P-L</span>
+          <strong id="resZpt">—</strong>
+        </div>
+
+        <div class="antro-summary-row">
+          <span>Estado</span>
+          <strong id="resEstado">—</strong>
+        </div>
+
+        <div class="antro-next-action">
+          <strong>Siguiente acción</strong>
+          <p id="siguienteAccionTexto">Completa peso y talla para calcular IMC.</p>
+          <button type="button" class="antro-btn antro-btn-primary" id="btnIrRequerido">
+            Ir al campo requerido
+          </button>
+        </div>
+
+        <div class="antro-alert-box antro-alert-danger antro-hidden" id="antroError"></div>
+      </aside>
+    </main>
+
+    <footer class="antro-footer">
+      <div>
+        <div class="antro-progress-title">Progreso de evaluación</div>
+        <div class="antro-progress-wrap">
+          <div class="antro-progress-track">
+            <div class="antro-progress-bar" id="antroProgressBar"></div>
+          </div>
+          <span class="antro-progress-text" id="antroProgressText">0 / 3 básicos completos</span>
+        </div>
+      </div>
+
+      <div class="antro-footer-actions">
+        <a class="antro-btn antro-btn-outline" href="<?= esc($urlRetorno) ?>">Volver</a>
+        <button class="antro-btn antro-btn-soft" type="button" id="btnAnterior">Anterior</button>
+        <button class="antro-btn antro-btn-soft" type="button" id="btnSiguiente">Siguiente</button>
+        <button class="antro-btn antro-btn-primary" type="submit" id="btnGuardarAntro">Guardar evaluación</button>
+      </div>
+    </footer>
+  </form>
+</div>
+
+<div class="antro-modal-backdrop" id="modalPesoDiferencia">
+  <div class="antro-modal">
+    <div class="antro-modal-header">
+      <h3 class="antro-modal-title">Peso por diferencia</h3>
+      <button class="antro-modal-close" type="button" data-close-modal>&times;</button>
+    </div>
+
+    <div class="antro-grid-2">
+      <div class="antro-field">
+        <label for="pesoCargador">Peso del cargador</label>
+        <div class="antro-input-wrap">
+          <input type="number" step="0.1" min="0" id="pesoCargador">
+          <span class="antro-unit">kg</span>
+        </div>
+      </div>
+
+      <div class="antro-field">
+        <label for="pesoAmbos">Peso de ambos</label>
+        <div class="antro-input-wrap">
+          <input type="number" step="0.1" min="0" id="pesoAmbos">
+          <span class="antro-unit">kg</span>
+        </div>
+      </div>
+
+      <div class="antro-field antro-field-full">
+        <label for="pesoCalculado">Peso calculado</label>
+        <div class="antro-input-wrap">
+          <input type="number" step="0.1" id="pesoCalculado" readonly>
+          <span class="antro-unit">kg</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="antro-actions-inline">
+      <button class="antro-btn antro-btn-primary" type="button" id="guardarPesoCalculado">
+        Usar este peso
+      </button>
+
+      <button class="antro-btn antro-btn-outline" type="button" data-close-modal>
+        Cancelar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="antro-modal-backdrop" id="modalZscore">
+  <div class="antro-modal antro-modal-wide">
+    <div class="antro-modal-header">
+      <h3 class="antro-modal-title">Percentil / Z-Score</h3>
+      <button class="antro-modal-close" type="button" data-close-modal>&times;</button>
+    </div>
+
+    <table class="antro-table">
+      <thead>
+        <tr>
+          <th>Indicador</th>
+          <th>Percentil</th>
+          <th>Z-Score</th>
+          <th>Gráfico</th>
+        </tr>
+      </thead>
+      <tbody id="tablaZscore">
+        <tr>
+          <td>P/L</td>
+          <td id="pct_pl">—</td>
+          <td id="z_pl">—</td>
+          <td><button class="antro-btn antro-btn-soft" type="button">Ver</button></td>
+        </tr>
+        <tr>
+          <td>P/E</td>
+          <td id="pct_pe">—</td>
+          <td id="z_pe">—</td>
+          <td><button class="antro-btn antro-btn-soft" type="button">Ver</button></td>
+        </tr>
+        <tr>
+          <td>L/E</td>
+          <td id="pct_le">—</td>
+          <td id="z_le">—</td>
+          <td><button class="antro-btn antro-btn-soft" type="button">Ver</button></td>
+        </tr>
+        <tr>
+          <td>IMC/E</td>
+          <td id="pct_imce">—</td>
+          <td id="z_imce">—</td>
+          <td><button class="antro-btn antro-btn-soft" type="button">Ver</button></td>
+        </tr>
+        <tr>
+          <td>CC/E</td>
+          <td id="pct_cce">—</td>
+          <td id="z_cce">—</td>
+          <td><button class="antro-btn antro-btn-soft" type="button">Ver</button></td>
+        </tr>
+        <tr>
+          <td>CBI/E</td>
+          <td id="pct_cbie">—</td>
+          <td id="z_cbie">—</td>
+          <td><button class="antro-btn antro-btn-soft" type="button">Ver</button></td>
+        </tr>
+        <tr>
+          <td>PT/E</td>
+          <td id="pct_pte">—</td>
+          <td id="z_pte">—</td>
+          <td><button class="antro-btn antro-btn-soft" type="button">Ver</button></td>
+        </tr>
+        <tr>
+          <td>PS/E</td>
+          <td id="pct_pse">—</td>
+          <td id="z_pse">—</td>
+          <td><button class="antro-btn antro-btn-soft" type="button">Ver</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formAntropometria');
+
+    const sexo = document.getElementById('antroSexo')?.value || '';
+    const fechaNacimiento = document.getElementById('antroFechaNacimiento')?.value || '';
+    const fechaEvaluacion = document.getElementById('fecha_evaluacion');
+
+    const peso = document.getElementById('peso');
+    const talla = document.getElementById('talla');
+    const cintura = document.getElementById('circ_cintura');
+
+    const hiddenImc = document.getElementById('imc');
+    const hiddenGrupo = document.getElementById('grupo_edad_reporte');
+    const hiddenEstado = document.getElementById('estado_nutricional_agregado');
+    const hiddenClasificacion = document.getElementById('clasificacion_imc_talla');
+    const hiddenEdadDias = document.getElementById('edad_dias_medicion');
+    const hiddenEdadMeses = document.getElementById('edad_meses_medicion');
+
+    const btnPesoDiferencia = document.getElementById('btnPesoDiferencia');
+    const notaPesoDiferencia = document.getElementById('notaPesoDiferencia');
+    const campoCintura = document.getElementById('campoCintura');
+    const resCinturaRow = document.getElementById('resCinturaRow');
+
+    const steps = document.querySelectorAll('.antro-step');
+    const sections = document.querySelectorAll('.antro-section');
+
+    let currentStep = 1;
+    let edadDias = calcularEdadDias();
+    let edadAnios = edadDias / 365.25;
+    let esMenor2 = edadDias > 0 && edadDias < 730;
+    let esMenor5 = edadDias > 0 && edadDias < 1826;
+    let esAdulto = edadAnios >= 19;
+
+    inicializarVista();
+    bindEventos();
+    recalcular();
+
+function inicializarVista() {
+  actualizarEdadHidden();
+  actualizarGrupoEdad();
+
+  const aplicaCondiciones = !esMenor2;
+  const aplicaEmbarazo = sexo === 'F' && !esMenor2;
+  const aplicaDiscapacidad = !esMenor2;
+
+  const stepCondiciones = document.getElementById('stepCondiciones');
+  const sectionCondiciones = document.getElementById('sectionCondiciones');
+  const bloqueCondiciones = document.getElementById('bloqueCondicionesEspeciales');
+  const condicionesNoAplican = document.getElementById('condicionesNoAplican');
+
+  if (!aplicaCondiciones) {
+    stepCondiciones?.classList.add('antro-step-disabled');
+
+    bloqueCondiciones?.classList.add('antro-hidden');
+    condicionesNoAplican?.classList.remove('antro-hidden');
+
+    deshabilitarControles(sectionCondiciones, true);
+
+    if (currentStep === 2) {
+      irPaso(1);
+    }
+  } else {
+    stepCondiciones?.classList.remove('antro-step-disabled');
+
+    bloqueCondiciones?.classList.remove('antro-hidden');
+    condicionesNoAplican?.classList.add('antro-hidden');
+
+    deshabilitarControles(sectionCondiciones, false);
+  }
+
+  if (!aplicaEmbarazo) {
+    document.getElementById('bloqueLactante')?.classList.add('antro-hidden');
+    document.getElementById('bloqueEmbarazada')?.classList.add('antro-hidden');
+    document.getElementById('embarazoCampos')?.classList.add('antro-hidden');
+
+    document.querySelectorAll(
+      'input[name="campos[embarazada]"], input[name="campos[lactante]"], #fum, #fechaEco, #semanasEco, #embarazo_imc_pregestacional_vista'
+    ).forEach(function (el) {
+      el.disabled = true;
+    });
+  } else {
+    document.getElementById('bloqueLactante')?.classList.remove('antro-hidden');
+    document.getElementById('bloqueEmbarazada')?.classList.remove('antro-hidden');
+
+    document.querySelectorAll(
+      'input[name="campos[embarazada]"], input[name="campos[lactante]"], #fum, #fechaEco, #semanasEco, #embarazo_imc_pregestacional_vista'
+    ).forEach(function (el) {
+      el.disabled = false;
+    });
+  }
+
+  if (!aplicaDiscapacidad) {
+    document.querySelectorAll(
+      'input[name="campos[discapacidad]"], input[name="campos[se_mantiene_erguido]"], input[name="campos[ausencia_extremidades]"], #talla_estimada, #peso_ajustado'
+    ).forEach(function (el) {
+      el.disabled = true;
+    });
+
+    document.getElementById('bloqueErguido')?.classList.add('antro-hidden');
+    document.getElementById('bloqueAusencia')?.classList.add('antro-hidden');
+    document.getElementById('campoTallaEstimada')?.classList.add('antro-hidden');
+    document.getElementById('campoPesoAjustado')?.classList.add('antro-hidden');
+  } else {
+    document.querySelectorAll(
+      'input[name="campos[discapacidad]"], input[name="campos[se_mantiene_erguido]"], input[name="campos[ausencia_extremidades]"], #talla_estimada, #peso_ajustado'
+    ).forEach(function (el) {
+      el.disabled = false;
+    });
+  }
+
+  if (esMenor2) {
+    btnPesoDiferencia.classList.remove('antro-hidden');
+    notaPesoDiferencia.textContent = 'Disponible porque el beneficiario es menor de 2 años.';
+  } else {
+    btnPesoDiferencia.classList.add('antro-hidden');
+    notaPesoDiferencia.textContent = 'Peso por diferencia solo se muestra para menores de 2 años.';
+  }
+
+  if (esAdulto) {
+    campoCintura.classList.remove('antro-hidden');
+    resCinturaRow.classList.remove('antro-hidden');
+    cintura.required = true;
+  } else {
+    campoCintura.classList.add('antro-hidden');
+    resCinturaRow.classList.add('antro-hidden');
+    cintura.required = false;
+  }
+
+  document.querySelectorAll('[data-menor5]').forEach(function (el) {
+    el.classList.toggle('antro-hidden', !esMenor5);
+  });
+
+  toggleEmbarazo();
+  toggleDiscapacidad();
+  toggleTallaEstimada();
+}
+    function deshabilitarControles(contenedor, disabled) {
+      if (!contenedor) return;
+
+      contenedor.querySelectorAll('input, select, textarea, button').forEach(function(el) {
+        if (el.hasAttribute('data-step')) return;
+        el.disabled = disabled;
+      });
+    }
+
+    function bindEventos() {
+      [peso, talla, cintura, fechaEvaluacion].forEach(function(el) {
+        if (!el) return;
+
+        el.addEventListener('input', recalcular);
+        el.addEventListener('change', function() {
+          edadDias = calcularEdadDias();
+          edadAnios = edadDias / 365.25;
+          esMenor2 = edadDias > 0 && edadDias < 730;
+          esMenor5 = edadDias > 0 && edadDias < 1826;
+          esAdulto = edadAnios >= 19;
+          inicializarVista();
+          recalcular();
+        });
+      });
+
+      document.querySelectorAll('input[name="campos[edema]"]').forEach(function(radio) {
+        radio.addEventListener('change', recalcular);
+      });
+
+      steps.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          irPaso(parseInt(btn.dataset.step, 10));
+        });
+      });
+
+      document.getElementById('btnAnterior').addEventListener('click', function() {
+        irPaso(Math.max(1, currentStep - 1));
+      });
+
+      document.getElementById('btnSiguiente').addEventListener('click', function() {
+        irPaso(Math.min(3, currentStep + 1));
+      });
+
+      document.getElementById('btnIrRequerido').addEventListener('click', irCampoRequerido);
+
+      btnPesoDiferencia.addEventListener('click', function() {
+        abrirModal('modalPesoDiferencia');
+      });
+
+      document.getElementById('btnZscore').addEventListener('click', function() {
+        abrirModal('modalZscore');
+        pintarZscoreResumen();
+      });
+
+      document.querySelectorAll('[data-close-modal]').forEach(function(btn) {
+        btn.addEventListener('click', cerrarModales);
+      });
+
+      document.querySelectorAll('.antro-modal-backdrop').forEach(function(modal) {
+        modal.addEventListener('click', function(event) {
+          if (event.target === modal) cerrarModales();
+        });
+      });
+
+      ['pesoCargador', 'pesoAmbos'].forEach(function(id) {
+        document.getElementById(id).addEventListener('input', calcularPesoDiferencia);
+      });
+
+      document.getElementById('guardarPesoCalculado').addEventListener('click', usarPesoCalculado);
+
+      document.querySelectorAll('input[name="campos[embarazada]"]').forEach(function(radio) {
+        radio.addEventListener('change', toggleEmbarazo);
+      });
+
+      document.querySelectorAll('input[name="campos[discapacidad]"]').forEach(function(radio) {
+        radio.addEventListener('change', toggleDiscapacidad);
+      });
+
+      document.querySelectorAll('input[name="campos[se_mantiene_erguido]"]').forEach(function(radio) {
+        radio.addEventListener('change', toggleTallaEstimada);
+      });
+
+      ['fum', 'fechaEco', 'semanasEco'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', calcularSemanasGestacion);
+      });
+
+      form.addEventListener('submit', validarGuardar);
+    }
+
+    function calcularEdadDias() {
+      if (!fechaNacimiento || !fechaEvaluacion.value) {
+        return 0;
+      }
+
+      const nac = new Date(fechaNacimiento + 'T00:00:00');
+      const evalDate = new Date(fechaEvaluacion.value + 'T00:00:00');
+
+      if (isNaN(nac.getTime()) || isNaN(evalDate.getTime())) {
+        return 0;
+      }
+
+      return Math.max(0, Math.floor((evalDate - nac) / 86400000));
+    }
+
+    function actualizarEdadHidden() {
+      hiddenEdadDias.value = edadDias > 0 ? edadDias : '';
+      hiddenEdadMeses.value = edadDias > 0 ? Math.floor(edadDias / 30.4375) : '';
+    }
+
+  function irPaso(step) {
+  const stepBtn = document.querySelector('.antro-step[data-step="' + step + '"]');
+
+  if (stepBtn && stepBtn.classList.contains('antro-step-disabled')) {
+    return;
+  }
+
+  currentStep = step;
+
+  steps.forEach(function (btn) {
+    btn.classList.toggle('antro-step-active', parseInt(btn.dataset.step, 10) === step);
+  });
+
+  sections.forEach(function (section) {
+    section.classList.toggle('antro-section-active', parseInt(section.dataset.section, 10) === step);
+  });
+}
+
+    function recalcular() {
+      const p = parseFloat(peso.value);
+      const t = parseFloat(talla.value);
+      const c = parseFloat(cintura.value);
+      const edema = document.querySelector('input[name="campos[edema]"]:checked')?.value || '0';
+
+      let imcValue = null;
+
+      if (p > 0 && t > 0) {
+        imcValue = p / Math.pow(t / 100, 2);
+        hiddenImc.value = imcValue.toFixed(2);
+      } else {
+        hiddenImc.value = '';
+      }
+
+      const grupo = obtenerGrupoReporte();
+      hiddenGrupo.value = grupo;
+
+      document.getElementById('imcPreview').textContent = imcValue ? imcValue.toFixed(2) : '—';
+      document.getElementById('grupoReportePreview').textContent = grupo;
+      document.getElementById('resPeso').textContent = p > 0 ? p.toFixed(1) + ' kg' : '—';
+      document.getElementById('resTalla').textContent = t > 0 ? t.toFixed(1) + ' cm' : '—';
+      document.getElementById('resImc').textContent = imcValue ? imcValue.toFixed(2) : '—';
+      document.getElementById('resEdema').textContent = edema === '1' ? 'Sí' : 'No';
+
+      document.getElementById('zimcePreview').textContent = document.getElementById('zimce')?.value || '—';
+      document.getElementById('ztePreview').textContent = document.getElementById('zte')?.value || '—';
+      document.getElementById('resZimce').textContent = document.getElementById('zimce')?.value || '—';
+      document.getElementById('resZte').textContent = document.getElementById('zte')?.value || '—';
+      document.getElementById('resZpt').textContent = document.getElementById('zpt')?.value || '—';
+
+      if (esAdulto) {
+        document.getElementById('resCintura').textContent = c > 0 ? c.toFixed(1) + ' cm' : 'Pendiente';
+        document.getElementById('resCintura').classList.toggle('antro-danger', !(c > 0));
+      }
+
+      actualizarInterpretacion(imcValue, c, edema);
+      actualizarProgreso();
+    }
+
+    function obtenerGrupoReporte() {
+      if (edadAnios < 5) return '< 5 años';
+      if (edadAnios >= 5 && edadAnios < 19) return '5 a 19 años';
+      return '> 19 años';
+    }
+
+    function actualizarGrupoEdad() {
+      const tag = document.getElementById('antroTagEdad');
+
+      if (edadAnios < 2) {
+        tag.textContent = 'Menor de 2 años';
+      } else if (edadAnios < 5) {
+        tag.textContent = '2 a 5 años';
+      } else if (edadAnios < 19) {
+        tag.textContent = '5 a 19 años';
+      } else {
+        tag.textContent = 'Adulto';
+      }
+    }
+
+    function actualizarInterpretacion(imcValue, cinturaValue, edema) {
+      const box = document.getElementById('antroInterpretacionBox');
+      const txt = document.getElementById('antroInterpretacionTexto');
+      const tagImc = document.getElementById('antroTagImc');
+      const estado = document.getElementById('resEstado');
+      const accion = document.getElementById('siguienteAccionTexto');
+
+      box.classList.remove('antro-alert-info', 'antro-alert-danger');
+
+      if (!imcValue) {
+        hiddenEstado.value = '';
+        hiddenClasificacion.value = '';
+        txt.textContent = 'Completa peso y talla para calcular la interpretación combinada.';
+        tagImc.textContent = 'IMC pendiente';
+        estado.textContent = '—';
+        accion.textContent = 'Completa peso y talla para calcular IMC.';
+        return;
+      }
+
+      let clasificacion = 'Peso adecuado';
+      let riesgoTexto = 'Sin alerta inmediata';
+
+      if (imcValue < 18.5) {
+        clasificacion = 'Bajo peso';
+        riesgoTexto = 'Revisar déficit nutricional';
+        box.classList.add('antro-alert-danger');
+      } else if (imcValue >= 25 && imcValue < 30) {
+        clasificacion = 'Sobrepeso';
+        riesgoTexto = 'Riesgo por exceso';
+      } else if (imcValue >= 30) {
+        clasificacion = 'Obesidad';
+        riesgoTexto = 'Riesgo cardiometabólico';
+        box.classList.add('antro-alert-danger');
+      } else {
+        box.classList.add('antro-alert-info');
+      }
+
+      if (edema === '1') {
+        clasificacion = 'Revisar por edema';
+        riesgoTexto = 'Requiere validación clínica';
+        box.classList.add('antro-alert-danger');
+      }
+
+      hiddenEstado.value = clasificacion;
+      hiddenClasificacion.value = clasificacion;
+      tagImc.textContent = clasificacion;
+      estado.textContent = clasificacion;
+
+      if (esAdulto && !(cinturaValue > 0)) {
+        txt.textContent = 'IMC ' + imcValue.toFixed(2) + ': ' + clasificacion + '. Completa cintura para validar riesgo cardiometabólico.';
+        accion.textContent = 'Completa circunferencia de cintura para guardar la evaluación adulta.';
+      } else {
+        txt.textContent = 'IMC ' + imcValue.toFixed(2) + ': ' + clasificacion + '. ' + riesgoTexto + '.';
+        accion.textContent = 'Puedes continuar con condiciones, embarazo/discapacidad u observaciones.';
+      }
+    }
+
+    function actualizarProgreso() {
+      let total = esAdulto ? 3 : 2;
+      let completos = 0;
+
+      if (parseFloat(peso.value) > 0) completos++;
+      if (parseFloat(talla.value) > 0) completos++;
+      if (esAdulto && parseFloat(cintura.value) > 0) completos++;
+
+      const pct = total > 0 ? Math.round((completos / total) * 100) : 0;
+
+      document.getElementById('antroProgressBar').style.width = pct + '%';
+      document.getElementById('antroProgressText').textContent = completos + ' / ' + total + ' básicos completos';
+    }
+
+    function irCampoRequerido() {
+      irPaso(1);
+
+      setTimeout(function() {
+        if (!(parseFloat(peso.value) > 0)) {
+          peso.focus();
+          return;
+        }
+
+        if (!(parseFloat(talla.value) > 0)) {
+          talla.focus();
+          return;
+        }
+
+        if (esAdulto && !(parseFloat(cintura.value) > 0)) {
+          cintura.focus();
+        }
+      }, 80);
+    }
+
+    function abrirModal(id) {
+      document.getElementById(id).classList.add('antro-modal-open');
+    }
+
+    function cerrarModales() {
+      document.querySelectorAll('.antro-modal-backdrop').forEach(function(modal) {
+        modal.classList.remove('antro-modal-open');
+      });
+    }
+
+    function calcularPesoDiferencia() {
+      const cargador = parseFloat(document.getElementById('pesoCargador').value);
+      const ambos = parseFloat(document.getElementById('pesoAmbos').value);
+      const salida = document.getElementById('pesoCalculado');
+
+      if (!(cargador > 0) || !(ambos > 0)) {
+        salida.value = '';
+        return;
+      }
+
+      if (ambos < cargador) {
+        salida.value = '';
+        return;
+      }
+
+      salida.value = (ambos - cargador).toFixed(1);
+    }
+
+    function usarPesoCalculado() {
+      const calculado = parseFloat(document.getElementById('pesoCalculado').value);
+
+      if (!(calculado > 0)) {
+        mostrarError('Calcula un peso válido antes de guardar.');
+        return;
+      }
+
+      peso.value = calculado.toFixed(1);
+      cerrarModales();
+      recalcular();
+    }
+
+    function toggleEmbarazo() {
+      if (sexo !== 'F' || esMenor2) {
+        document.getElementById('embarazoCampos')?.classList.add('antro-hidden');
+        return;
+      }
+
+      const valor = document.querySelector('input[name="campos[embarazada]"]:checked')?.value || '0';
+      document.getElementById('embarazoCampos')?.classList.toggle('antro-hidden', valor !== '1');
+    }
+
+    function toggleDiscapacidad() {
+      if (esMenor2) {
+        document.getElementById('bloqueErguido')?.classList.add('antro-hidden');
+        document.getElementById('bloqueAusencia')?.classList.add('antro-hidden');
+        document.getElementById('campoTallaEstimada')?.classList.add('antro-hidden');
+        document.getElementById('campoPesoAjustado')?.classList.add('antro-hidden');
+        return;
+      }
+
+      const valor = document.querySelector('input[name="campos[discapacidad]"]:checked')?.value || '0';
+      const mostrar = valor === '1';
+
+      document.getElementById('bloqueErguido')?.classList.toggle('antro-hidden', !mostrar);
+      document.getElementById('bloqueAusencia')?.classList.toggle('antro-hidden', !mostrar);
+      document.getElementById('campoPesoAjustado')?.classList.toggle('antro-hidden', !mostrar);
+
+      if (!mostrar) {
+        document.getElementById('campoTallaEstimada')?.classList.add('antro-hidden');
+      }
+    }
+
+    function toggleTallaEstimada() {
+      const valor = document.querySelector('input[name="campos[se_mantiene_erguido]"]:checked')?.value || '1';
+      document.getElementById('campoTallaEstimada')?.classList.toggle('antro-hidden', valor !== '0');
+    }
+
+    function calcularSemanasGestacion() {
+      const fum = document.getElementById('fum')?.value || '';
+      const fechaEco = document.getElementById('fechaEco')?.value || '';
+      const semanasEco = parseFloat(document.getElementById('semanasEco')?.value || '');
+      const salida = document.getElementById('embarazo_semanas');
+
+      if (!salida || !fechaEvaluacion.value) return;
+
+      if (fum) {
+        const inicio = new Date(fum + 'T00:00:00');
+        const fin = new Date(fechaEvaluacion.value + 'T00:00:00');
+        const diffDias = Math.floor((fin - inicio) / 86400000);
+
+        salida.value = diffDias >= 0 ? Math.floor(diffDias / 7) : '';
+        return;
+      }
+
+      if (fechaEco && semanasEco >= 0) {
+        const ecoDate = new Date(fechaEco + 'T00:00:00');
+        const evalDate = new Date(fechaEvaluacion.value + 'T00:00:00');
+        const diffDias = Math.floor((evalDate - ecoDate) / 86400000);
+
+        salida.value = diffDias >= 0 ? (semanasEco + Math.floor(diffDias / 7)).toFixed(1) : semanasEco.toFixed(1);
+      }
+    }
+
+    function pintarZscoreResumen() {
+      document.getElementById('z_pe').textContent = document.getElementById('zpe')?.value || '—';
+      document.getElementById('pct_pe').textContent = document.getElementById('zpe_percentil')?.value || '—';
+
+      document.getElementById('z_le').textContent = document.getElementById('zte')?.value || '—';
+      document.getElementById('pct_le').textContent = document.getElementById('zte_percentil')?.value || '—';
+
+      document.getElementById('z_pl').textContent = document.getElementById('zpt')?.value || '—';
+      document.getElementById('pct_pl').textContent = document.getElementById('zpt_percentil')?.value || '—';
+
+      document.getElementById('z_imce').textContent = document.getElementById('zimce')?.value || '—';
+      document.getElementById('pct_imce').textContent = document.getElementById('zimce_percentil')?.value || '—';
+
+      document.getElementById('z_cce').textContent = document.getElementById('zcc')?.value || '—';
+      document.getElementById('pct_cce').textContent = document.getElementById('zcc_percentil')?.value || '—';
+
+      document.getElementById('z_cbie').textContent = document.getElementById('zcbi')?.value || '—';
+      document.getElementById('pct_cbie').textContent = document.getElementById('zcbi_percentil')?.value || '—';
+
+      document.getElementById('z_pte').textContent = document.getElementById('zptri')?.value || '—';
+      document.getElementById('pct_pte').textContent = document.getElementById('zptri_percentil')?.value || '—';
+
+      document.getElementById('z_pse').textContent = document.getElementById('zpsub')?.value || '—';
+      document.getElementById('pct_pse').textContent = document.getElementById('zpsub_percentil')?.value || '—';
+    }
+
+    function validarGuardar(event) {
+      const errores = [];
+
+      if (!(parseFloat(peso.value) > 0)) {
+        errores.push('Debe registrar el peso.');
+      }
+
+      if (!(parseFloat(talla.value) > 0)) {
+        errores.push('Debe registrar la talla.');
+      }
+      if (esMenor2) {
+        document.querySelectorAll(
+          'input[name="campos[embarazada]"], input[name="campos[lactante]"], input[name="campos[discapacidad]"], input[name="campos[se_mantiene_erguido]"], input[name="campos[ausencia_extremidades]"], #fum, #fechaEco, #semanasEco, #embarazo_imc_pregestacional_vista, #talla_estimada, #peso_ajustado'
+        ).forEach(function(el) {
+          el.disabled = true;
+        });
+      }
+
+      if (sexo !== 'F') {
+        document.querySelectorAll(
+          'input[name="campos[embarazada]"], input[name="campos[lactante]"], #fum, #fechaEco, #semanasEco, #embarazo_imc_pregestacional_vista'
+        ).forEach(function(el) {
+          el.disabled = true;
+        });
+      }
+      if (esAdulto && !(parseFloat(cintura.value) > 0)) {
+        errores.push('En adultos es obligatoria la circunferencia de cintura.');
+      }
+
+      if (errores.length > 0) {
+        event.preventDefault();
+        mostrarError(errores.join('<br>'));
+        irCampoRequerido();
+      }
+    }
+
+    function mostrarError(mensaje) {
+      const box = document.getElementById('antroError');
+
+      box.innerHTML = mensaje;
+      box.classList.remove('antro-hidden');
+
+      setTimeout(function() {
+        box.classList.add('antro-hidden');
+      }, 5000);
+    }
+  });
+</script>
+
+<?= $this->endSection() ?>
