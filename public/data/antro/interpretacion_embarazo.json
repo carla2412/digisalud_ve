@@ -1,0 +1,800 @@
+[
+  {
+    "id": 1,
+    "sexo": "F",
+    "semanas": 4,
+    "bajo_peso": {
+      "inferior": 0.154,
+      "superior": 0.616
+    },
+    "peso_normal": {
+      "inferior": 0.154,
+      "superior": 0.616
+    },
+    "sobrepeso": {
+      "inferior": 0.154,
+      "superior": 0.616
+    },
+    "obesidad": {
+      "inferior": 0.154,
+      "superior": 0.616
+    }
+  },
+  {
+    "id": 2,
+    "sexo": "F",
+    "semanas": 5,
+    "bajo_peso": {
+      "inferior": 0.1925,
+      "superior": 0.77
+    },
+    "peso_normal": {
+      "inferior": 0.1925,
+      "superior": 0.77
+    },
+    "sobrepeso": {
+      "inferior": 0.1925,
+      "superior": 0.77
+    },
+    "obesidad": {
+      "inferior": 0.1925,
+      "superior": 0.77
+    }
+  },
+  {
+    "id": 3,
+    "sexo": "F",
+    "semanas": 6,
+    "bajo_peso": {
+      "inferior": 0.231,
+      "superior": 0.924
+    },
+    "peso_normal": {
+      "inferior": 0.231,
+      "superior": 0.924
+    },
+    "sobrepeso": {
+      "inferior": 0.231,
+      "superior": 0.924
+    },
+    "obesidad": {
+      "inferior": 0.231,
+      "superior": 0.924
+    }
+  },
+  {
+    "id": 4,
+    "sexo": "F",
+    "semanas": 7,
+    "bajo_peso": {
+      "inferior": 0.2695,
+      "superior": 1.078
+    },
+    "peso_normal": {
+      "inferior": 0.2695,
+      "superior": 1.078
+    },
+    "sobrepeso": {
+      "inferior": 0.2695,
+      "superior": 1.078
+    },
+    "obesidad": {
+      "inferior": 0.2695,
+      "superior": 1.078
+    }
+  },
+  {
+    "id": 5,
+    "sexo": "F",
+    "semanas": 8,
+    "bajo_peso": {
+      "inferior": 0.308,
+      "superior": 1.232
+    },
+    "peso_normal": {
+      "inferior": 0.308,
+      "superior": 1.232
+    },
+    "sobrepeso": {
+      "inferior": 0.308,
+      "superior": 1.232
+    },
+    "obesidad": {
+      "inferior": 0.308,
+      "superior": 1.232
+    }
+  },
+  {
+    "id": 6,
+    "sexo": "F",
+    "semanas": 9,
+    "bajo_peso": {
+      "inferior": 0.3465,
+      "superior": 1.386
+    },
+    "peso_normal": {
+      "inferior": 0.3465,
+      "superior": 1.386
+    },
+    "sobrepeso": {
+      "inferior": 0.3465,
+      "superior": 1.386
+    },
+    "obesidad": {
+      "inferior": 0.3465,
+      "superior": 1.386
+    }
+  },
+  {
+    "id": 7,
+    "sexo": "F",
+    "semanas": 10,
+    "bajo_peso": {
+      "inferior": 0.385,
+      "superior": 1.54
+    },
+    "peso_normal": {
+      "inferior": 0.385,
+      "superior": 1.54
+    },
+    "sobrepeso": {
+      "inferior": 0.385,
+      "superior": 1.54
+    },
+    "obesidad": {
+      "inferior": 0.385,
+      "superior": 1.54
+    }
+  },
+  {
+    "id": 8,
+    "sexo": "F",
+    "semanas": 11,
+    "bajo_peso": {
+      "inferior": 0.4235,
+      "superior": 1.694
+    },
+    "peso_normal": {
+      "inferior": 0.4235,
+      "superior": 1.694
+    },
+    "sobrepeso": {
+      "inferior": 0.4235,
+      "superior": 1.694
+    },
+    "obesidad": {
+      "inferior": 0.4235,
+      "superior": 1.694
+    }
+  },
+  {
+    "id": 9,
+    "sexo": "F",
+    "semanas": 12,
+    "bajo_peso": {
+      "inferior": 0.462,
+      "superior": 1.848
+    },
+    "peso_normal": {
+      "inferior": 0.462,
+      "superior": 1.848
+    },
+    "sobrepeso": {
+      "inferior": 0.462,
+      "superior": 1.848
+    },
+    "obesidad": {
+      "inferior": 0.462,
+      "superior": 1.848
+    }
+  },
+  {
+    "id": 10,
+    "sexo": "F",
+    "semanas": 13,
+    "bajo_peso": {
+      "inferior": 0.5005,
+      "superior": 2.002
+    },
+    "peso_normal": {
+      "inferior": 0.5005,
+      "superior": 2.002
+    },
+    "sobrepeso": {
+      "inferior": 0.5005,
+      "superior": 2.002
+    },
+    "obesidad": {
+      "inferior": 0.5005,
+      "superior": 2.002
+    }
+  },
+  {
+    "id": 11,
+    "sexo": "F",
+    "semanas": 14,
+    "bajo_peso": {
+      "inferior": 0.9405,
+      "superior": 2.582
+    },
+    "peso_normal": {
+      "inferior": 0.8505,
+      "superior": 2.502
+    },
+    "sobrepeso": {
+      "inferior": 0.7305,
+      "superior": 2.332
+    },
+    "obesidad": {
+      "inferior": 0.6705,
+      "superior": 2.272
+    }
+  },
+  {
+    "id": 12,
+    "sexo": "F",
+    "semanas": 15,
+    "bajo_peso": {
+      "inferior": 1.3805,
+      "superior": 3.162
+    },
+    "peso_normal": {
+      "inferior": 1.2005,
+      "superior": 3.002
+    },
+    "sobrepeso": {
+      "inferior": 0.9605,
+      "superior": 2.662
+    },
+    "obesidad": {
+      "inferior": 0.8405,
+      "superior": 2.542
+    }
+  },
+  {
+    "id": 13,
+    "sexo": "F",
+    "semanas": 16,
+    "bajo_peso": {
+      "inferior": 1.8205,
+      "superior": 3.742
+    },
+    "peso_normal": {
+      "inferior": 1.5505,
+      "superior": 3.502
+    },
+    "sobrepeso": {
+      "inferior": 1.1905,
+      "superior": 2.992
+    },
+    "obesidad": {
+      "inferior": 1.0105,
+      "superior": 2.812
+    }
+  },
+  {
+    "id": 14,
+    "sexo": "F",
+    "semanas": 17,
+    "bajo_peso": {
+      "inferior": 2.2605,
+      "superior": 4.322
+    },
+    "peso_normal": {
+      "inferior": 1.9005,
+      "superior": 4.002
+    },
+    "sobrepeso": {
+      "inferior": 1.4205,
+      "superior": 3.322
+    },
+    "obesidad": {
+      "inferior": 1.1805,
+      "superior": 3.082
+    }
+  },
+  {
+    "id": 15,
+    "sexo": "F",
+    "semanas": 18,
+    "bajo_peso": {
+      "inferior": 2.7005,
+      "superior": 4.902
+    },
+    "peso_normal": {
+      "inferior": 2.2505,
+      "superior": 4.502
+    },
+    "sobrepeso": {
+      "inferior": 1.6505,
+      "superior": 3.652
+    },
+    "obesidad": {
+      "inferior": 1.3505,
+      "superior": 3.352
+    }
+  },
+  {
+    "id": 16,
+    "sexo": "F",
+    "semanas": 19,
+    "bajo_peso": {
+      "inferior": 3.1405,
+      "superior": 5.482
+    },
+    "peso_normal": {
+      "inferior": 2.6005,
+      "superior": 5.002
+    },
+    "sobrepeso": {
+      "inferior": 1.8805,
+      "superior": 3.982
+    },
+    "obesidad": {
+      "inferior": 1.5205,
+      "superior": 3.622
+    }
+  },
+  {
+    "id": 17,
+    "sexo": "F",
+    "semanas": 20,
+    "bajo_peso": {
+      "inferior": 3.5805,
+      "superior": 6.062
+    },
+    "peso_normal": {
+      "inferior": 2.9505,
+      "superior": 5.502
+    },
+    "sobrepeso": {
+      "inferior": 2.1105,
+      "superior": 4.312
+    },
+    "obesidad": {
+      "inferior": 1.6905,
+      "superior": 3.892
+    }
+  },
+  {
+    "id": 18,
+    "sexo": "F",
+    "semanas": 21,
+    "bajo_peso": {
+      "inferior": 4.0205,
+      "superior": 6.642
+    },
+    "peso_normal": {
+      "inferior": 3.3005,
+      "superior": 6.002
+    },
+    "sobrepeso": {
+      "inferior": 2.3405,
+      "superior": 4.642
+    },
+    "obesidad": {
+      "inferior": 1.8605,
+      "superior": 4.162
+    }
+  },
+  {
+    "id": 19,
+    "sexo": "F",
+    "semanas": 22,
+    "bajo_peso": {
+      "inferior": 4.4605,
+      "superior": 7.222
+    },
+    "peso_normal": {
+      "inferior": 3.6505,
+      "superior": 6.502
+    },
+    "sobrepeso": {
+      "inferior": 2.5705,
+      "superior": 4.972
+    },
+    "obesidad": {
+      "inferior": 2.0305,
+      "superior": 4.432
+    }
+  },
+  {
+    "id": 20,
+    "sexo": "F",
+    "semanas": 23,
+    "bajo_peso": {
+      "inferior": 4.9005,
+      "superior": 7.802
+    },
+    "peso_normal": {
+      "inferior": 4.0005,
+      "superior": 7.002
+    },
+    "sobrepeso": {
+      "inferior": 2.8005,
+      "superior": 5.302
+    },
+    "obesidad": {
+      "inferior": 2.2005,
+      "superior": 4.702
+    }
+  },
+  {
+    "id": 21,
+    "sexo": "F",
+    "semanas": 24,
+    "bajo_peso": {
+      "inferior": 5.3405,
+      "superior": 8.382
+    },
+    "peso_normal": {
+      "inferior": 4.3505,
+      "superior": 7.502
+    },
+    "sobrepeso": {
+      "inferior": 3.0305,
+      "superior": 5.632
+    },
+    "obesidad": {
+      "inferior": 2.3705,
+      "superior": 4.972
+    }
+  },
+  {
+    "id": 22,
+    "sexo": "F",
+    "semanas": 25,
+    "bajo_peso": {
+      "inferior": 5.7805,
+      "superior": 8.962
+    },
+    "peso_normal": {
+      "inferior": 4.7005,
+      "superior": 8.002
+    },
+    "sobrepeso": {
+      "inferior": 3.2605,
+      "superior": 5.962
+    },
+    "obesidad": {
+      "inferior": 2.5405,
+      "superior": 5.242
+    }
+  },
+  {
+    "id": 23,
+    "sexo": "F",
+    "semanas": 26,
+    "bajo_peso": {
+      "inferior": 6.2205,
+      "superior": 9.542
+    },
+    "peso_normal": {
+      "inferior": 5.0505,
+      "superior": 8.502
+    },
+    "sobrepeso": {
+      "inferior": 3.4905,
+      "superior": 6.292
+    },
+    "obesidad": {
+      "inferior": 2.7105,
+      "superior": 5.512
+    }
+  },
+  {
+    "id": 24,
+    "sexo": "F",
+    "semanas": 27,
+    "bajo_peso": {
+      "inferior": 6.6605,
+      "superior": 10.122
+    },
+    "peso_normal": {
+      "inferior": 5.4005,
+      "superior": 9.002
+    },
+    "sobrepeso": {
+      "inferior": 3.7205,
+      "superior": 6.622
+    },
+    "obesidad": {
+      "inferior": 2.8805,
+      "superior": 5.782
+    }
+  },
+  {
+    "id": 25,
+    "sexo": "F",
+    "semanas": 28,
+    "bajo_peso": {
+      "inferior": 7.1005,
+      "superior": 10.702
+    },
+    "peso_normal": {
+      "inferior": 5.7505,
+      "superior": 9.502
+    },
+    "sobrepeso": {
+      "inferior": 3.9505,
+      "superior": 6.952
+    },
+    "obesidad": {
+      "inferior": 3.0505,
+      "superior": 6.052
+    }
+  },
+  {
+    "id": 26,
+    "sexo": "F",
+    "semanas": 29,
+    "bajo_peso": {
+      "inferior": 7.5405,
+      "superior": 11.282
+    },
+    "peso_normal": {
+      "inferior": 6.1005,
+      "superior": 10.002
+    },
+    "sobrepeso": {
+      "inferior": 4.1805,
+      "superior": 7.282
+    },
+    "obesidad": {
+      "inferior": 3.2205,
+      "superior": 6.322
+    }
+  },
+  {
+    "id": 27,
+    "sexo": "F",
+    "semanas": 30,
+    "bajo_peso": {
+      "inferior": 7.9805,
+      "superior": 11.862
+    },
+    "peso_normal": {
+      "inferior": 6.4505,
+      "superior": 10.502
+    },
+    "sobrepeso": {
+      "inferior": 4.4105,
+      "superior": 7.612
+    },
+    "obesidad": {
+      "inferior": 3.3905,
+      "superior": 6.592
+    }
+  },
+  {
+    "id": 28,
+    "sexo": "F",
+    "semanas": 31,
+    "bajo_peso": {
+      "inferior": 8.4205,
+      "superior": 12.442
+    },
+    "peso_normal": {
+      "inferior": 6.8005,
+      "superior": 11.002
+    },
+    "sobrepeso": {
+      "inferior": 4.6405,
+      "superior": 7.942
+    },
+    "obesidad": {
+      "inferior": 3.5605,
+      "superior": 6.862
+    }
+  },
+  {
+    "id": 29,
+    "sexo": "F",
+    "semanas": 32,
+    "bajo_peso": {
+      "inferior": 8.8605,
+      "superior": 13.022
+    },
+    "peso_normal": {
+      "inferior": 7.1505,
+      "superior": 11.502
+    },
+    "sobrepeso": {
+      "inferior": 4.8705,
+      "superior": 8.272
+    },
+    "obesidad": {
+      "inferior": 3.7305,
+      "superior": 7.132
+    }
+  },
+  {
+    "id": 30,
+    "sexo": "F",
+    "semanas": 33,
+    "bajo_peso": {
+      "inferior": 9.3005,
+      "superior": 13.602
+    },
+    "peso_normal": {
+      "inferior": 7.5005,
+      "superior": 12.002
+    },
+    "sobrepeso": {
+      "inferior": 5.1005,
+      "superior": 8.602
+    },
+    "obesidad": {
+      "inferior": 3.9005,
+      "superior": 7.402
+    }
+  },
+  {
+    "id": 31,
+    "sexo": "F",
+    "semanas": 34,
+    "bajo_peso": {
+      "inferior": 9.7405,
+      "superior": 14.182
+    },
+    "peso_normal": {
+      "inferior": 7.8505,
+      "superior": 12.502
+    },
+    "sobrepeso": {
+      "inferior": 5.3305,
+      "superior": 8.932
+    },
+    "obesidad": {
+      "inferior": 4.0705,
+      "superior": 7.672
+    }
+  },
+  {
+    "id": 32,
+    "sexo": "F",
+    "semanas": 35,
+    "bajo_peso": {
+      "inferior": 10.1805,
+      "superior": 14.762
+    },
+    "peso_normal": {
+      "inferior": 8.2005,
+      "superior": 13.002
+    },
+    "sobrepeso": {
+      "inferior": 5.5605,
+      "superior": 9.262
+    },
+    "obesidad": {
+      "inferior": 4.2405,
+      "superior": 7.942
+    }
+  },
+  {
+    "id": 33,
+    "sexo": "F",
+    "semanas": 36,
+    "bajo_peso": {
+      "inferior": 10.6205,
+      "superior": 15.342
+    },
+    "peso_normal": {
+      "inferior": 8.5505,
+      "superior": 13.502
+    },
+    "sobrepeso": {
+      "inferior": 5.7905,
+      "superior": 9.592
+    },
+    "obesidad": {
+      "inferior": 4.4105,
+      "superior": 8.212
+    }
+  },
+  {
+    "id": 34,
+    "sexo": "F",
+    "semanas": 37,
+    "bajo_peso": {
+      "inferior": 11.0605,
+      "superior": 15.922
+    },
+    "peso_normal": {
+      "inferior": 8.9005,
+      "superior": 14.002
+    },
+    "sobrepeso": {
+      "inferior": 6.0205,
+      "superior": 9.922
+    },
+    "obesidad": {
+      "inferior": 4.5805,
+      "superior": 8.482
+    }
+  },
+  {
+    "id": 35,
+    "sexo": "F",
+    "semanas": 38,
+    "bajo_peso": {
+      "inferior": 11.5005,
+      "superior": 16.502
+    },
+    "peso_normal": {
+      "inferior": 9.2505,
+      "superior": 14.502
+    },
+    "sobrepeso": {
+      "inferior": 6.2505,
+      "superior": 10.252
+    },
+    "obesidad": {
+      "inferior": 4.7505,
+      "superior": 8.752
+    }
+  },
+  {
+    "id": 36,
+    "sexo": "F",
+    "semanas": 39,
+    "bajo_peso": {
+      "inferior": 11.9405,
+      "superior": 17.082
+    },
+    "peso_normal": {
+      "inferior": 9.6005,
+      "superior": 15.002
+    },
+    "sobrepeso": {
+      "inferior": 6.4805,
+      "superior": 10.582
+    },
+    "obesidad": {
+      "inferior": 4.9205,
+      "superior": 9.022
+    }
+  },
+  {
+    "id": 37,
+    "sexo": "F",
+    "semanas": 40,
+    "bajo_peso": {
+      "inferior": 12.3805,
+      "superior": 17.662
+    },
+    "peso_normal": {
+      "inferior": 9.9505,
+      "superior": 15.502
+    },
+    "sobrepeso": {
+      "inferior": 6.7105,
+      "superior": 10.912
+    },
+    "obesidad": {
+      "inferior": 5.0905,
+      "superior": 9.292
+    }
+  },
+  {
+    "id": 38,
+    "sexo": "F",
+    "semanas": 41,
+    "bajo_peso": {
+      "inferior": 12.8205,
+      "superior": 18.242
+    },
+    "peso_normal": {
+      "inferior": 10.3005,
+      "superior": 16.002
+    },
+    "sobrepeso": {
+      "inferior": 6.9405,
+      "superior": 11.242
+    },
+    "obesidad": {
+      "inferior": 5.2605,
+      "superior": 9.562
+    }
+  }
+]
