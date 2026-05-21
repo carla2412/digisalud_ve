@@ -1742,10 +1742,20 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     let aplicaZscore = edadDias > 0 && edadDias <= 6939;
     let aplicaLactante = sexo === 'F' && edadMeses > 144 && edadMeses <= 600;
     let aplicaDiscapacidad = edadDias > 730;
+    let antroData = {};
+    let antroDataReady = false;
 
     inicializarVista();
     bindEventos();
-    recalcular();
+
+    cargarDatosAntro().then(function() {
+      antroDataReady = true;
+      recalcular();
+    }).catch(function(error) {
+      console.error('No se pudieron cargar los JSON antropométricos:', error);
+      antroDataReady = false;
+      recalcular();
+    });
 
     function inicializarVista() {
       actualizarEdadHidden();
@@ -1799,6 +1809,50 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
       toggleEmbarazo();
       toggleDiscapacidad();
       toggleTallaEstimada();
+    }
+    async function cargarDatosAntro() {
+      const base = '<?= base_url('data/antro') ?>';
+
+      const archivos = {
+        percentiles: 'percentiles.json',
+        interpretacionEmbarazo: 'interpretacion_embarazo.json',
+
+        zcbiDias: 'zcbi_dias.json',
+        zccDias: 'zcc_dias.json',
+
+        zimceDias: 'zimce_dias.json',
+        zimceMeses: 'zimce_meses.json',
+
+        zpeDias: 'zpe_dias.json',
+        zpeMeses: 'zpe_meses.json',
+
+        zpesoTalla: 'zpeso_talla.json',
+        zpesoTalla2: 'zpeso_talla2.json',
+
+        zsubescapularDias: 'zsubescapular_dias.json',
+
+        zteDias: 'zte_dias.json',
+        zteMeses: 'zte_meses.json',
+        zteMesesParte2: 'zte_meses_parte2.json',
+
+        ztricipitalDias: 'ztricipital_dias.json'
+      };
+
+      const entradas = await Promise.all(
+        Object.entries(archivos).map(async function([key, filename]) {
+          const response = await fetch(base + '/' + filename, {
+            cache: 'force-cache'
+          });
+
+          if (!response.ok) {
+            throw new Error('No se pudo cargar ' + filename);
+          }
+
+          return [key, await response.json()];
+        })
+      );
+
+      antroData = Object.fromEntries(entradas);
     }
 
     function controlarLactante() {
@@ -2179,6 +2233,12 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
         document.getElementById('resCintura').classList.toggle('antro-danger', !(c > 0));
       }
 
+      if (antroDataReady && aplicaZscore) {
+        recalcularZscoresAntro();
+      } else {
+        limpiarZscoresAntro();
+      }
+
       actualizarInterpretacion(imcValue, c, edema);
       actualizarProgreso();
     }
@@ -2209,452 +2269,578 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
       }
     }
 
-     function actualizarInterpretacion(imcValue, cinturaValue, edema) {
-  const box = document.getElementById('antroInterpretacionBox');
-  const txt = document.getElementById('antroInterpretacionTexto');
-  const tagImc = document.getElementById('antroTagImc');
-  const estado = document.getElementById('resEstado');
+    function actualizarInterpretacion(imcValue, cinturaValue, edema) {
+      const box = document.getElementById('antroInterpretacionBox');
+      const txt = document.getElementById('antroInterpretacionTexto');
+      const tagImc = document.getElementById('antroTagImc');
+      const estado = document.getElementById('resEstado');
 
-  if (!box || !txt) return;
+      if (!box || !txt) return;
 
-  box.classList.remove('antro-alert-info', 'antro-alert-danger');
+      box.classList.remove('antro-alert-info', 'antro-alert-danger');
 
-  const pesoVal = parseFloat(peso?.value || '');
-  const tallaVal = parseFloat(talla?.value || '');
-  const sexoVal = sexo;
+      const pesoVal = parseFloat(peso?.value || '');
+      const tallaVal = parseFloat(talla?.value || '');
+      const sexoVal = sexo;
 
-  if (!(edadDias > 0)) {
-    pintarInterpretacion({
-      texto: 'Revisar datos: fecha de evaluación o fecha de nacimiento inválida.',
-      estado: 'Revisar datos',
-      clase: 'danger'
-    });
-    return;
-  }
+      if (!(edadDias > 0)) {
+        pintarInterpretacion({
+          texto: 'Revisar datos: fecha de evaluación o fecha de nacimiento inválida.',
+          estado: 'Revisar datos',
+          clase: 'danger'
+        });
+        return;
+      }
 
-  if (!(pesoVal > 0) || !(tallaVal > 0)) {
-    pintarInterpretacion({
-      texto: 'Completa peso y talla para calcular la interpretación combinada.',
-      estado: 'Pendiente',
-      clase: 'info'
-    });
-    return;
-  }
+      if (!(pesoVal > 0) || !(tallaVal > 0)) {
+        pintarInterpretacion({
+          texto: 'Completa peso y talla para calcular la interpretación combinada.',
+          estado: 'Pendiente',
+          clase: 'info'
+        });
+        return;
+      }
 
-  const embarazadaValor = document.querySelector('input[name="campos[embarazada]"]:checked')?.value || '0';
+      const embarazadaValor = document.querySelector('input[name="campos[embarazada]"]:checked')?.value || '0';
 
-  if (sexoVal === 'F' && !esMenor2 && embarazadaValor === '1') {
-    const resultadoEmb = interpretarEmbarazada();
+      if (sexoVal === 'F' && !esMenor2 && embarazadaValor === '1') {
+        const resultadoEmb = interpretarEmbarazada();
 
-    pintarInterpretacion(resultadoEmb);
-    return;
-  }
+        pintarInterpretacion(resultadoEmb);
+        return;
+      }
 
-  if (aplicaZscore) {
-    const resultadoMenor = interpretarMenor19(edema);
+      if (aplicaZscore) {
+        const resultadoMenor = interpretarMenor19(edema);
 
-    pintarInterpretacion(resultadoMenor);
-    return;
-  }
+        pintarInterpretacion(resultadoMenor);
+        return;
+      }
 
-  if (edadDias > 21550) {
-    const resultadoAdultoMayor = interpretarAdultoMayor(imcValue, cinturaValue, sexoVal);
+      if (edadDias > 21550) {
+        const resultadoAdultoMayor = interpretarAdultoMayor(imcValue, cinturaValue, sexoVal);
 
-    pintarInterpretacion(resultadoAdultoMayor);
-    return;
-  }
+        pintarInterpretacion(resultadoAdultoMayor);
+        return;
+      }
 
-  if (esMayor19) {
-    const resultadoAdulto = interpretarAdulto(imcValue, cinturaValue, sexoVal);
+      if (esMayor19) {
+        const resultadoAdulto = interpretarAdulto(imcValue, cinturaValue, sexoVal);
 
-    pintarInterpretacion(resultadoAdulto);
-    return;
-  }
+        pintarInterpretacion(resultadoAdulto);
+        return;
+      }
 
-  pintarInterpretacion({
-    texto: 'Revisar datos.',
-    estado: 'Revisar datos',
-    clase: 'danger'
-  });
-}
-
-function pintarInterpretacion(resultado) {
-  const box = document.getElementById('antroInterpretacionBox');
-  const txt = document.getElementById('antroInterpretacionTexto');
-  const tagImc = document.getElementById('antroTagImc');
-  const estado = document.getElementById('resEstado');
-
-  if (!box || !txt) return;
-
-  box.classList.remove('antro-alert-info', 'antro-alert-danger');
-
-  if (resultado.clase === 'danger') {
-    box.classList.add('antro-alert-danger');
-  } else {
-    box.classList.add('antro-alert-info');
-  }
-
-  txt.textContent = resultado.texto || 'Revisar datos.';
-
-  if (tagImc) {
-    tagImc.textContent = resultado.estado || 'Revisar datos';
-  }
-
-  if (estado) {
-    estado.textContent = resultado.estado || 'Revisar datos';
-  }
-
-  if (hiddenEstado) {
-    hiddenEstado.value = resultado.estado || '';
-  }
-
-  if (hiddenClasificacion) {
-    hiddenClasificacion.value = resultado.estado || '';
-  }
-}
-function interpretarMenor19(edema) {
-  const zimce = parseFloat(document.getElementById('zimce')?.value || '');
-  const zte = parseFloat(document.getElementById('zte')?.value || '');
-
-  if (edema === '1') {
-    return {
-      texto: 'Edema presente. Indicadores asociados a peso no aplican. Requiere revisión clínica.',
-      estado: 'Revisar por edema',
-      clase: 'danger'
-    };
-  }
-
-  if (Number.isNaN(zimce) || Number.isNaN(zte)) {
-    return {
-      texto: 'Completa los datos necesarios para calcular ZIMC/E y ZTE.',
-      estado: 'Pendiente Z-Score',
-      clase: 'info'
-    };
-  }
-
-  const estadoImc = clasificarZimce(zimce);
-  const estadoTalla = clasificarZte(zte);
-
-  if (estadoImc.revisar || estadoTalla.revisar) {
-    return {
-      texto: 'Revisar datos: z-score fuera del rango admisible.',
-      estado: 'Revisar datos',
-      clase: 'danger'
-    };
-  }
-
-  const texto = estadoImc.texto + ' con ' + estadoTalla.texto;
-
-  return {
-    texto: texto,
-    estado: texto,
-    clase: estadoImc.clase === 'danger' || estadoTalla.clase === 'danger' ? 'danger' : estadoImc.clase
-  };
-}
-function clasificarZimce(z) {
-  if (z < -5 || z > 5) {
-    return { texto: 'Revisar datos', clase: 'danger', revisar: true };
-  }
-
-  if (z >= -5 && z <= -3.01) {
-    return { texto: 'Delgadez severa', clase: 'danger' };
-  }
-
-  if (z > -3.01 && z <= -2.01) {
-    return { texto: 'Delgadez', clase: 'danger' };
-  }
-
-  if (z > -2.01 && z <= -1.01) {
-    return { texto: 'Riesgo de delgadez', clase: 'warning' };
-  }
-
-  if (z > -1.01 && z <= 1.00) {
-    return { texto: 'Peso adecuado', clase: 'info' };
-  }
-
-  if (z > 1.00 && z <= 2.00) {
-    return { texto: 'Sobrepeso', clase: 'warning' };
-  }
-
-  if (z > 2.00 && z <= 3.00) {
-    return { texto: 'Obesidad', clase: 'danger' };
-  }
-
-  if (z > 3.00 && z <= 5.00) {
-    return { texto: 'Obesidad severa', clase: 'danger' };
-  }
-
-  return { texto: 'Revisar datos', clase: 'danger', revisar: true };
-}
-
-function clasificarZte(z) {
-  if (z < -6 || z > 6) {
-    return { texto: 'Revisar datos', clase: 'danger', revisar: true };
-  }
-
-  if (z >= -6 && z <= -3.01) {
-    return { texto: 'talla muy baja', clase: 'danger' };
-  }
-
-  if (z > -3.01 && z <= -2.01) {
-    return { texto: 'talla baja', clase: 'warning' };
-  }
-
-  if (z > -2.01 && z <= 2.00) {
-    return { texto: 'talla adecuada', clase: 'info' };
-  }
-
-  if (z > 2.00 && z <= 6.00) {
-    return { texto: 'talla alta', clase: 'info' };
-  }
-
-  return { texto: 'Revisar datos', clase: 'danger', revisar: true };
-}
-function interpretarAdulto(imcValue, cinturaValue, sexoVal) {
-  if (!(imcValue > 0) || !(cinturaValue > 0)) {
-    return {
-      texto: 'Completa IMC y circunferencia de cintura para calcular la interpretación adulta.',
-      estado: 'Pendiente cintura',
-      clase: 'info'
-    };
-  }
-
-  if (imcValue < 12 || imcValue > 80) {
-    return {
-      texto: 'Revisar datos: IMC fuera del rango admisible.',
-      estado: 'Revisar datos',
-      clase: 'danger'
-    };
-  }
-
-  const estadoImc = clasificarImcAdulto(imcValue);
-  const riesgo = clasificarRiesgoCintura(cinturaValue, sexoVal);
-
-  if (!estadoImc || !riesgo) {
-    return {
-      texto: 'Revisar datos.',
-      estado: 'Revisar datos',
-      clase: 'danger'
-    };
-  }
-
-  const texto = estadoImc.texto + ' con ' + riesgo.texto;
-
-  return {
-    texto: texto,
-    estado: texto,
-    clase: estadoImc.clase === 'danger' || riesgo.clase === 'danger' ? 'danger' : estadoImc.clase
-  };
-}
-
-function clasificarImcAdulto(imc) {
-  if (imc >= 12 && imc <= 16.00) {
-    return { texto: 'Delgadez intensa', clase: 'danger' };
-  }
-
-  if (imc > 16.00 && imc <= 16.99) {
-    return { texto: 'Delgadez moderada', clase: 'danger' };
-  }
-
-  if (imc > 16.99 && imc <= 18.49) {
-    return { texto: 'Delgadez leve', clase: 'warning' };
-  }
-
-  if (imc > 18.49 && imc <= 24.99) {
-    return { texto: 'Peso adecuado', clase: 'info' };
-  }
-
-  if (imc > 24.99 && imc <= 29.99) {
-    return { texto: 'Sobrepeso', clase: 'warning' };
-  }
-
-  if (imc > 29.99 && imc <= 39.99) {
-    return { texto: 'Obesidad', clase: 'danger' };
-  }
-
-  if (imc > 39.99 && imc <= 80) {
-    return { texto: 'Obesidad severa', clase: 'danger' };
-  }
-
-  return null;
-}
-
-function clasificarRiesgoCintura(cintura, sexoVal) {
-  if (sexoVal === 'M') {
-    if (cintura < 94) {
-      return { texto: 'riesgo bajo', clase: 'info' };
+      pintarInterpretacion({
+        texto: 'Revisar datos.',
+        estado: 'Revisar datos',
+        clase: 'danger'
+      });
     }
 
-    if (cintura >= 94 && cintura <= 101.9) {
-      return { texto: 'riesgo incrementado', clase: 'warning' };
+    function pintarInterpretacion(resultado) {
+      const box = document.getElementById('antroInterpretacionBox');
+      const txt = document.getElementById('antroInterpretacionTexto');
+      const tagImc = document.getElementById('antroTagImc');
+      const estado = document.getElementById('resEstado');
+
+      if (!box || !txt) return;
+
+      box.classList.remove('antro-alert-info', 'antro-alert-danger');
+
+      if (resultado.clase === 'danger') {
+        box.classList.add('antro-alert-danger');
+      } else {
+        box.classList.add('antro-alert-info');
+      }
+
+      txt.textContent = resultado.texto || 'Revisar datos.';
+
+      if (tagImc) {
+        tagImc.textContent = resultado.estado || 'Revisar datos';
+      }
+
+      if (estado) {
+        estado.textContent = resultado.estado || 'Revisar datos';
+      }
+
+      if (hiddenEstado) {
+        hiddenEstado.value = resultado.estado || '';
+      }
+
+      if (hiddenClasificacion) {
+        hiddenClasificacion.value = resultado.estado || '';
+      }
     }
 
-    if (cintura > 101.9) {
-      return { texto: 'riesgo incrementado sustancialmente', clase: 'danger' };
+    function interpretarMenor19(edema) {
+      const zimce = parseFloat(document.getElementById('zimce')?.value || '');
+      const zte = parseFloat(document.getElementById('zte')?.value || '');
+
+      if (edema === '1') {
+        return {
+          texto: 'Edema presente. Indicadores asociados a peso no aplican. Requiere revisión clínica.',
+          estado: 'Revisar por edema',
+          clase: 'danger'
+        };
+      }
+
+      if (Number.isNaN(zimce) || Number.isNaN(zte)) {
+        return {
+          texto: 'Completa los datos necesarios para calcular ZIMC/E y ZTE.',
+          estado: 'Pendiente Z-Score',
+          clase: 'info'
+        };
+      }
+
+      const estadoImc = clasificarZimce(zimce);
+      const estadoTalla = clasificarZte(zte);
+
+      if (estadoImc.revisar || estadoTalla.revisar) {
+        return {
+          texto: 'Revisar datos: z-score fuera del rango admisible.',
+          estado: 'Revisar datos',
+          clase: 'danger'
+        };
+      }
+
+      const texto = estadoImc.texto + ' con ' + estadoTalla.texto;
+
+      return {
+        texto: texto,
+        estado: texto,
+        clase: estadoImc.clase === 'danger' || estadoTalla.clase === 'danger' ? 'danger' : estadoImc.clase
+      };
     }
-  }
 
-  if (sexoVal === 'F') {
-    if (cintura < 80) {
-      return { texto: 'riesgo bajo', clase: 'info' };
+    function clasificarZimce(z) {
+      if (z < -5 || z > 5) {
+        return {
+          texto: 'Revisar datos',
+          clase: 'danger',
+          revisar: true
+        };
+      }
+
+      if (z >= -5 && z <= -3.01) {
+        return {
+          texto: 'Delgadez severa',
+          clase: 'danger'
+        };
+      }
+
+      if (z > -3.01 && z <= -2.01) {
+        return {
+          texto: 'Delgadez',
+          clase: 'danger'
+        };
+      }
+
+      if (z > -2.01 && z <= -1.01) {
+        return {
+          texto: 'Riesgo de delgadez',
+          clase: 'warning'
+        };
+      }
+
+      if (z > -1.01 && z <= 1.00) {
+        return {
+          texto: 'Peso adecuado',
+          clase: 'info'
+        };
+      }
+
+      if (z > 1.00 && z <= 2.00) {
+        return {
+          texto: 'Sobrepeso',
+          clase: 'warning'
+        };
+      }
+
+      if (z > 2.00 && z <= 3.00) {
+        return {
+          texto: 'Obesidad',
+          clase: 'danger'
+        };
+      }
+
+      if (z > 3.00 && z <= 5.00) {
+        return {
+          texto: 'Obesidad severa',
+          clase: 'danger'
+        };
+      }
+
+      return {
+        texto: 'Revisar datos',
+        clase: 'danger',
+        revisar: true
+      };
     }
 
-    if (cintura >= 80 && cintura <= 87.9) {
-      return { texto: 'riesgo incrementado', clase: 'warning' };
+    function clasificarZte(z) {
+      if (z < -6 || z > 6) {
+        return {
+          texto: 'Revisar datos',
+          clase: 'danger',
+          revisar: true
+        };
+      }
+
+      if (z >= -6 && z <= -3.01) {
+        return {
+          texto: 'talla muy baja',
+          clase: 'danger'
+        };
+      }
+
+      if (z > -3.01 && z <= -2.01) {
+        return {
+          texto: 'talla baja',
+          clase: 'warning'
+        };
+      }
+
+      if (z > -2.01 && z <= 2.00) {
+        return {
+          texto: 'talla adecuada',
+          clase: 'info'
+        };
+      }
+
+      if (z > 2.00 && z <= 6.00) {
+        return {
+          texto: 'talla alta',
+          clase: 'info'
+        };
+      }
+
+      return {
+        texto: 'Revisar datos',
+        clase: 'danger',
+        revisar: true
+      };
     }
 
-    if (cintura > 87.9) {
-      return { texto: 'riesgo incrementado sustancialmente', clase: 'danger' };
+    function interpretarAdulto(imcValue, cinturaValue, sexoVal) {
+      if (!(imcValue > 0) || !(cinturaValue > 0)) {
+        return {
+          texto: 'Completa IMC y circunferencia de cintura para calcular la interpretación adulta.',
+          estado: 'Pendiente cintura',
+          clase: 'info'
+        };
+      }
+
+      if (imcValue < 12 || imcValue > 80) {
+        return {
+          texto: 'Revisar datos: IMC fuera del rango admisible.',
+          estado: 'Revisar datos',
+          clase: 'danger'
+        };
+      }
+
+      const estadoImc = clasificarImcAdulto(imcValue);
+      const riesgo = clasificarRiesgoCintura(cinturaValue, sexoVal);
+
+      if (!estadoImc || !riesgo) {
+        return {
+          texto: 'Revisar datos.',
+          estado: 'Revisar datos',
+          clase: 'danger'
+        };
+      }
+
+      const texto = estadoImc.texto + ' con ' + riesgo.texto;
+
+      return {
+        texto: texto,
+        estado: texto,
+        clase: estadoImc.clase === 'danger' || riesgo.clase === 'danger' ? 'danger' : estadoImc.clase
+      };
     }
-  }
 
-  return null;
-}
-function interpretarAdultoMayor(imcValue, cinturaValue, sexoVal) {
-  if (!(imcValue > 0) || !(cinturaValue > 0)) {
-    return {
-      texto: 'Completa IMC y circunferencia de cintura para calcular la interpretación del adulto mayor.',
-      estado: 'Pendiente cintura',
-      clase: 'info'
-    };
-  }
+    function clasificarImcAdulto(imc) {
+      if (imc >= 12 && imc <= 16.00) {
+        return {
+          texto: 'Delgadez intensa',
+          clase: 'danger'
+        };
+      }
 
-  if (imcValue < 12 || imcValue > 80) {
-    return {
-      texto: 'Revisar datos: IMC fuera del rango admisible.',
-      estado: 'Revisar datos',
-      clase: 'danger'
-    };
-  }
+      if (imc > 16.00 && imc <= 16.99) {
+        return {
+          texto: 'Delgadez moderada',
+          clase: 'danger'
+        };
+      }
 
-  const estadoImc = clasificarImcAdultoMayor(imcValue);
-  const riesgo = clasificarRiesgoCintura(cinturaValue, sexoVal);
+      if (imc > 16.99 && imc <= 18.49) {
+        return {
+          texto: 'Delgadez leve',
+          clase: 'warning'
+        };
+      }
 
-  if (!estadoImc || !riesgo) {
-    return {
-      texto: 'Revisar datos.',
-      estado: 'Revisar datos',
-      clase: 'danger'
-    };
-  }
+      if (imc > 18.49 && imc <= 24.99) {
+        return {
+          texto: 'Peso adecuado',
+          clase: 'info'
+        };
+      }
 
-  const texto = estadoImc.texto + ' con ' + riesgo.texto;
+      if (imc > 24.99 && imc <= 29.99) {
+        return {
+          texto: 'Sobrepeso',
+          clase: 'warning'
+        };
+      }
 
-  return {
-    texto: texto,
-    estado: texto,
-    clase: estadoImc.clase === 'danger' || riesgo.clase === 'danger' ? 'danger' : estadoImc.clase
-  };
-}
+      if (imc > 29.99 && imc <= 39.99) {
+        return {
+          texto: 'Obesidad',
+          clase: 'danger'
+        };
+      }
 
-function clasificarImcAdultoMayor(imc) {
-  if (imc >= 12 && imc <= 18.99) {
-    return { texto: 'Desnutrido', clase: 'danger' };
-  }
+      if (imc > 39.99 && imc <= 80) {
+        return {
+          texto: 'Obesidad severa',
+          clase: 'danger'
+        };
+      }
 
-  if (imc > 18.99 && imc <= 22.99) {
-    return { texto: 'Delgado', clase: 'warning' };
-  }
+      return null;
+    }
 
-  if (imc > 22.99 && imc <= 27.99) {
-    return { texto: 'Peso adecuado', clase: 'info' };
-  }
+    function clasificarRiesgoCintura(cintura, sexoVal) {
+      if (sexoVal === 'M') {
+        if (cintura < 94) {
+          return {
+            texto: 'riesgo bajo',
+            clase: 'info'
+          };
+        }
 
-  if (imc > 27.99 && imc <= 31.99) {
-    return { texto: 'Sobrepeso', clase: 'warning' };
-  }
+        if (cintura >= 94 && cintura <= 101.9) {
+          return {
+            texto: 'riesgo incrementado',
+            clase: 'warning'
+          };
+        }
 
-  if (imc > 31.99 && imc <= 80) {
-    return { texto: 'Obesidad', clase: 'danger' };
-  }
+        if (cintura > 101.9) {
+          return {
+            texto: 'riesgo incrementado sustancialmente',
+            clase: 'danger'
+          };
+        }
+      }
 
-  return null;
-}
-function interpretarEmbarazada() {
-  const semanas = parseFloat(document.getElementById('embarazo_semanas')?.value || '');
-  const imcPreg = parseFloat(document.getElementById('embarazo_imc_pregestacional')?.value || '');
-  const ganancia = parseFloat(document.getElementById('embarazo_ganancia_kg')?.value || '');
+      if (sexoVal === 'F') {
+        if (cintura < 80) {
+          return {
+            texto: 'riesgo bajo',
+            clase: 'info'
+          };
+        }
 
-  if (!(semanas > 3) || !(imcPreg > 0) || !(ganancia > 0)) {
-    return {
-      texto: 'Completa semanas de gestación, peso pregestacional, peso actual y talla para calcular la interpretación de embarazo.',
-      estado: 'Embarazo pendiente',
-      clase: 'info'
-    };
-  }
+        if (cintura >= 80 && cintura <= 87.9) {
+          return {
+            texto: 'riesgo incrementado',
+            clase: 'warning'
+          };
+        }
 
-  const estadoImcPreg = clasificarImcPregestacional(imcPreg);
+        if (cintura > 87.9) {
+          return {
+            texto: 'riesgo incrementado sustancialmente',
+            clase: 'danger'
+          };
+        }
+      }
 
-  if (!estadoImcPreg) {
-    return {
-      texto: 'Revisar datos de IMC pregestacional.',
-      estado: 'Revisar datos',
-      clase: 'danger'
-    };
-  }
+      return null;
+    }
 
-  /*
-    Aquí debe consultarse el JSON equivalente a interpretacion_emb.php:
-    - semanas
-    - bajopeso_inferior / superior
-    - pesonormal_inferior / superior
-    - sobrepeso_inferior / superior
-    - obesidad_inferior / superior
-  */
+    function interpretarAdultoMayor(imcValue, cinturaValue, sexoVal) {
+      if (!(imcValue > 0) || !(cinturaValue > 0)) {
+        return {
+          texto: 'Completa IMC y circunferencia de cintura para calcular la interpretación del adulto mayor.',
+          estado: 'Pendiente cintura',
+          clase: 'info'
+        };
+      }
 
-  return {
-    texto: estadoImcPreg.texto + ' con ganancia de peso pendiente de validar contra tabla gestacional.',
-    estado: estadoImcPreg.texto,
-    clase: estadoImcPreg.clase
-  };
-}
+      if (imcValue < 12 || imcValue > 80) {
+        return {
+          texto: 'Revisar datos: IMC fuera del rango admisible.',
+          estado: 'Revisar datos',
+          clase: 'danger'
+        };
+      }
 
-function clasificarImcPregestacional(imcPreg) {
-  if (imcPreg > 0 && imcPreg < 18.5) {
-    return { texto: 'Bajo peso', clave: 'bajopeso', clase: 'danger' };
-  }
+      const estadoImc = clasificarImcAdultoMayor(imcValue);
+      const riesgo = clasificarRiesgoCintura(cinturaValue, sexoVal);
 
-  if (imcPreg >= 18.5 && imcPreg <= 24.9) {
-    return { texto: 'Peso adecuado', clave: 'pesonormal', clase: 'info' };
-  }
+      if (!estadoImc || !riesgo) {
+        return {
+          texto: 'Revisar datos.',
+          estado: 'Revisar datos',
+          clase: 'danger'
+        };
+      }
 
-  if (imcPreg > 24.9 && imcPreg <= 29.9) {
-    return { texto: 'Sobrepeso', clave: 'sobrepeso', clase: 'warning' };
-  }
+      const texto = estadoImc.texto + ' con ' + riesgo.texto;
 
-  if (imcPreg > 29.9) {
-    return { texto: 'Obesidad', clave: 'obesidad', clase: 'danger' };
-  }
+      return {
+        texto: texto,
+        estado: texto,
+        clase: estadoImc.clase === 'danger' || riesgo.clase === 'danger' ? 'danger' : estadoImc.clase
+      };
+    }
 
-  return null;
-}
- function calcularPercentilDesdeZ(z, percentilesJson) {
-  const zNum = parseFloat(z);
+    function clasificarImcAdultoMayor(imc) {
+      if (imc >= 12 && imc <= 18.99) {
+        return {
+          texto: 'Desnutrido',
+          clase: 'danger'
+        };
+      }
 
-  if (Number.isNaN(zNum) || zNum < -3 || zNum > 3) {
-    return 'N/A';
-  }
+      if (imc > 18.99 && imc <= 22.99) {
+        return {
+          texto: 'Delgado',
+          clase: 'warning'
+        };
+      }
 
-  const zRedondeado = Math.round(zNum * 100) / 100;
-  const zBase = Math.trunc(zRedondeado * 10) / 10;
-  const segundoDecimal = Math.round(Math.abs((zRedondeado - zBase) * 100));
+      if (imc > 22.99 && imc <= 27.99) {
+        return {
+          texto: 'Peso adecuado',
+          clase: 'info'
+        };
+      }
 
-  const fila = percentilesJson.find(function(row) {
-    return parseFloat(String(row.p_normal).replace(',', '.')) === zBase;
-  });
+      if (imc > 27.99 && imc <= 31.99) {
+        return {
+          texto: 'Sobrepeso',
+          clase: 'warning'
+        };
+      }
 
-  if (!fila) {
-    return 'N/A';
-  }
+      if (imc > 31.99 && imc <= 80) {
+        return {
+          texto: 'Obesidad',
+          clase: 'danger'
+        };
+      }
 
-  const key = 'p' + segundoDecimal;
+      return null;
+    }
 
-  if (fila[key] === undefined) {
-    return 'N/A';
-  }
+    function interpretarEmbarazada() {
+      const semanas = parseFloat(document.getElementById('embarazo_semanas')?.value || '');
+      const imcPreg = parseFloat(document.getElementById('embarazo_imc_pregestacional')?.value || '');
+      const ganancia = parseFloat(document.getElementById('embarazo_ganancia_kg')?.value || '');
 
-  return (parseFloat(String(fila[key]).replace(',', '.')) * 100).toFixed(1);
-}
+      if (!(semanas > 3) || !(imcPreg > 0) || !(ganancia > 0)) {
+        return {
+          texto: 'Completa semanas de gestación, peso pregestacional, peso actual y talla para calcular la interpretación de embarazo.',
+          estado: 'Embarazo pendiente',
+          clase: 'info'
+        };
+      }
+
+      const estadoImcPreg = clasificarImcPregestacional(imcPreg);
+
+      if (!estadoImcPreg) {
+        return {
+          texto: 'Revisar datos de IMC pregestacional.',
+          estado: 'Revisar datos',
+          clase: 'danger'
+        };
+      }
+
+      /*
+        Aquí debe consultarse el JSON equivalente a interpretacion_emb.php:
+        - semanas
+        - bajopeso_inferior / superior
+        - pesonormal_inferior / superior
+        - sobrepeso_inferior / superior
+        - obesidad_inferior / superior
+      */
+
+      return {
+        texto: estadoImcPreg.texto + ' con ganancia de peso pendiente de validar contra tabla gestacional.',
+        estado: estadoImcPreg.texto,
+        clase: estadoImcPreg.clase
+      };
+    }
+
+    function clasificarImcPregestacional(imcPreg) {
+      if (imcPreg > 0 && imcPreg < 18.5) {
+        return {
+          texto: 'Bajo peso',
+          clave: 'bajopeso',
+          clase: 'danger'
+        };
+      }
+
+      if (imcPreg >= 18.5 && imcPreg <= 24.9) {
+        return {
+          texto: 'Peso adecuado',
+          clave: 'pesonormal',
+          clase: 'info'
+        };
+      }
+
+      if (imcPreg > 24.9 && imcPreg <= 29.9) {
+        return {
+          texto: 'Sobrepeso',
+          clave: 'sobrepeso',
+          clase: 'warning'
+        };
+      }
+
+      if (imcPreg > 29.9) {
+        return {
+          texto: 'Obesidad',
+          clave: 'obesidad',
+          clase: 'danger'
+        };
+      }
+
+      return null;
+    }
+
+    function calcularPercentilDesdeZ(z, percentilesJson) {
+      const zNum = parseFloat(z);
+
+      if (Number.isNaN(zNum) || zNum < -3 || zNum > 3) {
+        return 'N/A';
+      }
+
+      const zRedondeado = Math.round(zNum * 100) / 100;
+      const zBase = Math.trunc(zRedondeado * 10) / 10;
+      const segundoDecimal = Math.round(Math.abs((zRedondeado - zBase) * 100));
+
+      const fila = percentilesJson.find(function(row) {
+        return parseFloat(String(row.p_normal).replace(',', '.')) === zBase;
+      });
+
+      if (!fila) {
+        return 'N/A';
+      }
+
+      const key = 'p' + segundoDecimal;
+
+      if (fila[key] === undefined) {
+        return 'N/A';
+      }
+
+      return (parseFloat(String(fila[key]).replace(',', '.')) * 100).toFixed(1);
+    }
+
     function actualizarProgreso() {
       let total = esMayor19 ? 3 : 2;
       let completos = 0;
@@ -2874,96 +3060,106 @@ function clasificarImcPregestacional(imcPreg) {
       }
     }
 
-    function pintarZscoreResumen() {
-      document.getElementById('z_pe').textContent = document.getElementById('zpe')?.value || '—';
-      document.getElementById('pct_pe').textContent = document.getElementById('zpe_percentil')?.value || '—';
+   function pintarZscoreResumen() {
+  const pares = [
+    ['z_pe', 'zpe'],
+    ['pct_pe', 'zpe_percentil'],
 
-      document.getElementById('z_le').textContent = document.getElementById('zte')?.value || '—';
-      document.getElementById('pct_le').textContent = document.getElementById('zte_percentil')?.value || '—';
+    ['z_le', 'zte'],
+    ['pct_le', 'zte_percentil'],
 
-      document.getElementById('z_pl').textContent = document.getElementById('zpt')?.value || '—';
-      document.getElementById('pct_pl').textContent = document.getElementById('zpt_percentil')?.value || '—';
+    ['z_pl', 'zpt'],
+    ['pct_pl', 'zpt_percentil'],
 
-      document.getElementById('z_imce').textContent = document.getElementById('zimce')?.value || '—';
-      document.getElementById('pct_imce').textContent = document.getElementById('zimce_percentil')?.value || '—';
+    ['z_imce', 'zimce'],
+    ['pct_imce', 'zimce_percentil'],
 
-      document.getElementById('z_cce').textContent = document.getElementById('zcc')?.value || '—';
-      document.getElementById('pct_cce').textContent = document.getElementById('zcc_percentil')?.value || '—';
+    ['z_cce', 'zcc'],
+    ['pct_cce', 'zcc_percentil'],
 
-      document.getElementById('z_cbie').textContent = document.getElementById('zcbi')?.value || '—';
-      document.getElementById('pct_cbie').textContent = document.getElementById('zcbi_percentil')?.value || '—';
+    ['z_cbie', 'zcbi'],
+    ['pct_cbie', 'zcbi_percentil'],
 
-      document.getElementById('z_pte').textContent = document.getElementById('zptri')?.value || '—';
-      document.getElementById('pct_pte').textContent = document.getElementById('zptri_percentil')?.value || '—';
+    ['z_pte', 'zptri'],
+    ['pct_pte', 'zptri_percentil'],
 
-      document.getElementById('z_pse').textContent = document.getElementById('zpsub')?.value || '—';
-      document.getElementById('pct_pse').textContent = document.getElementById('zpsub_percentil')?.value || '—';
+    ['z_pse', 'zpsub'],
+    ['pct_pse', 'zpsub_percentil']
+  ];
+
+  pares.forEach(function ([destino, origen]) {
+    const destinoEl = document.getElementById(destino);
+    const origenEl = document.getElementById(origen);
+
+    if (destinoEl) {
+      destinoEl.textContent = origenEl?.value || '—';
     }
-
-   function validarGuardar(event) {
-  const errores = [];
-
-  if (!(parseFloat(peso.value) > 0)) {
-    errores.push('Debe registrar el peso.');
-  }
-
-  if (!(parseFloat(talla.value) > 0)) {
-    errores.push('Debe registrar la talla.');
-  }
-
-  if (!aplicaDiscapacidad) {
-    document.querySelectorAll(
-      'input[name="campos[discapacidad]"], input[name="campos[se_mantiene_erguido]"], input[name="campos[ausencia_extremidades]"], #talla_estimada, #peso_ajustado'
-    ).forEach(function(el) {
-      el.disabled = true;
-
-      if (el.type === 'radio' || el.type === 'checkbox') {
-        el.checked = false;
-      } else {
-        el.value = '';
-      }
-    });
-  }
-
-  if (sexo !== 'F' || esMenor2) {
-    document.querySelectorAll(
-      'input[name="campos[embarazada]"], input[name="campos[lactante]"], #fum, #fechaEco, #semanasEco, #diasEco, #embarazo_imc_pregestacional_vista, #embarazo_peso_pregestacional, #embarazo_peso_actual, #embarazo_talla, #embarazo_circ_brazo_izq'
-    ).forEach(function(el) {
-      el.disabled = true;
-
-      if (el.type === 'radio' || el.type === 'checkbox') {
-        el.checked = false;
-      } else {
-        el.value = '';
-      }
-    });
-  }
-
-  if (!aplicaLactante) {
-    document.querySelectorAll('input[name="campos[lactante]"]').forEach(function(el) {
-      el.disabled = true;
-      el.checked = false;
-    });
-  }
-
-  if (!esMenor2) {
-    document.querySelectorAll('input[name="campos[metodo_medicion_talla]"]').forEach(function(el) {
-      el.disabled = true;
-      el.checked = false;
-    });
-  }
-
-  if (esMayor19 && !(parseFloat(cintura.value) > 0)) {
-    errores.push('En mayores de 19 años es obligatoria la circunferencia de cintura.');
-  }
-
-  if (errores.length > 0) {
-    event.preventDefault();
-    mostrarError(errores.join('<br>'));
-    irCampoRequerido();
-    return false;
-  }
+  });
 }
+    function validarGuardar(event) {
+      const errores = [];
+
+      if (!(parseFloat(peso.value) > 0)) {
+        errores.push('Debe registrar el peso.');
+      }
+
+      if (!(parseFloat(talla.value) > 0)) {
+        errores.push('Debe registrar la talla.');
+      }
+
+      if (!aplicaDiscapacidad) {
+        document.querySelectorAll(
+          'input[name="campos[discapacidad]"], input[name="campos[se_mantiene_erguido]"], input[name="campos[ausencia_extremidades]"], #talla_estimada, #peso_ajustado'
+        ).forEach(function(el) {
+          el.disabled = true;
+
+          if (el.type === 'radio' || el.type === 'checkbox') {
+            el.checked = false;
+          } else {
+            el.value = '';
+          }
+        });
+      }
+
+      if (sexo !== 'F' || esMenor2) {
+        document.querySelectorAll(
+          'input[name="campos[embarazada]"], input[name="campos[lactante]"], #fum, #fechaEco, #semanasEco, #diasEco, #embarazo_imc_pregestacional_vista, #embarazo_peso_pregestacional, #embarazo_peso_actual, #embarazo_talla, #embarazo_circ_brazo_izq'
+        ).forEach(function(el) {
+          el.disabled = true;
+
+          if (el.type === 'radio' || el.type === 'checkbox') {
+            el.checked = false;
+          } else {
+            el.value = '';
+          }
+        });
+      }
+
+      if (!aplicaLactante) {
+        document.querySelectorAll('input[name="campos[lactante]"]').forEach(function(el) {
+          el.disabled = true;
+          el.checked = false;
+        });
+      }
+
+      if (!esMenor2) {
+        document.querySelectorAll('input[name="campos[metodo_medicion_talla]"]').forEach(function(el) {
+          el.disabled = true;
+          el.checked = false;
+        });
+      }
+
+      if (esMayor19 && !(parseFloat(cintura.value) > 0)) {
+        errores.push('En mayores de 19 años es obligatoria la circunferencia de cintura.');
+      }
+
+      if (errores.length > 0) {
+        event.preventDefault();
+        mostrarError(errores.join('<br>'));
+        irCampoRequerido();
+        return false;
+      }
+    }
 
     function mostrarError(mensaje) {
       const box = document.getElementById('antroError');
@@ -3039,7 +3235,398 @@ function clasificarImcPregestacional(imcPreg) {
         fechaEvaluacion.value
       );
     }
+    function num(valor) {
+  if (valor === null || valor === undefined || valor === '') return NaN;
 
+  return parseFloat(String(valor).replace(',', '.'));
+}
+
+function round2(valor) {
+  if (!Number.isFinite(valor)) return '';
+
+  return (Math.round(valor * 100) / 100).toFixed(2);
+}
+
+function calcularZscoreLMS(valor, L, M, S) {
+  valor = num(valor);
+  L = num(L);
+  M = num(M);
+  S = num(S);
+
+  if (!(valor > 0) || !(M > 0) || !(S > 0) || Number.isNaN(L)) {
+    return NaN;
+  }
+
+  if (L === 0) {
+    return Math.log(valor / M) / S;
+  }
+
+  return (Math.pow(valor / M, L) - 1) / (L * S);
+}
+
+function buscarFilaLMS(data, sexoKey, denominadorKey, sexoVal, denominador, precision = 0) {
+  if (!Array.isArray(data)) return null;
+
+  const denObjetivo = Number(denominador);
+
+  return data.find(function (row) {
+    const sexoRow = String(row[sexoKey] || '').toUpperCase();
+    const denRow = num(row[denominadorKey]);
+
+    if (sexoRow !== sexoVal) return false;
+
+    if (precision === 1) {
+      return Math.round(denRow * 10) / 10 === Math.round(denObjetivo * 10) / 10;
+    }
+
+    return Math.round(denRow) === Math.round(denObjetivo);
+  }) || null;
+}
+
+function calcularDesdeFila(row, valor, lKey, mKey, sKey) {
+  if (!row) return '';
+
+  const z = calcularZscoreLMS(valor, row[lKey], row[mKey], row[sKey]);
+
+  return Number.isFinite(z) ? round2(z) : '';
+}
+
+function setHiddenValue(id, value) {
+  const el = document.getElementById(id);
+
+  if (el) {
+    el.value = value || '';
+  }
+}
+function calcularPercentilDesdeZ(z) {
+  const zNum = num(z);
+
+  if (!Number.isFinite(zNum) || zNum < -3 || zNum > 3) {
+    return 'N/A';
+  }
+
+  const signo = zNum < 0 ? -1 : 1;
+  const abs = Math.abs(zNum);
+  const baseAbs = Math.floor(abs * 10) / 10;
+  const base = signo * baseAbs;
+  const segundoDecimal = Math.round((abs - baseAbs) * 100);
+
+  const fila = (antroData.percentiles || []).find(function (row) {
+    return Math.abs(num(row.p_normal) - base) < 0.0001;
+  });
+
+  if (!fila) return 'N/A';
+
+  const key = 'p' + Math.min(9, Math.max(0, segundoDecimal));
+  const valor = num(fila[key]);
+
+  if (!Number.isFinite(valor)) return 'N/A';
+
+  return (valor * 100).toFixed(1);
+}
+function recalcularZscoresAntro() {
+  const sexoVal = sexo === 'F' ? 'F' : 'M';
+  const p = num(peso?.value);
+  const t = num(talla?.value);
+  const imcVal = num(document.getElementById('imc')?.value);
+
+  const cc = num(document.getElementById('circ_cefalica')?.value);
+  const cbi = num(document.getElementById('circ_brazo_izq')?.value);
+  const pt = num(document.getElementById('pliegue_tricipital')?.value);
+  const ps = num(document.getElementById('pliegue_subescapular')?.value);
+    const edema = document.querySelector('input[name="campos[edema]"]:checked')?.value || '0';
+
+if (edema === '1') {
+  calcularZte(sexoVal, t);
+
+  if (cc > 0) calcularZcc(sexoVal, cc);
+  if (cbi > 0) calcularZcbi(sexoVal, cbi);
+  if (pt > 0) calcularZptri(sexoVal, pt);
+  if (ps > 0) calcularZpsub(sexoVal, ps);
+
+  actualizarVistaZscores();
+  return;
+}
+  limpiarZscoresAntro();
+
+  if (!(edadDias > 0) || !(p > 0) || !(t > 0)) {
+    return;
+  }
+
+  calcularZimce(sexoVal, imcVal);
+  calcularZte(sexoVal, t);
+  calcularZpe(sexoVal, p);
+  calcularZpt(sexoVal, p, t);
+
+  if (cc > 0) {
+    calcularZcc(sexoVal, cc);
+  }
+
+  if (cbi > 0) {
+    calcularZcbi(sexoVal, cbi);
+  }
+
+  if (pt > 0) {
+    calcularZptri(sexoVal, pt);
+  }
+
+  if (ps > 0) {
+    calcularZpsub(sexoVal, ps);
+  }
+
+  actualizarVistaZscores();
+}
+function calcularZimce(sexoVal, imcVal) {
+  if (!(imcVal > 0)) return;
+
+  let row = null;
+
+  if (edadDias < 1856) {
+    row = buscarFilaLMS(
+      antroData.zimceDias,
+      'idias_indicador_genero',
+      'idias_indicador_denominador',
+      sexoVal,
+      edadDias
+    );
+
+    guardarZscoreConPercentil(
+      'zimce',
+      'zimce_percentil',
+      calcularDesdeFila(row, imcVal, 'idias_indicador_coeficiente_l', 'idias_sd0_mediana', 'idias_indicador_coeficiente_s')
+    );
+
+    return;
+  }
+
+  row = buscarFilaLMS(
+    antroData.zimceMeses,
+    'i_indicador_genero',
+    'i_indicador_denominador',
+    sexoVal,
+    edadMeses
+  );
+
+  guardarZscoreConPercentil(
+    'zimce',
+    'zimce_percentil',
+    calcularDesdeFila(row, imcVal, 'i_indicador_coeficiente_l', 'i_indicador_coeficiente_m', 'i_indicador_coeficiente_s')
+  );
+}
+
+function calcularZte(sexoVal, tallaVal) {
+  let row = null;
+
+  if (edadDias < 1856) {
+    row = buscarFilaLMS(
+      antroData.zteDias,
+      'tdias_indicador_genero',
+      'tdias_indicador_denominador',
+      sexoVal,
+      edadDias
+    );
+
+    guardarZscoreConPercentil(
+      'zte',
+      'zte_percentil',
+      calcularDesdeFila(row, tallaVal, 'tdias_indicador_coeficiente_l', 'tdias_sd0_mediana', 'tdias_indicador_coeficiente_s')
+    );
+
+    return;
+  }
+
+  const zteMesesCombinado = []
+    .concat(antroData.zteMeses || [])
+    .concat(antroData.zteMesesParte2 || []);
+
+  row = buscarFilaLMS(
+    zteMesesCombinado,
+    't_indicador_genero',
+    't_indicador_denominador',
+    sexoVal,
+    edadMeses
+  );
+
+  guardarZscoreConPercentil(
+    'zte',
+    'zte_percentil',
+    calcularDesdeFila(row, tallaVal, 't_indicador_coeficiente_l', 't_indicador_coeficiente_m', 't_indicador_coeficiente_s')
+  );
+}
+
+function calcularZpe(sexoVal, pesoVal) {
+  let row = null;
+
+  if (edadDias < 1856) {
+    row = buscarFilaLMS(
+      antroData.zpeDias,
+      'pdias_indicador_genero',
+      'pdias_indicador_denominador',
+      sexoVal,
+      edadDias
+    );
+
+    guardarZscoreConPercentil(
+      'zpe',
+      'zpe_percentil',
+      calcularDesdeFila(row, pesoVal, 'pdias_indicador_coeficiente_l', 'pdias_sd0_mediana', 'pdias_indicador_coeficiente_s')
+    );
+
+    return;
+  }
+
+  row = buscarFilaLMS(
+    antroData.zpeMeses,
+    'p_indicador_genero',
+    'p_indicador_denominador',
+    sexoVal,
+    edadMeses
+  );
+
+  guardarZscoreConPercentil(
+    'zpe',
+    'zpe_percentil',
+    calcularDesdeFila(row, pesoVal, 'p_indicador_coeficiente_l', 'p_indicador_coeficiente_m', 'p_indicador_coeficiente_s')
+  );
+}
+
+function calcularZpt(sexoVal, pesoVal, tallaVal) {
+  if (!(pesoVal > 0) || !(tallaVal > 0)) return;
+
+  const tallaRedondeada = Math.round(tallaVal * 10) / 10;
+
+  let data = [];
+
+  if (tallaRedondeada < 65) {
+    data = antroData.zpesoTalla2 || [];
+  } else {
+    data = antroData.zpesoTalla || [];
+  }
+
+  const row = buscarFilaLMS(
+    data,
+    'petadias_indicador_genero',
+    'petadias_indicador_denominador',
+    sexoVal,
+    tallaRedondeada,
+    1
+  );
+
+  guardarZscoreConPercentil(
+    'zpt',
+    'zpt_percentil',
+    calcularDesdeFila(row, pesoVal, 'petadias_indicador_coeficiente_l', 'petadias_sd0_mediana', 'petadias_indicador_coeficiente_s')
+  );
+}
+
+function calcularZcc(sexoVal, valor) {
+  const row = buscarFilaLMS(
+    antroData.zccDias,
+    'ccdias_indicador_genero',
+    'ccdias_indicador_denominador',
+    sexoVal,
+    edadDias
+  );
+
+  guardarZscoreConPercentil(
+    'zcc',
+    'zcc_percentil',
+    calcularDesdeFila(row, valor, 'ccdias_indicador_coeficiente_l', 'ccdias_sd0', 'ccdias_indicador_coeficiente_s')
+  );
+}
+
+function calcularZcbi(sexoVal, valor) {
+  const row = buscarFilaLMS(
+    antroData.zcbiDias,
+    'cbidias_indicador_genero',
+    'cbidias_indicador_denominador',
+    sexoVal,
+    edadDias
+  );
+
+  guardarZscoreConPercentil(
+    'zcbi',
+    'zcbi_percentil',
+    calcularDesdeFila(row, valor, 'cbidias_indicador_coeficiente_l', 'cbidias_sd0', 'cbidias_indicador_coeficiente_s')
+  );
+}
+
+function calcularZptri(sexoVal, valor) {
+  const row = buscarFilaLMS(
+    antroData.ztricipitalDias,
+    'pt_indicador_genero',
+    'pt_indicador_denominador',
+    sexoVal,
+    edadDias
+  );
+
+  guardarZscoreConPercentil(
+    'zptri',
+    'zptri_percentil',
+    calcularDesdeFila(row, valor, 'pt_indicador_coeficiente_l', 'pt_sd0', 'pt_indicador_coeficiente_s')
+  );
+}
+
+function calcularZpsub(sexoVal, valor) {
+  const row = buscarFilaLMS(
+    antroData.zsubescapularDias,
+    'ps_indicador_genero',
+    'ps_indicador_denominador',
+    sexoVal,
+    edadDias
+  );
+
+  guardarZscoreConPercentil(
+    'zpsub',
+    'zpsub_percentil',
+    calcularDesdeFila(row, valor, 'ps_indicador_coeficiente_l', 'ps_sd0', 'ps_indicador_coeficiente_s')
+  );
+}
+function guardarZscoreConPercentil(idZ, idPct, z) {
+  setHiddenValue(idZ, z);
+
+  const pct = z !== '' ? calcularPercentilDesdeZ(z) : '';
+
+  setHiddenValue(idPct, pct);
+}
+
+function limpiarZscoresAntro() {
+  [
+    'zpe',
+    'zpe_percentil',
+    'zte',
+    'zte_percentil',
+    'zpt',
+    'zpt_percentil',
+    'zimce',
+    'zimce_percentil',
+    'zcc',
+    'zcc_percentil',
+    'zcbi',
+    'zcbi_percentil',
+    'zptri',
+    'zptri_percentil',
+    'zpsub',
+    'zpsub_percentil'
+  ].forEach(function (id) {
+    setHiddenValue(id, '');
+  });
+
+  actualizarVistaZscores();
+}
+
+function actualizarVistaZscores() {
+  const zimce = document.getElementById('zimce')?.value || '';
+  const zte = document.getElementById('zte')?.value || '';
+  const zpt = document.getElementById('zpt')?.value || '';
+
+  document.getElementById('zimcePreview').textContent = zimce || '—';
+  document.getElementById('ztePreview').textContent = zte || '—';
+
+  document.getElementById('resZimce').textContent = zimce || '—';
+  document.getElementById('resZte').textContent = zte || '—';
+  document.getElementById('resZpt').textContent = zpt || '—';
+}
     fechaEvaluacion.addEventListener('change', actualizarEdadBeneficiario);
     fechaEvaluacion.addEventListener('input', actualizarEdadBeneficiario);
 
