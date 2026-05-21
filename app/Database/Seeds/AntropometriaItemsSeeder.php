@@ -19,7 +19,7 @@ class AntropometriaItemsSeeder extends Seeder
         $db->table('pesquisa_items')->where('tipo_pesquisa_id', $tipoPesquisaId)->delete();
 
         $rows = [
-            ['metodo_medicion_talla','Método de medición de talla','mediciones_basicas','select','["de_pie","acostado"]',1,1,'',null,null,'De pie o acostado',null,null,6],
+            ['metodo_medicion_talla','Método de medición de talla','mediciones_basicas','select','["de_pie","acostado"]',0,1,'',null,null,'Solo aplica para menores o iguales a 730 días',null,null,6],
             ['peso','Peso','mediciones_basicas','number',null,1,2,'kg',0.9,275,'Peso en kg',null,null,6],
             ['talla','Talla / longitud','mediciones_basicas','number',null,1,3,'cm',30,230,'Talla en cm',null,null,6],
             ['edema','Edema','mediciones_basicas','boolean',null,1,4,'',null,null,null,null,null,6],

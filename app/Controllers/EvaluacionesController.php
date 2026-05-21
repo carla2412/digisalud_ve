@@ -283,9 +283,30 @@ class EvaluacionesController extends BaseController
             $campos = $this->compatibilizarCamposVacunacion($campos, $mapaCodigo);
         }
 
+        if ((int) $tipoPesquisaId === 1) {
+            $campos = $this->normalizarCamposAntropometriaPorEdad(
+                $campos,
+                $beneficiarioId,
+                $fechaEvaluacion
+            );
+        }
+
+        // Validar campos obligatorios
         // Validar campos obligatorios
         foreach ($mapaCodigo as $codigo => $item) {
-            if ($item['obligatorio'] && (! isset($campos[$codigo]) || $campos[$codigo] === '')) {
+            if (! (int) $item['obligatorio']) {
+                continue;
+            }
+
+            if ((int) $tipoPesquisaId === 1 && $this->campoAntropometriaNoAplica(
+                $codigo,
+                $beneficiarioId,
+                $fechaEvaluacion
+            )) {
+                continue;
+            }
+
+            if (! isset($campos[$codigo]) || $campos[$codigo] === '') {
                 // Verificar si el campo está oculto por dependencia
                 if (! empty($item['depende_de'])) {
                     $valorPadre = $campos[$item['depende_de']] ?? '';
@@ -457,6 +478,119 @@ class EvaluacionesController extends BaseController
                 'ok'      => false,
                 'mensaje' => 'Error interno al guardar.',
             ]);
+        }
+    }
+
+    private function normalizarCamposAntropometriaPorEdad(
+        array $campos,
+        int $beneficiarioId,
+        string $fechaEvaluacion
+    ): array {
+        $edadDias = $this->calcularEdadDiasBeneficiario($beneficiarioId, $fechaEvaluacion);
+
+        if ($edadDias === null) {
+            return $campos;
+        }
+
+        // Método medición talla solo aplica para <= 730 días.
+        if ($edadDias > 730) {
+            unset($campos['metodo_medicion_talla']);
+        }
+
+        // Circunferencia de cintura solo aplica para > 6939 días.
+        if ($edadDias <= 6939) {
+            unset($campos['circ_cintura']);
+        }
+
+        // Discapacidad solo aplica para > 730 días.
+        if ($edadDias <= 730) {
+            unset(
+                $campos['discapacidad'],
+                $campos['se_mantiene_erguido'],
+                $campos['ausencia_extremidades'],
+                $campos['talla_estimada'],
+                $campos['peso_ajustado']
+            );
+        }
+
+        // Percentil / Z-Score solo aplica de > 0 hasta 6939 días.
+        if ($edadDias <= 0 || $edadDias > 6939) {
+            unset(
+                $campos['zpe'],
+                $campos['zpe_percentil'],
+                $campos['zte'],
+                $campos['zte_percentil'],
+                $campos['zpt'],
+                $campos['zpt_percentil'],
+                $campos['zimce'],
+                $campos['zimce_percentil'],
+                $campos['zcc'],
+                $campos['zcc_percentil'],
+                $campos['zcbi'],
+                $campos['zcbi_percentil'],
+                $campos['zptri'],
+                $campos['zptri_percentil'],
+                $campos['zpsub'],
+                $campos['zpsub_percentil']
+            );
+        }
+
+        return $campos;
+    }
+
+    private function campoAntropometriaNoAplica(
+        string $codigo,
+        int $beneficiarioId,
+        string $fechaEvaluacion
+    ): bool {
+        $edadDias = $this->calcularEdadDiasBeneficiario($beneficiarioId, $fechaEvaluacion);
+
+        if ($edadDias === null) {
+            return false;
+        }
+
+        return match ($codigo) {
+            'metodo_medicion_talla' => $edadDias > 730,
+
+            'circ_cintura' => $edadDias <= 6939,
+
+            'discapacidad',
+            'se_mantiene_erguido',
+            'ausencia_extremidades',
+            'talla_estimada',
+            'peso_ajustado' => $edadDias <= 730,
+
+            default => false,
+        };
+    }
+
+    private function calcularEdadDiasBeneficiario(
+        int $beneficiarioId,
+        string $fechaEvaluacion
+    ): ?int {
+        $db = \Config\Database::connect();
+
+        $beneficiario = $db->table('beneficiarios')
+            ->select('fecha_nacimiento')
+            ->where('id_beneficiario', $beneficiarioId)
+            ->get()
+            ->getRowArray();
+
+        if (empty($beneficiario['fecha_nacimiento'])) {
+            return null;
+        }
+
+        try {
+            $nacimiento = new \DateTimeImmutable($beneficiario['fecha_nacimiento']);
+            $evaluacion = new \DateTimeImmutable($fechaEvaluacion);
+
+            if ($evaluacion < $nacimiento) {
+                return null;
+            }
+
+            return (int) $nacimiento->diff($evaluacion)->days;
+        } catch (\Throwable $e) {
+            return null;
         }
     }
     /**
