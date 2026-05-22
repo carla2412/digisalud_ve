@@ -493,7 +493,7 @@
                          <select id="categoria" name="categoria" class="form-select" required>
                              <option value="">Selecciona una categoría...</option>
                              <?php
-                                $categorias = ['Pública', 'Privada', 'Social', 'Educativa', 'Salud', 'Comunitaria'];
+                                $categorias = ['Educativa','Pública', 'Privada', 'Programa Nutricional','Social', 'Educativa', 'Salud', 'Comunitaria'];
                                 foreach ($categorias as $c): ?>
                                  <option value="<?= esc($c) ?>" <?= old('categoria') === $c ? 'selected' : '' ?>>
                                      <?= esc($c) ?>
