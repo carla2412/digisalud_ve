@@ -322,9 +322,9 @@
     }
 
     .jornada-alert-info {
-        background: #dbeafe;
-        color: #1e40af;
-        border: 1px solid #93bbfd;
+        background: #ffffff;
+        color: #3695f5;
+         
     }
 
     .jornada-pager-links nav {
@@ -473,7 +473,7 @@ $totalPages     = $totalPages ?? 1;
         <div class="jornada-header">
             <div>
                 <h1>Jornadas</h1>
-                <p>Gestiona y consulta las jornadas de salud</p>
+                
             </div>
             <a href="<?= base_url('jornadas/crear') ?>" class="jornada-btn-primary">+ Crear Jornada</a>
         </div>
@@ -596,7 +596,7 @@ $totalPages     = $totalPages ?? 1;
 
         <?php else: ?>
             <div class="jornada-alert jornada-alert-info" style="text-align:center; margin-top:24px;">
-                <?= $busqueda !== '' || $status !== '' ? 'No se encontraron jornadas con los filtros aplicados.' : 'Crea tu primera jornada' ?>
+                <?= $busqueda !== '' || $status !== '' ? 'No se encontraron jornadas con los filtros aplicados.' : 'Comencemos, crea tu primera jornada' ?>
             </div>
         <?php endif; ?>
     </main>
