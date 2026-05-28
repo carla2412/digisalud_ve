@@ -566,7 +566,12 @@ $totalPages     = $totalPages ?? 1;
                                 <?php endif; ?>
 
                                 <a href="<?= base_url('jornadas/' . $jor['id_jornada'] . '/beneficiarios') ?>">Beneficiarios</a>
-                                <a href="<?= base_url('jornadas/' . $jor['id_jornada'] . '/reportes') ?>">Reportes</a>
+        <a 
+    href="<?= site_url('jornadas/' . $jor['id_jornada'] . '/reportes') ?>" 
+    class="btn btn-primary"
+>
+    Reportes
+</a>
                             </div>
                         </div>
                     </article>

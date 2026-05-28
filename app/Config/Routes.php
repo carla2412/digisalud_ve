@@ -143,3 +143,7 @@ $routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
     // Procesar archivo Excel (AJAX POST)
     $routes->post('(:num)/carga-masiva/procesar', 'CargaMasivaController::procesar/$1');
 });
+
+$routes->group('jornadas', static function ($routes) {
+    $routes->get('(:num)/reportes', 'Reportes::home/$1');
+});
