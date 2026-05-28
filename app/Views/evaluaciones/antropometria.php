@@ -22,7 +22,33 @@ $urlRetorno = $jornadaId
 $valorCampo = static function (string $codigo, $default = '') use ($valoresExistentes) {
   return esc($valoresExistentes[$codigo] ?? $default);
 };
+$valorCampoDecimal = static function (string $codigo, $decimales = 2, $default = '') use ($valoresExistentes, $esEdicion) {
+  if (!is_int($decimales)) {
+    $default = $decimales;
+    $decimales = 2;
+  }
 
+  $valor = $valoresExistentes[$codigo] ?? $default;
+
+  if ($valor === '' || $valor === null) {
+    return '';
+  }
+
+  if ($esEdicion && is_numeric($valor)) {
+    return esc(number_format((float) $valor, $decimales, '.', ''));
+  }
+
+  return esc($valor);
+};
+$valorCampoBool = static function (string $codigo, $default = '0') use ($valoresExistentes) {
+  $valor = $valoresExistentes[$codigo] ?? $default;
+
+  if ($valor === true || $valor === 1 || $valor === '1' || $valor === 's' || $valor === 'si' || $valor === 'Sí') {
+    return '1';
+  }
+
+  return '0';
+};
 $sexoRaw = strtoupper((string)($beneficiario['sexo'] ?? $beneficiario['genero'] ?? $beneficiario['sexo_biologico'] ?? ''));
 $sexoAntro = str_starts_with($sexoRaw, 'F') || str_contains($sexoRaw, 'MUJ') ? 'F' : 'M';
 
@@ -61,21 +87,21 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
 
 <style>
   :root {
-    --antro-primary: #2f8df0;
-    --antro-primary-dark: #0b63ce;
-    --antro-dark: #071761;
-    --antro-bg: #f4f8fd;
-    --antro-card: #ffffff;
+    --antro-primary: #3695f5;
+    --antro-primary-dark: #1b7ae2;
+    --antro-dark: #101a61;
+    --antro-bg: #fff;
+    --antro-card: #fff;
     --antro-soft: #eaf4ff;
-    --antro-border: #cfe0fb;
+    --antro-border: #dce8ff;
     --antro-border-2: #d7e7ff;
     --antro-muted: #6b7280;
-    --antro-text: #152238;
+    --antro-text: #101a61;
     --antro-warning-bg: #fff7ed;
     --antro-warning-border: #ffd4a8;
     --antro-warning-text: #8a3d00;
-    --antro-danger: #ef4444;
-    --antro-success: #16a34a;
+    --antro-danger: #dc3545;
+    --antro-success: #28a745;
     --antro-shadow: 0 16px 40px rgba(7, 23, 97, 0.08);
   }
 
@@ -127,7 +153,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     color: var(--antro-dark);
     font-size: 30px;
     line-height: 1.1;
-    font-weight: 800;
+    font-weight: 600;
   }
 
   .antro-subtitle {
@@ -145,7 +171,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     border-radius: 999px;
     background: var(--antro-soft);
     color: var(--antro-primary-dark);
-    font-weight: 800;
+    font-weight: 600;
     font-size: 13px;
   }
 
@@ -174,7 +200,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     display: block;
     color: var(--antro-dark);
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
     margin-bottom: 10px;
   }
 
@@ -208,7 +234,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     padding: 7px 14px;
     border-radius: 999px;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
     background: var(--antro-soft);
     color: var(--antro-primary-dark);
   }
@@ -218,6 +244,40 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     color: #c15b00;
   }
 
+  .antro-tag-info {
+    background: var(--antro-soft);
+    color: var(--antro-primary-dark);
+  }
+
+  .antro-tag-success {
+    background: #e9f8ef;
+    color: #006b29;
+  }
+
+  .antro-tag-warning {
+    background: #fff7db;
+    color: #7a5b00;
+  }
+
+  .antro-tag-orange {
+    background: #fff0e5;
+    color: #8a3d00;
+  }
+
+  .antro-tag-danger {
+    background: #fdecea;
+    color: #8f1b08;
+  }
+
+  .antro-tag-review {
+    background: #f2f3f5;
+    color: #4b5563;
+  }
+
+  .antro-tag-extreme {
+    background: #111827;
+    color: #ffffff;
+  }
 
 
 
@@ -252,7 +312,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     padding: 10px 16px;
     cursor: pointer;
     color: #334155;
-    font-weight: 800;
+    font-weight: 600;
     text-align: left;
     transition: .2s ease;
   }
@@ -305,7 +365,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     margin: 0;
     color: var(--antro-dark);
     font-size: 22px;
-    font-weight: 800;
+    font-weight: 600;
   }
 
   .antro-section-help {
@@ -397,7 +457,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     display: block;
     color: var(--antro-dark);
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 600;
     margin-bottom: 10px;
   }
 
@@ -430,7 +490,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
   .antro-input-wrap input[readonly] {
     background: #fbfdff;
     color: var(--antro-primary-dark);
-    font-weight: 800;
+    font-weight: 600;
   }
 
   .antro-unit {
@@ -439,7 +499,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     text-align: center;
     color: var(--antro-muted);
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
     border-left: 1px solid var(--antro-border);
   }
 
@@ -469,7 +529,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     cursor: pointer;
     color: var(--antro-dark);
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 600;
   }
 
   .antro-radio-pill input {
@@ -504,15 +564,15 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     display: block;
     color: #4b5563;
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 600;
     margin-bottom: 8px;
   }
 
   .antro-kpi strong {
     display: block;
-    color: var(--antro-primary);
+    color: var(--antro-muted);
     font-size: 22px;
-    font-weight: 900;
+    font-weight: 600;
   }
 
   .antro-actions-inline {
@@ -529,7 +589,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     border-radius: 16px;
     padding: 0 22px;
     cursor: pointer;
-    font-weight: 800;
+    font-weight: 600;
     font-size: 15px;
     transition: .2s ease;
     text-decoration: none;
@@ -601,11 +661,11 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     border-bottom: 1px solid #dbe7f7;
     color: var(--antro-muted);
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 600;
   }
 
   .antro-summary-row strong {
-    color: var(--antro-primary);
+    color: var(--antro-muted);
     text-align: right;
   }
 
@@ -677,7 +737,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
   .antro-progress-text {
     color: var(--antro-primary);
     font-size: 14px;
-    font-weight: 800;
+    font-weight: 600;
     white-space: nowrap;
   }
 
@@ -770,7 +830,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
     color: var(--antro-dark);
     cursor: pointer;
     font-size: 22px;
-    font-weight: 800;
+    font-weight: 600;
   }
 
   .antro-table {
@@ -928,7 +988,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
   .eval-patient-name {
     color: #374151;
     font-size: 18px;
-    font-weight: 800;
+    font-weight: 600;
     line-height: 1.2;
   }
 
@@ -1283,7 +1343,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
               <div class="antro-field">
                 <label for="peso">Peso <span class="antro-required">*</span></label>
                 <div class="antro-input-wrap">
-                  <input type="number" step="0.1" min="0.9" max="275" id="peso" name="campos[peso]" value="<?= $valorCampo('peso') ?>" required>
+                  <input type="number" step="0.1" min="0.9" max="275" id="peso" name="campos[peso]" value="<?= $valorCampoDecimal('peso') ?>" required>
                   <span class="antro-unit">kg</span>
                 </div>
               </div>
@@ -1291,7 +1351,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
               <div class="antro-field">
                 <label for="talla">Talla / longitud <span class="antro-required">*</span></label>
                 <div class="antro-input-wrap">
-                  <input type="number" step="0.1" min="30" max="230" id="talla" name="campos[talla]" value="<?= $valorCampo('talla') ?>" required>
+                  <input type="number" step="0.1" min="30" max="230" id="talla" name="campos[talla]" value="<?= $valorCampoDecimal('talla') ?>" required>
                   <span class="antro-unit">cm</span>
                 </div>
               </div>
@@ -1299,7 +1359,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
               <div class="antro-field" id="campoCintura">
                 <label for="circ_cintura">Circunferencia cintura <span class="antro-required">*</span></label>
                 <div class="antro-input-wrap">
-                  <input type="number" step="0.1" min="30" max="220" id="circ_cintura" name="campos[circ_cintura]" value="<?= $valorCampo('circ_cintura') ?>">
+                  <input type="number" step="0.1" min="30" max="220" id="circ_cintura" name="campos[circ_cintura]" value="<?= $valorCampoDecimal('circ_cintura') ?>">
                   <span class="antro-unit">cm</span>
                 </div>
               </div>
@@ -1310,27 +1370,38 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
                 <span class="antro-radio-box-label">Método de medición de talla</span>
                 <div class="antro-radio-options">
                   <label class="antro-radio-pill">
-                    <input type="radio" name="campos[metodo_medicion_talla]" value="de_pie" <?= $valorCampo('metodo_medicion_talla') === 'de_pie' ? 'checked' : '' ?>>
+                    <input type="radio" name="campos[metodo_medicion_talla]" value="de_pie" <?= $valorCampoDecimal('metodo_medicion_talla') === 'de_pie' ? 'checked' : '' ?>>
                     De pie
                   </label>
 
                   <label class="antro-radio-pill">
-                    <input type="radio" name="campos[metodo_medicion_talla]" value="acostado" <?= $valorCampo('metodo_medicion_talla', 'acostado') === 'acostado' ? 'checked' : '' ?>>
+                    <input type="radio" name="campos[metodo_medicion_talla]" value="acostado" <?= $valorCampoDecimal('metodo_medicion_talla', 'acostado') === 'acostado' ? 'checked' : '' ?>>
                     Acostado
                   </label>
                 </div>
               </div>
 
+              <?php $edemaValor = $valorCampoBool('edema', '0'); ?>
+
               <div class="antro-radio-box" id="bloqueEdema">
                 <span class="antro-radio-box-label">Edema</span>
+
                 <div class="antro-radio-options">
                   <label class="antro-radio-pill">
-                    <input type="radio" name="campos[edema]" value="0" <?= $valorCampo('edema', '0') === '0' ? 'checked' : '' ?>>
+                    <input
+                      type="radio"
+                      name="campos[edema]"
+                      value="0"
+                      <?= $edemaValor === '0' ? 'checked' : '' ?>>
                     No
                   </label>
 
                   <label class="antro-radio-pill">
-                    <input type="radio" name="campos[edema]" value="1" <?= $valorCampo('edema') === '1' ? 'checked' : '' ?>>
+                    <input
+                      type="radio"
+                      name="campos[edema]"
+                      value="1"
+                      <?= $edemaValor === '1' ? 'checked' : '' ?>>
                     Sí
                   </label>
                 </div>
@@ -1340,7 +1411,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
               <div class="antro-field" data-menor5>
                 <label for="circ_cefalica">Circunferencia cefálica</label>
                 <div class="antro-input-wrap">
-                  <input type="number" step="0.1" min="0" id="circ_cefalica" name="campos[circ_cefalica]" value="<?= $valorCampo('circ_cefalica') ?>">
+                  <input type="number" step="0.1" min="0" id="circ_cefalica" name="campos[circ_cefalica]" value="<?= $valorCampoDecimal('circ_cefalica') ?>">
                   <span class="antro-unit">cm</span>
                 </div>
               </div>
@@ -1348,7 +1419,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
               <div class="antro-field" data-menor5>
                 <label for="circ_brazo_izq">Circunferencia brazo izquierdo</label>
                 <div class="antro-input-wrap">
-                  <input type="number" step="0.1" min="0" id="circ_brazo_izq" name="campos[circ_brazo_izq]" value="<?= $valorCampo('circ_brazo_izq') ?>">
+                  <input type="number" step="0.1" min="0" id="circ_brazo_izq" name="campos[circ_brazo_izq]" value="<?= $valorCampoDecimal('circ_brazo_izq') ?>">
                   <span class="antro-unit">cm</span>
                 </div>
               </div>
@@ -1356,7 +1427,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
               <div class="antro-field" data-menor5>
                 <label for="pliegue_tricipital">Pliegue tricipital</label>
                 <div class="antro-input-wrap">
-                  <input type="number" step="0.1" min="0" id="pliegue_tricipital" name="campos[pliegue_tricipital]" value="<?= $valorCampo('pliegue_tricipital') ?>">
+                  <input type="number" step="0.1" min="0" id="pliegue_tricipital" name="campos[pliegue_tricipital]" value="<?= $valorCampoDecimal('pliegue_tricipital') ?>">
                   <span class="antro-unit">mm</span>
                 </div>
               </div>
@@ -1400,7 +1471,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
                 Peso por diferencia
               </button>
 
-              
+
             </div>
           </div>
           <div class="antro-section" data-section="2" id="sectionCondiciones">
@@ -1651,68 +1722,62 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
 
           <div class="antro-summary-row">
             <span>Peso</span>
-            <strong id="resPeso">—</strong>
+            <span id="resPeso">—</span>
           </div>
 
           <div class="antro-summary-row">
             <span>Talla</span>
-            <strong id="resTalla">—</strong>
+            <span id="resTalla">—</span>
           </div>
 
           <div class="antro-summary-row">
             <span>IMC</span>
-            <strong id="resImc">—</strong>
+            <span id="resImc">—</span>
           </div>
 
           <div class="antro-summary-row" id="resCinturaRow">
             <span>Cintura</span>
-            <strong id="resCintura" class="antro-danger">Pendiente</strong>
+            <span id="resCintura" class="antro-danger">Pendiente</span>
           </div>
 
           <div class="antro-summary-row">
             <span>Edema</span>
-            <strong id="resEdema">No</strong>
+            <span id="resEdema">No</span>
           </div>
           <div class="antro-summary-row antro-summary-dynamic antro-hidden" id="resDiscapacidadRow">
             <span>Discapacidad</span>
-            <strong id="resDiscapacidad">Sí</strong>
+            <span id="resDiscapacidad">Sí</span>
           </div>
 
           <div class="antro-summary-row antro-summary-dynamic antro-hidden" id="resAusenciaRow">
             <span>Ausencia extremidades</span>
-            <strong id="resAusencia">Sí</strong>
+            <span id="resAusencia">Sí</span>
           </div>
 
           <div class="antro-summary-row antro-summary-dynamic antro-hidden" id="resLactanteRow">
             <span>Lactante</span>
-            <strong id="resLactante">Sí</strong>
+            <span id="resLactante">Sí</span>
           </div>
 
           <div class="antro-summary-row antro-summary-dynamic antro-hidden" id="resEmbarazadaRow">
             <span>Embarazada</span>
-            <strong id="resEmbarazada">Sí</strong>
+            <span id="resEmbarazada">Sí</span>
           </div>
 
           <div class="antro-summary-row antro-summary-zscore" id="resZimceRow">
             <span>ZIMC/E</span>
-            <strong id="resZimce">—</strong>
+            <span id="resZimce">—</span>
           </div>
 
           <div class="antro-summary-row antro-summary-zscore" id="resZteRow">
             <span>ZTE</span>
-            <strong id="resZte">—</strong>
+            <span id="resZte">—</span>
           </div>
 
           <div class="antro-summary-row antro-summary-zscore" id="resZptRow">
             <span>ZPT/P-L</span>
-            <strong id="resZpt">—</strong>
+            <span id="resZpt">—</span>
           </div>
-
-          <div class="antro-summary-row">
-            <span>Estado</span>
-            <strong id="resEstado">—</strong>
-          </div>
-
 
 
           <div class="antro-alert-box antro-alert-danger antro-hidden" id="antroError"></div>
@@ -2030,11 +2095,24 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
           recalcular();
         });
 
-        el.addEventListener('change', function() {
-          actualizarReglasEdad();
-          inicializarVista();
-          actualizarEdadBeneficiario();
-          recalcular();
+        [peso, talla, cintura, fechaEvaluacion].forEach(function(el) {
+          if (!el) return;
+
+          el.addEventListener('input', function() {
+            if (el !== fechaEvaluacion) {
+              recalcular();
+            }
+          });
+
+          el.addEventListener('change', function() {
+            if (el === fechaEvaluacion) {
+              actualizarReglasEdad();
+              inicializarVista();
+              actualizarEdadBeneficiario();
+            }
+
+            recalcular();
+          });
         });
       });
 
@@ -2403,7 +2481,8 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
         if (cintura) {
           cintura.required = false;
           cintura.disabled = true;
-          cintura.value = '';
+          // No limpiar el valor en edición/cambio de fecha.
+          // El backend ya ignora circ_cintura cuando no aplica por edad.
         }
       }
 
@@ -2556,7 +2635,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
       if (edadDias > 0 && edadDias <= 730) return '2 años';
       if (edadDias > 730 && edadDias <= 1856) return '> 2 a 5 años';
       if (edadDias > 1856 && edadDias <= 6939) return '> 5 a 19 años';
-      if (edadDias > 6939  && edadDias <= 21914) return '> 19 años a 60 años';
+      if (edadDias > 6939 && edadDias <= 21914) return '> 19 años a 60 años';
       if (edadDias > 21914) return '> 60 años';
       return 'Edad no válida';
     }
@@ -2572,7 +2651,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
         tag.textContent = '2 a 5 años';
       } else if (edadDias > 1856 && edadDias <= 6939) {
         tag.textContent = '5 a 19 años';
-      } else if (edadDias > 6939 ) {
+      } else if (edadDias > 6939) {
         tag.textContent = 'Adulto';
       } else {
         tag.textContent = 'Edad no válida';
@@ -2639,7 +2718,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
 
       if (!box || !txt) return;
 
-      box.classList.remove(
+      const alertClasses = [
         'antro-alert-info',
         'antro-alert-success',
         'antro-alert-warning',
@@ -2647,35 +2726,43 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
         'antro-alert-danger',
         'antro-alert-review',
         'antro-alert-extreme'
-      );
+      ];
+
+      const tagClasses = [
+        'antro-tag-info',
+        'antro-tag-success',
+        'antro-tag-warning',
+        'antro-tag-orange',
+        'antro-tag-danger',
+        'antro-tag-review',
+        'antro-tag-extreme'
+      ];
+
+      box.classList.remove(...alertClasses);
+
+      if (tagImc) {
+        tagImc.classList.remove(...tagClasses, 'antro-tag-warning');
+      }
+
+      if (estado) {
+        estado.classList.remove(...tagClasses);
+      }
 
       const clase = resultado.clase || 'info';
 
-      if (clase === 'success') {
-        box.classList.add('antro-alert-success');
-      } else if (clase === 'warning') {
-        box.classList.add('antro-alert-warning');
-      } else if (clase === 'orange') {
-        box.classList.add('antro-alert-orange');
-      } else if (clase === 'danger') {
-        box.classList.add('antro-alert-danger');
-      } else if (clase === 'review') {
-        box.classList.add('antro-alert-review');
-      } else if (clase === 'extreme') {
-        box.classList.add('antro-alert-extreme');
-      } else {
-        box.classList.add('antro-alert-info');
-      }
-
-      txt.textContent = resultado.texto || 'Revisar datos.';
+      box.classList.add('antro-alert-' + clase);
 
       if (tagImc) {
         tagImc.textContent = resultado.estado || 'Revisar datos';
+        tagImc.classList.add('antro-tag-' + clase);
       }
 
       if (estado) {
         estado.textContent = resultado.estado || 'Revisar datos';
+        estado.classList.add('antro-tag', 'antro-tag-' + clase);
       }
+
+      txt.textContent = resultado.texto || 'Revisar datos.';
 
       if (hiddenEstado) {
         hiddenEstado.value = resultado.estado || '';

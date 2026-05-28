@@ -45,7 +45,7 @@
         margin: 0;
         color: var(--benef-dark);
         font-size: 30px;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .benef-subtitle {
@@ -60,7 +60,7 @@
         color: #fff;
         padding: 12px 18px;
         border-radius: 10px;
-        font-weight: 700;
+        font-weight: 600;
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -89,7 +89,7 @@
         margin: 0;
         color: var(--benef-dark);
         font-size: 22px;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .benef-filter-note {
@@ -114,7 +114,7 @@
     .benef-label {
         color: #4b5563;
         font-size: 13px;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .benef-input-wrap {
@@ -155,7 +155,7 @@
         min-height: 48px;
         border-radius: 12px;
         padding: 0 18px;
-        font-weight: 800;
+        font-weight: 600;
         cursor: pointer;
         white-space: nowrap;
         text-decoration: none;
@@ -206,7 +206,7 @@
         margin: 0 0 18px;
         color: var(--benef-dark);
         font-size: 22px;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .benef-stat-card {
@@ -227,7 +227,7 @@
         display: grid;
         place-items: center;
         color: #fff;
-        font-weight: 800;
+        font-weight: 600;
         flex: 0 0 auto;
     }
 
@@ -260,7 +260,7 @@
     .benef-help-title {
         color: var(--benef-dark);
         font-size: 17px;
-        font-weight: 800;
+        font-weight: 600;
         margin: 28px 0 12px;
     }
 
@@ -298,7 +298,7 @@
         margin: 0;
         color: var(--benef-dark);
         font-size: 28px;
-        font-weight: 800;
+        font-weight: 600;
     }
 
     .benef-results-count {
@@ -373,7 +373,7 @@
         margin: 0 0 8px;
         color: var(--benef-dark);
         font-size: 18px;
-        font-weight: 900;
+        font-weight: 600;
         text-transform: uppercase;
     }
 
@@ -397,7 +397,7 @@
         border-radius: 8px;
         padding: 5px 9px;
         font-size: 12px;
-        font-weight: 800;
+        font-weight: 600;
         display: inline-flex;
         align-items: center;
         gap: 5px;
@@ -425,7 +425,7 @@
         border-radius: 12px;
         min-height: 42px;
         padding: 0 16px;
-        font-weight: 800;
+        font-weight: 600;
         cursor: pointer;
         white-space: nowrap;
         text-decoration: none;
@@ -493,7 +493,7 @@
         min-width: 38px;
         height: 38px;
         padding: 0 12px;
-        font-weight: 700;
+        font-weight: 600;
         cursor: pointer;
         text-decoration: none;
         display: inline-flex;
@@ -809,7 +809,7 @@ $linkPage = function ($p) use ($qsBase) {
                                 </div>
 
                                 <div class="benef-info">
-                                    <h3 class="benef-name"><?= $nombreCompleto ?></h3>
+                                    <h4 class="benef-name"><?= $nombreCompleto ?></h4>
 
                                     <p class="benef-meta">
                                         <strong>ID:</strong> <?= esc($b['id_digisalud'] ?? '—') ?>

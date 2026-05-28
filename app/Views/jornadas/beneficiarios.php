@@ -151,7 +151,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         padding: 0 16px 0 44px;
         outline: none;
         color: var(--ds-text);
-        background: var(--ds-light);
+        background: #fff;
         box-shadow: var(--shadow-sm);
     }
 
@@ -671,7 +671,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
     .jor_ben-ficha-head h3 {
         margin: 0;
         font-size: 21px;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .jor_ben-ficha-head p {
@@ -732,7 +732,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         margin: 0;
         color: var(--ds-dark);
         font-size: 20px;
-        font-weight: 700;
+        font-weight: 600;
         text-transform: uppercase;
     }
 
@@ -789,7 +789,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         margin: 22px 0 12px;
         color: var(--ds-dark);
         font-size: 15px;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .jor_ben-ficha-pesquisa-list {
@@ -817,7 +817,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
     .jor_ben-ficha-pesquisa-name {
         color: var(--ds-dark);
-        font-weight: 700;
+        font-weight: 600;
         font-size: 14px;
     }
 
@@ -830,7 +830,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         border-radius: 999px;
         padding: 6px 10px;
         font-size: 12px;
-        font-weight: 700;
+        font-weight: 600;
         white-space: nowrap;
     }
 
@@ -859,7 +859,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         border: 1px solid var(--ds-border);
         background: #fff;
         color: var(--ds-primary-dark);
-        font-weight: 700;
+        font-weight: 600;
         text-decoration: none;
         display: inline-flex;
         justify-content: center;
