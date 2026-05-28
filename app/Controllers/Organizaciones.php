@@ -147,15 +147,17 @@ class Organizaciones extends BaseController
         }
 
         $rules = [
-            'nombre_org'            => 'required|max_length[120]',
-            'tipo'                  => 'required|max_length[50]',
-            'categoria'             => 'required|max_length[80]',
-            'telefono'              => 'required|max_length[30]',
-            'email'                 => 'required|valid_email|max_length[120]',
-            'responsable_nombres'   => 'required|max_length[80]',
-            'responsable_apellidos' => 'required|max_length[80]',
-            'password'              => 'required|min_length[6]|max_length[255]',
-            'confirmar_password'    => 'required|matches[password]',
+            'nombre_org'                  => 'required|max_length[120]',
+            'tipo'                        => 'required|max_length[50]',
+            'categoria'                   => 'required|max_length[80]',
+            'telefono'                    => 'required|max_length[30]',
+            'email'                       => 'required|valid_email|max_length[120]',
+            'responsable_nombres'         => 'required|max_length[80]',
+            'responsable_apellidos'       => 'required|max_length[80]',
+            'responsable_fecha_nacimiento' => 'required|valid_date[Y-m-d]',
+            'responsable_genero'          => 'required|in_list[Masculino,Femenino,Otro]',
+            'password'                    => 'required|min_length[6]|max_length[255]',
+            'confirmar_password'          => 'required|matches[password]',
         ];
 
         if (! $this->validate($rules)) {
@@ -214,17 +216,19 @@ class Organizaciones extends BaseController
         $username = explode('@', $email)[0];
 
         $usuarioModel->insert([
-            'nombres'         => $responsableNombres,
-            'apellidos'       => $responsableApellidos,
-            'email'           => $email,
-            'username'        => $username,
-            'password_hash'   => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'telefono'        => $this->request->getPost('telefono'),
-            'direccion_id'    => $direccionId,
-            'organizacion_id' => $organizacionId,
-            'status_usu'      => 1,
-            'creado_en'       => date('Y-m-d H:i:s'),
-            'creado_por'      => (int) session()->get('id_usuario'),
+            'nombres'          => $responsableNombres,
+            'apellidos'        => $responsableApellidos,
+            'genero'           => $this->request->getPost('responsable_genero'),
+            'fecha_nacimiento' => $this->request->getPost('responsable_fecha_nacimiento'),
+            'email'            => $email,
+            'username'         => $username,
+            'password_hash'    => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
+            'telefono'         => $this->request->getPost('telefono'),
+            'direccion_id'     => $direccionId,
+            'organizacion_id'  => $organizacionId,
+            'status_usu'       => 1,
+            'creado_en'        => date('Y-m-d H:i:s'),
+            'creado_por'       => (int) session()->get('id_usuario'),
         ]);
 
         $usuarioId = $usuarioModel->getInsertID();
@@ -309,6 +313,8 @@ class Organizaciones extends BaseController
             'responsable_apellidos' => 'required|max_length[80]',
             'password'              => 'permit_empty|min_length[6]|max_length[255]',
             'confirmar_password'    => 'matches[password]',
+            'responsable_fecha_nacimiento' => 'required|valid_date[Y-m-d]',
+            'responsable_genero'           => 'required|in_list[Masculino,Femenino,Otro]',
         ];
 
         if (! $this->validate($rules)) {
@@ -373,6 +379,8 @@ class Organizaciones extends BaseController
                 'email'     => $email,
                 'username'  => explode('@', $email)[0],
                 'telefono'  => $this->request->getPost('telefono'),
+                'genero'           => $this->request->getPost('responsable_genero'),
+                'fecha_nacimiento' => $this->request->getPost('responsable_fecha_nacimiento'),
             ];
 
             if ($this->request->getPost('password')) {

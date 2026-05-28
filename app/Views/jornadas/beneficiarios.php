@@ -168,7 +168,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 
     .jor_ben-card {
         position: relative;
-        background: var(--ds-bg-light);
+        background: var(--ds-bg);
         border: 1px solid var(--ds-border);
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-sm);

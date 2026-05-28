@@ -130,3 +130,16 @@ $routes->get('evaluaciones/historial-sanguinea/(:num)', 'EvaluacionesController:
 
 // Si prefieres dejarlo fuera del grupo, igual que historial-sanguinea actual:
 $routes->get('evaluaciones/historial-antropometria/(:num)', 'EvaluacionesController::historialAntropometria/$1');
+
+// =====================================================
+// RUTAS CARGA MASIVA DE BENEFICIARIOS
+// Agregar dentro de Routes.php (en el group de jornadas con auth)
+// =====================================================
+
+// Dentro del grupo existente de jornadas:
+$routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
+    // Descargar plantilla Excel
+    $routes->get('carga-masiva/plantilla', 'CargaMasivaController::descargarPlantilla');
+    // Procesar archivo Excel (AJAX POST)
+    $routes->post('(:num)/carga-masiva/procesar', 'CargaMasivaController::procesar/$1');
+});

@@ -382,7 +382,7 @@
 <?php
 $org = $organizacion ?? [];
 $dir = $direccion ?? null;
-
+$resp = $responsable ?? [];
 $tieneLogo = !empty($org['logo_url']);
 $logoSrc = $tieneLogo ? base_url('uploads/logos/' . $org['logo_url']) : '#';
 
@@ -557,7 +557,28 @@ $responsableApellidos = $partesResponsable[1] ?? '';
                                 required>
                         </div>
                     </div>
+<div class="org_edit-form-group">
+    <label for="responsable_fecha_nacimiento">Fecha de nacimiento del responsable <span>*</span></label>
+    <div class="org_edit-input-icon">
+        <i class="bi bi-calendar-date"></i>
+        <input type="date"
+            id="responsable_fecha_nacimiento"
+            name="responsable_fecha_nacimiento"
+            value="<?= old('responsable_fecha_nacimiento', $resp['fecha_nacimiento'] ?? '') ?>"
+            required>
+    </div>
+</div>
 
+<div class="org_edit-form-group">
+    <label for="responsable_genero">Género del responsable <span>*</span></label>
+    <select id="responsable_genero" name="responsable_genero" required>
+        <?php $generoActual = old('responsable_genero', $resp['genero'] ?? ''); ?>
+        <option value="">Selecciona...</option>
+        <option value="Masculino" <?= $generoActual === 'Masculino' ? 'selected' : '' ?>>Masculino</option>
+        <option value="Femenino" <?= $generoActual === 'Femenino' ? 'selected' : '' ?>>Femenino</option>
+        <option value="Otro" <?= $generoActual === 'Otro' ? 'selected' : '' ?>>Otro</option>
+    </select>
+</div>
                     <div class="org_edit-form-group">
                         <label for="password">Nueva contraseña</label>
                         <div class="org_edit-input-icon">

@@ -3,59 +3,57 @@
 <?= $this->section('content') ?>
 
 <?php
-    /**
-     * Vista: Buscar / asociar beneficiarios a una jornada.
-     * Mantiene la lógica existente de CI4:
-     * - $jornada_id
-     * - búsqueda AJAX en beneficiarios/buscar-ajax
-     * - asociación POST a jornadas/{jornada_id}/asociar/{id_beneficiario}
-     * - registro nuevo en jornadas/{jornada_id}/beneficiarios/create
-     *
-     * Si el controlador envía $jornada, se muestra el resumen lateral.
-     * Si no lo envía, la vista no falla y muestra valores seguros.
-     */
+/**
+ * Vista: Buscar / asociar beneficiarios a una jornada.
+ * Mantiene la lógica existente de CI4:
+ * - $jornada_id
+ * - búsqueda AJAX en beneficiarios/buscar-ajax
+ * - asociación POST a jornadas/{jornada_id}/asociar/{id_beneficiario}
+ * - registro nuevo en jornadas/{jornada_id}/beneficiarios/create
+ *
+ * Si el controlador envía $jornada, se muestra el resumen lateral.
+ * Si no lo envía, la vista no falla y muestra valores seguros.
+ */
 
-    $jornadaNombre = $jornada['nombre_jornada']
-        ?? $jornada['nombre']
-        ?? $jornada['nombre_org']
-        ?? ('Jornada #' . (int) $jornada_id);
+$jornadaNombre = $jornada['nombre_jornada']
+    ?? $jornada['nombre']
+    ?? $jornada['nombre_org']
+    ?? ('Jornada #' . (int) $jornada_id);
 
-    $jornadaSubtitulo = $jornada['pesquisas']
-        ?? $jornada['tipo_pesquisa']
-        ?? 'Beneficiarios';
+$jornadaSubtitulo = $jornada['pesquisas']
+    ?? $jornada['tipo_pesquisa']
+    ?? 'Beneficiarios';
 
-    $jornadaUbicacion = $jornada['ciudad']
-        ?? $jornada['ubicacion']
-        ?? 'No especificada';
+$jornadaUbicacion = $jornada['ciudad']
+    ?? $jornada['ubicacion']
+    ?? 'No especificada';
 
-    $fechaInicioRaw = $jornada['fecha_inicio']
-        ?? $jornada['fecha_ini']
-        ?? null;
+$fechaInicioRaw = $jornada['fecha_inicio']
+    ?? $jornada['fecha_ini']
+    ?? null;
 
-    $fechaFinRaw = $jornada['fecha_fin']
-        ?? $jornada['fecha_cierre']
-        ?? $fechaInicioRaw;
+$fechaFinRaw = $jornada['fecha_fin']
+    ?? $jornada['fecha_cierre']
+    ?? $fechaInicioRaw;
 
-    $fechaInicio = ! empty($fechaInicioRaw) ? date('d-m-Y', strtotime($fechaInicioRaw)) : '—';
-    $fechaFin    = ! empty($fechaFinRaw) ? date('d-m-Y', strtotime($fechaFinRaw)) : '—';
+$fechaInicio = ! empty($fechaInicioRaw) ? date('d-m-Y', strtotime($fechaInicioRaw)) : '—';
+$fechaFin    = ! empty($fechaFinRaw) ? date('d-m-Y', strtotime($fechaFinRaw)) : '—';
 
-    $statusRaw = (string) ($jornada['status_jor'] ?? $jornada['status'] ?? '');
+$statusRaw = (string) ($jornada['status_jor'] ?? $jornada['status'] ?? '');
 
-    $statusTexto = match ($statusRaw) {
-        '1' => 'Activa',
-        '2' => 'Finalizada',
-        '3' => 'Inactiva',
-        default => $statusRaw !== '' ? ucfirst($statusRaw) : 'No especificado',
-    };
+$statusTexto = match ($statusRaw) {
+    '1' => 'Activa',
+    '2' => 'Finalizada',
+    '3' => 'Inactiva',
+    default => $statusRaw !== '' ? ucfirst($statusRaw) : 'No especificado',
+};
 
-    $cantidadAsignados = $totalBeneficiariosAsignados
-        ?? $total_asignados
-        ?? (isset($beneficiariosAsignados) && is_countable($beneficiariosAsignados) ? count($beneficiariosAsignados) : 0);
+$cantidadAsignados = $totalBeneficiariosAsignados
+    ?? $total_asignados
+    ?? (isset($beneficiariosAsignados) && is_countable($beneficiariosAsignados) ? count($beneficiariosAsignados) : 0);
 ?>
 
 <style>
- 
-
     body {
         background: linear-gradient(180deg, #f8fbff 0%, var(--ds-bg) 100%);
     }
@@ -209,7 +207,7 @@
     }
 
     .benef-find-ds-btn-primary:hover {
-        color:var(--ds-light);
+        color: var(--ds-light);
     }
 
     .benef-find-ds-btn-outline {
@@ -483,16 +481,18 @@
         border: 1px solid rgba(239, 68, 68, 0.2);
         margin-bottom: 16px;
     }
+
     .benef-find-pesquisas-icons {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    flex-wrap: wrap;
-    width: 100%;
-    margin: 16px 0 18px;
-}
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+        flex-wrap: wrap;
+        width: 100%;
+        margin: 16px 0 18px;
+    }
+
     @media (max-width: 1120px) {
         .benef-find-beneficiarios-grid {
             grid-template-columns: 1fr;
@@ -535,6 +535,156 @@
             width: 100%;
         }
     }
+
+
+    /* ══════ Modal Carga Masiva ══════ */
+.cm-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+    animation: cmFadeIn .2s ease;
+}
+@keyframes cmFadeIn { from { opacity:0; } to { opacity:1; } }
+ 
+.cm-modal {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%; max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(16,26,97,.25);
+    animation: cmSlideUp .25s ease;
+}
+@keyframes cmSlideUp { from { transform:translateY(30px);opacity:0; } to { transform:translateY(0);opacity:1; } }
+ 
+.cm-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid #eee;
+}
+.cm-title {
+    font-size: 1.2rem; font-weight: 700; color: #101A61; margin: 0;
+    display: flex; align-items: center; gap: .5rem;
+}
+.cm-subtitle { font-size: .85rem; color: #666; margin: .25rem 0 0; }
+.cm-close {
+    background: none; border: none; font-size: 1.5rem; color: #999;
+    cursor: pointer; line-height: 1; padding: 0;
+}
+.cm-close:hover { color: #333; }
+ 
+.cm-body { padding: 1.5rem; }
+ 
+.cm-step {
+    display: flex; gap: 1rem; margin-bottom: 1.5rem;
+}
+.cm-step-number {
+    width: 32px; height: 32px; min-width: 32px;
+    background: #101A61; color: #fff;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .85rem;
+}
+.cm-step-content h3 {
+    font-size: .95rem; font-weight: 600; color: #101A61; margin: 0 0 .25rem;
+}
+.cm-step-content p {
+    font-size: .82rem; color: #555; margin: 0 0 .75rem; line-height: 1.4;
+}
+ 
+.cm-btn-download {
+    display: inline-flex; align-items: center; gap: .4rem;
+    padding: .5rem 1rem; border-radius: 8px;
+    background: #e8f5e9; color: #2e7d32;
+    font-weight: 600; font-size: .85rem;
+    text-decoration: none; border: 1px solid #c8e6c9;
+    transition: all .15s;
+}
+.cm-btn-download:hover { background: #c8e6c9; color: #1b5e20; }
+ 
+.cm-dropzone {
+    border: 2px dashed #ccc; border-radius: 12px;
+    padding: 2rem 1rem; text-align: center;
+    cursor: pointer; transition: all .2s;
+    background: #fafbff;
+}
+.cm-dropzone:hover, .cm-dropzone.cm-dragover {
+    border-color: #00D4FF; background: #f0faff;
+}
+.cm-dropzone-icon { font-size: 2.5rem; color: #101A61; margin-bottom: .5rem; }
+.cm-dropzone-text { font-size: .9rem; color: #333; margin: 0; }
+.cm-dropzone-hint { font-size: .75rem; color: #999; margin: .25rem 0 0; }
+ 
+.cm-file-info {
+    display: flex; align-items: center; gap: .5rem;
+    padding: .75rem 1rem; background: #f0f4ff; border-radius: 8px;
+    margin-top: .75rem;
+}
+.cm-file-remove {
+    background: none; border: none; color: #dc3545; cursor: pointer;
+    font-size: 1.1rem; margin-left: auto;
+}
+ 
+.cm-footer {
+    display: flex; justify-content: flex-end; gap: .75rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #eee;
+}
+.cm-btn-secondary {
+    padding: .5rem 1.2rem; border-radius: 8px;
+    background: #f5f5f5; color: #555; border: 1px solid #ddd;
+    font-weight: 600; font-size: .85rem; cursor: pointer;
+}
+.cm-btn-secondary:hover { background: #eee; }
+.cm-btn-primary {
+    padding: .5rem 1.2rem; border-radius: 8px;
+    background: #101A61; color: #fff; border: none;
+    font-weight: 600; font-size: .85rem; cursor: pointer;
+    display: flex; align-items: center; gap: .4rem;
+    transition: all .15s;
+}
+.cm-btn-primary:hover:not(:disabled) { background: #0d1550; }
+.cm-btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+ 
+/* Resultado */
+.cm-result-box {
+    padding: 1rem; border-radius: 10px; margin-top: .5rem;
+}
+.cm-result-success { background: #e8f5e9; border: 1px solid #c8e6c9; }
+.cm-result-warning { background: #fff8e1; border: 1px solid #ffe082; }
+.cm-result-error   { background: #fce4ec; border: 1px solid #f8bbd0; }
+ 
+.cm-result-title {
+    font-weight: 700; font-size: .95rem; margin: 0 0 .5rem;
+    display: flex; align-items: center; gap: .4rem;
+}
+.cm-result-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: .4rem;
+    font-size: .82rem; color: #333;
+}
+.cm-result-stats span { display: flex; align-items: center; gap: .3rem; }
+ 
+.cm-errores-list {
+    max-height: 180px; overflow-y: auto;
+    font-size: .78rem; color: #c62828;
+    margin-top: .5rem; padding: .5rem;
+    background: rgba(255,255,255,.6); border-radius: 6px;
+}
+.cm-errores-list div { padding: .25rem 0; border-bottom: 1px solid rgba(0,0,0,.05); }
+ 
+/* Loader */
+.cm-loader {
+    display: flex; align-items: center; gap: .75rem;
+    padding: 1rem; background: #f0f4ff; border-radius: 10px;
+    margin-top: .5rem;
+}
+.cm-spinner {
+    width: 24px; height: 24px; border: 3px solid #ddd;
+    border-top-color: #101A61; border-radius: 50%;
+    animation: cmSpin .6s linear infinite;
+}
+@keyframes cmSpin { to { transform: rotate(360deg); } }
 </style>
 <?php
 $pesquisaMap = [
@@ -579,11 +729,11 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
 <div class="benef-find-beneficiarios-page">
     <div class="benef-find-beneficiarios-breadcrumb">
 
-<a href="<?= base_url('jornadas') ?>">Jornadas</a>
-&gt;
-<a href="<?= base_url("jornadas/$jornada_id/beneficiarios") ?>">Beneficiarios</a>
-&gt;
-<span>Buscar o registrar</span>
+        <a href="<?= base_url('jornadas') ?>">Jornadas</a>
+        &gt;
+        <a href="<?= base_url("jornadas/$jornada_id/beneficiarios") ?>">Beneficiarios</a>
+        &gt;
+        <span>Buscar o registrar</span>
     </div>
 
     <div class="benef-find-beneficiarios-header">
@@ -595,21 +745,20 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
         <div class="benef-find-beneficiarios-grid">
             <div class="benef-find-beneficiarios-panel">
                 <div class="benef-find-beneficiarios-panel-body">
-                  
+
                     <div class="benef-find-search-row">
                         <div class="benef-find-input-wrap">
-                             
+
                             <input
                                 type="text"
                                 id="campoBusqueda"
                                 class="benef-find-search-input"
                                 placeholder="Nombre, apellido o ID Digisalud..."
-                                autocomplete="off"
-                            >
+                                autocomplete="off">
                         </div>
 
                         <button type="button" class="benef-find-ds-btn benef-find-ds-btn-primary" onclick="ejecutarBusqueda()">
-                            
+
                             <span>Buscar</span>
                         </button>
                     </div>
@@ -620,6 +769,9 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
                         <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/create") ?>" class="benef-find-ds-btn benef-find-ds-btn-outline">
                             + Registrar nuevo
                         </a>
+                        <button type="button" class="benef-find-ds-btn benef-find-ds-btn-outline" onclick="abrirModalCargaMasiva()" style="background:#101A61;color:#fff;border-color:#101A61;">
+                            <i class="bi bi-upload"></i> Carga masiva
+                        </button>
                     </div>
 
                     <div id="resultados"></div>
@@ -634,6 +786,9 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
                                 <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/create") ?>" class="benef-find-ds-btn benef-find-ds-btn-primary">
                                     + Registrar nuevo beneficiario
                                 </a>
+                                <button type="button" class="benef-find-ds-btn benef-find-ds-btn-outline" onclick="abrirModalCargaMasiva()" style="background:#101A61;color:#fff;border-color:#101A61;">
+                            <i class="bi bi-upload"></i> Carga masiva
+                        </button>
                             </div>
                         </div>
                     </div>
@@ -650,29 +805,11 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
 
                     <?php if (! empty($beneficiariosAsignados) && is_iterable($beneficiariosAsignados)): ?>
                         <h3 class="benef-find-subsection-title">
-                             
+
                             <span>Beneficiarios asignados (<?= count($beneficiariosAsignados) ?>)</span>
                         </h3>
 
-                        <?php foreach ($beneficiariosAsignados as $beneficiario): ?>
-                            <div class="benef-find-assigned-card mb-3">
-                                <div class="benef-find-assigned-left">
-                                        <div class="benef-find-user-meta">
-                                        <h4>
-                                            <?= esc(trim(($beneficiario['apellidos'] ?? '') . ', ' . ($beneficiario['nombres'] ?? ''))) ?>
-                                        </h4>
-                                        <div class="benef-find-meta-row">
-                                            <span class="benef-find-badge-primary">
-                                                <?= esc($beneficiario['id_digisalud'] ?? 'SIN ID') ?>
-                                            </span>
-                                            <span class="benef-find-company">
-                                                <?= esc($beneficiario['parentesco'] ?? 'Sin representante') ?>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
+                         
                     <?php endif; ?>
                 </div>
             </div>
@@ -680,7 +817,7 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
             <aside class="benef-find-beneficiarios-panel">
                 <div class="benef-find-side-panel">
                     <h2 class="benef-find-org-title"><?= esc($jornadaNombre) ?></h2>
-                    
+
 
                     <div class="benef-find-pesquisas-icons">
                         <?php if (!empty($pesquisas_jornada)): ?>
@@ -690,9 +827,8 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
 
                                     <div class="benef-find-pesquisa-icon <?= esc($pesquisa['clase']) ?>" title="<?= esc($pesquisa['nombre']) ?>">
                                         <img height="30"
-                                            src="<?= base_url('img/' . $pesquisa['emoji']) ?>" 
-                                            alt="<?= esc($pesquisa['nombre']) ?>"
-                                        >
+                                            src="<?= base_url('img/' . $pesquisa['emoji']) ?>"
+                                            alt="<?= esc($pesquisa['nombre']) ?>">
                                     </div>
 
                                 <?php endif; ?>
@@ -757,74 +893,331 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
             </aside>
         </div>
     </section>
+
+  
+<!-- MODAL CARGA MASIVA -->
+<div id="modalCargaMasiva" class="cm-overlay" style="display:none;">
+    <div class="cm-modal">
+        <div class="cm-header">
+            <div>
+                <h2 class="cm-title">
+                    <i class="bi bi-file-earmark-spreadsheet"></i>
+                    Carga masiva de beneficiarios
+                </h2>
+                <p class="cm-subtitle">Importa beneficiarios desde un archivo Excel (.xlsx)</p>
+            </div>
+            <button type="button" class="cm-close" onclick="cerrarModalCargaMasiva()">&times;</button>
+        </div>
+ 
+        <div class="cm-body">
+            <!-- Paso 1: Descargar plantilla -->
+            <div class="cm-step">
+                <div class="cm-step-number">1</div>
+                <div class="cm-step-content">
+                    <h3>Descarga la plantilla</h3>
+                    <p>Usa esta plantilla para llenar los datos de los beneficiarios. Incluye instrucciones y validaciones.</p>
+                    <a href="<?= base_url('jornadas/carga-masiva/plantilla') ?>" class="cm-btn-download">
+                        <i class="bi bi-download"></i> Descargar plantilla
+                    </a>
+                </div>
+            </div>
+ 
+            <!-- Paso 2: Subir archivo -->
+            <div class="cm-step">
+                <div class="cm-step-number">2</div>
+                <div class="cm-step-content">
+                    <h3>Sube el archivo completado</h3>
+                    <p>Arrastra el archivo o haz clic para seleccionarlo. Máximo 500 registros, 5 MB.</p>
+ 
+                    <div class="cm-dropzone" id="cmDropzone" onclick="document.getElementById('cmFileInput').click()">
+                        <div class="cm-dropzone-icon">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                        </div>
+                        <p class="cm-dropzone-text">Arrastra tu archivo aquí o <span style="color:#3695F5;text-decoration:underline;cursor:pointer;">selecciona</span></p>
+                        <p class="cm-dropzone-hint">.xlsx o .xls — máx. 5 MB</p>
+                        <input type="file" id="cmFileInput" accept=".xlsx,.xls" style="display:none;" onchange="archivoSeleccionado(this)">
+                    </div>
+ 
+                    <div id="cmFileInfo" style="display:none;" class="cm-file-info">
+                        <i class="bi bi-file-earmark-excel-fill" style="color:#198754;font-size:1.3rem;"></i>
+                        <span id="cmFileName"></span>
+                        <span id="cmFileSize" style="color:#888;font-size:.8rem;"></span>
+                        <button type="button" class="cm-file-remove" onclick="removerArchivo()">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- Paso 3: Procesar -->
+            <div class="cm-step">
+                <div class="cm-step-number">3</div>
+                <div class="cm-step-content">
+                    <h3>Importar beneficiarios</h3>
+                    <p>Se validarán los datos y se crearán los beneficiarios automáticamente asociados a esta jornada.</p>
+                </div>
+            </div>
+ 
+            <!-- Resultado -->
+            <div id="cmResultado" style="display:none;"></div>
+        </div>
+ 
+        <div class="cm-footer">
+            <button type="button" class="cm-btn-secondary" onclick="cerrarModalCargaMasiva()">Cancelar</button>
+            <button type="button" class="cm-btn-primary" id="cmBtnProcesar" onclick="procesarCargaMasiva()" disabled>
+                <i class="bi bi-upload"></i> Importar beneficiarios
+            </button>
+        </div>
+    </div>
+</div>  
 </div>
 
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
 <script>
-const jornadaId = <?= (int) $jornada_id ?>;
-const buscarUrl = "<?= base_url('beneficiarios/buscar-ajax') ?>";
-const asociarBaseUrl = "<?= base_url('jornadas') ?>";
-
-const csrfName = "<?= csrf_token() ?>";
-const csrfHash = "<?= csrf_hash() ?>";
-
-document.addEventListener('DOMContentLoaded', function () {
-    const input = document.getElementById('campoBusqueda');
-
-    if (!input) {
+// ══════ Carga Masiva JS ══════
+let cmArchivoSeleccionado = null;
+ 
+function abrirModalCargaMasiva() {
+    document.getElementById('modalCargaMasiva').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+ 
+function cerrarModalCargaMasiva() {
+    document.getElementById('modalCargaMasiva').style.display = 'none';
+    document.body.style.overflow = '';
+    // Reset
+    removerArchivo();
+    document.getElementById('cmResultado').style.display = 'none';
+    document.getElementById('cmResultado').innerHTML = '';
+    document.getElementById('cmBtnProcesar').disabled = true;
+}
+ 
+function archivoSeleccionado(input) {
+    const file = input.files[0];
+    if (!file) return;
+ 
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (!['xlsx', 'xls'].includes(ext)) {
+        Swal.fire('Formato inválido', 'Solo se permiten archivos .xlsx o .xls', 'error');
+        input.value = '';
         return;
     }
-
-    input.focus();
-
-    input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter') {
-            ejecutarBusqueda();
+ 
+    if (file.size > 5 * 1024 * 1024) {
+        Swal.fire('Archivo muy grande', 'El archivo no debe superar 5 MB.', 'error');
+        input.value = '';
+        return;
+    }
+ 
+    cmArchivoSeleccionado = file;
+    document.getElementById('cmFileName').textContent = file.name;
+    document.getElementById('cmFileSize').textContent = '(' + (file.size / 1024).toFixed(1) + ' KB)';
+    document.getElementById('cmFileInfo').style.display = 'flex';
+    document.getElementById('cmDropzone').style.display = 'none';
+    document.getElementById('cmBtnProcesar').disabled = false;
+    document.getElementById('cmResultado').style.display = 'none';
+}
+ 
+function removerArchivo() {
+    cmArchivoSeleccionado = null;
+    document.getElementById('cmFileInput').value = '';
+    document.getElementById('cmFileInfo').style.display = 'none';
+    document.getElementById('cmDropzone').style.display = '';
+    document.getElementById('cmBtnProcesar').disabled = true;
+}
+ 
+// Drag & drop
+document.addEventListener('DOMContentLoaded', function() {
+    const dz = document.getElementById('cmDropzone');
+    if (!dz) return;
+ 
+    ['dragenter', 'dragover'].forEach(ev => {
+        dz.addEventListener(ev, function(e) { e.preventDefault(); dz.classList.add('cm-dragover'); });
+    });
+    ['dragleave', 'drop'].forEach(ev => {
+        dz.addEventListener(ev, function(e) { e.preventDefault(); dz.classList.remove('cm-dragover'); });
+    });
+    dz.addEventListener('drop', function(e) {
+        const files = e.dataTransfer.files;
+        if (files.length) {
+            document.getElementById('cmFileInput').files = files;
+            archivoSeleccionado(document.getElementById('cmFileInput'));
         }
     });
 });
+ 
+function procesarCargaMasiva() {
+    if (!cmArchivoSeleccionado) return;
+ 
+    const jornadaId = <?= (int)$jornada_id ?>;
+    const formData = new FormData();
+    formData.append('archivo_excel', cmArchivoSeleccionado);
+    formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
+ 
+    // Mostrar loader
+    const resultado = document.getElementById('cmResultado');
+    resultado.style.display = 'block';
+    resultado.innerHTML = `
+        <div class="cm-loader">
+            <div class="cm-spinner"></div>
+            <div>
+                <strong>Procesando archivo...</strong>
+                <p style="margin:0;font-size:.8rem;color:#666;">Esto puede tomar unos segundos dependiendo de la cantidad de registros.</p>
+            </div>
+        </div>
+    `;
+ 
+    document.getElementById('cmBtnProcesar').disabled = true;
+ 
+    fetch(`<?= base_url('jornadas') ?>/${jornadaId}/carga-masiva/procesar`, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.ok && data.error) {
+            resultado.innerHTML = `
+                <div class="cm-result-box cm-result-error">
+                    <p class="cm-result-title"><i class="bi bi-x-circle-fill" style="color:#c62828;"></i> Error</p>
+                    <p style="font-size:.85rem;margin:0;">${escHtml(data.error)}</p>
+                </div>
+            `;
+            document.getElementById('cmBtnProcesar').disabled = false;
+            return;
+        }
+ 
+        let tipo = 'cm-result-success';
+        let icono = '<i class="bi bi-check-circle-fill" style="color:#2e7d32;"></i>';
+        let titulo = 'Importación completada';
+ 
+        if (data.errores && data.errores.length > 0) {
+            tipo = data.insertados > 0 || data.asociados > 0 ? 'cm-result-warning' : 'cm-result-error';
+            icono = data.insertados > 0 || data.asociados > 0
+                ? '<i class="bi bi-exclamation-triangle-fill" style="color:#f9a825;"></i>'
+                : '<i class="bi bi-x-circle-fill" style="color:#c62828;"></i>';
+            titulo = data.insertados > 0 || data.asociados > 0
+                ? 'Importación parcial'
+                : 'No se importó ningún registro';
+        }
+ 
+        let errHtml = '';
+        if (data.errores && data.errores.length > 0) {
+            errHtml = '<div class="cm-errores-list">';
+            data.errores.forEach(e => {
+                errHtml += `<div><strong>Fila ${e.fila}</strong> (${escHtml(e.nombre)}): ${escHtml(e.errores.join(', '))}</div>`;
+            });
+            errHtml += '</div>';
+        }
+ 
+        resultado.innerHTML = `
+            <div class="cm-result-box ${tipo}">
+                <p class="cm-result-title">${icono} ${titulo}</p>
+                <div class="cm-result-stats">
+                    <span><i class="bi bi-person-plus-fill" style="color:#2e7d32;"></i> Nuevos: <strong>${data.insertados}</strong></span>
+                    <span><i class="bi bi-link-45deg" style="color:#1565c0;"></i> Asociados: <strong>${data.asociados}</strong></span>
+                    <span><i class="bi bi-people-fill" style="color:#888;"></i> Ya en jornada: <strong>${data.duplicados_jornada}</strong></span>
+                    <span><i class="bi bi-exclamation-circle" style="color:#c62828;"></i> Con errores: <strong>${data.errores ? data.errores.length : 0}</strong></span>
+                </div>
+                ${errHtml}
+            </div>
+        `;
+ 
+        // Si hubo éxito, habilitar recargar
+        if (data.insertados > 0 || data.asociados > 0) {
+            resultado.innerHTML += `
+                <div style="text-align:center;margin-top:1rem;">
+                    <button type="button" class="cm-btn-primary" onclick="location.reload()" style="margin:0 auto;">
+                        <i class="bi bi-arrow-clockwise"></i> Recargar página
+                    </button>
+                </div>
+            `;
+        } else {
+            document.getElementById('cmBtnProcesar').disabled = false;
+        }
+    })
+    .catch(err => {
+        resultado.innerHTML = `
+            <div class="cm-result-box cm-result-error">
+                <p class="cm-result-title"><i class="bi bi-x-circle-fill" style="color:#c62828;"></i> Error de conexión</p>
+                <p style="font-size:.85rem;margin:0;">No se pudo conectar con el servidor. Inténtalo de nuevo.</p>
+            </div>
+        `;
+        document.getElementById('cmBtnProcesar').disabled = false;
+    });
+}
+ 
+function escHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+}
+</script>
 
-function escaparHtml(valor) {
-    if (valor === null || valor === undefined) {
-        return '';
+<script>
+    const jornadaId = <?= (int) $jornada_id ?>;
+    const buscarUrl = "<?= base_url('beneficiarios/buscar-ajax') ?>";
+    const asociarBaseUrl = "<?= base_url('jornadas') ?>";
+
+    const csrfName = "<?= csrf_token() ?>";
+    const csrfHash = "<?= csrf_hash() ?>";
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('campoBusqueda');
+
+        if (!input) {
+            return;
+        }
+
+        input.focus();
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                ejecutarBusqueda();
+            }
+        });
+    });
+
+    function escaparHtml(valor) {
+        if (valor === null || valor === undefined) {
+            return '';
+        }
+
+        return String(valor)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
     }
 
-    return String(valor)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
-
-function resetearBusqueda() {
-    document.getElementById('resultados').innerHTML = '';
-    document.getElementById('sinResultados').style.display = 'none';
-    document.getElementById('resultadoHeader').style.display = 'none';
-    document.getElementById('estadoInicial').style.display = 'block';
-}
-
-function ejecutarBusqueda() {
-    const q = document.getElementById('campoBusqueda').value.trim();
-
-    const contenedor = document.getElementById('resultados');
-    const sinResultados = document.getElementById('sinResultados');
-    const header = document.getElementById('resultadoHeader');
-    const contador = document.getElementById('resultadoCount');
-    const estadoInicial = document.getElementById('estadoInicial');
-
-    if (q.length < 2) {
-        resetearBusqueda();
-        return;
+    function resetearBusqueda() {
+        document.getElementById('resultados').innerHTML = '';
+        document.getElementById('sinResultados').style.display = 'none';
+        document.getElementById('resultadoHeader').style.display = 'none';
+        document.getElementById('estadoInicial').style.display = 'block';
     }
 
-    estadoInicial.style.display = 'none';
-    sinResultados.style.display = 'none';
-    header.style.display = 'none';
+    function ejecutarBusqueda() {
+        const q = document.getElementById('campoBusqueda').value.trim();
 
-    contenedor.innerHTML = `
+        const contenedor = document.getElementById('resultados');
+        const sinResultados = document.getElementById('sinResultados');
+        const header = document.getElementById('resultadoHeader');
+        const contador = document.getElementById('resultadoCount');
+        const estadoInicial = document.getElementById('estadoInicial');
+
+        if (q.length < 2) {
+            resetearBusqueda();
+            return;
+        }
+
+        estadoInicial.style.display = 'none';
+        sinResultados.style.display = 'none';
+        header.style.display = 'none';
+
+        contenedor.innerHTML = `
         <div class="benef-find-empty-state">
             <div>
                 <div class="benef-find-empty-icon">🔎</div>
@@ -834,42 +1227,42 @@ function ejecutarBusqueda() {
         </div>
     `;
 
-    fetch(`${buscarUrl}?q=${encodeURIComponent(q)}`, {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(function (response) {
-        if (!response.ok) {
-            throw new Error('Error HTTP ' + response.status);
-        }
+        fetch(`${buscarUrl}?q=${encodeURIComponent(q)}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error('Error HTTP ' + response.status);
+                }
 
-        return response.json();
-    })
-    .then(function (data) {
-        contenedor.innerHTML = '';
+                return response.json();
+            })
+            .then(function(data) {
+                contenedor.innerHTML = '';
 
-        if (!Array.isArray(data) || data.length === 0) {
-            sinResultados.style.display = 'block';
-            header.style.display = 'none';
-            return;
-        }
+                if (!Array.isArray(data) || data.length === 0) {
+                    sinResultados.style.display = 'block';
+                    header.style.display = 'none';
+                    return;
+                }
 
-        header.style.display = 'flex';
-        contador.textContent = `Se encontró ${data.length} beneficiario(s)`;
+                header.style.display = 'flex';
+                contador.textContent = `Se encontró ${data.length} beneficiario(s)`;
 
-        let html = '';
+                let html = '';
 
-        data.forEach(function (b) {
-            const fecha = b.fecha_nacimiento
-                ? b.fecha_nacimiento.split('-').reverse().join('/')
-                : '—';
+                data.forEach(function(b) {
+                    const fecha = b.fecha_nacimiento ?
+                        b.fecha_nacimiento.split('-').reverse().join('/') :
+                        '—';
 
-            const edad = b.edad ? `${escaparHtml(b.edad)} años` : 'Edad no disponible';
-            const parentesco = b.parentesco ? escaparHtml(b.parentesco) : 'Sin representante';
-            const nombreCompleto = `${(b.apellidos || '').toUpperCase()}, ${(b.nombres || '').toUpperCase()}`.trim();
+                    const edad = b.edad ? `${escaparHtml(b.edad)} años` : 'Edad no disponible';
+                    const parentesco = b.parentesco ? escaparHtml(b.parentesco) : 'Sin representante';
+                    const nombreCompleto = `${(b.apellidos || '').toUpperCase()}, ${(b.nombres || '').toUpperCase()}`.trim();
 
-            html += `
+                    html += `
                 <div class="benef-find-resultado-card">
                     <div class="benef-find-resultado-left">
                         <div class="benef-find-avatar">👤</div>
@@ -894,22 +1287,22 @@ function ejecutarBusqueda() {
                     </form>
                 </div>
             `;
-        });
+                });
 
-        contenedor.innerHTML = html;
-    })
-    .catch(function (error) {
-        console.error(error);
+                contenedor.innerHTML = html;
+            })
+            .catch(function(error) {
+                console.error(error);
 
-        contenedor.innerHTML = `
+                contenedor.innerHTML = `
             <div class="benef-find-alert-search">
                 Ocurrió un error al buscar beneficiarios. Revisa la consola del navegador o valida la ruta <strong>beneficiarios/buscar-ajax</strong>.
             </div>
         `;
 
-        sinResultados.style.display = 'none';
-        header.style.display = 'none';
-    });
-}
+                sinResultados.style.display = 'none';
+                header.style.display = 'none';
+            });
+    }
 </script>
 <?= $this->endSection() ?>

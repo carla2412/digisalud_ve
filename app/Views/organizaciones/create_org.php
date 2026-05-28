@@ -527,7 +527,27 @@
                                  required>
                          </div>
                      </div>
+                                    <div class="org_create-form-group">
+    <label for="responsable_fecha_nacimiento">Fecha de nacimiento del responsable <span>*</span></label>
+    <div class="org_create-input-icon">
+        <i class="bi bi-calendar-date"></i>
+        <input type="date"
+            id="responsable_fecha_nacimiento"
+            name="responsable_fecha_nacimiento"
+            value="<?= old('responsable_fecha_nacimiento') ?>"
+            required>
+    </div>
+</div>
 
+<div class="org_create-form-group">
+    <label for="responsable_genero">Género del responsable <span>*</span></label>
+    <select id="responsable_genero" name="responsable_genero" class="form-select" required>
+        <option value="">Selecciona...</option>
+        <option value="Masculino" <?= old('responsable_genero') === 'Masculino' ? 'selected' : '' ?>>Masculino</option>
+        <option value="Femenino" <?= old('responsable_genero') === 'Femenino' ? 'selected' : '' ?>>Femenino</option>
+        <option value="Otro" <?= old('responsable_genero') === 'Otro' ? 'selected' : '' ?>>Otro</option>
+    </select>
+</div>
                      <div class="org_create-form-group">
                          <label for="password">Contraseña <span>*</span></label>
                          <div class="org_create-input-icon">

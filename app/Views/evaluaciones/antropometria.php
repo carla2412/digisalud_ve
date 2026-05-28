@@ -1400,9 +1400,7 @@ $edadTextoInicial = $calcularEdadTexto($fechaNacimientoBenef, $fechaEvaluacionIs
                 Peso por diferencia
               </button>
 
-              <small class="antro-note" id="notaPesoDiferencia">
-                Peso por diferencia solo se muestra para menores de 2 años.
-              </small>
+              
             </div>
           </div>
           <div class="antro-section" data-section="2" id="sectionCondiciones">

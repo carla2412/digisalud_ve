@@ -420,6 +420,7 @@ $iconos_color = [
   '4' => ['color' => 'signos-vitales-color.svg', 'gris' => 'signosVitales2.svg', 'nombre' => 'Signos vitales', 'emoji' => '❤', 'clase' => 'jornada_create-red'],
   '5' => ['color' => 'medicina-general-color.svg', 'gris' => 'medicinaGeneral2.svg', 'nombre' => 'Medicina general', 'emoji' => '🩺', 'clase' => 'jornada_create-blue'],
   '6' => ['color' => 'vacunacion-color.svg', 'gris' => 'vacunacion2.svg', 'nombre' => 'Vacunación', 'emoji' => '💉', 'clase' => 'jornada_create-blue'],
+  '7' => ['color' => 'odontologia-color.svg', 'gris' => 'odontologia2.svg', 'nombre' => 'Odontología', 'emoji' => '🦷', 'clase' => 'jornada_create-purple'],
 ];
 ?>
 
