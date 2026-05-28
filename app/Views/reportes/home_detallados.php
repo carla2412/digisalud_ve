@@ -3,49 +3,38 @@
 <?= $this->section('content') ?>
 
 <?php
-/*
-|--------------------------------------------------------------------------
-| Mapa de pesquisas
-|--------------------------------------------------------------------------
-| Ajustado a las pesquisas principales del nuevo sistema:
-| 1 Antropometría
-| 2 Laboratorio / Sanguíneo
-| 3 Visual
-| 4 Signos vitales
-| 5 Medicina general
-| 6 Vacunación
-*/
+ 
 
 $pesquisasActivas = $pesquisasActivas ?? [];
-$pesquisasActivas = array_map('strval', $pesquisasActivas);
- 
-$jornadaId = $jornadaId ?? ($jornada['id'] ?? null);
-
-$nombreJornada = $jornada['nombre']
-    ?? $jornada['titulo']
-    ?? $jornada['descripcion']
-    ?? 'Jornada';
-
-$estatus = $jornada['estatus']
-    ?? $jornada['status']
-    ?? 'Sin estatus';
-
-$fechaInicio = $jornada['fecha_inicio']
-    ?? $jornada['fechaInicio']
-    ?? null;
-
-$fechaFin = $jornada['fecha_fin']
-    ?? $jornada['fechaFin']
-    ?? null;
-
+$pesquisasActivas = array_values(array_unique(array_map('strval', $pesquisasActivas)));
 
 $reportesDisponibles = $reportesDisponibles ?? [];
-$pesquisasActivas = $pesquisasActivas ?? [];
 
- 
+$jornadaId = $jornadaId ?? ($jornada['id_jornada'] ?? null);
+
+$nombreJornada = $jornada['nombre_jornada'] 
+    ?? $jornada['jornada'] 
+    ?? $jornada['nombre'] 
+    ?? $jornada['titulo'] 
+    ?? $jornada['descripcion'] 
+    ?? 'Jornada';
+
+$estatus = $jornada['estado'] 
+    ?? $jornada['estatus'] 
+    ?? $jornada['status'] 
+    ?? 'Sin estatus';
+
+$fechaInicio = $jornada['fecha_inicio'] 
+    ?? $jornada['fechaInicio'] 
+    ?? null;
+
+$fechaFin = $jornada['fecha_fin'] 
+    ?? $jornada['fechaFin'] 
+    ?? null;
 
 $reportes = [];
-
+ 
+ 
 /*
 |--------------------------------------------------------------------------
 | Antropometría
@@ -643,7 +632,10 @@ if (in_array('6', $pesquisasActivas, true) && !empty($reportesDisponibles['vacun
     background: var(--rep-dark);
 }
 </style>
-
+<pre>
+<?php print_r($pesquisasActivas); ?>
+<?php print_r($reportesDisponibles); ?>
+</pre>
 <div class="rep-page">
     <div class="rep-wrap">
 
@@ -685,118 +677,122 @@ if (in_array('6', $pesquisasActivas, true) && !empty($reportesDisponibles['vacun
                 </a>
             </div>
         </section>
-        <?php if (empty($reportes)): ?>
+   
+<?php if (empty($reportes)): ?>
 
-            <div class="rep-empty-state">
-                <h3>No hay reportes disponibles todavía</h3>
-                <p>
-                    Esta jornada tiene pesquisas asociadas, pero aún no existen evaluaciones registradas
-                    para generar reportes detallados.
-                </p>
+    <div class="rep-empty-state">
+        <h3>No hay reportes disponibles todavía</h3>
+        <p>
+            Esta jornada tiene pesquisas asociadas, pero aún no existen evaluaciones registradas
+            para generar reportes detallados.
+        </p>
 
-                <a href="<?= site_url('jornadas/' . $jornadaId . '/beneficiarios') ?>" class="rep-back-inline">
-                    Ir a beneficiarios
-                </a>
+        <a href="<?= site_url('jornadas/' . $jornadaId . '/beneficiarios') ?>" class="rep-back-inline">
+            Ir a beneficiarios
+        </a>
+    </div>
+
+<?php else: ?>
+
+    <section class="rep-summary-grid">
+        <article class="rep-summary-card">
+            <div class="rep-summary-label">Pesquisas asociadas</div>
+            <div class="rep-summary-value"><?= count($pesquisasActivas) ?></div>
+        </article>
+
+        <article class="rep-summary-card">
+            <div class="rep-summary-label">Reportes detallados</div>
+            <div class="rep-summary-value">
+                <?php
+                    $totalReportes = 0;
+
+                    foreach ($reportes as $reporte) {
+                        $totalReportes += count($reporte['items']);
+                    }
+
+                    echo esc($totalReportes);
+                ?>
             </div>
+        </article>
 
-        <?php else: ?>
+        <article class="rep-summary-card">
+            <div class="rep-summary-label">Pesquisas con datos</div>
+            <div class="rep-summary-value"><?= count($reportes) ?></div>
+        </article>
+    </section>
 
-            <section class="rep-summary-grid">
-                <article class="rep-summary-card">
-                    <div class="rep-summary-label">Pesquisas disponibles</div>
-                    <div class="rep-summary-value"><?= count($pesquisasActivas) ?></div>
-                </article>
+    <section class="rep-section-title">
+        <div>
+            <h2>Reportes disponibles</h2>
+            <p>
+                Solo se muestran las pesquisas asociadas a esta jornada y que ya tienen evaluaciones registradas.
+            </p>
+        </div>
 
-                <article class="rep-summary-card">
-                    <div class="rep-summary-label">Reportes detallados</div>
-                    <div class="rep-summary-value">
-                        <?php
-                        $totalReportes = 0;
+        <div class="rep-search-box">
+            <input 
+                type="search" 
+                id="repSearch" 
+                placeholder="Buscar reporte o pesquisa..."
+                autocomplete="off"
+            >
+        </div>
+    </section>
 
-                        foreach ($reportes as $reporte) {
-                            $totalReportes += count($reporte['items']);
-                        }
+    <section class="rep-grid" id="repGrid">
+        <?php foreach ($reportes as $reporte): ?>
 
-                        echo esc($totalReportes);
-                        ?>
+            <article 
+                class="rep-card" 
+                data-report-card
+                data-search="<?= esc(strtolower($reporte['titulo'] . ' ' . $reporte['descripcion'])) ?>"
+            >
+                <div class="rep-card-top">
+                    <div class="rep-icon rep-icon-<?= esc($reporte['color']) ?>">
+                        <img 
+                            src="<?= base_url('img/' . $reporte['icono']) ?>" 
+                            alt="<?= esc($reporte['titulo']) ?>"
+                        >
                     </div>
-                </article>
 
-                <article class="rep-summary-card">
-                    <div class="rep-summary-label">Pesquisas con datos</div>
-                    <div class="rep-summary-value"><?= count($reportes) ?></div>
-                </article>
-            </section>
+                    <div>
+                        <h3><?= esc($reporte['titulo']) ?></h3>
+                        <p class="rep-card-desc"><?= esc($reporte['descripcion']) ?></p>
+                    </div>
 
-            <section class="rep-section-title">
-                <div>
-                    <h2>Reportes disponibles</h2>
-                    <p>
-                        Solo se muestran las pesquisas asociadas a esta jornada y que ya tienen evaluaciones registradas.
-                    </p>
+                    <span class="rep-status rep-status-active">
+                        Disponible
+                    </span>
                 </div>
 
-                <div class="rep-search-box">
-                    <input
-                        type="search"
-                        id="repSearch"
-                        placeholder="Buscar reporte o pesquisa..."
-                        autocomplete="off">
-                </div>
-            </section>
+                <div class="rep-card-body">
+                    <?php foreach ($reporte['items'] as $index => $item): ?>
+                        <a 
+                            href="<?= esc($item['url']) ?>" 
+                            class="rep-link"
+                            data-search="<?= esc(strtolower($item['titulo'] . ' ' . $item['descripcion'])) ?>"
+                        >
+                            <span class="rep-link-icon"><?= $index + 1 ?></span>
 
-            <section class="rep-grid" id="repGrid">
-                <?php foreach ($reportes as $reporte): ?>
-
-                    <article
-                        class="rep-card"
-                        data-report-card
-                        data-search="<?= esc(strtolower($reporte['titulo'] . ' ' . $reporte['descripcion'])) ?>">
-                        <div class="rep-card-top">
-                            <div class="rep-icon rep-icon-<?= esc($reporte['color']) ?>">
-                                <img
-                                    src="<?= base_url('img/' . $reporte['icono']) ?>"
-                                    alt="<?= esc($reporte['titulo']) ?>">
-                            </div>
-
-                            <div>
-                                <h3><?= esc($reporte['titulo']) ?></h3>
-                                <p class="rep-card-desc"><?= esc($reporte['descripcion']) ?></p>
-                            </div>
-
-                            <span class="rep-status rep-status-active">
-                                Disponible
+                            <span>
+                                <p class="rep-link-title"><?= esc($item['titulo']) ?></p>
+                                <p class="rep-link-desc"><?= esc($item['descripcion']) ?></p>
                             </span>
-                        </div>
 
-                        <div class="rep-card-body">
-                            <?php foreach ($reporte['items'] as $index => $item): ?>
-                                <a
-                                    href="<?= esc($item['url']) ?>"
-                                    class="rep-link"
-                                    data-search="<?= esc(strtolower($item['titulo'] . ' ' . $item['descripcion'])) ?>">
-                                    <span class="rep-link-icon"><?= $index + 1 ?></span>
+                            <span class="rep-link-arrow">›</span>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </article>
 
-                                    <span>
-                                        <p class="rep-link-title"><?= esc($item['titulo']) ?></p>
-                                        <p class="rep-link-desc"><?= esc($item['descripcion']) ?></p>
-                                    </span>
+        <?php endforeach; ?>
+    </section>
 
-                                    <span class="rep-link-arrow">›</span>
-                                </a>
-                            <?php endforeach; ?>
-                        </div>
-                    </article>
+    <div class="rep-empty" id="repEmpty">
+        No se encontraron reportes con ese criterio de búsqueda.
+    </div>
 
-                <?php endforeach; ?>
-            </section>
-
-            <div class="rep-empty" id="repEmpty">
-                No se encontraron reportes con ese criterio de búsqueda.
-            </div>
-
-        <?php endif; ?>
-
+<?php endif; ?>
 
 
 
