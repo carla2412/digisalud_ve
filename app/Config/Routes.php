@@ -143,7 +143,10 @@ $routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
     // Procesar archivo Excel (AJAX POST)
     $routes->post('(:num)/carga-masiva/procesar', 'CargaMasivaController::procesar/$1');
 });
-
+$routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
+    $routes->get('carga-masiva-antropometria/plantilla', 'CargaMasivaAntropometriaController::descargarPlantilla');
+    $routes->post('(:num)/carga-masiva-antropometria/procesar', 'CargaMasivaAntropometriaController::procesar/$1');
+});
 // ═══════════════════════════════════════════════════════════════
 // RUTAS — Reportes Antropométricos
 // Agregar DENTRO del grupo existente $routes->group('jornadas', ...)

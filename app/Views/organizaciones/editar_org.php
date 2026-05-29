@@ -574,9 +574,9 @@ $responsableApellidos = $partesResponsable[1] ?? '';
     <select id="responsable_genero" name="responsable_genero" required>
         <?php $generoActual = old('responsable_genero', $resp['genero'] ?? ''); ?>
         <option value="">Selecciona...</option>
-        <option value="Masculino" <?= $generoActual === 'Masculino' ? 'selected' : '' ?>>Masculino</option>
-        <option value="Femenino" <?= $generoActual === 'Femenino' ? 'selected' : '' ?>>Femenino</option>
-        <option value="Otro" <?= $generoActual === 'Otro' ? 'selected' : '' ?>>Otro</option>
+        <option value="M" <?= $generoActual === 'M' ? 'selected' : '' ?>>Masculino</option>
+        <option value="F" <?= $generoActual === 'F' ? 'selected' : '' ?>>Femenino</option>
+    
     </select>
 </div>
                     <div class="org_edit-form-group">

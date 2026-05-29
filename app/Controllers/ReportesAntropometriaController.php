@@ -563,7 +563,7 @@ class ReportesAntropometriaController extends BaseController
             $filas_xls[] = [
                 $this->etiquetaSemaforo($d['_clase'] ?? 'gris'),
                 $d['nombre_completo'] ?? '',
-                $d['cedula'] ?? '',
+                $d['id_digisalud'] ?? '',
                 $d['_sexo'],
                 $d['fecha_nacimiento'] ?? '',
                 $this->formatearEdad((float)($d['edad_dias_medicion'] ?? 0)),
@@ -615,7 +615,7 @@ class ReportesAntropometriaController extends BaseController
             $filas_xls[] = [
                 $this->etiquetaSemaforo($d['_clase'] ?? 'gris'),
                 $d['nombre_completo'] ?? '',
-                $d['cedula'] ?? '',
+                $d['id_digisalud'] ?? '',
                 $d['sexo'] ?? '',
                 $d['fecha_nacimiento'] ?? '',
                 $this->formatearEdad((float)($d['edad_dias_medicion'] ?? 0)),
@@ -678,7 +678,7 @@ class ReportesAntropometriaController extends BaseController
             $filas_xls[] = [
                 $this->etiquetaSemaforo($d['_clase'] ?? 'gris'),
                 $d['nombre_completo'] ?? '',
-                $d['cedula'] ?? '',
+                $d['id_digisalud'] ?? '',
                 $d['sexo'] ?? '',
                 $d['fecha_nacimiento'] ?? '',
                 $this->formatearEdad((float)($d['edad_dias_medicion'] ?? 0)),
@@ -783,7 +783,7 @@ class ReportesAntropometriaController extends BaseController
                 b.nombres,
                 b.apellidos,
                 CONCAT(b.nombres, " ", b.apellidos) AS nombre_completo,
-                b.cedula,
+                b.id_digisalud,
                 b.fecha_nacimiento,
                 b.sexo,
                 j.nombre_jornada

@@ -1,12 +1,13 @@
 <?php
 // ========================================================
 // ARCHIVO: app/Controllers/CargaMasivaController.php
-// Módulo de carga masiva de beneficiarios desde Excel
+// Modulo de carga masiva de beneficiarios desde Excel
 // ========================================================
 
 namespace App\Controllers;
 
 use App\Models\BeneficiariosModel;
+use App\Models\DireccionModel;
 use App\Models\EscolaridadModel;
 use App\Models\JornadaBeneficiariosModel;
 use App\Models\JornadaModel;
@@ -37,7 +38,7 @@ class CargaMasivaController extends BaseController
     {
         $jornada_id = (int) $jornada_id;
 
-        // Verificar que la jornada existe y está activa
+        // Verificar que la jornada existe y esta activa
         $jornadaModel = new JornadaModel();
         $jornada = $jornadaModel->find($jornada_id);
 
@@ -58,16 +59,16 @@ class CargaMasivaController extends BaseController
             ]);
         }
 
-        // Validar extensión
+        // Validar extension
         $ext = strtolower($archivo->getClientExtension());
-        if (!in_array($ext, ['xlsx', 'xls'])) {
+        if (!in_array($ext, ['xlsx', 'xls'], true)) {
             return $this->response->setJSON([
                 'ok'    => false,
                 'error' => 'Solo se permiten archivos .xlsx o .xls',
             ]);
         }
 
-        // Validar tamaño (máx 5MB)
+        // Validar tamano (max 5MB)
         if ($archivo->getSize() > 5 * 1024 * 1024) {
             return $this->response->setJSON([
                 'ok'    => false,
@@ -126,6 +127,7 @@ class CargaMasivaController extends BaseController
 
         // Procesar filas
         $benefModel  = new BeneficiariosModel();
+        $dirModel    = new DireccionModel();
         $escModel    = new EscolaridadModel();
         $jorBenModel = new JornadaBeneficiariosModel();
 
@@ -133,11 +135,9 @@ class CargaMasivaController extends BaseController
         $ahora     = date('Y-m-d H:i:s');
 
         $insertados  = 0;
-        $asociados   = 0; // ya existían, solo se asociaron
+        $asociados   = 0; // ya existian, solo se asociaron
         $errores     = [];
         $duplicadosJornada = 0;
-
-        $db = \Config\Database::connect();
 
         for ($fila = 2; $fila <= $highestRow; $fila++) {
             $nombres         = trim((string) $sheet->getCell("A{$fila}")->getValue());
@@ -150,12 +150,20 @@ class CargaMasivaController extends BaseController
             $seccion         = trim((string) $sheet->getCell("H{$fila}")->getValue());
             $turno           = trim((string) $sheet->getCell("I{$fila}")->getValue());
 
-            // Fila vacía → saltar
+            // Direccion de residencia opcional. No confundir con pais_nacimiento.
+            $paisResidencia  = trim((string) $sheet->getCell("J{$fila}")->getValue());
+            $estado          = trim((string) $sheet->getCell("K{$fila}")->getValue());
+            $municipio       = trim((string) $sheet->getCell("L{$fila}")->getValue());
+            $parroquia       = trim((string) $sheet->getCell("M{$fila}")->getValue());
+            $ciudadLocalidad = trim((string) $sheet->getCell("N{$fila}")->getValue());
+            $detalleDireccion = trim((string) $sheet->getCell("O{$fila}")->getValue());
+
+            // Fila vacia -> saltar
             if ($nombres === '' && $apellidos === '') {
                 continue;
             }
 
-            // ── Validaciones ──
+            // -- Validaciones --
             $errFila = [];
 
             if (strlen($nombres) < 2) {
@@ -164,7 +172,7 @@ class CargaMasivaController extends BaseController
             if (strlen($apellidos) < 2) {
                 $errFila[] = 'apellidos vacío o muy corto';
             }
-            if (!in_array($sexo, ['F', 'M'])) {
+            if (!in_array($sexo, ['F', 'M'], true)) {
                 $errFila[] = "sexo inválido ('{$sexo}')";
             }
 
@@ -172,11 +180,8 @@ class CargaMasivaController extends BaseController
             $fechaNac = $this->parsearFechaExcel($fechaNacRaw);
             if (!$fechaNac) {
                 $errFila[] = 'fecha_nacimiento inválida';
-            } else {
-                // No futura
-                if (strtotime($fechaNac) > time()) {
-                    $errFila[] = 'fecha_nacimiento es futura';
-                }
+            } elseif (strtotime($fechaNac) > time()) {
+                $errFila[] = 'fecha_nacimiento es futura';
             }
 
             if ($paisNacimiento === '') {
@@ -184,7 +189,7 @@ class CargaMasivaController extends BaseController
             }
 
             // Validar turno si viene
-            if ($turno !== '' && !in_array($turno, ['Mañana', 'Tarde', 'Completo', 'mañana', 'tarde', 'completo'])) {
+            if ($turno !== '' && !in_array($turno, ['Mañana', 'Tarde', 'Completo', 'mañana', 'tarde', 'completo'], true)) {
                 $errFila[] = "turno inválido ('{$turno}')";
             }
 
@@ -198,9 +203,20 @@ class CargaMasivaController extends BaseController
             }
 
             // Normalizar turno
-            $turno = ucfirst(strtolower($turno));
+            $turno = $turno !== '' ? ucfirst(strtolower($turno)) : '';
 
-            // ── Verificar si ya existe (mismo nombre + apellido + fecha_nacimiento) ──
+            // Crear direccion solo si alguno de sus campos viene informado.
+            $direccionId = $this->crearDireccionResidencia(
+                $dirModel,
+                $paisResidencia,
+                $estado,
+                $municipio,
+                $parroquia,
+                $ciudadLocalidad,
+                $detalleDireccion
+            );
+
+            // -- Verificar si ya existe (mismo nombre + apellido + fecha_nacimiento) --
             $existente = $benefModel
                 ->where('LOWER(nombres)', strtolower($nombres))
                 ->where('LOWER(apellidos)', strtolower($apellidos))
@@ -210,7 +226,16 @@ class CargaMasivaController extends BaseController
             if ($existente) {
                 $idBeneficiario = $existente['id_beneficiario'];
 
-                // ¿Ya está asociado a esta jornada?
+                // Si el Excel trae direccion, vincularla al beneficiario existente.
+                if ($direccionId) {
+                    $benefModel->update($idBeneficiario, [
+                        'direccion_id'   => $direccionId,
+                        'modificado_en'  => $ahora,
+                        'modificado_por' => $usuarioId,
+                    ]);
+                }
+
+                // Ya esta asociado a esta jornada?
                 $yaAsociado = $jorBenModel
                     ->where('id_beneficiario', $idBeneficiario)
                     ->where('jornada_id', $jornada_id)
@@ -238,7 +263,7 @@ class CargaMasivaController extends BaseController
                 continue;
             }
 
-            // ── Crear beneficiario nuevo ──
+            // -- Crear beneficiario nuevo --
             $idDigi = $this->construirIdDigi($paisNacimiento, $sexo, $nombres, $apellidos, $fechaNac);
 
             $idBeneficiario = $benefModel->insert([
@@ -248,6 +273,7 @@ class CargaMasivaController extends BaseController
                 'fecha_nacimiento' => $fechaNac,
                 'sexo'             => $sexo,
                 'pais_nacimiento'  => $paisNacimiento,
+                'direccion_id'     => $direccionId,
                 'creado_en'        => $ahora,
                 'creado_por'       => $usuarioId,
             ]);
@@ -299,12 +325,12 @@ class CargaMasivaController extends BaseController
         ]);
     }
 
-    // ════════════════════════════════════════
-    // HELPERS (misma lógica que BeneficiariosController)
-    // ════════════════════════════════════════
+    // ================================================
+    // HELPERS (misma logica que BeneficiariosController)
+    // ================================================
 
     /**
-     * Parsear fecha desde Excel (puede ser serial numérico o string)
+     * Parsear fecha desde Excel (puede ser serial numerico o string)
      */
     private function parsearFechaExcel($valor): ?string
     {
@@ -312,7 +338,7 @@ class CargaMasivaController extends BaseController
             return null;
         }
 
-        // Si es numérico → serial de Excel
+        // Si es numerico -> serial de Excel
         if (is_numeric($valor)) {
             try {
                 $dateTime = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject((float) $valor);
@@ -337,6 +363,38 @@ class CargaMasivaController extends BaseController
         }
 
         return null;
+    }
+
+    private function crearDireccionResidencia(
+        DireccionModel $dirModel,
+        string $paisResidencia,
+        string $estado,
+        string $municipio,
+        string $parroquia,
+        string $ciudadLocalidad,
+        string $detalleDireccion
+    ): ?int {
+        $hayDireccion = $paisResidencia !== ''
+            || $estado !== ''
+            || $municipio !== ''
+            || $parroquia !== ''
+            || $ciudadLocalidad !== ''
+            || $detalleDireccion !== '';
+
+        if (!$hayDireccion) {
+            return null;
+        }
+
+        $id = $dirModel->insert([
+            'pais'      => $paisResidencia !== '' ? $paisResidencia : null,
+            'estado'    => $estado !== '' ? $estado : null,
+            'municipio' => $municipio !== '' ? $municipio : null,
+            'parroquia' => $parroquia !== '' ? $parroquia : null,
+            'ciudad'    => $ciudadLocalidad !== '' ? $ciudadLocalidad : null,
+            'detalle'   => $detalleDireccion !== '' ? $detalleDireccion : null,
+        ]);
+
+        return $id ? (int) $id : null;
     }
 
     private function limpiarPartesNombre(?string $nombre): array

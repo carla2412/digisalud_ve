@@ -882,6 +882,29 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         color: #fff;
         background: #176be8;
     }
+    .jor_ben-ds-btn-secondary {
+    height: 46px;
+    padding: 0 18px;
+    border: 1px solid var(--ds-border);
+    border-radius: 12px;
+    background: #fff;
+    color: var(--ds-primary-dark);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+}
+
+.jor_ben-ds-btn-secondary:hover {
+    color: var(--ds-primary-dark);
+    border-color: var(--ds-primary);
+    background: #f4f9ff;
+}
 </style>
 
 <main class="jor_ben-page">
@@ -936,10 +959,20 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
             </div>
 
             <div class="jor_ben-divider"></div>
+                    <?php if (in_array('1', array_map('strval', $pesquisas_jornada ?? []), true)): ?>
+    <a href="<?= site_url('jornadas/carga-masiva-antropometria/plantilla') ?>" class="jor_ben-ds-btn-secondary">
+        <i class="bi bi-download"></i>
+        Plantilla antropometria
+    </a>
 
+    <button type="button" class="jor_ben-ds-btn-secondary" data-bs-toggle="modal" data-bs-target="#modalCargaAntropometria">
+        <i class="bi bi-upload"></i>
+        Cargar antropometria
+    </button>
+<?php endif; ?>
             <a href="<?= site_url('jornadas/' . $jornada_id . '/beneficiarios/buscar') ?>" class="jor_ben-ds-btn-primary">
                 <i class="bi bi-plus-lg"></i>
-                Registrar
+                Registrar Beneficiarios
             </a>
         </div>
     </div>
@@ -1268,6 +1301,41 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         </button>
     </div>
 </aside>
+
+<div class="modal fade" id="modalCargaAntropometria" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="border-radius:18px; overflow:hidden;">
+            <div class="modal-header" style="background:#101a61;color:#fff;">
+                <h6 class="modal-title">
+                    <i class="bi bi-upload me-2"></i>
+                    Carga masiva de antropometria
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form id="formCargaAntropometria" enctype="multipart/form-data">
+                <?= csrf_field() ?>
+                <div class="modal-body">
+                    <div class="alert alert-info mb-3">
+                        Sube la plantilla de antropometria. El sistema validara ID DigiSalud, asociacion a la jornada, fecha, peso, talla y cintura obligatoria en adultos.
+                    </div>
+
+                    <input type="file" name="archivo_excel" id="archivoAntropometria" class="form-control" accept=".xlsx,.xls" required>
+
+                    <div id="resultadoCargaAntropometria" class="mt-3"></div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-upload"></i>
+                        Procesar archivo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <?= $this->endSection() ?>
 
 
@@ -1678,5 +1746,105 @@ function abrirEvaluar(bid, pid, nombre) {
             }
         });
     }
+
+    const formCargaAntropometria = document.getElementById('formCargaAntropometria');
+
+if (formCargaAntropometria) {
+    formCargaAntropometria.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const resultado = document.getElementById('resultadoCargaAntropometria');
+        const formData = new FormData(formCargaAntropometria);
+
+        resultado.innerHTML = '<div class="alert alert-info">Procesando archivo...</div>';
+
+        fetch(`<?= base_url('jornadas') ?>/${jornadaId}/carga-masiva-antropometria/procesar`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.ok) {
+                resultado.innerHTML = `<div class="alert alert-warning">${escapeHtml(data.error || 'No se pudo procesar el archivo.')}</div>`;
+                return;
+            }
+
+            const noExisten = data.no_existen || [];
+            const noAsociados = data.no_asociados || [];
+            const errores = data.errores || [];
+
+            let html = `
+                <div class="alert alert-success">
+                    <strong>Proceso finalizado.</strong><br>
+                    Guardados: ${data.guardados || 0}<br>
+                    Ya evaluados: ${data.ya_evaluados || 0}<br>
+                    No existen: ${noExisten.length}<br>
+                    No asociados a la jornada: ${noAsociados.length}<br>
+                    Errores de validacion: ${errores.length}
+                </div>
+            `;
+
+            html += renderDetalleCargaAntropometria('Beneficiarios no registrados', noExisten, 'warning');
+            html += renderDetalleCargaAntropometria('Beneficiarios no asociados a esta jornada', noAsociados, 'info');
+            html += renderErroresCargaAntropometria(errores);
+
+            if ((data.guardados || 0) > 0) {
+                html += `
+                    <div class="text-end mt-3">
+                        <button type="button" class="btn btn-primary" onclick="window.location.reload()">
+                            Actualizar listado
+                        </button>
+                    </div>
+                `;
+            }
+
+            resultado.innerHTML = html;
+        })
+        .catch(error => {
+            resultado.innerHTML = `<div class="alert alert-danger">${escapeHtml(error.message || 'Error procesando archivo.')}</div>`;
+        });
+    });
+}
+
+function renderDetalleCargaAntropometria(titulo, items, tipo) {
+    if (!items || !items.length) return '';
+
+    return `
+        <div class="alert alert-${tipo}">
+            <strong>${escapeHtml(titulo)}</strong>
+            <ul class="mb-0 mt-2">
+                ${items.map(item => `
+                    <li>
+                        Fila ${escapeHtml(item.fila)} - ${escapeHtml(item.id_digisalud || '')}
+                        ${item.nombre ? ' - ' + escapeHtml(item.nombre) : ''}<br>
+                        <small>${escapeHtml(item.mensaje || '')}</small>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>
+    `;
+}
+
+function renderErroresCargaAntropometria(items) {
+    if (!items || !items.length) return '';
+
+    return `
+        <div class="alert alert-danger">
+            <strong>Errores de validacion</strong>
+            <ul class="mb-0 mt-2">
+                ${items.map(item => `
+                    <li>
+                        Fila ${escapeHtml(item.fila)} - ${escapeHtml(item.id_digisalud || '')}
+                        ${item.nombre ? ' - ' + escapeHtml(item.nombre) : ''}<br>
+                        <small>${(item.errores || []).map(escapeHtml).join(', ')}</small>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>
+    `;
+}
 </script>
 <?= $this->endSection() ?>

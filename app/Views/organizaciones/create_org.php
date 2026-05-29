@@ -543,9 +543,9 @@
     <label for="responsable_genero">Género del responsable <span>*</span></label>
     <select id="responsable_genero" name="responsable_genero" class="form-select" required>
         <option value="">Selecciona...</option>
-        <option value="Masculino" <?= old('responsable_genero') === 'Masculino' ? 'selected' : '' ?>>Masculino</option>
-        <option value="Femenino" <?= old('responsable_genero') === 'Femenino' ? 'selected' : '' ?>>Femenino</option>
-        <option value="Otro" <?= old('responsable_genero') === 'Otro' ? 'selected' : '' ?>>Otro</option>
+        <option value="M" <?= old('responsable_genero') === 'M' ? 'selected' : '' ?>>Masculino</option>
+        <option value="F" <?= old('responsable_genero') === 'F' ? 'selected' : '' ?>>Femenino</option>
+      
     </select>
 </div>
                      <div class="org_create-form-group">

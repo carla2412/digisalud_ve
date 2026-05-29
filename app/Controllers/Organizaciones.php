@@ -155,7 +155,7 @@ class Organizaciones extends BaseController
             'responsable_nombres'         => 'required|max_length[80]',
             'responsable_apellidos'       => 'required|max_length[80]',
             'responsable_fecha_nacimiento' => 'required|valid_date[Y-m-d]',
-            'responsable_genero'          => 'required|in_list[Masculino,Femenino,Otro]',
+            'responsable_genero'          => 'required|in_list[M,F]',
             'password'                    => 'required|min_length[6]|max_length[255]',
             'confirmar_password'          => 'required|matches[password]',
         ];
@@ -278,11 +278,23 @@ class Organizaciones extends BaseController
                 ->get()
                 ->getRowArray();
         }
+        $usuarioModel = new UsuarioModel();
+
+        $responsable = $usuarioModel
+            ->select('usuarios.*')
+            ->join('roles_usuarios_contexto ruc', 'ruc.id_usuario = usuarios.id_usuario', 'left')
+            ->where('usuarios.organizacion_id', $id)
+            ->where('usuarios.status_usu', 1)
+            ->where('ruc.id_rol', 3)
+            ->where('ruc.status_urc', 1)
+            ->orderBy('usuarios.id_usuario', 'ASC')
+            ->first();
 
         return view('organizaciones/editar_org', [
             'titulo'       => 'Editar Organización',
             'organizacion' => $organizacion,
             'direccion'    => $direccion,
+            'responsable'  => $responsable,
         ]);
     }
 
@@ -314,7 +326,7 @@ class Organizaciones extends BaseController
             'password'              => 'permit_empty|min_length[6]|max_length[255]',
             'confirmar_password'    => 'matches[password]',
             'responsable_fecha_nacimiento' => 'required|valid_date[Y-m-d]',
-            'responsable_genero'           => 'required|in_list[Masculino,Femenino,Otro]',
+            'responsable_genero'           => 'required|in_list[M,F]',
         ];
 
         if (! $this->validate($rules)) {

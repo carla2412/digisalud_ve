@@ -3,343 +3,1173 @@
 
 <?php
 $nombreJornada = $jornada['nombre_jornada'] ?? 'Jornada';
-$semTotal      = array_sum($semaforo);
-$sinGris       = $semTotal - ($semaforo['gris'] ?? 0);
+$jornadaId     = $jornadaId ?? ($jornada['id'] ?? null);
+$datos         = $datos ?? [];
 
-function pct(int $val, int $total): string {
-    if ($total <= 0) return '0';
+$semaforo = array_merge([
+  'verde'    => 0,
+  'amarillo' => 0,
+  'naranja'  => 0,
+  'rojo'     => 0,
+  'gris'     => 0,
+], $semaforo ?? []);
+
+$contadores = array_merge([
+  'total'        => 0,
+  'masculinos'   => 0,
+  'femeninas'    => 0,
+  'adulto_19_60' => 0,
+  'adulto_mayor' => 0,
+], $contadores ?? []);
+
+$semTotal = array_sum($semaforo);
+$sinGris  = $semTotal - ($semaforo['gris'] ?? 0);
+
+if (! function_exists('rep_ad_pct')) {
+  function rep_ad_pct(int $val, int $total): string
+  {
+    if ($total <= 0) {
+      return '0.0';
+    }
+
     return number_format(($val * 100) / $total, 1);
+  }
 }
+
+if (! function_exists('rep_ad_fecha')) {
+  function rep_ad_fecha(?string $fecha): string
+  {
+    if (empty($fecha)) {
+      return '—';
+    }
+
+    $time = strtotime($fecha);
+    return $time ? date('d/m/Y', $time) : '—';
+  }
+}
+
+if (! function_exists('rep_ad_iniciales')) {
+  function rep_ad_iniciales(string $nombre): string
+  {
+    $nombre = trim($nombre);
+    if ($nombre === '') {
+      return 'NA';
+    }
+
+    $partes = preg_split('/\s+/', $nombre);
+    $ini = '';
+
+    foreach (array_slice($partes, 0, 2) as $p) {
+      $ini .= mb_strtoupper(mb_substr($p, 0, 1));
+    }
+
+    return $ini ?: 'NA';
+  }
+}
+
+$riesgos = [
+  'verde' => [
+    'label' => 'Peso adecuado / ECNT bajo',
+    'icon'  => '🛡',
+    'color' => '#2db463',
+    'soft'  => '#e8f8ef',
+  ],
+  'amarillo' => [
+    'label' => 'ECNT leve',
+    'icon'  => '♡',
+    'color' => '#f4c84a',
+    'soft'  => '#fff7df',
+  ],
+  'naranja' => [
+    'label' => 'ECNT moderado',
+    'icon'  => '⚠',
+    'color' => '#ff9429',
+    'soft'  => '#fff0e2',
+  ],
+  'rojo' => [
+    'label' => 'Atención inmediata',
+    'icon'  => '🚨',
+    'color' => '#ef5350',
+    'soft'  => '#fdeaea',
+  ],
+  'gris' => [
+    'label' => 'Datos insuficientes',
+    'icon'  => '🗎',
+    'color' => '#a7b1bf',
+    'soft'  => '#f1f4f8',
+  ],
+];
+
+$avatarColors = [
+  '#9b5de5',
+  '#ff7f11',
+  '#14b8a6',
+  '#2196f3',
+  '#8b5cf6',
+  '#22c55e',
+  '#f97316',
+  '#e11d48',
+  '#0ea5e9',
+  '#7c3aed',
+];
 ?>
 
 <style>
-/* ═══ VARIABLES ═══════════════════════════════════════════ */
-:root {
-  --rp-primary: #101a61;
-  --rp-cyan:    #00D4FF;
-  --rp-verde:   #00B140;
-  --rp-amarillo:#FFC609;
-  --rp-naranja: #FF8724;
-  --rp-rojo:    #E43312;
-  --rp-gris:    #9CA3AF;
-  --rp-bg:      #F0F4FA;
-  --rp-card:    #ffffff;
-  --rp-radius:  12px;
-}
+  :root {
+    --rep_ad_bg: #f5f8fc;
+    --rep_ad_panel: #ffffff;
+    --rep_ad_line: #e6edf5;
+    --rep_ad_text: #102c63;
+    --rep_ad_muted: #6e7f99;
+    --rep_ad_primary: #1f66e5;
+    --rep_ad_primary_dark: #0d3b91;
+    --rep_ad_green: #2db463;
+    --rep_ad_green_soft: #e8f8ef;
+    --rep_ad_yellow: #f4c84a;
+    --rep_ad_yellow_soft: #fff7df;
+    --rep_ad_orange: #ff9429;
+    --rep_ad_orange_soft: #fff0e2;
+    --rep_ad_red: #ef5350;
+    --rep_ad_red_soft: #fdeaea;
+    --rep_ad_gray: #a7b1bf;
+    --rep_ad_gray_soft: #f1f4f8;
+    --rep_ad_shadow: 0 10px 30px rgba(15, 40, 82, .08);
+  }
 
-/* ═══ LAYOUT ══════════════════════════════════════════════ */
-.rp-shell { padding: 24px 28px 60px; background: var(--rp-bg); min-height: 100vh; }
+  .rep_ad_app,
+  .rep_ad_app * {
+    box-sizing: border-box;
+  }
 
-/* ═══ CABECERA ════════════════════════════════════════════ */
-.rp-header {
-  background: linear-gradient(135deg, var(--rp-primary) 60%, #1e2d8a);
-  border-radius: var(--rp-radius);
-  padding: 24px 32px;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 16px;
-  margin-bottom: 24px; color: #fff;
-}
-.rp-header-left { display: flex; align-items: center; gap: 16px; }
-.rp-header-icon { width: 52px; height: 52px; background: rgba(255,255,255,.12);
-  border-radius: 12px; display: grid; place-items: center; }
-.rp-header-icon img { width: 36px; }
-.rp-header-sub { font-size: .8rem; opacity: .7; letter-spacing: .04em; text-transform: uppercase; }
-.rp-header-title { font-size: 1.4rem; font-weight: 700; margin: 0; }
-.rp-header-pill {
-  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
-  border-radius: 20px; padding: 5px 14px; font-size: .82rem;
-  display: flex; align-items: center; gap: 6px;
-}
-.rp-btn-back {
-  background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3);
-  color: #fff; border-radius: 8px; padding: 8px 18px; font-size: .85rem;
-  text-decoration: none; transition: background .2s;
-}
-.rp-btn-back:hover { background: rgba(255,255,255,.3); color: #fff; }
+  .rep_ad_app {
+    min-height: calc(100vh - 118px);
+    background: var(--rep_ad_bg);
+    color: var(--rep_ad_text);
+    padding: 24px 24px 32px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
 
-/* ═══ KPI SEMÁFORO ════════════════════════════════════════ */
-.rp-kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 14px; margin-bottom: 24px;
-}
-.rp-kpi {
-  background: var(--rp-card); border-radius: var(--rp-radius);
-  padding: 18px 16px; text-align: center;
-  border-top: 4px solid #e5e7eb;
-  box-shadow: 0 2px 8px rgba(0,0,0,.06);
-  transition: transform .15s;
-}
-.rp-kpi:hover { transform: translateY(-2px); }
-.rp-kpi.verde   { border-top-color: var(--rp-verde); }
-.rp-kpi.amarillo{ border-top-color: var(--rp-amarillo); }
-.rp-kpi.naranja { border-top-color: var(--rp-naranja); }
-.rp-kpi.rojo    { border-top-color: var(--rp-rojo); }
-.rp-kpi.gris    { border-top-color: var(--rp-gris); }
-.rp-kpi.total   { border-top-color: var(--rp-cyan); }
-.rp-kpi-val  { font-size: 2rem; font-weight: 800; color: var(--rp-primary); line-height: 1; }
-.rp-kpi-label{ font-size: .75rem; color: #6B7280; margin-top: 4px; font-weight: 500; }
-.rp-kpi-pct  { font-size: .8rem; color: #9CA3AF; margin-top: 2px; }
+  .rep_ad_app button,
+  .rep_ad_app input,
+  .rep_ad_app select {
+    font: inherit;
+  }
 
-/* ═══ BARRA DISTRIBUCIÓN ══════════════════════════════════ */
-.rp-dist-bar { display: flex; height: 10px; border-radius: 99px; overflow: hidden; margin-bottom: 24px; gap: 2px; }
-.rp-dist-seg { transition: flex .4s; }
+  .rep_ad_main {
+    width: 100%;
+  }
 
-/* ═══ LEYENDA GRUPOS ══════════════════════════════════════ */
-.rp-groups {
-  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px;
-}
-.rp-group-chip {
-  background: var(--rp-card); border-radius: 8px;
-  padding: 10px 18px; font-size: .85rem;
-  display: flex; align-items: center; gap: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,.07);
-}
-.rp-group-chip .val { font-weight: 700; font-size: 1.1rem; color: var(--rp-primary); }
+  .rep_ad_topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rep_ad_line);
+  }
 
-/* ═══ TABLA ═══════════════════════════════════════════════ */
-.rp-table-card {
-  background: var(--rp-card); border-radius: var(--rp-radius);
-  box-shadow: 0 2px 12px rgba(0,0,0,.06); overflow: hidden;
-}
-.rp-table-toolbar {
-  padding: 16px 20px; display: flex; align-items: center;
-  justify-content: space-between; flex-wrap: wrap; gap: 12px;
-  border-bottom: 1px solid #F3F4F6;
-}
-.rp-table-title { font-weight: 700; color: var(--rp-primary); font-size: 1rem; }
-.rp-btn-excel {
-  background: #217346; color: #fff; border: none;
-  border-radius: 7px; padding: 8px 16px; font-size: .82rem;
-  display: flex; align-items: center; gap: 7px; cursor: pointer;
-  text-decoration: none; transition: background .2s;
-}
-.rp-btn-excel:hover { background: #1a5c38; color: #fff; }
+  .rep_ad_breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--rep_ad_muted);
+    font-size: 14px;
+  }
 
-/* ═══ SEMÁFORO DOT ════════════════════════════════════════ */
-.sem-dot {
-  width: 32px; height: 32px; border-radius: 50%;
-  display: grid; place-items: center; margin: 0 auto;
-  font-weight: 700; font-size: .7rem; color: #fff;
-}
-.sem-dot.verde   { background: var(--rp-verde); }
-.sem-dot.amarillo{ background: var(--rp-amarillo); color: #333; }
-.sem-dot.naranja { background: var(--rp-naranja); }
-.sem-dot.rojo    { background: var(--rp-rojo); }
-.sem-dot.gris    { background: var(--rp-gris); }
+  .rep_ad_breadcrumbs strong {
+    color: var(--rep_ad_text);
+  }
 
-/* ═══ BADGE INTERPRETACIÓN ════════════════════════════════ */
-.interp-badge {
-  display: inline-block; padding: 3px 10px; border-radius: 20px;
-  font-size: .78rem; font-weight: 600; white-space: normal;
-}
-.interp-verde    { background: #D1FAE5; color: #065F46; }
-.interp-amarillo { background: #FEF9C3; color: #78350F; }
-.interp-naranja  { background: #FFEDD5; color: #9A3412; }
-.interp-rojo     { background: #FEE2E2; color: #991B1B; }
-.interp-gris     { background: #F3F4F6; color: #4B5563; }
+  .rep_ad_topbar_actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .rep_ad_update_info {
+    color: var(--rep_ad_muted);
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .rep_ad_btn {
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 18px;
+    cursor: pointer;
+    transition: .2s ease;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+  }
+
+  .rep_ad_btn_primary {
+    background: var(--rep_ad_primary);
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(31, 102, 229, .18);
+  }
+
+  .rep_ad_btn_primary:hover {
+    background: #1658cb;
+    color: #fff;
+  }
+
+  .rep_ad_btn_secondary {
+    background: #fff;
+    color: var(--rep_ad_primary);
+    border: 1px solid #bfd4fb;
+  }
+
+  .rep_ad_btn_secondary:hover {
+    background: #f5f9ff;
+    color: var(--rep_ad_primary);
+  }
+
+  .rep_ad_hero {
+    background: var(--rep_ad_panel);
+    border: 1px solid var(--rep_ad_line);
+    border-radius: 22px;
+    padding: 22px 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    box-shadow: var(--rep_ad_shadow);
+    margin-bottom: 18px;
+  }
+
+  .rep_ad_hero_left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .rep_ad_hero_icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: #ffefbe;
+    display: grid;
+    place-items: center;
+    flex: 0 0 52px;
+  }
+
+  .rep_ad_hero_icon img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+  }
+
+  .rep_ad_hero h1 {
+    margin: 0 0 4px;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .rep_ad_hero p {
+    margin: 0;
+    color: var(--rep_ad_primary_dark);
+    font-weight: 800;
+  }
+
+  .rep_ad_hero_chip {
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #f7faff;
+    color: #5d74a0;
+    border: 1px solid #dbe7fb;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .rep_ad_kpi_grid {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .rep_ad_kpi_card {
+    background: var(--rep_ad_panel);
+    border: 1px solid var(--rep_ad_line);
+    border-radius: 18px;
+    padding: 18px 14px;
+    min-height: 112px;
+    box-shadow: var(--rep_ad_shadow);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .rep_ad_kpi_icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    flex: 0 0 44px;
+  }
+
+  .rep_ad_kpi_value {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: var(--rep_ad_text);
+  }
+
+  .rep_ad_kpi_title {
+    font-size: 13px;
+    color: #445674;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .rep_ad_kpi_subtitle {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #7a8aa6;
+    font-weight: 800;
+  }
+
+  .rep_ad_risk_summary {
+    background: var(--rep_ad_panel);
+    border: 1px solid var(--rep_ad_line);
+    border-radius: 18px;
+    padding: 16px 18px;
+    box-shadow: var(--rep_ad_shadow);
+    margin-bottom: 18px;
+  }
+
+  .rep_ad_risk_bar {
+    display: flex;
+    width: 100%;
+    height: 18px;
+    background: #edf2f8;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 14px;
+  }
+
+  .rep_ad_risk_segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+    min-width: 0;
+  }
+
+  .rep_ad_risk_legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    justify-content: center;
+  }
+
+  .rep_ad_legend_item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #536783;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .rep_ad_legend_dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .rep_ad_filters_card,
+  .rep_ad_table_card {
+    background: var(--rep_ad_panel);
+    border: 1px solid var(--rep_ad_line);
+    border-radius: 18px;
+    box-shadow: var(--rep_ad_shadow);
+  }
+
+  .rep_ad_filters_card {
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+
+  .rep_ad_filters_row {
+    display: grid;
+    grid-template-columns: 2fr repeat(5, minmax(120px, 1fr)) auto;
+    gap: 14px;
+    align-items: end;
+  }
+
+  .rep_ad_field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rep_ad_field label {
+    font-size: 13px;
+    color: #506685;
+    font-weight: 800;
+  }
+
+  .rep_ad_field input,
+  .rep_ad_field select {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #d7e1ee;
+    border-radius: 12px;
+    background: #fff;
+    padding: 0 14px;
+    color: var(--rep_ad_text);
+    outline: 0;
+  }
+
+  .rep_ad_field input:focus,
+  .rep_ad_field select:focus {
+    border-color: #9bbcf7;
+    box-shadow: 0 0 0 4px rgba(31, 102, 229, .08);
+  }
+
+  .rep_ad_field_action .rep_ad_btn {
+    width: 100%;
+    height: 44px;
+  }
+
+  .rep_ad_table_card {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .rep_ad_table_top {
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    border-bottom: 1px solid var(--rep_ad_line);
+  }
+
+  .rep_ad_table_meta {
+    color: #5f7390;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .rep_ad_table_statuses {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    color: #5f7390;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .rep_ad_dot_item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .rep_ad_dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .rep_ad_dot_green { background: var(--rep_ad_green); }
+  .rep_ad_dot_yellow { background: var(--rep_ad_yellow); }
+  .rep_ad_dot_orange { background: var(--rep_ad_orange); }
+  .rep_ad_dot_red { background: var(--rep_ad_red); }
+  .rep_ad_dot_gray { background: var(--rep_ad_gray); }
+
+  .rep_ad_table_wrapper {
+    overflow: auto;
+  }
+
+  .rep_ad_table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 1320px;
+  }
+
+  .rep_ad_table thead th {
+    text-align: left;
+    font-size: 13px;
+    color: #23406d;
+    background: #f7faff;
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--rep_ad_line);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  .rep_ad_table thead th small {
+    color: #c9cacd;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .rep_ad_table tbody td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #edf2f8;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #2d466e;
+  }
+
+  .rep_ad_table tbody tr:hover {
+    background: #fbfdff;
+  }
+
+  .rep_ad_name_cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+  }
+
+  .rep_ad_avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .rep_ad_badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.3;
+    min-width: 180px;
+  }
+
+  .rep_ad_badge_verde {
+    color: #198c48;
+    background: var(--rep_ad_green_soft);
+  }
+
+  .rep_ad_badge_amarillo {
+    color: #9f7a00;
+    background: var(--rep_ad_yellow_soft);
+  }
+
+  .rep_ad_badge_naranja {
+    color: #b96b14;
+    background: var(--rep_ad_orange_soft);
+  }
+
+  .rep_ad_badge_rojo {
+    color: #c63e3d;
+    background: var(--rep_ad_red_soft);
+  }
+
+  .rep_ad_badge_gris {
+    color: #66758a;
+    background: var(--rep_ad_gray_soft);
+  }
+
+  .rep_ad_empty {
+    padding: 44px 18px !important;
+    text-align: center;
+    color: #7a8aa6 !important;
+  }
+
+  .rep_ad_empty i {
+    display: block;
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+
+  .rep_ad_table_card .dataTables_wrapper {
+    padding: 0;
+  }
+
+  .rep_ad_table_card .dataTables_length,
+  .rep_ad_table_card .dataTables_filter {
+    display: none;
+  }
+
+  .rep_ad_table_card .dataTables_info {
+    padding: 16px 18px !important;
+    color: #5f7390 !important;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .rep_ad_table_card .dataTables_paginate {
+    padding: 12px 18px 16px !important;
+  }
+
+  .rep_ad_table_card .dataTables_paginate .paginate_button {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 10px !important;
+    border: 1px solid #d7e1ee !important;
+    background: #fff !important;
+    color: #436089 !important;
+    font-weight: 800;
+    margin: 0 3px;
+  }
+
+  .rep_ad_table_card .dataTables_paginate .paginate_button.current,
+  .rep_ad_table_card .dataTables_paginate .paginate_button.current:hover {
+    background: var(--rep_ad_primary) !important;
+    border-color: var(--rep_ad_primary) !important;
+    color: #fff !important;
+  }
+
+  @media (max-width: 1600px) {
+    .rep_ad_kpi_grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 1280px) {
+    .rep_ad_filters_row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .rep_ad_field_search {
+      grid-column: span 3;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .rep_ad_app {
+      padding: 16px;
+    }
+
+    .rep_ad_topbar,
+    .rep_ad_hero,
+    .rep_ad_table_top {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .rep_ad_kpi_grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .rep_ad_filters_row {
+      grid-template-columns: 1fr;
+    }
+
+    .rep_ad_field_search {
+      grid-column: auto;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .rep_ad_kpi_grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
-<div class="rp-shell">
-
-  <!-- CABECERA ─────────────────────────────────────── -->
-  <div class="rp-header">
-    <div class="rp-header-left">
-      <div class="rp-header-icon">
-        <img src="<?= base_url('img/antropometria2.svg') ?>" alt="">
+<div class="rep_ad_app">
+  <main class="rep_ad_main">
+    <div class="rep_ad_topbar">
+      <div class="rep_ad_breadcrumbs">
+        <span>Reportes</span>
+        <span>›</span>
+        <span>Antropometría</span>
+        <span>›</span>
+        <strong>Reporte antropométrico</strong>
       </div>
-      <div>
-        <div class="rp-header-sub">Reporte Antropométrico</div>
-        <h1 class="rp-header-title">Adultos (≥ 19 años)</h1>
+
+      <div class="rep_ad_topbar_actions">
+        <div class="rep_ad_update_info">
+          <i class="bi bi-calendar3"></i>
+          Jornada: <?= esc($nombreJornada) ?>
+        </div>
+
+        <a href="<?= site_url("jornadas/{$jornadaId}/reportes/antropometria/adultos/excel") ?>" class="rep_ad_btn rep_ad_btn_primary">
+          <i class="bi bi-file-earmark-excel-fill"></i>
+          Exportar Excel
+        </a>
+
+        <a href="<?= site_url("jornadas/{$jornadaId}/reportes") ?>" class="rep_ad_btn rep_ad_btn_secondary">
+          ← Volver a reportes
+        </a>
       </div>
-    </div>
-    <div class="d-flex align-items-center gap-3 flex-wrap">
-      <span class="rp-header-pill">
-        <i class="bi bi-calendar3"></i> <?= esc($nombreJornada) ?>
-      </span>
-      <a href="<?= site_url("jornadas/{$jornadaId}/reportes") ?>" class="rp-btn-back">
-        ← Volver a reportes
-      </a>
-    </div>
-  </div>
+</div>
 
-  <!-- KPIs ─────────────────────────────────────────── -->
-  <div class="rp-kpi-grid">
-    <div class="rp-kpi total">
-      <div class="rp-kpi-val"><?= $contadores['total'] ?></div>
-      <div class="rp-kpi-label">Total evaluados</div>
-    </div>
-    <div class="rp-kpi total" style="border-top-color:#101a61">
-      <div class="rp-kpi-val"><?= $contadores['masculinos'] ?> / <?= $contadores['femeninas'] ?></div>
-      <div class="rp-kpi-label">Masculino / Femenino</div>
-    </div>
-    <div class="rp-kpi total" style="border-top-color:#6366F1">
-      <div class="rp-kpi-val"><?= $contadores['adulto_19_60'] ?></div>
-      <div class="rp-kpi-label">19 – 60 años</div>
-    </div>
-    <div class="rp-kpi total" style="border-top-color:#8B5CF6">
-      <div class="rp-kpi-val"><?= $contadores['adulto_mayor'] ?></div>
-      <div class="rp-kpi-label">> 60 años</div>
-    </div>
-    <div class="rp-kpi verde">
-      <div class="rp-kpi-val"><?= $semaforo['verde'] ?></div>
-      <div class="rp-kpi-label">Peso adecuado / ECNT bajo</div>
-      <div class="rp-kpi-pct"><?= pct($semaforo['verde'], $sinGris) ?> %</div>
-    </div>
-    <div class="rp-kpi amarillo">
-      <div class="rp-kpi-val"><?= $semaforo['amarillo'] ?></div>
-      <div class="rp-kpi-label">ECNT leve</div>
-      <div class="rp-kpi-pct"><?= pct($semaforo['amarillo'], $sinGris) ?> %</div>
-    </div>
-    <div class="rp-kpi naranja">
-      <div class="rp-kpi-val"><?= $semaforo['naranja'] ?></div>
-      <div class="rp-kpi-label">ECNT moderado</div>
-      <div class="rp-kpi-pct"><?= pct($semaforo['naranja'], $sinGris) ?> %</div>
-    </div>
-    <div class="rp-kpi rojo">
-      <div class="rp-kpi-val"><?= $semaforo['rojo'] ?></div>
-      <div class="rp-kpi-label">Atención inmediata</div>
-      <div class="rp-kpi-pct"><?= pct($semaforo['rojo'], $sinGris) ?> %</div>
-    </div>
-    <div class="rp-kpi gris">
-      <div class="rp-kpi-val"><?= $semaforo['gris'] ?></div>
-      <div class="rp-kpi-label">Datos insuficientes</div>
-      <div class="rp-kpi-pct"><?= pct($semaforo['gris'], $semTotal) ?> %</div>
-    </div>
-  </div>
+    <section class="rep_ad_hero">
+      <div class="rep_ad_hero_left">
+        <div class="rep_ad_hero_icon">
+          <img src="<?= base_url('img/antropometria2.svg') ?>" alt="Antropometría">
+        </div>
+        <div>
+          <h1>Reporte antropométrico</h1>
+          <p>Adultos (≥ 19 años)</p>
+        </div>
+      </div>
 
-  <!-- BARRA DISTRIBUCIÓN ───────────────────────────── -->
-  <?php if ($semTotal > 0): ?>
-  <div class="rp-dist-bar mb-4">
-    <?php
-      $segs = [
-        'verde'    => ['color' => '#00B140', 'val' => $semaforo['verde']],
-        'amarillo' => ['color' => '#FFC609', 'val' => $semaforo['amarillo']],
-        'naranja'  => ['color' => '#FF8724', 'val' => $semaforo['naranja']],
-        'rojo'     => ['color' => '#E43312', 'val' => $semaforo['rojo']],
-        'gris'     => ['color' => '#9CA3AF', 'val' => $semaforo['gris']],
-      ];
-      foreach ($segs as $s):
-        $flex = $semTotal > 0 ? round(($s['val'] / $semTotal) * 100) : 0;
-        if ($flex > 0):
-    ?>
-      <div class="rp-dist-seg" style="flex: <?= $flex ?>; background: <?= $s['color'] ?>;"
-           title="<?= $flex ?> %"></div>
-    <?php endif; endforeach; ?>
-  </div>
-  <?php endif; ?>
+      <div class="rep_ad_hero_chip">Antropometría - <?= esc($nombreJornada) ?></div>
+    </section>
 
-  <!-- TABLA ────────────────────────────────────────── -->
-  <div class="rp-table-card">
-    <div class="rp-table-toolbar">
-      <span class="rp-table-title">
-        <i class="bi bi-table me-2"></i>Detalle por beneficiario
-      </span>
-      <a href="<?= site_url("jornadas/{$jornadaId}/reportes/antropometria/adultos/excel") ?>"
-         class="rp-btn-excel">
-        <i class="bi bi-file-earmark-excel-fill"></i> Exportar Excel
-      </a>
-    </div>
+    <section class="rep_ad_kpi_grid">
+      <article class="rep_ad_kpi_card">
+        <div class="rep_ad_kpi_icon" style="background:#edf4ff; color:#1f66e5">👥</div>
+        <div>
+          <div class="rep_ad_kpi_value"><?= esc((string)$contadores['total']) ?></div>
+          <div class="rep_ad_kpi_title">Total evaluados</div>
+        </div>
+      </article>
 
-    <div class="table-responsive">
-      <table id="tablaAdultos" class="table table-hover align-middle mb-0" style="font-size: .84rem;">
-        <thead class="table-dark">
-          <tr>
-            <th style="width:44px; text-align:center">🚦</th>
-            <th>Nombre</th>
-            <th>Cédula</th>
-            <th>Sexo</th>
-            <th>Fecha Nac.</th>
-            <th>Edad</th>
-            <th>Interpretación combinada</th>
-            <th>Peso (kg)</th>
-            <th>Talla (cm)</th>
-            <th>IMC</th>
-            <th>C. Cintura (cm)</th>
-            <th>Edema</th>
-            <th>Remisión</th>
-            <th>Observaciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php if (empty($datos)): ?>
-            <tr>
-              <td colspan="14" class="text-center py-5 text-muted">
-                <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                No hay registros de adultos en esta jornada.
-              </td>
-            </tr>
-          <?php else: ?>
-            <?php foreach ($datos as $d):
-              $clase   = $d['_clase'] ?? 'gris';
-              $interp  = $d['_interpretacion'] ?? '—';
-              $peso    = $d['peso'] ?? null;
-              $talla   = $d['talla'] ?? null;
-              $imc     = $d['imc'] ?? null;
-              $cintura = $d['circ_cintura'] ?? null;
-              $fnac    = $d['fecha_nacimiento'] ?? '';
-              $fnac_f  = $fnac ? date('d/m/Y', strtotime($fnac)) : '—';
-              $edadStr = '';
-              $dias    = (float)($d['edad_dias_medicion'] ?? 0);
-              if ($dias > 0) {
-                  $a = floor($dias / 365.25);
-                  $m = floor(($dias % 365.25) / 30.44);
-                  $edadStr = "{$a} a. {$m} m.";
-              }
-            ?>
-            <tr>
-              <td><span class="sem-dot <?= esc($clase) ?>" title="<?= esc(ucfirst($clase)) ?>"></span></td>
-              <td class="fw-500"><?= esc(ucwords(strtolower((string)($d['nombre_completo'] ?? '')))) ?></td>
-              <td><?= esc($d['cedula'] ?? '—') ?></td>
-              <td><?= esc($d['_sexo'] ?? '') ?></td>
-              <td><?= esc($fnac_f) ?></td>
-              <td><?= esc($edadStr ?: '—') ?></td>
-              <td>
-                <span class="interp-badge interp-<?= esc($clase) ?>">
-                  <?= esc($interp) ?>
-                </span>
-              </td>
-              <td><?= $peso !== null ? esc(number_format((float)$peso, 2)) : '—' ?></td>
-              <td><?= $talla !== null ? esc(number_format((float)$talla, 1)) : '—' ?></td>
-              <td><?= $imc !== null ? esc(number_format((float)$imc, 2)) : '—' ?></td>
-              <td><?= $cintura !== null && $cintura > 0 ? esc(number_format((float)$cintura, 1)) : '—' ?></td>
-              <td><?= ($d['edema'] ?? 0) ? '<span class="badge bg-warning text-dark">Sí</span>' : 'No' ?></td>
-              <td><?= $d['remision'] ? esc(ucfirst((string)$d['remision'])) : '—' ?></td>
-              <td class="text-muted" style="max-width:200px; white-space:normal"><?= esc($d['observaciones'] ?? '—') ?></td>
-            </tr>
-            <?php endforeach; ?>
+      <article class="rep_ad_kpi_card">
+        <div class="rep_ad_kpi_icon" style="background:#f3efff; color:#7c3aed">🚻</div>
+        <div>
+          <div class="rep_ad_kpi_value"><?= esc((string)$contadores['masculinos']) ?> / <?= esc((string)$contadores['femeninas']) ?></div>
+          <div class="rep_ad_kpi_title">Masculino / Femenino</div>
+        </div>
+      </article>
+
+      <article class="rep_ad_kpi_card">
+        <div class="rep_ad_kpi_icon" style="background:#edf4ff; color:#2196f3">🧑</div>
+        <div>
+          <div class="rep_ad_kpi_value"><?= esc((string)$contadores['adulto_19_60']) ?></div>
+          <div class="rep_ad_kpi_title">19 - 60 años</div>
+        </div>
+      </article>
+
+      <article class="rep_ad_kpi_card">
+        <div class="rep_ad_kpi_icon" style="background:#f5efff; color:#9b5de5">👴</div>
+        <div>
+          <div class="rep_ad_kpi_value"><?= esc((string)$contadores['adulto_mayor']) ?></div>
+          <div class="rep_ad_kpi_title">> 60 años</div>
+        </div>
+      </article>
+
+      <?php foreach ($riesgos as $key => $cfg): ?>
+        <?php $pctBase = $key === 'gris' ? $semTotal : $sinGris; ?>
+        <article class="rep_ad_kpi_card">
+          <div class="rep_ad_kpi_icon" style="background:<?= esc($cfg['soft']) ?>; color:<?= esc($cfg['color']) ?>">
+            <?= esc($cfg['icon']) ?>
+          </div>
+          <div>
+            <div class="rep_ad_kpi_value"><?= esc((string)$semaforo[$key]) ?></div>
+            <div class="rep_ad_kpi_title"><?= esc($cfg['label']) ?></div>
+            <div class="rep_ad_kpi_subtitle"><?= esc(rep_ad_pct((int)$semaforo[$key], (int)$pctBase)) ?>%</div>
+          </div>
+        </article>
+      <?php endforeach; ?>
+    </section>
+
+    <section class="rep_ad_risk_summary">
+      <div class="rep_ad_risk_bar">
+        <?php foreach ($riesgos as $key => $cfg): ?>
+          <?php
+          $valor = (int)($semaforo[$key] ?? 0);
+          $width = $semTotal > 0 ? (($valor / $semTotal) * 100) : 0;
+          ?>
+          <?php if ($width > 0): ?>
+            <div class="rep_ad_risk_segment" style="width:<?= esc(number_format($width, 4, '.', '')) ?>%; background:<?= esc($cfg['color']) ?>">
+              <?= esc(rep_ad_pct($valor, (int)$semTotal)) ?>%
+            </div>
           <?php endif; ?>
-        </tbody>
-      </table>
-    </div>
-  </div>
+        <?php endforeach; ?>
+      </div>
 
+      <div class="rep_ad_risk_legend">
+        <?php foreach ($riesgos as $cfg): ?>
+          <div class="rep_ad_legend_item">
+            <span class="rep_ad_legend_dot" style="background:<?= esc($cfg['color']) ?>"></span>
+            <span><?= esc($cfg['label']) ?></span>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </section>
+
+    <section class="rep_ad_filters_card">
+      <div class="rep_ad_filters_row">
+        <div class="rep_ad_field rep_ad_field_search">
+          <label for="rep_ad_searchInput">Buscar</label>
+          <input type="text" id="rep_ad_searchInput" placeholder="Buscar por nombre, cédula u observación...">
+        </div>
+
+        <div class="rep_ad_field">
+          <label for="rep_ad_sexoFilter">Sexo</label>
+          <select id="rep_ad_sexoFilter">
+            <option value="">Todos</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </div>
+
+        <div class="rep_ad_field">
+          <label for="rep_ad_ageFilter">Grupo etario</label>
+          <select id="rep_ad_ageFilter">
+            <option value="">Todos</option>
+            <option value="19-60">19 - 60 años</option>
+            <option value="60+">> 60 años</option>
+          </select>
+        </div>
+
+        <div class="rep_ad_field">
+          <label for="rep_ad_riskFilter">Estado de riesgo</label>
+          <select id="rep_ad_riskFilter">
+            <option value="">Todos</option>
+            <option value="verde">Peso adecuado / ECNT bajo</option>
+            <option value="amarillo">ECNT leve</option>
+            <option value="naranja">ECNT moderado</option>
+            <option value="rojo">Atención inmediata</option>
+            <option value="gris">Datos insuficientes</option>
+          </select>
+        </div>
+
+        <div class="rep_ad_field">
+          <label for="rep_ad_rowsPerPage">Registros por página</label>
+          <select id="rep_ad_rowsPerPage">
+            <option value="10">10</option>
+            <option value="25" selected>25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+
+        <div class="rep_ad_field rep_ad_field_action">
+          <label>&nbsp;</label>
+          <button type="button" class="rep_ad_btn rep_ad_btn_secondary" id="rep_ad_clearFilters">
+            Limpiar filtros
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="rep_ad_table_card">
+      <div class="rep_ad_table_top">
+        <div class="rep_ad_table_meta" id="rep_ad_tableMeta">Detalle por beneficiario</div>
+
+        <div class="rep_ad_table_statuses">
+          <span>Estados de interpretación</span>
+          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_green"></i><span>Bajo</span></div>
+          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_yellow"></i><span>Leve</span></div>
+          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_orange"></i><span>Moderado</span></div>
+          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_red"></i><span>Alto</span></div>
+          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_gray"></i><span>Sin datos</span></div>
+        </div>
+      </div>
+
+      <div class="rep_ad_table_wrapper">
+        <table id="tablaAdultos" class="rep_ad_table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Identificación</th>
+              <th>Sexo</th>
+              <th>Fecha nac.</th>
+              <th>Edad</th>
+              <th>Interpretación combinada</th>
+              <th>Peso<br><small>(kg)</small></th>
+              <th>Talla<br><small>(cm)</small></th>
+              <th>IMC<br><small>(kg/m²)</small></th>
+              <th>C. cintura<br><small>(cm)</small></th>
+              <th>Edema</th>
+              <th>Remisión</th>
+              <th>Observaciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if (empty($datos)): ?>
+              <tr>
+                <td colspan="14" class="rep_ad_empty">
+                  <i class="bi bi-inbox"></i>
+                  No hay registros de adultos en esta jornada.
+                </td>
+              </tr>
+            <?php else: ?>
+              <?php foreach ($datos as $index => $d): ?>
+                <?php
+                $clase = $d['_clase'] ?? 'gris';
+                if (! array_key_exists($clase, $riesgos)) {
+                  $clase = 'gris';
+                }
+
+                $interp  = $d['_interpretacion'] ?? '—';
+                $peso    = $d['peso'] ?? null;
+                $talla   = $d['talla'] ?? null;
+                $imc     = $d['imc'] ?? null;
+                $cintura = $d['circ_cintura'] ?? null;
+                $fnac    = $d['fecha_nacimiento'] ?? '';
+                $fnac_f  = rep_ad_fecha($fnac ?: null);
+                $dias    = (float)($d['edad_dias_medicion'] ?? 0);
+                $edadStr = '—';
+                $edadGrupo = '';
+
+                if ($dias > 0) {
+                  $a = (int)floor($dias / 365.25);
+                  $m = (int)floor(fmod($dias, 365.25) / 30.44);
+                  $edadStr = "{$a} a. {$m} m.";
+                  $edadGrupo = $a > 60 ? '60+' : '19-60';
+                }
+
+                $nombreCompleto = ucwords(strtolower((string)($d['nombre_completo'] ?? '')));
+                $sexo = (string)($d['_sexo'] ?? '');
+                $avatarColor = $avatarColors[$index % count($avatarColors)];
+                ?>
+                <tr data-risk="<?= esc($clase) ?>" data-sexo="<?= esc($sexo) ?>" data-age="<?= esc($edadGrupo) ?>">
+                  <td><?= esc((string)($index + 1)) ?></td>
+                  <td>
+                    <div class="rep_ad_name_cell">
+                      <div class="rep_ad_avatar" style="background:<?= esc($avatarColor) ?>">
+                        <?= esc(rep_ad_iniciales($nombreCompleto)) ?>
+                      </div>
+                      <span><?= esc($nombreCompleto ?: '—') ?></span>
+                    </div>
+                  </td>
+                  <td><?= esc($d['id_digisalud'] ?? '—') ?></td>
+                  <td><?= esc($sexo ?: '—') ?></td>
+                  <td><?= esc($fnac_f) ?></td>
+                  <td><?= esc($edadStr) ?></td>
+                  <td>
+                    <span class="rep_ad_badge rep_ad_badge_<?= esc($clase) ?>">
+                      <?= esc($interp) ?>
+                    </span>
+                  </td>
+                  <td><?= $peso !== null ? esc(number_format((float)$peso, 2)) : '—' ?></td>
+                  <td><?= $talla !== null ? esc(number_format((float)$talla, 1)) : '—' ?></td>
+                  <td><?= $imc !== null ? esc(number_format((float)$imc, 2)) : '—' ?></td>
+                  <td><?= $cintura !== null && (float)$cintura > 0 ? esc(number_format((float)$cintura, 1)) : '—' ?></td>
+                  <td><?= !empty($d['edema']) ? '<span class="badge bg-warning text-dark">Sí</span>' : 'No' ?></td>
+                  <td><?= !empty($d['remision']) ? esc(ucfirst((string)$d['remision'])) : '—' ?></td>
+                  <td class="text-muted" style="max-width:220px; white-space:normal"><?= esc($d['observaciones'] ?? '—') ?></td>
+                </tr>
+              <?php endforeach; ?>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 </div>
 
 <script>
-$(document).ready(function () {
-  if ($.fn.DataTable) {
-    $('#tablaAdultos').DataTable({
-      responsive: true,
-      pageLength: 25,
-      order: [[6, 'asc']],
-      language: {
-        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
-        search: '',
-        searchPlaceholder: 'Buscar…',
-        lengthMenu: 'Ver _MENU_ registros',
-        zeroRecords: 'Sin resultados',
-        info: 'Mostrando _END_ de _TOTAL_ registros',
-        infoEmpty: '0 registros',
-        paginate: { previous: '‹', next: '›' },
-      },
-      dom: '<"d-flex justify-content-between align-items-center mb-2"lf>rtip',
-      columnDefs: [
-        { orderable: false, targets: [0, 11, 12, 13] },
-      ],
-    });
-  }
-});
+  (function() {
+    const hasRows = <?= empty($datos) ? 'false' : 'true' ?>;
+
+    function repAdNormalize(value) {
+      return String(value || '')
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function repAdNormalizeSexo(value) {
+      const v = repAdNormalize(value);
+
+      if (v === 'm' || v.includes('masculino') || v.includes('hombre')) {
+        return 'M';
+      }
+
+      if (v === 'f' || v.includes('femenino') || v.includes('mujer')) {
+        return 'F';
+      }
+
+      return String(value || '').trim().toUpperCase();
+    }
+
+    function repAdGetCellText(row, index) {
+      return row && row.cells && row.cells[index]
+        ? row.cells[index].textContent.trim()
+        : '';
+    }
+
+    function repAdGetAgeGroup(row) {
+      const explicitAge = row.getAttribute('data-age') || '';
+
+      if (explicitAge) {
+        return explicitAge;
+      }
+
+      const edadText = repAdGetCellText(row, 5);
+      const match = edadText.match(/(\d+)/);
+      const years = match ? parseInt(match[1], 10) : 0;
+
+      if (!years) {
+        return '';
+      }
+
+      return years > 60 ? '60+' : '19-60';
+    }
+
+    function repAdRowPassesFilters(row) {
+      if (!row) {
+        return true;
+      }
+
+      const search = repAdNormalize(document.getElementById('rep_ad_searchInput')?.value || '');
+      const sexo = document.getElementById('rep_ad_sexoFilter')?.value || '';
+      const age = document.getElementById('rep_ad_ageFilter')?.value || '';
+      const risk = document.getElementById('rep_ad_riskFilter')?.value || '';
+
+      const rowText = repAdNormalize(row.textContent || '');
+      const rowSexo = repAdNormalizeSexo(row.getAttribute('data-sexo') || repAdGetCellText(row, 3));
+      const rowAge = repAdGetAgeGroup(row);
+      const rowRisk = row.getAttribute('data-risk') || '';
+
+      if (search && !rowText.includes(search)) {
+        return false;
+      }
+
+      if (sexo && rowSexo !== sexo) {
+        return false;
+      }
+
+      if (age && rowAge !== age) {
+        return false;
+      }
+
+      if (risk && rowRisk !== risk) {
+        return false;
+      }
+
+      return true;
+    }
+
+    function repAdNativeFilter() {
+      const rows = document.querySelectorAll('#tablaAdultos tbody tr[data-risk]');
+      let visible = 0;
+
+      rows.forEach(function(row) {
+        const show = repAdRowPassesFilters(row);
+        row.style.display = show ? '' : 'none';
+        if (show) {
+          visible++;
+        }
+      });
+
+      const meta = document.getElementById('rep_ad_tableMeta');
+      if (meta) {
+        meta.textContent = 'Mostrando ' + visible + ' de ' + rows.length + ' registros';
+      }
+    }
+
+    function repAdInit() {
+      if (!hasRows) {
+        return;
+      }
+
+      const $table = window.jQuery ? $('#tablaAdultos') : null;
+      const hasDataTables = Boolean(window.jQuery && $.fn && $.fn.DataTable);
+
+      if (!hasDataTables) {
+        ['rep_ad_searchInput', 'rep_ad_sexoFilter', 'rep_ad_ageFilter', 'rep_ad_riskFilter'].forEach(function(id) {
+          const el = document.getElementById(id);
+          if (el) {
+            el.addEventListener('input', repAdNativeFilter);
+            el.addEventListener('change', repAdNativeFilter);
+          }
+        });
+
+        const clearBtn = document.getElementById('rep_ad_clearFilters');
+        if (clearBtn) {
+          clearBtn.addEventListener('click', function() {
+            document.getElementById('rep_ad_searchInput').value = '';
+            document.getElementById('rep_ad_sexoFilter').value = '';
+            document.getElementById('rep_ad_ageFilter').value = '';
+            document.getElementById('rep_ad_riskFilter').value = '';
+            document.getElementById('rep_ad_rowsPerPage').value = '25';
+            repAdNativeFilter();
+          });
+        }
+
+        repAdNativeFilter();
+        return;
+      }
+
+      $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+        if (!settings || !settings.nTable || settings.nTable.id !== 'tablaAdultos') {
+          return true;
+        }
+
+        const rowObj = settings.aoData && settings.aoData[dataIndex] ? settings.aoData[dataIndex] : null;
+        const row = rowObj ? rowObj.nTr : null;
+
+        return repAdRowPassesFilters(row);
+      });
+
+      const table = $table.DataTable({
+        responsive: false,
+        pageLength: 25,
+        lengthChange: false,
+        order: [[6, 'asc']],
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+          search: '',
+          searchPlaceholder: 'Buscar…',
+          lengthMenu: 'Ver _MENU_ registros',
+          zeroRecords: 'Sin resultados',
+          info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+          infoEmpty: '0 registros',
+          infoFiltered: '(filtrado de _MAX_ registros)',
+          paginate: {
+            previous: '‹',
+            next: '›'
+          }
+        },
+        dom: 'rt<"rep_ad_dt_footer"ip>',
+        columnDefs: [{
+          orderable: false,
+          targets: [0, 11, 12, 13]
+        }]
+      });
+
+      function repAdRedraw() {
+        table.draw();
+      }
+
+      $('#rep_ad_searchInput').on('input keyup change', repAdRedraw);
+      $('#rep_ad_sexoFilter, #rep_ad_ageFilter, #rep_ad_riskFilter').on('input change', repAdRedraw);
+
+      $('#rep_ad_rowsPerPage').on('change', function() {
+        table.page.len(Number(this.value || 25)).draw();
+      });
+
+      $('#rep_ad_clearFilters').on('click', function() {
+        $('#rep_ad_searchInput').val('');
+        $('#rep_ad_sexoFilter').val('');
+        $('#rep_ad_ageFilter').val('');
+        $('#rep_ad_riskFilter').val('');
+        $('#rep_ad_rowsPerPage').val('25');
+
+        table.search('').page.len(25).draw();
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', repAdInit);
+    } else {
+      repAdInit();
+    }
+  })();
 </script>
 
 <?= $this->endSection() ?>
