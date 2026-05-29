@@ -632,10 +632,7 @@ if (in_array('6', $pesquisasActivas, true) && !empty($reportesDisponibles['vacun
     background: var(--rep-dark);
 }
 </style>
-<pre>
-<?php print_r($pesquisasActivas); ?>
-<?php print_r($reportesDisponibles); ?>
-</pre>
+ 
 <div class="rep-page">
     <div class="rep-wrap">
 

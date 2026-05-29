@@ -144,6 +144,32 @@ $routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
     $routes->post('(:num)/carga-masiva/procesar', 'CargaMasivaController::procesar/$1');
 });
 
+// ═══════════════════════════════════════════════════════════════
+// RUTAS — Reportes Antropométricos
+// Agregar DENTRO del grupo existente $routes->group('jornadas', ...)
+// ═══════════════════════════════════════════════════════════════
+
 $routes->group('jornadas', static function ($routes) {
+    // Home de reportes (ya existe)
     $routes->get('(:num)/reportes', 'Reportes::home/$1');
+
+    // ─── Antropometría: vistas detalle ──────────────────────────
+    $routes->get('(:num)/reportes/antropometria/adultos',
+        'ReportesAntropometriaController::adultos/$1');
+
+    $routes->get('(:num)/reportes/antropometria/menores-19',
+        'ReportesAntropometriaController::menores19/$1');
+
+    $routes->get('(:num)/reportes/antropometria/embarazadas',
+        'ReportesAntropometriaController::embarazadas/$1');
+
+    // ─── Antropometría: exportar Excel ──────────────────────────
+    $routes->get('(:num)/reportes/antropometria/adultos/excel',
+        'ReportesAntropometriaController::exportarExcel/$1/adultos');
+
+    $routes->get('(:num)/reportes/antropometria/menores-19/excel',
+        'ReportesAntropometriaController::exportarExcel/$1/menores-19');
+
+    $routes->get('(:num)/reportes/antropometria/embarazadas/excel',
+        'ReportesAntropometriaController::exportarExcel/$1/embarazadas');
 });
