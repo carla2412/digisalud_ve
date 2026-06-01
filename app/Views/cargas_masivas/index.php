@@ -35,7 +35,7 @@ $tiposCarga = $tiposCarga ?? [];
     .carga_mas-hero p {
         margin: 8px 0 0;
         opacity: .88;
-        max-width: 720px;
+        max-width: 760px;
     }
 
     .carga_mas-pill {
@@ -337,7 +337,7 @@ $tiposCarga = $tiposCarga ?? [];
     <section class="carga_mas-hero">
         <div>
             <h1>Carga masiva</h1>
-            <p>Gestiona plantillas y carga evaluaciones por jornada. Las opciones se habilitan de acuerdo con las pesquisas asociadas a la jornada seleccionada.</p>
+            <p>Gestiona plantillas y carga beneficiarios o evaluaciones por jornada. Beneficiarios no depende de pesquisas; las evaluaciones se habilitan segun las pesquisas asociadas.</p>
         </div>
         <span class="carga_mas-pill">
             <i class="bi bi-shield-check"></i>
@@ -394,8 +394,8 @@ $tiposCarga = $tiposCarga ?? [];
         <article class="carga_mas-card">
             <div class="carga_mas-card-head">
                 <div>
-                    <h2>Cargar evaluaciones</h2>
-                    <p>Selecciona una jornada para habilitar sus cargas disponibles.</p>
+                    <h2>Cargar datos</h2>
+                    <p>Selecciona una jornada para habilitar beneficiarios y sus evaluaciones disponibles.</p>
                 </div>
             </div>
 
@@ -420,11 +420,11 @@ $tiposCarga = $tiposCarga ?? [];
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <div class="carga_mas-help">Solo verás jornadas permitidas para tu rol y organización.</div>
+                    <div class="carga_mas-help">Solo veras jornadas permitidas para tu rol y organizacion.</div>
                 </div>
 
                 <div class="carga_mas-jornada-box" id="cargaMasJornadaBox">
-                    Selecciona una jornada para ver las pesquisas disponibles.
+                    Selecciona una jornada para ver las cargas disponibles.
                 </div>
 
                 <div class="carga_mas-load-list">
@@ -437,7 +437,11 @@ $tiposCarga = $tiposCarga ?? [];
                             enctype="multipart/form-data">
 
                             <span class="carga_mas-icon">
-                                <img src="<?= base_url('img/' . $tipo['icono']) ?>" alt="<?= esc($tipo['nombre']) ?>">
+                                <?php if (!empty($tipo['icono'])): ?>
+                                    <img src="<?= base_url('img/' . $tipo['icono']) ?>" alt="<?= esc($tipo['nombre']) ?>">
+                                <?php else: ?>
+                                    <i class="bi <?= esc($tipo['bootstrap_icon'] ?? 'bi-upload') ?>"></i>
+                                <?php endif; ?>
                             </span>
 
                             <div>
@@ -468,6 +472,7 @@ $tiposCarga = $tiposCarga ?? [];
     const jornadaBox = document.getElementById('cargaMasJornadaBox');
     const resultBox = document.getElementById('cargaMasResults');
     const forms = Array.from(document.querySelectorAll('[data-carga-item="1"]'));
+    let ultimoResultado = null;
 
     function safeJson(value, fallback) {
         try {
@@ -486,6 +491,35 @@ $tiposCarga = $tiposCarga ?? [];
             .replaceAll("'", '&#039;');
     }
 
+    function descargarLogsCsv(data) {
+        const logs = Array.isArray(data?.logs) ? data.logs : [];
+        if (!logs.length) {
+            Swal.fire('Sin logs', 'No hay registros detallados para exportar.', 'info');
+            return;
+        }
+
+        const headers = ['fila', 'estado', 'id_digisalud', 'nombres', 'apellidos', 'detalle'];
+        const csvRows = [headers.join(';')];
+
+        logs.forEach(row => {
+            csvRows.push(headers.map(key => {
+                const value = String(row[key] ?? '').replaceAll('"', '""');
+                return '"' + value + '"';
+            }).join(';'));
+        });
+
+        const blob = new Blob(['\ufeff' + csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const fecha = new Date().toISOString().slice(0, 19).replaceAll(':', '-');
+        a.href = url;
+        a.download = 'logs_carga_masiva_' + (data.tipo || 'datos') + '_' + fecha + '.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
     function actualizarEstado() {
         const option = jornadaSelect.options[jornadaSelect.selectedIndex];
         const jornadaId = jornadaSelect.value;
@@ -494,9 +528,10 @@ $tiposCarga = $tiposCarga ?? [];
 
         resultBox.style.display = 'none';
         resultBox.innerHTML = '';
+        ultimoResultado = null;
 
         if (!jornadaId) {
-            jornadaBox.innerHTML = 'Selecciona una jornada para ver las pesquisas disponibles.';
+            jornadaBox.innerHTML = 'Selecciona una jornada para ver las cargas disponibles.';
         } else {
             const badges = pesquisas.length
                 ? pesquisas.map(id => '<span class="carga_mas-badge"><i class="bi bi-check-circle"></i> Pesquisa ' + id + '</span>').join('')
@@ -506,12 +541,16 @@ $tiposCarga = $tiposCarga ?? [];
                 '<strong>' + escapeHtml(option.dataset.nombre || 'Jornada') + '</strong><br>' +
                 '<span>' + escapeHtml(option.dataset.institucion || '') + '</span><br>' +
                 '<small>Fecha: ' + escapeHtml(option.dataset.fecha || 'Sin fecha') + '</small>' +
-                '<div class="carga_mas-badges">' + badges + '</div>';
+                '<div class="carga_mas-badges">' +
+                    '<span class="carga_mas-badge"><i class="bi bi-people"></i> Beneficiarios</span>' +
+                    badges +
+                '</div>';
         }
 
         forms.forEach(form => {
             const pesquisaId = parseInt(form.dataset.pesquisaId || '0', 10);
-            const enabled = !!jornadaId && status === 1 && pesquisas.includes(pesquisaId);
+            const esBeneficiarios = form.dataset.tipo === 'beneficiarios';
+            const enabled = !!jornadaId && status === 1 && (esBeneficiarios || pesquisas.includes(pesquisaId));
             const file = form.querySelector('input[type="file"]');
             const btn = form.querySelector('button[type="submit"]');
 
@@ -531,37 +570,89 @@ $tiposCarga = $tiposCarga ?? [];
         return '<div class="carga_mas-alert carga_mas-alert-' + tipo + '">' +
             '<strong>' + escapeHtml(titulo) + '</strong>' +
             '<ul class="mb-0 mt-2">' + items.slice(0, 30).map(item => {
-                const errores = Array.isArray(item.errores) ? item.errores.join('; ') : (item.mensaje || '');
+                const errores = Array.isArray(item.errores) ? item.errores.join('; ') : (item.mensaje || item.detalle || '');
                 return '<li>Fila ' + escapeHtml(item.fila || '-') + ' - ' + escapeHtml(item.id_digisalud || '') + ' ' + escapeHtml(item.nombre || '') + ': ' + escapeHtml(errores) + '</li>';
             }).join('') +
-            (items.length > 30 ? '<li>... y ' + (items.length - 30) + ' más.</li>' : '') +
+            (items.length > 30 ? '<li>... y ' + (items.length - 30) + ' mas.</li>' : '') +
             '</ul>' +
             '</div>';
     }
 
     function renderResultados(data) {
+        ultimoResultado = data;
+
         const guardados = data.guardados || 0;
         const yaEvaluados = data.ya_evaluados || 0;
         const noExisten = data.no_existen || [];
         const noAsociados = data.no_asociados || [];
         const errores = data.errores || [];
         const total = data.total_procesados || 0;
+        const esBeneficiarios = data.tipo === 'beneficiarios';
 
-        resultBox.innerHTML =
-            '<div class="carga_mas-kpis">' +
-                '<div class="carga_mas-kpi"><strong>' + total + '</strong><span>Procesados</span></div>' +
-                '<div class="carga_mas-kpi"><strong>' + guardados + '</strong><span>Guardados</span></div>' +
-                '<div class="carga_mas-kpi"><strong>' + yaEvaluados + '</strong><span>Ya evaluados</span></div>' +
-                '<div class="carga_mas-kpi"><strong>' + noExisten.length + '</strong><span>No existen</span></div>' +
-                '<div class="carga_mas-kpi"><strong>' + noAsociados.length + '</strong><span>No asociados</span></div>' +
-            '</div>' +
-            '<div class="carga_mas-alert-list">' +
-                renderLista('Beneficiarios no existentes', noExisten, 'danger') +
-                renderLista('Beneficiarios no asociados a la jornada', noAsociados, 'warning') +
-                renderLista('Errores / registros no cargados', errores, 'info') +
-            '</div>';
+        if (esBeneficiarios) {
+            resultBox.innerHTML =
+                '<div class="carga_mas-kpis">' +
+                    '<div class="carga_mas-kpi"><strong>' + total + '</strong><span>Procesados</span></div>' +
+                    '<div class="carga_mas-kpi"><strong>' + guardados + '</strong><span>Guardados</span></div>' +
+                    '<div class="carga_mas-kpi"><strong>' + (data.creados || 0) + '</strong><span>Creados</span></div>' +
+                    '<div class="carga_mas-kpi"><strong>' + (data.existentes_asociados || 0) + '</strong><span>Existentes asociados</span></div>' +
+                    '<div class="carga_mas-kpi"><strong>' + (data.no_guardados || 0) + '</strong><span>No guardados</span></div>' +
+                '</div>' +
+                '<div class="carga_mas-alert-list">' +
+                    renderLista('Errores / registros no guardados', errores, 'info') +
+                '</div>' +
+                '<button type="button" class="carga_mas-btn carga_mas-btn-soft mt-3" id="btnExportarLogsInline"><i class="bi bi-filetype-csv"></i> Exportar logs CSV</button>';
+        } else {
+            resultBox.innerHTML =
+                '<div class="carga_mas-kpis">' +
+                    '<div class="carga_mas-kpi"><strong>' + total + '</strong><span>Procesados</span></div>' +
+                    '<div class="carga_mas-kpi"><strong>' + guardados + '</strong><span>Guardados</span></div>' +
+                    '<div class="carga_mas-kpi"><strong>' + yaEvaluados + '</strong><span>Ya evaluados</span></div>' +
+                    '<div class="carga_mas-kpi"><strong>' + noExisten.length + '</strong><span>No existen</span></div>' +
+                    '<div class="carga_mas-kpi"><strong>' + noAsociados.length + '</strong><span>No asociados</span></div>' +
+                '</div>' +
+                '<div class="carga_mas-alert-list">' +
+                    renderLista('Beneficiarios no existentes', noExisten, 'danger') +
+                    renderLista('Beneficiarios no asociados a la jornada', noAsociados, 'warning') +
+                    renderLista('Errores / registros no cargados', errores, 'info') +
+                '</div>' +
+                '<button type="button" class="carga_mas-btn carga_mas-btn-soft mt-3" id="btnExportarLogsInline"><i class="bi bi-filetype-csv"></i> Exportar logs CSV</button>';
+        }
 
         resultBox.style.display = 'block';
+
+        const btnLogs = document.getElementById('btnExportarLogsInline');
+        if (btnLogs) {
+            btnLogs.addEventListener('click', () => descargarLogsCsv(ultimoResultado));
+        }
+    }
+
+    function mostrarPopupResultados(data) {
+        const total = data.total_procesados || 0;
+        const guardados = data.guardados || 0;
+        const noGuardados = data.tipo === 'beneficiarios'
+            ? (data.no_guardados || 0)
+            : ((data.errores || []).length + (data.no_existen || []).length + (data.no_asociados || []).length + (data.ya_evaluados || 0));
+
+        Swal.fire({
+            title: 'Carga procesada',
+            icon: noGuardados > 0 ? 'warning' : 'success',
+            html:
+                '<div style="text-align:left">' +
+                    '<p><strong>Total procesados:</strong> ' + total + '</p>' +
+                    '<p><strong>Guardados:</strong> ' + guardados + '</p>' +
+                    '<p><strong>No guardados:</strong> ' + noGuardados + '</p>' +
+                    '<p class="text-muted mb-0">Puedes exportar los logs para revisar el detalle por fila.</p>' +
+                '</div>',
+            showCancelButton: true,
+            confirmButtonText: 'Exportar logs',
+            cancelButtonText: 'Cerrar',
+            reverseButtons: true
+        }).then(result => {
+            if (result.isConfirmed) {
+                descargarLogsCsv(data);
+            }
+        });
     }
 
     jornadaSelect.addEventListener('change', actualizarEstado);
@@ -600,7 +691,7 @@ $tiposCarga = $tiposCarga ?? [];
                 }
 
                 renderResultados(data);
-                Swal.fire('Carga procesada', 'Revisa el resumen de resultados.', 'success');
+                mostrarPopupResultados(data);
             })
             .catch(error => {
                 Swal.fire('No se pudo procesar', error.message, 'error');
