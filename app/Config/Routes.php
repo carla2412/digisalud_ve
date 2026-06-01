@@ -130,22 +130,23 @@ $routes->get('evaluaciones/historial-sanguinea/(:num)', 'EvaluacionesController:
 
 // Si prefieres dejarlo fuera del grupo, igual que historial-sanguinea actual:
 $routes->get('evaluaciones/historial-antropometria/(:num)', 'EvaluacionesController::historialAntropometria/$1');
-
+ 
+ // =====================================================
+// MÓDULO CENTRALIZADO DE CARGAS MASIVAS
 // =====================================================
-// RUTAS CARGA MASIVA DE BENEFICIARIOS
-// Agregar dentro de Routes.php (en el group de jornadas con auth)
-// =====================================================
+$routes->group('cargas-masivas', ['filter' => 'auth'], function ($routes) {
+    // Ruta base del módulo
+    $routes->get('', 'CargaMasivaController::index');
+    $routes->get('/', 'CargaMasivaController::index');
 
-// Dentro del grupo existente de jornadas:
-$routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
-    // Descargar plantilla Excel
-    $routes->get('carga-masiva/plantilla', 'CargaMasivaController::descargarPlantilla');
-    // Procesar archivo Excel (AJAX POST)
-    $routes->post('(:num)/carga-masiva/procesar', 'CargaMasivaController::procesar/$1');
-});
-$routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
-    $routes->get('carga-masiva-antropometria/plantilla', 'CargaMasivaAntropometriaController::descargarPlantilla');
-    $routes->post('(:num)/carga-masiva-antropometria/procesar', 'CargaMasivaAntropometriaController::procesar/$1');
+    // Plantillas
+    $routes->get('plantillas/(:segment)', 'CargaMasivaController::descargarPlantilla/$1');
+
+    // Información de jornada seleccionada
+    $routes->get('jornada/(:num)', 'CargaMasivaController::jornadaInfo/$1');
+
+    // Procesar carga por jornada y tipo
+    $routes->post('procesar/(:num)/(:segment)', 'CargaMasivaController::procesar/$1/$2');
 });
 // ═══════════════════════════════════════════════════════════════
 // RUTAS — Reportes Antropométricos

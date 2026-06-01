@@ -10,8 +10,6 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
 }
 ?>
 <style>
- 
- 
     .jor_ben-page {
         width: min(1480px, calc(100% - 48px));
         margin: 0 auto;
@@ -260,7 +258,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
     }
 
     .jor_ben-meta-label {
-        color:var(--ds-primary-dark);
+        color: var(--ds-primary-dark);
         font-weight: 600;
     }
 
@@ -285,11 +283,11 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
     }
 
     .jor_ben-representative strong {
-        color:var(--ds-orange)
+        color: var(--ds-orange)
     }
 
     .jor_ben-representative i {
-        color:var(--ds-orange)
+        color: var(--ds-orange)
     }
 
     .jor_ben-card-actions {
@@ -402,8 +400,8 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         align-items: center;
         justify-content: center;
         border: 1.6px solid var(--ds-border);
-        background:var(--ds-light);
-        color:var(--ds-seccondary);
+        background: var(--ds-light);
+        color: var(--ds-seccondary);
         cursor: pointer;
         transition: .18s ease;
         padding: 7px;
@@ -443,7 +441,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
     }
 
     .jor_ben-research-status .jor_ben-pending {
-        color: var(--ds-secondary-light)  ;
+        color: var(--ds-secondary-light);
         display: inline-flex;
         align-items: center;
         gap: 4px;
@@ -882,29 +880,30 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         color: #fff;
         background: #176be8;
     }
-    .jor_ben-ds-btn-secondary {
-    height: 46px;
-    padding: 0 18px;
-    border: 1px solid var(--ds-border);
-    border-radius: 12px;
-    background: #fff;
-    color: var(--ds-primary-dark);
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: var(--shadow-sm);
-}
 
-.jor_ben-ds-btn-secondary:hover {
-    color: var(--ds-primary-dark);
-    border-color: var(--ds-primary);
-    background: #f4f9ff;
-}
+    .jor_ben-ds-btn-secondary {
+        height: 46px;
+        padding: 0 18px;
+        border: 1px solid var(--ds-border);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--ds-primary-dark);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .jor_ben-ds-btn-secondary:hover {
+        color: var(--ds-primary-dark);
+        border-color: var(--ds-primary);
+        background: #f4f9ff;
+    }
 </style>
 
 <main class="jor_ben-page">
@@ -941,7 +940,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
         <div class="jor_ben-title">
             <h1>
                 Beneficiarios de la jornada
-              
+
             </h1>
             <!-- <p>
                 Jornada:
@@ -959,17 +958,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
             </div>
 
             <div class="jor_ben-divider"></div>
-                    <?php if (in_array('1', array_map('strval', $pesquisas_jornada ?? []), true)): ?>
-    <a href="<?= site_url('jornadas/carga-masiva-antropometria/plantilla') ?>" class="jor_ben-ds-btn-secondary">
-        <i class="bi bi-download"></i>
-        Plantilla antropometria
-    </a>
-
-    <button type="button" class="jor_ben-ds-btn-secondary" data-bs-toggle="modal" data-bs-target="#modalCargaAntropometria">
-        <i class="bi bi-upload"></i>
-        Cargar antropometria
-    </button>
-<?php endif; ?>
+ 
             <a href="<?= site_url('jornadas/' . $jornada_id . '/beneficiarios/buscar') ?>" class="jor_ben-ds-btn-primary">
                 <i class="bi bi-plus-lg"></i>
                 Registrar Beneficiarios
@@ -1050,9 +1039,9 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                             <li>
                                 <a class="dropdown-item" href="<?= base_url("beneficiarios/editar/{$b['id_beneficiario']}?jornada_id={$jornada_id}") ?>">
-    <i class="bi bi-pencil-square me-2 text-primary"></i>
-    Editar perfil
-</a>
+                                    <i class="bi bi-pencil-square me-2 text-primary"></i>
+                                    Editar perfil
+                                </a>
                             </li>
 
                             <li>
@@ -1065,35 +1054,35 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
                                 </a>
                             </li>
                             <?php if ($tieneEvaluaciones): ?>
-    <li>
-        <a
-            class="dropdown-item"
-            href="#"
-            onclick="abrirModalPesquisa(<?= (int) $b['id_beneficiario'] ?>, <?= $nombreCompletoJs ?>, <?= $evalsJs ?>, 'editar'); return false;">
-            <i class="bi bi-pencil-square me-2 text-warning"></i>
-            Editar evaluación
-        </a>
-    </li>
-<?php endif; ?>
+                                <li>
+                                    <a
+                                        class="dropdown-item"
+                                        href="#"
+                                        onclick="abrirModalPesquisa(<?= (int) $b['id_beneficiario'] ?>, <?= $nombreCompletoJs ?>, <?= $evalsJs ?>, 'editar'); return false;">
+                                        <i class="bi bi-pencil-square me-2 text-warning"></i>
+                                        Editar evaluación
+                                    </a>
+                                </li>
+                            <?php endif; ?>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
 
                             <?php if (! $tieneEvaluaciones): ?>
-    <li>
-        <hr class="dropdown-divider">
-    </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
 
-    <li>
-        <a
-            class="dropdown-item text-danger"
-            href="#"
-            onclick="confirmarRemover(<?= (int) $jornada_id ?>, <?= (int) $b['id_beneficiario'] ?>); return false;">
-            <i class="bi bi-x-circle me-2"></i>
-            Retirar de la jornada
-        </a>
-    </li>
-<?php endif; ?>
+                                <li>
+                                    <a
+                                        class="dropdown-item text-danger"
+                                        href="#"
+                                        onclick="confirmarRemover(<?= (int) $jornada_id ?>, <?= (int) $b['id_beneficiario'] ?>); return false;">
+                                        <i class="bi bi-x-circle me-2"></i>
+                                        Retirar de la jornada
+                                    </a>
+                                </li>
+                            <?php endif; ?>
                         </ul>
                     </div>
 
@@ -1302,40 +1291,7 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
     </div>
 </aside>
 
-<div class="modal fade" id="modalCargaAntropometria" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content" style="border-radius:18px; overflow:hidden;">
-            <div class="modal-header" style="background:#101a61;color:#fff;">
-                <h6 class="modal-title">
-                    <i class="bi bi-upload me-2"></i>
-                    Carga masiva de antropometria
-                </h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-
-            <form id="formCargaAntropometria" enctype="multipart/form-data">
-                <?= csrf_field() ?>
-                <div class="modal-body">
-                    <div class="alert alert-info mb-3">
-                        Sube la plantilla de antropometria. El sistema validara ID DigiSalud, asociacion a la jornada, fecha, peso, talla y cintura obligatoria en adultos.
-                    </div>
-
-                    <input type="file" name="archivo_excel" id="archivoAntropometria" class="form-control" accept=".xlsx,.xls" required>
-
-                    <div id="resultadoCargaAntropometria" class="mt-3"></div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-upload"></i>
-                        Procesar archivo
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+ 
 <?= $this->endSection() ?>
 
 
@@ -1564,79 +1520,79 @@ if (!empty($jornada['pesquisas']) && empty($pesquisas_jornada)) {
      * pid > 0   → Desde icono de pesquisa → Navega directo al formulario.
      */
     /**
- * modo = 'crear'  -> muestra solo pesquisas pendientes
- * modo = 'editar' -> muestra solo pesquisas evaluadas
- */
-function abrirModalPesquisa(bid, nombre, pesquisasEvaluadas, modo) {
-    const evaluadas = (pesquisasEvaluadas || []).map(String);
+     * modo = 'crear'  -> muestra solo pesquisas pendientes
+     * modo = 'editar' -> muestra solo pesquisas evaluadas
+     */
+    function abrirModalPesquisa(bid, nombre, pesquisasEvaluadas, modo) {
+        const evaluadas = (pesquisasEvaluadas || []).map(String);
 
-    document.getElementById('modalNombreBenef').textContent = nombre;
+        document.getElementById('modalNombreBenef').textContent = nombre;
 
-    const titulo = document.getElementById('modalPesquisaTitulo');
-    const texto = document.getElementById('modalPesquisaTexto');
-    const lista = document.getElementById('listaPesquisasModal');
+        const titulo = document.getElementById('modalPesquisaTitulo');
+        const texto = document.getElementById('modalPesquisaTexto');
+        const lista = document.getElementById('listaPesquisasModal');
 
-    const esEdicion = modo === 'editar';
+        const esEdicion = modo === 'editar';
 
-    titulo.textContent = esEdicion ? 'Editar evaluación:' : 'Evaluar:';
-    texto.textContent = esEdicion
-        ? 'Selecciona la pesquisa registrada que deseas editar:'
-        : 'Selecciona la pesquisa pendiente a evaluar:';
+        titulo.textContent = esEdicion ? 'Editar evaluación:' : 'Evaluar:';
+        texto.textContent = esEdicion ?
+            'Selecciona la pesquisa registrada que deseas editar:' :
+            'Selecciona la pesquisa pendiente a evaluar:';
 
-    lista.innerHTML = '';
+        lista.innerHTML = '';
 
-    pesquisasJornada.forEach(function(p) {
-        const pesquisaId = String(p);
-        const info = pesquisaInfo[pesquisaId];
-        if (!info) return;
+        pesquisasJornada.forEach(function(p) {
+            const pesquisaId = String(p);
+            const info = pesquisaInfo[pesquisaId];
+            if (!info) return;
 
-        const yaEvaluada = evaluadas.includes(pesquisaId);
+            const yaEvaluada = evaluadas.includes(pesquisaId);
 
-        if (!esEdicion && yaEvaluada) return;
-        if (esEdicion && !yaEvaluada) return;
+            if (!esEdicion && yaEvaluada) return;
+            if (esEdicion && !yaEvaluada) return;
 
-        const li = document.createElement('li');
-        li.innerHTML =
-            '<img src="' + info.img + '" alt="' + info.nombre + '">' +
-            '<div>' +
-            '<div class="jor_ben-pesq-name">' + info.nombre + '</div>' +
-            '<div class="jor_ben-pesq-desc">' + info.desc + '</div>' +
-            '</div>';
+            const li = document.createElement('li');
+            li.innerHTML =
+                '<img src="' + info.img + '" alt="' + info.nombre + '">' +
+                '<div>' +
+                '<div class="jor_ben-pesq-name">' + info.nombre + '</div>' +
+                '<div class="jor_ben-pesq-desc">' + info.desc + '</div>' +
+                '</div>';
 
-        li.addEventListener('click', function() {
-            const modalEl = document.getElementById('modalPesquisa');
-            const modalInst = bootstrap.Modal.getInstance(modalEl);
-            if (modalInst) modalInst.hide();
+            li.addEventListener('click', function() {
+                const modalEl = document.getElementById('modalPesquisa');
+                const modalInst = bootstrap.Modal.getInstance(modalEl);
+                if (modalInst) modalInst.hide();
 
-            navegarFormulario(bid, pesquisaId);
+                navegarFormulario(bid, pesquisaId);
+            });
+
+            lista.appendChild(li);
         });
 
-        lista.appendChild(li);
-    });
+        if (!lista.children.length) {
+            const li = document.createElement('li');
+            li.style.cursor = 'default';
+            li.innerHTML =
+                '<div>' +
+                '<div class="jor_ben-pesq-name">' + (esEdicion ? 'Sin evaluaciones registradas' : 'Sin pesquisas pendientes') + '</div>' +
+                '<div class="jor_ben-pesq-desc">' + (esEdicion ? 'Este beneficiario no tiene evaluaciones para editar.' : 'Todas las pesquisas de esta jornada ya fueron evaluadas.') + '</div>' +
+                '</div>';
+            lista.appendChild(li);
+        }
 
-    if (!lista.children.length) {
-        const li = document.createElement('li');
-        li.style.cursor = 'default';
-        li.innerHTML =
-            '<div>' +
-            '<div class="jor_ben-pesq-name">' + (esEdicion ? 'Sin evaluaciones registradas' : 'Sin pesquisas pendientes') + '</div>' +
-            '<div class="jor_ben-pesq-desc">' + (esEdicion ? 'Este beneficiario no tiene evaluaciones para editar.' : 'Todas las pesquisas de esta jornada ya fueron evaluadas.') + '</div>' +
-            '</div>';
-        lista.appendChild(li);
+        const modalPesquisa = new bootstrap.Modal(document.getElementById('modalPesquisa'));
+        modalPesquisa.show();
     }
 
-    const modalPesquisa = new bootstrap.Modal(document.getElementById('modalPesquisa'));
-    modalPesquisa.show();
-}
+    function abrirEvaluar(bid, pid, nombre) {
+        if (String(pid) === '0') {
+            abrirModalPesquisa(bid, nombre, [], 'crear');
+            return;
+        }
 
-function abrirEvaluar(bid, pid, nombre) {
-    if (String(pid) === '0') {
-        abrirModalPesquisa(bid, nombre, [], 'crear');
-        return;
+        navegarFormulario(bid, String(pid));
     }
-
-    navegarFormulario(bid, String(pid));
-}
 
     function navegarFormulario(beneficiarioId, tipoPesquisaId) {
         window.location.href = '<?= base_url("evaluaciones/formulario") ?>/' + beneficiarioId + '/' + tipoPesquisaId + '?jornada_id=' + jornadaId;
@@ -1747,104 +1703,12 @@ function abrirEvaluar(bid, pid, nombre) {
         });
     }
 
-    const formCargaAntropometria = document.getElementById('formCargaAntropometria');
+ 
 
-if (formCargaAntropometria) {
-    formCargaAntropometria.addEventListener('submit', function (event) {
-        event.preventDefault();
+    
 
-        const resultado = document.getElementById('resultadoCargaAntropometria');
-        const formData = new FormData(formCargaAntropometria);
+ 
 
-        resultado.innerHTML = '<div class="alert alert-info">Procesando archivo...</div>';
-
-        fetch(`<?= base_url('jornadas') ?>/${jornadaId}/carga-masiva-antropometria/procesar`, {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (!data.ok) {
-                resultado.innerHTML = `<div class="alert alert-warning">${escapeHtml(data.error || 'No se pudo procesar el archivo.')}</div>`;
-                return;
-            }
-
-            const noExisten = data.no_existen || [];
-            const noAsociados = data.no_asociados || [];
-            const errores = data.errores || [];
-
-            let html = `
-                <div class="alert alert-success">
-                    <strong>Proceso finalizado.</strong><br>
-                    Guardados: ${data.guardados || 0}<br>
-                    Ya evaluados: ${data.ya_evaluados || 0}<br>
-                    No existen: ${noExisten.length}<br>
-                    No asociados a la jornada: ${noAsociados.length}<br>
-                    Errores de validacion: ${errores.length}
-                </div>
-            `;
-
-            html += renderDetalleCargaAntropometria('Beneficiarios no registrados', noExisten, 'warning');
-            html += renderDetalleCargaAntropometria('Beneficiarios no asociados a esta jornada', noAsociados, 'info');
-            html += renderErroresCargaAntropometria(errores);
-
-            if ((data.guardados || 0) > 0) {
-                html += `
-                    <div class="text-end mt-3">
-                        <button type="button" class="btn btn-primary" onclick="window.location.reload()">
-                            Actualizar listado
-                        </button>
-                    </div>
-                `;
-            }
-
-            resultado.innerHTML = html;
-        })
-        .catch(error => {
-            resultado.innerHTML = `<div class="alert alert-danger">${escapeHtml(error.message || 'Error procesando archivo.')}</div>`;
-        });
-    });
-}
-
-function renderDetalleCargaAntropometria(titulo, items, tipo) {
-    if (!items || !items.length) return '';
-
-    return `
-        <div class="alert alert-${tipo}">
-            <strong>${escapeHtml(titulo)}</strong>
-            <ul class="mb-0 mt-2">
-                ${items.map(item => `
-                    <li>
-                        Fila ${escapeHtml(item.fila)} - ${escapeHtml(item.id_digisalud || '')}
-                        ${item.nombre ? ' - ' + escapeHtml(item.nombre) : ''}<br>
-                        <small>${escapeHtml(item.mensaje || '')}</small>
-                    </li>
-                `).join('')}
-            </ul>
-        </div>
-    `;
-}
-
-function renderErroresCargaAntropometria(items) {
-    if (!items || !items.length) return '';
-
-    return `
-        <div class="alert alert-danger">
-            <strong>Errores de validacion</strong>
-            <ul class="mb-0 mt-2">
-                ${items.map(item => `
-                    <li>
-                        Fila ${escapeHtml(item.fila)} - ${escapeHtml(item.id_digisalud || '')}
-                        ${item.nombre ? ' - ' + escapeHtml(item.nombre) : ''}<br>
-                        <small>${(item.errores || []).map(escapeHtml).join(', ')}</small>
-                    </li>
-                `).join('')}
-            </ul>
-        </div>
-    `;
-}
+  
 </script>
 <?= $this->endSection() ?>

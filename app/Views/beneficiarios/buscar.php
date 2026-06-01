@@ -769,9 +769,7 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
                         <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/create") ?>" class="benef-find-ds-btn benef-find-ds-btn-outline">
                             + Registrar nuevo
                         </a>
-                        <button type="button" class="benef-find-ds-btn benef-find-ds-btn-outline" onclick="abrirModalCargaMasiva()" style="background:#101A61;color:#fff;border-color:#101A61;">
-                            <i class="bi bi-upload"></i> Carga masiva
-                        </button>
+                  
                     </div>
 
                     <div id="resultados"></div>
@@ -786,9 +784,7 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
                                 <a href="<?= base_url("jornadas/$jornada_id/beneficiarios/create") ?>" class="benef-find-ds-btn benef-find-ds-btn-primary">
                                     + Registrar nuevo beneficiario
                                 </a>
-                                <button type="button" class="benef-find-ds-btn benef-find-ds-btn-outline" onclick="abrirModalCargaMasiva()" style="background:#101A61;color:#fff;border-color:#101A61;">
-                            <i class="bi bi-upload"></i> Carga masiva
-                        </button>
+                              
                             </div>
                         </div>
                     </div>
@@ -895,138 +891,16 @@ if (empty($pesquisas_jornada) && !empty($jornada['pesquisas'])) {
     </section>
 
   
-<!-- MODAL CARGA MASIVA -->
-<div id="modalCargaMasiva" class="cm-overlay" style="display:none;">
-    <div class="cm-modal">
-        <div class="cm-header">
-            <div>
-                <h2 class="cm-title">
-                    <i class="bi bi-file-earmark-spreadsheet"></i>
-                    Carga masiva de beneficiarios
-                </h2>
-                <p class="cm-subtitle">Importa beneficiarios desde un archivo Excel (.xlsx)</p>
-            </div>
-            <button type="button" class="cm-close" onclick="cerrarModalCargaMasiva()">&times;</button>
-        </div>
  
-        <div class="cm-body">
-            <!-- Paso 1: Descargar plantilla -->
-            <div class="cm-step">
-                <div class="cm-step-number">1</div>
-                <div class="cm-step-content">
-                    <h3>Descarga la plantilla</h3>
-                    <p>Usa esta plantilla para llenar los datos de los beneficiarios. Incluye instrucciones y validaciones.</p>
-                    <a href="<?= base_url('jornadas/carga-masiva/plantilla') ?>" class="cm-btn-download">
-                        <i class="bi bi-download"></i> Descargar plantilla
-                    </a>
-                </div>
-            </div>
- 
-            <!-- Paso 2: Subir archivo -->
-            <div class="cm-step">
-                <div class="cm-step-number">2</div>
-                <div class="cm-step-content">
-                    <h3>Sube el archivo completado</h3>
-                    <p>Arrastra el archivo o haz clic para seleccionarlo. Máximo 500 registros, 5 MB.</p>
- 
-                    <div class="cm-dropzone" id="cmDropzone" onclick="document.getElementById('cmFileInput').click()">
-                        <div class="cm-dropzone-icon">
-                            <i class="bi bi-cloud-arrow-up"></i>
-                        </div>
-                        <p class="cm-dropzone-text">Arrastra tu archivo aquí o <span style="color:#3695F5;text-decoration:underline;cursor:pointer;">selecciona</span></p>
-                        <p class="cm-dropzone-hint">.xlsx o .xls — máx. 5 MB</p>
-                        <input type="file" id="cmFileInput" accept=".xlsx,.xls" style="display:none;" onchange="archivoSeleccionado(this)">
-                    </div>
- 
-                    <div id="cmFileInfo" style="display:none;" class="cm-file-info">
-                        <i class="bi bi-file-earmark-excel-fill" style="color:#198754;font-size:1.3rem;"></i>
-                        <span id="cmFileName"></span>
-                        <span id="cmFileSize" style="color:#888;font-size:.8rem;"></span>
-                        <button type="button" class="cm-file-remove" onclick="removerArchivo()">
-                            <i class="bi bi-x-circle"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
- 
-            <!-- Paso 3: Procesar -->
-            <div class="cm-step">
-                <div class="cm-step-number">3</div>
-                <div class="cm-step-content">
-                    <h3>Importar beneficiarios</h3>
-                    <p>Se validarán los datos y se crearán los beneficiarios automáticamente asociados a esta jornada.</p>
-                </div>
-            </div>
- 
-            <!-- Resultado -->
-            <div id="cmResultado" style="display:none;"></div>
-        </div>
- 
-        <div class="cm-footer">
-            <button type="button" class="cm-btn-secondary" onclick="cerrarModalCargaMasiva()">Cancelar</button>
-            <button type="button" class="cm-btn-primary" id="cmBtnProcesar" onclick="procesarCargaMasiva()" disabled>
-                <i class="bi bi-upload"></i> Importar beneficiarios
-            </button>
-        </div>
-    </div>
-</div>  
 </div>
 
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
 <script>
-// ══════ Carga Masiva JS ══════
-let cmArchivoSeleccionado = null;
  
-function abrirModalCargaMasiva() {
-    document.getElementById('modalCargaMasiva').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
  
-function cerrarModalCargaMasiva() {
-    document.getElementById('modalCargaMasiva').style.display = 'none';
-    document.body.style.overflow = '';
-    // Reset
-    removerArchivo();
-    document.getElementById('cmResultado').style.display = 'none';
-    document.getElementById('cmResultado').innerHTML = '';
-    document.getElementById('cmBtnProcesar').disabled = true;
-}
  
-function archivoSeleccionado(input) {
-    const file = input.files[0];
-    if (!file) return;
- 
-    const ext = file.name.split('.').pop().toLowerCase();
-    if (!['xlsx', 'xls'].includes(ext)) {
-        Swal.fire('Formato inválido', 'Solo se permiten archivos .xlsx o .xls', 'error');
-        input.value = '';
-        return;
-    }
- 
-    if (file.size > 5 * 1024 * 1024) {
-        Swal.fire('Archivo muy grande', 'El archivo no debe superar 5 MB.', 'error');
-        input.value = '';
-        return;
-    }
- 
-    cmArchivoSeleccionado = file;
-    document.getElementById('cmFileName').textContent = file.name;
-    document.getElementById('cmFileSize').textContent = '(' + (file.size / 1024).toFixed(1) + ' KB)';
-    document.getElementById('cmFileInfo').style.display = 'flex';
-    document.getElementById('cmDropzone').style.display = 'none';
-    document.getElementById('cmBtnProcesar').disabled = false;
-    document.getElementById('cmResultado').style.display = 'none';
-}
- 
-function removerArchivo() {
-    cmArchivoSeleccionado = null;
-    document.getElementById('cmFileInput').value = '';
-    document.getElementById('cmFileInfo').style.display = 'none';
-    document.getElementById('cmDropzone').style.display = '';
-    document.getElementById('cmBtnProcesar').disabled = true;
-}
  
 // Drag & drop
 document.addEventListener('DOMContentLoaded', function() {
@@ -1048,105 +922,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
  
-function procesarCargaMasiva() {
-    if (!cmArchivoSeleccionado) return;
  
-    const jornadaId = <?= (int)$jornada_id ?>;
-    const formData = new FormData();
-    formData.append('archivo_excel', cmArchivoSeleccionado);
-    formData.append('<?= csrf_token() ?>', '<?= csrf_hash() ?>');
- 
-    // Mostrar loader
-    const resultado = document.getElementById('cmResultado');
-    resultado.style.display = 'block';
-    resultado.innerHTML = `
-        <div class="cm-loader">
-            <div class="cm-spinner"></div>
-            <div>
-                <strong>Procesando archivo...</strong>
-                <p style="margin:0;font-size:.8rem;color:#666;">Esto puede tomar unos segundos dependiendo de la cantidad de registros.</p>
-            </div>
-        </div>
-    `;
- 
-    document.getElementById('cmBtnProcesar').disabled = true;
- 
-    fetch(`<?= base_url('jornadas') ?>/${jornadaId}/carga-masiva/procesar`, {
-        method: 'POST',
-        body: formData,
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (!data.ok && data.error) {
-            resultado.innerHTML = `
-                <div class="cm-result-box cm-result-error">
-                    <p class="cm-result-title"><i class="bi bi-x-circle-fill" style="color:#c62828;"></i> Error</p>
-                    <p style="font-size:.85rem;margin:0;">${escHtml(data.error)}</p>
-                </div>
-            `;
-            document.getElementById('cmBtnProcesar').disabled = false;
-            return;
-        }
- 
-        let tipo = 'cm-result-success';
-        let icono = '<i class="bi bi-check-circle-fill" style="color:#2e7d32;"></i>';
-        let titulo = 'Importación completada';
- 
-        if (data.errores && data.errores.length > 0) {
-            tipo = data.insertados > 0 || data.asociados > 0 ? 'cm-result-warning' : 'cm-result-error';
-            icono = data.insertados > 0 || data.asociados > 0
-                ? '<i class="bi bi-exclamation-triangle-fill" style="color:#f9a825;"></i>'
-                : '<i class="bi bi-x-circle-fill" style="color:#c62828;"></i>';
-            titulo = data.insertados > 0 || data.asociados > 0
-                ? 'Importación parcial'
-                : 'No se importó ningún registro';
-        }
- 
-        let errHtml = '';
-        if (data.errores && data.errores.length > 0) {
-            errHtml = '<div class="cm-errores-list">';
-            data.errores.forEach(e => {
-                errHtml += `<div><strong>Fila ${e.fila}</strong> (${escHtml(e.nombre)}): ${escHtml(e.errores.join(', '))}</div>`;
-            });
-            errHtml += '</div>';
-        }
- 
-        resultado.innerHTML = `
-            <div class="cm-result-box ${tipo}">
-                <p class="cm-result-title">${icono} ${titulo}</p>
-                <div class="cm-result-stats">
-                    <span><i class="bi bi-person-plus-fill" style="color:#2e7d32;"></i> Nuevos: <strong>${data.insertados}</strong></span>
-                    <span><i class="bi bi-link-45deg" style="color:#1565c0;"></i> Asociados: <strong>${data.asociados}</strong></span>
-                    <span><i class="bi bi-people-fill" style="color:#888;"></i> Ya en jornada: <strong>${data.duplicados_jornada}</strong></span>
-                    <span><i class="bi bi-exclamation-circle" style="color:#c62828;"></i> Con errores: <strong>${data.errores ? data.errores.length : 0}</strong></span>
-                </div>
-                ${errHtml}
-            </div>
-        `;
- 
-        // Si hubo éxito, habilitar recargar
-        if (data.insertados > 0 || data.asociados > 0) {
-            resultado.innerHTML += `
-                <div style="text-align:center;margin-top:1rem;">
-                    <button type="button" class="cm-btn-primary" onclick="location.reload()" style="margin:0 auto;">
-                        <i class="bi bi-arrow-clockwise"></i> Recargar página
-                    </button>
-                </div>
-            `;
-        } else {
-            document.getElementById('cmBtnProcesar').disabled = false;
-        }
-    })
-    .catch(err => {
-        resultado.innerHTML = `
-            <div class="cm-result-box cm-result-error">
-                <p class="cm-result-title"><i class="bi bi-x-circle-fill" style="color:#c62828;"></i> Error de conexión</p>
-                <p style="font-size:.85rem;margin:0;">No se pudo conectar con el servidor. Inténtalo de nuevo.</p>
-            </div>
-        `;
-        document.getElementById('cmBtnProcesar').disabled = false;
-    });
-}
  
 function escHtml(str) {
     const d = document.createElement('div');

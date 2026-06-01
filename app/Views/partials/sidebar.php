@@ -54,7 +54,17 @@ $currentUri = uri_string();
                 <span class="ds-arrow">›</span>
             </a>
         </li>
-
+        <?php if (in_array($rolActual, [1, 2, 3, 4], true)) : ?>
+            <li class="ds-menu-item <?= str_starts_with($currentUri, 'cargas-masivas') ? 'active' : '' ?>">
+                <a href="<?= site_url('cargas-masivas') ?>">
+                    <span class="ds-icon ds-icon-blue">
+                        <i class="bi bi-cloud-arrow-up" style="font-size:20px;"></i>
+                    </span>
+                    <span>Carga masiva</span>
+                    <span class="ds-arrow">›</span>
+                </a>
+            </li>
+        <?php endif; ?>
         <?php if (in_array($rolActual, [1, 2, 3, 4, 5, 6, 7], true)) : ?>
             <li class="ds-menu-item <?= str_starts_with($currentUri, 'usuarios') ? 'active' : '' ?>">
                 <a href="<?= site_url('usuarios') ?>">
