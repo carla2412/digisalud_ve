@@ -703,10 +703,7 @@ $avatarColors = [
       </div>
 
       <div class="rep_ad_topbar_actions">
-        <div class="rep_ad_update_info">
-          <i class="bi bi-calendar3"></i>
-          Jornada: <?= esc($nombreJornada) ?>
-        </div>
+        
 
         <a href="<?= site_url("jornadas/{$jornadaId}/reportes/antropometria/adultos/excel") ?>" class="rep_ad_btn rep_ad_btn_primary">
           <i class="bi bi-file-earmark-excel-fill"></i>

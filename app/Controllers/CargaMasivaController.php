@@ -11,6 +11,7 @@ use App\Models\PesquisaItemModel;
 use App\Models\PesquisaResultadoModel;
 use App\Models\RolesUsuariosContextoModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 /**
  * Modulo centralizado de cargas masivas.
@@ -315,42 +316,85 @@ class CargaMasivaController extends BaseController
         return $sheet;
     }
 
+    private function limpiarTextoBasico(string $texto): string
+    {
+        return str_replace(
+            ['á', 'é', 'í', 'ó', 'ú', 'ñ', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ñ'],
+            ['a', 'e', 'i', 'o', 'u', 'n', 'A', 'E', 'I', 'O', 'U', 'N'],
+            $texto
+        );
+    }
+
     private function normalizarClaveColumna(string $texto): string
     {
-        $texto = trim(mb_strtolower($texto));
-        $texto = str_replace(['á', 'é', 'í', 'ó', 'ú', 'ñ'], ['a', 'e', 'i', 'o', 'u', 'n'], $texto);
+        $texto = strtolower($this->limpiarTextoBasico($texto));
+
+        // Elimina aclaratorias entre paréntesis:
+        // "sexo * (F o M)" => "sexo *"
+        // "fecha_nacimiento * (01/02/1991)" => "fecha_nacimiento *"
+        $texto = preg_replace('/\s*\([^)]*\)/', '', $texto);
+
+        // Quita asteriscos y saltos de línea
+        $texto = str_replace(['*', "\r", "\n", "\t"], ' ', $texto);
+
+        // Normaliza separadores
         $texto = preg_replace('/[^a-z0-9]+/', '_', $texto);
+
         return trim((string) $texto, '_');
     }
 
     private function mapearEncabezados($sheet): array
     {
-        $highestColumn = $sheet->getHighestColumn();
-        $highestIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+        $highestIndex = Coordinate::columnIndexFromString($sheet->getHighestColumn());
         $map = [];
 
         for ($col = 1; $col <= $highestIndex; $col++) {
-            $value = trim((string) $sheet->getCellByColumnAndRow($col, 1)->getValue());
+            $colLetter = Coordinate::stringFromColumnIndex($col);
+            $value = trim((string) $sheet->getCell($colLetter . '1')->getValue());
+
             if ($value === '') {
                 continue;
             }
+
             $map[$this->normalizarClaveColumna($value)] = $col;
         }
 
         return $map;
     }
 
-    private function valorPorAlias($sheet, array $headers, int $fila, array $aliases): string
+    private function buscarColumnaPorAlias(array $headers, array $aliases): ?int
     {
         foreach ($aliases as $alias) {
-            $key = $this->normalizarClaveColumna($alias);
-            if (isset($headers[$key])) {
-                return trim((string) $sheet->getCellByColumnAndRow($headers[$key], $fila)->getFormattedValue());
+            $aliasKey = $this->normalizarClaveColumna($alias);
+
+            foreach ($headers as $headerKey => $col) {
+                if (
+                    $headerKey === $aliasKey ||
+                    str_starts_with($headerKey, $aliasKey . '_') ||
+                    str_contains($headerKey, '_' . $aliasKey)
+                ) {
+                    return (int) $col;
+                }
             }
         }
 
-        return '';
+        return null;
     }
+
+    private function valorPorAlias($sheet, array $headers, int $fila, array $aliases): string
+    {
+        $col = $this->buscarColumnaPorAlias($headers, $aliases);
+
+        if ($col === null) {
+            return '';
+        }
+
+        $colLetter = Coordinate::stringFromColumnIndex($col);
+
+        return trim((string) $sheet->getCell($colLetter . $fila)->getFormattedValue());
+    }
+
+
 
     private function filaVaciaBeneficiario(array $data): bool
     {
@@ -362,7 +406,28 @@ class CargaMasivaController extends BaseController
 
         return true;
     }
+    private function normalizarNombrePersona(?string $texto): string
+    {
+        $texto = trim((string) $texto);
+        $texto = preg_replace('/\s+/', ' ', $texto);
 
+        return mb_strtoupper($texto, 'UTF-8');
+    }
+
+    private function normalizarTextoParaIdDigi(?string $texto): string
+    {
+        $texto = trim((string) $texto);
+
+        $texto = str_replace(
+            ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ü', 'Ñ'],
+            ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'A', 'E', 'I', 'O', 'U', 'U', 'N'],
+            $texto
+        );
+
+        $texto = preg_replace('/[^A-Za-z]/', '', $texto);
+
+        return strtoupper($texto);
+    }
     private function procesarBeneficiarios(int $jornadaId)
     {
         $excel = $this->validarYLeerExcel();
@@ -395,15 +460,9 @@ class CargaMasivaController extends BaseController
         ];
 
         $faltantes = [];
+
         foreach ($requeridos as $campo => $aliases) {
-            $existe = false;
-            foreach ($aliases as $alias) {
-                if (isset($headers[$this->normalizarClaveColumna($alias)])) {
-                    $existe = true;
-                    break;
-                }
-            }
-            if (! $existe) {
+            if ($this->buscarColumnaPorAlias($headers, $aliases) === null) {
                 $faltantes[] = $campo;
             }
         }
@@ -441,13 +500,21 @@ class CargaMasivaController extends BaseController
                 'pais_nacimiento' => $this->valorPorAlias($sheet, $headers, $fila, $requeridos['pais_nacimiento']),
                 'telefono' => $this->valorPorAlias($sheet, $headers, $fila, ['telefono', 'teléfono', 'celular']),
                 'correo' => $this->valorPorAlias($sheet, $headers, $fila, ['correo', 'email', 'correo electronico']),
-                'pais' => $this->valorPorAlias($sheet, $headers, $fila, ['pais', 'pais residencia', 'pais donde vive']),
+                'pais_residencia' => $this->valorPorAlias($sheet, $headers, $fila, [
+                    'pais_residencia',
+                    'pais residencia',
+                    'pais_residencia_opcional',
+                    'pais residencia opcional',
+                    'pais donde vive',
+                ]),
                 'estado' => $this->valorPorAlias($sheet, $headers, $fila, ['estado']),
                 'municipio' => $this->valorPorAlias($sheet, $headers, $fila, ['municipio']),
                 'parroquia' => $this->valorPorAlias($sheet, $headers, $fila, ['parroquia']),
                 'ciudad' => $this->valorPorAlias($sheet, $headers, $fila, ['ciudad_localidad', 'ciudad localidad', 'ciudad', 'localidad']),
                 'detalle' => $this->valorPorAlias($sheet, $headers, $fila, ['detalle', 'detalle sector casa punto de referencia', 'sector casa punto de referencia', 'direccion detalle']),
             ];
+            $data['nombres'] = $this->normalizarNombrePersona($data['nombres']);
+            $data['apellidos'] = $this->normalizarNombrePersona($data['apellidos']);
 
             if ($this->filaVaciaBeneficiario($data)) {
                 continue;
@@ -502,16 +569,21 @@ class CargaMasivaController extends BaseController
 
                 if (! $beneficiario) {
                     $direccionId = null;
-                    $tieneDireccion = $data['pais'] !== '' || $data['estado'] !== '' || $data['municipio'] !== '' || $data['parroquia'] !== '' || $data['ciudad'] !== '' || $data['detalle'] !== '';
+                    $tieneDireccion = $data['pais_residencia'] !== ''
+                        || $data['estado'] !== ''
+                        || $data['municipio'] !== ''
+                        || $data['parroquia'] !== ''
+                        || $data['ciudad'] !== ''
+                        || $data['detalle'] !== '';
 
                     if ($tieneDireccion) {
                         $direccionId = $dirModel->insert([
-                            'pais' => $data['pais'] !== '' ? $data['pais'] : null,
-                            'estado' => $data['estado'] !== '' ? $data['estado'] : null,
+                            'pais'      => $data['pais_residencia'] !== '' ? $data['pais_residencia'] : null,
+                            'estado'    => $data['estado'] !== '' ? $data['estado'] : null,
                             'municipio' => $data['municipio'] !== '' ? $data['municipio'] : null,
                             'parroquia' => $data['parroquia'] !== '' ? $data['parroquia'] : null,
-                            'ciudad' => $data['ciudad'] !== '' ? $data['ciudad'] : null,
-                            'detalle' => $data['detalle'] !== '' ? $data['detalle'] : null,
+                            'ciudad'    => $data['ciudad'] !== '' ? $data['ciudad'] : null,
+                            'detalle'   => $data['detalle'] !== '' ? $data['detalle'] : null,
                         ], true);
                     }
 
@@ -651,22 +723,40 @@ class CargaMasivaController extends BaseController
         return preg_replace('/\D/', '', $fecha);
     }
 
-    private function construirIdDigi(?string $paisNacimiento, ?string $sexo, ?string $nombres, ?string $apellidos, ?string $fechaNacimiento): string
-    {
-        $pais = $this->normalizarTextoId($paisNacimiento ?: 'VE');
+    private function construirIdDigi(
+        ?string $paisNacimiento,
+        ?string $sexo,
+        ?string $nombres,
+        ?string $apellidos,
+        ?string $fechaNacimiento
+    ): string {
+        $pais = $this->normalizarTextoParaIdDigi($paisNacimiento ?: 'VE');
         $pais = substr($pais !== '' ? $pais : 'VE', 0, 2);
+
         $sexo = strtoupper(substr($sexo ?: 'M', 0, 1));
 
         $partesNombres = $this->limpiarPartesNombre($nombres);
         $partesApellidos = $this->limpiarPartesNombre($apellidos);
 
-        $primerNombre = substr($this->normalizarTextoId($partesNombres[0] ?? ''), 0, 3);
-        $segundoNombre = isset($partesNombres[1]) ? substr($this->normalizarTextoId($partesNombres[1]), 0, 1) : '';
-        $primerApellido = substr($this->normalizarTextoId($partesApellidos[0] ?? ''), 0, 3);
-        $segundoApellido = isset($partesApellidos[1]) ? substr($this->normalizarTextoId($partesApellidos[1]), 0, 1) : '';
+        $primerNombre = substr($this->normalizarTextoParaIdDigi($partesNombres[0] ?? ''), 0, 3);
+        $segundoNombre = isset($partesNombres[1])
+            ? substr($this->normalizarTextoParaIdDigi($partesNombres[1]), 0, 1)
+            : '';
+
+        $primerApellido = substr($this->normalizarTextoParaIdDigi($partesApellidos[0] ?? ''), 0, 3);
+        $segundoApellido = isset($partesApellidos[1])
+            ? substr($this->normalizarTextoParaIdDigi($partesApellidos[1]), 0, 1)
+            : '';
+
         $fecha = $this->normalizarFechaIdDigi($fechaNacimiento ?: '2000-01-01');
 
-        return $pais . $sexo . $primerNombre . $segundoNombre . $primerApellido . $segundoApellido . $fecha;
+        return $pais
+            . $sexo
+            . $primerNombre
+            . $segundoNombre
+            . $primerApellido
+            . $segundoApellido
+            . $fecha;
     }
 
     private function procesarAntropometria(int $jornadaId)
@@ -722,7 +812,7 @@ class CargaMasivaController extends BaseController
             'grupo_edad_reporte',
         ];
 
-        $faltantes = array_values(array_filter($codigosNecesarios, static fn ($codigo) => ! isset($itemsPorCodigo[$codigo])));
+        $faltantes = array_values(array_filter($codigosNecesarios, static fn($codigo) => ! isset($itemsPorCodigo[$codigo])));
 
         if (! empty($faltantes)) {
             @unlink($tempPath);

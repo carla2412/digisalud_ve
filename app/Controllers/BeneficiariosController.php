@@ -521,11 +521,11 @@ class BeneficiariosController extends BaseController
         $partesNombres   = $this->limpiarPartesNombre($nombres);
         $partesApellidos = $this->limpiarPartesNombre($apellidos);
 
-        $primerNombre   = strtoupper(substr($partesNombres[0] ?? '', 0, 3));
-        $segundoNombre  = isset($partesNombres[1]) ? strtoupper(substr($partesNombres[1], 0, 1)) : '';
+        $primerNombre   = $this->normalizarTextoParaIdDigi(substr($partesNombres[0] ?? '', 0, 3));
+        $segundoNombre  = isset($partesNombres[1]) ? $this->normalizarTextoParaIdDigi(substr($partesNombres[1], 0, 1)) : '';
 
-        $primerApellido  = strtoupper(substr($partesApellidos[0] ?? '', 0, 3));
-        $segundoApellido = isset($partesApellidos[1]) ? strtoupper(substr($partesApellidos[1], 0, 1)) : '';
+        $primerApellido  = $this->normalizarTextoParaIdDigi(substr($partesApellidos[0] ?? '', 0, 3));
+        $segundoApellido = isset($partesApellidos[1]) ? $this->normalizarTextoParaIdDigi(substr($partesApellidos[1], 0, 1)) : '';
 
         $fecha = $this->normalizarFechaIdDigi($fechaNacimiento ?: '2000-01-01');
 
@@ -537,6 +537,29 @@ class BeneficiariosController extends BaseController
             . $segundoApellido
             . $fecha;
     }
+
+    private function normalizarNombrePersona(?string $texto): string
+{
+    $texto = trim((string) $texto);
+    $texto = preg_replace('/\s+/', ' ', $texto);
+
+    return mb_strtoupper($texto, 'UTF-8');
+}
+
+private function normalizarTextoParaIdDigi(?string $texto): string
+{
+    $texto = trim((string) $texto);
+
+    $texto = str_replace(
+        ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ü', 'Ñ'],
+        ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'A', 'E', 'I', 'O', 'U', 'U', 'N'],
+        $texto
+    );
+
+    $texto = preg_replace('/[^A-Za-z]/', '', $texto);
+
+    return strtoupper($texto);
+}
     /**
      * ════════════════════════════════════════════════════════════════
      * STORE — Guardar nuevo beneficiario y asociarlo a la jornada
@@ -581,7 +604,8 @@ class BeneficiariosController extends BaseController
         // ══════════════════════════════════════
         $sexo = strtoupper(substr($post['sexo'] ?? 'M', 0, 1));
         $fn   = $post['fecha_nacimiento'] ?? '2000-01-01';
-
+        $post['nombres'] = $this->normalizarNombrePersona($post['nombres'] ?? '');
+        $post['apellidos'] = $this->normalizarNombrePersona($post['apellidos'] ?? '');
         $idDigi = $this->construirIdDigi(
             $post['pais_nacimiento'] ?? 'VE',
             $sexo,

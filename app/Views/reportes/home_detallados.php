@@ -264,7 +264,7 @@ if (in_array('6', $pesquisasActivas, true) && !empty($reportesDisponibles['vacun
 
     .rep-subtitle {
         margin: 8px 0 0;
-        color: rgba(255, 255, 255, .82);
+        color: rgba(100, 100, 100, 0.82);
         max-width: 760px;
     }
 
@@ -273,6 +273,7 @@ if (in_array('6', $pesquisasActivas, true) && !empty($reportesDisponibles['vacun
         gap: 10px;
         flex-wrap: wrap;
         margin-top: 18px;
+        color: rgba(100, 100, 100, 0.82);
     }
 
     .rep-pill {
@@ -282,7 +283,7 @@ if (in_array('6', $pesquisasActivas, true) && !empty($reportesDisponibles['vacun
         border-radius: 999px;
         background: rgba(255, 255, 255, .12);
         border: 1px solid rgba(255, 255, 255, .22);
-        color: #fff;
+       color: rgba(100, 100, 100, 0.82);
         padding: 8px 12px;
         font-size: 13px;
     }
@@ -643,7 +644,7 @@ if (in_array('6', $pesquisasActivas, true) && !empty($reportesDisponibles['vacun
                     <h1 class="rep-title">Reportes detallados</h1>
                     <p class="rep-subtitle">
                         Selecciona una pesquisa para consultar sus resultados detallados.
-                        Antropometría se divide por grupo para facilitar la lectura y evitar reportes extensos.
+                       
                     </p>
 
                     <div class="rep-meta">
