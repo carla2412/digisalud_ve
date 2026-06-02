@@ -935,9 +935,7 @@ $avatarColors = [
                   <td><?= esc((string)($index + 1)) ?></td>
                   <td>
                     <div class="rep_ad_name_cell">
-                      <div class="rep_ad_avatar" style="background:<?= esc($avatarColor) ?>">
-                        <?= esc(rep_ad_iniciales($nombreCompleto)) ?>
-                      </div>
+                   
                       <span><?= esc($nombreCompleto ?: '—') ?></span>
                     </div>
                   </td>

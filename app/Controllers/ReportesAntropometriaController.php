@@ -40,14 +40,14 @@ class ReportesAntropometriaController extends BaseController
         'pliegue_subescapular'       => 'pliegue_subescapular',
         'grupo_edad_reporte'         => 'grupo_edad_reporte',
         'clasificacion_imc_talla'    => 'clasificacion_imc_talla',
-        'estado_nutricional_agregado'=> 'estado_nutricional_agregado',
+        'estado_nutricional_agregado' => 'estado_nutricional_agregado',
         'edad_dias_medicion'         => 'edad_dias_medicion',
         'embarazada'                 => 'embarazada',
         'embarazo_fum'               => 'embarazo_fum',
         'embarazo_fecha_eco'         => 'embarazo_fecha_eco',
         'embarazo_semanas_eco'       => 'embarazo_semanas_eco',
         'embarazo_semanas'           => 'embarazo_semanas',
-        'embarazo_imc_pregestacional'=> 'embarazo_imc_pregestacional',
+        'embarazo_imc_pregestacional' => 'embarazo_imc_pregestacional',
         'embarazo_ganancia_kg'       => 'embarazo_ganancia_kg',
         'remision'                   => 'remision',
         'metodo_medicion_talla'      => 'metodo_medicion_talla',
@@ -130,14 +130,19 @@ class ReportesAntropometriaController extends BaseController
             }
 
             $sexo    = strtoupper(trim((string)($fila['sexo'] ?? 'M')));
-            $zpt     = $fila['zpt']   !== null ? (float)$fila['zpt']   : null;
-            $zte     = $fila['zte']   !== null ? (float)$fila['zte']   : null;
-            $zimce   = $fila['zimce'] !== null ? (float)$fila['zimce'] : null;
-            $zpe     = $fila['zpe']   !== null ? (float)$fila['zpe']   : null;
+            $zpt   = ($fila['zpt'] ?? null) !== null && $fila['zpt'] !== '' ? (float)$fila['zpt'] : null;
+            $zte   = ($fila['zte'] ?? null) !== null && $fila['zte'] !== '' ? (float)$fila['zte'] : null;
+            $zimce = ($fila['zimce'] ?? null) !== null && $fila['zimce'] !== '' ? (float)$fila['zimce'] : null;
+            $zpe   = ($fila['zpe'] ?? null) !== null && $fila['zpe'] !== '' ? (float)$fila['zpe'] : null;
 
             [$interp_zimce_zte, $interp_zpt_zte, $clase] = $this->interpretarMenor(
-                $edad_dias, $zpt, $zte, $zimce, $zpe,
-                (float)($fila['peso'] ?? 0), (float)($fila['talla'] ?? 0)
+                $edad_dias,
+                $zpt,
+                $zte,
+                $zimce,
+                $zpe,
+                (float)($fila['peso'] ?? 0),
+                (float)($fila['talla'] ?? 0)
             );
 
             $semaforo[$clase]++;
@@ -232,7 +237,7 @@ class ReportesAntropometriaController extends BaseController
 
     public function exportarExcel(int $jornadaId, string $tipo): void
     {
-        $metodo = match($tipo) {
+        $metodo = match ($tipo) {
             'adultos'     => 'adultos',
             'menores-19'  => 'menores19',
             'embarazadas' => 'embarazadas',
@@ -249,7 +254,7 @@ class ReportesAntropometriaController extends BaseController
         $filas    = $this->obtenerFilasAntropometria($jornadaId, $itemMap);
         $nombre   = $jornada['nombre_jornada'] ?? "Jornada_{$jornadaId}";
 
-        match($tipo) {
+        match ($tipo) {
             'adultos'     => $this->generarExcelAdultos($filas, $nombre, $jornadaId),
             'menores-19'  => $this->generarExcelMenores($filas, $nombre, $jornadaId),
             'embarazadas' => $this->generarExcelEmbarazadas($filas, $nombre, $jornadaId),
@@ -263,7 +268,11 @@ class ReportesAntropometriaController extends BaseController
     // =========================================================================
 
     private function interpretarAdulto(
-        float $imc, float $cintura, float $talla, string $sexo, float $edad_dias
+        float $imc,
+        float $cintura,
+        float $talla,
+        string $sexo,
+        float $edad_dias
     ): array {
         if ($imc <= 0 || $cintura <= 0 || $talla <= 0) {
             return ['Revisar datos', 'gris'];
@@ -362,8 +371,12 @@ class ReportesAntropometriaController extends BaseController
 
     private function interpretarMenor(
         float $edad_dias,
-        ?float $zpt, ?float $zte, ?float $zimce, ?float $zpe,
-        float $peso, float $talla
+        ?float $zpt,
+        ?float $zte,
+        ?float $zimce,
+        ?float $zpe,
+        float $peso,
+        float $talla
     ): array {
         // Interpretación ZIMCE/ZTE (combinada 1)
         $interp1 = $this->interpretarZimceZte($zimce, $zte);
@@ -384,7 +397,7 @@ class ReportesAntropometriaController extends BaseController
         if ($zimce === null || $zte === null) return 'Revisar datos';
 
         // Talla
-        $talla_cat = match(true) {
+        $talla_cat = match (true) {
             $zte < -3.0  => 'Talla muy baja',
             $zte < -2.0  => 'Talla baja',
             $zte <= 3.0  => 'Talla adecuada',
@@ -392,7 +405,7 @@ class ReportesAntropometriaController extends BaseController
         };
 
         // IMC/Edad
-        $imc_cat = match(true) {
+        $imc_cat = match (true) {
             $zimce < -3.0  => 'Desnutrición severa',
             $zimce < -2.0  => 'Desnutrición',
             $zimce < -1.0  => 'Riesgo de desnutrición',
@@ -409,7 +422,7 @@ class ReportesAntropometriaController extends BaseController
     {
         if ($zpt === null || $zte === null) return '';
 
-        $peso_cat = match(true) {
+        $peso_cat = match (true) {
             $zpt < -3.0  => 'Emaciación severa',
             $zpt < -2.0  => 'Emaciación',
             $zpt < -1.0  => 'Riesgo de emaciación',
@@ -418,7 +431,7 @@ class ReportesAntropometriaController extends BaseController
             default      => 'Sobrepeso/talla',
         };
 
-        $talla_cat = match(true) {
+        $talla_cat = match (true) {
             $zte < -3.0 => 'talla muy baja',
             $zte < -2.0 => 'talla baja',
             $zte <= 3.0 => 'talla adecuada',
@@ -486,7 +499,7 @@ class ReportesAntropometriaController extends BaseController
             'Obesidad'       => ['cat' => 'Obesidad',      'total_inf' =>  5.0, 'total_sup' =>  9.0],
         ];
 
-        $clave = match(true) {
+        $clave = match (true) {
             $imc_preg < 18.5                         => 'Bajo peso',
             $imc_preg >= 18.5 && $imc_preg <= 24.9   => 'Peso adecuado',
             $imc_preg > 24.9  && $imc_preg <= 29.9   => 'Sobrepeso',
@@ -508,14 +521,18 @@ class ReportesAntropometriaController extends BaseController
     }
 
     private function calcularSemanasGestacion(
-        string $fum, string $fecha_eco, float $sem_eco, string $fecha_eval
+        string $fum,
+        string $fecha_eco,
+        float $sem_eco,
+        string $fecha_eval
     ): int {
         if ($fum !== '' && $fecha_eval !== '') {
             try {
                 $d1 = new \DateTime($fum);
                 $d2 = new \DateTime($fecha_eval);
                 return (int) floor($d1->diff($d2)->days / 7);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         if ($fecha_eco !== '' && $sem_eco > 0 && $fecha_eval !== '') {
@@ -524,7 +541,8 @@ class ReportesAntropometriaController extends BaseController
                 $d2 = new \DateTime($fecha_eval);
                 $semDesdeEco = (int) floor($d1->diff($d2)->days / 7);
                 return (int) ($sem_eco + $semDesdeEco);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         return 0;
@@ -551,10 +569,23 @@ class ReportesAntropometriaController extends BaseController
         }
 
         $cabeceras = [
-            'Semáforo', 'Nombre', 'Cédula', 'Sexo', 'Fecha Nacimiento',
-            'Edad', 'Interpretación Combinada', 'Peso (kg)', 'Peso (lb)',
-            'Talla (cm)', 'IMC', 'C. Cintura (cm)',
-            'Edema', 'Remisión', 'Observaciones', 'Fecha Evaluación', 'Jornada',
+            'Semáforo',
+            'Nombre',
+            'Cédula',
+            'Sexo',
+            'Fecha Nacimiento',
+            'Edad',
+            'Interpretación Combinada',
+            'Peso (kg)',
+            'Peso (lb)',
+            'Talla (cm)',
+            'IMC',
+            'C. Cintura (cm)',
+            'Edema',
+            'Remisión',
+            'Observaciones',
+            'Fecha Evaluación',
+            'Jornada',
         ];
 
         $filas_xls = [['REPORTE ANTROPOMÉTRICO — ADULTOS'], ['Jornada: ' . $nombreJornada], [], $cabeceras];
@@ -601,12 +632,30 @@ class ReportesAntropometriaController extends BaseController
         }
 
         $cabeceras = [
-            'Semáforo', 'Nombre', 'Cédula', 'Sexo', 'Fecha Nacimiento',
-            'Edad antro.', 'Interp. ZIMCE/ZTE', 'Interp. ZPT/ZTE',
-            'Peso (kg)', 'Peso (lb)', 'Talla (cm)', 'IMC',
-            'ZP/T', 'ZP/E', 'ZT/E', 'ZIMC/E',
-            'Circ. Cefálica', 'Circ. Brazo Izq', 'Pliegue Tricipital', 'Pliegue Subescapular',
-            'Edema', 'Remisión', 'Observaciones', 'Fecha Evaluación',
+            'Semáforo',
+            'Nombre',
+            'Cédula',
+            'Sexo',
+            'Fecha Nacimiento',
+            'Edad antro.',
+            'Interp. ZIMCE/ZTE',
+            'Interp. ZPT/ZTE',
+            'Peso (kg)',
+            'Peso (lb)',
+            'Talla (cm)',
+            'IMC',
+            'ZP/T',
+            'ZP/E',
+            'ZT/E',
+            'ZIMC/E',
+            'Circ. Cefálica',
+            'Circ. Brazo Izq',
+            'Pliegue Tricipital',
+            'Pliegue Subescapular',
+            'Edema',
+            'Remisión',
+            'Observaciones',
+            'Fecha Evaluación',
         ];
 
         $filas_xls = [['REPORTE ANTROPOMÉTRICO — MENORES DE 19 AÑOS'], ['Jornada: ' . $nombreJornada], [], $cabeceras];
@@ -664,11 +713,26 @@ class ReportesAntropometriaController extends BaseController
         }
 
         $cabeceras = [
-            'Semáforo', 'Nombre', 'Cédula', 'Sexo', 'Fecha Nacimiento', 'Edad',
-            'Interpretación Combinada', 'Peso (kg)', 'Peso (lb)', 'Talla (cm)',
-            'Peso Pregestacional', 'FUM', 'Fecha Eco', 'Semanas Gestación',
-            'Ganancia Peso (kg)', 'IMC Pregestacional',
-            'Especialista', 'Edema', 'Observaciones', 'Fecha Evaluación',
+            'Semáforo',
+            'Nombre',
+            'Cédula',
+            'Sexo',
+            'Fecha Nacimiento',
+            'Edad',
+            'Interpretación Combinada',
+            'Peso (kg)',
+            'Peso (lb)',
+            'Talla (cm)',
+            'Peso Pregestacional',
+            'FUM',
+            'Fecha Eco',
+            'Semanas Gestación',
+            'Ganancia Peso (kg)',
+            'IMC Pregestacional',
+            'Especialista',
+            'Edema',
+            'Observaciones',
+            'Fecha Evaluación',
         ];
 
         $filas_xls = [['REPORTE ANTROPOMÉTRICO — EMBARAZADAS'], ['Jornada: ' . $nombreJornada], [], $cabeceras];
@@ -818,10 +882,17 @@ class ReportesAntropometriaController extends BaseController
         }
 
         // Combinar
+        // Combinar
         $filas = [];
+
+        $defaults = array_fill_keys(array_values(self::ITEM_CODIGOS), null);
+
         foreach ($evaluaciones as $eval) {
-            $evalId  = $eval['id_evaluacion'];
-            $vals    = $resultadosMap[$evalId] ?? [];
+            $evalId = $eval['id_evaluacion'];
+
+            // Garantiza que todas las claves esperadas existan,
+            // aunque la evaluación no tenga ese resultado guardado.
+            $vals = array_merge($defaults, $resultadosMap[$evalId] ?? []);
 
             // Calcular edad_dias_medicion si no está en resultados
             $edadDias = isset($vals['edad_dias_medicion']) && $vals['edad_dias_medicion'] !== null
@@ -879,9 +950,9 @@ class ReportesAntropometriaController extends BaseController
 
     private function etiquetaSemaforo(string $clase): string
     {
-        return match($clase) {
+        return match ($clase) {
             'verde'   => 'Verde',
-            'amarillo'=> 'Amarillo',
+            'amarillo' => 'Amarillo',
             'naranja' => 'Naranja',
             'rojo'    => 'Rojo',
             default   => 'Gris',
