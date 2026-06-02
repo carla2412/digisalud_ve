@@ -96,7 +96,7 @@
                             Individual
                         </a>
                         <a class="ds-link" href="<?= site_url('registro/organizacion') ?>">
-                            Institucional
+                            Organización
                         </a>
                     </div>
                 </div>

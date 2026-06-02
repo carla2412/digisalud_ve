@@ -2,8 +2,6 @@
 
  <?= $this->section('css') ?>
  <style>
-     
-
      .org_create-page-wrapper {
          max-width: 1180px;
          margin: 0 auto;
@@ -493,7 +491,7 @@
                          <select id="categoria" name="categoria" class="form-select" required>
                              <option value="">Selecciona una categoría...</option>
                              <?php
-                                $categorias = ['Educativa','Pública', 'Privada', 'Programa Nutricional','Social', 'Educativa', 'Salud', 'Comunitaria'];
+                                $categorias = ['Educativa', 'Pública', 'Privada', 'Programa Nutricional', 'Social', 'Educativa', 'Salud', 'Comunitaria'];
                                 foreach ($categorias as $c): ?>
                                  <option value="<?= esc($c) ?>" <?= old('categoria') === $c ? 'selected' : '' ?>>
                                      <?= esc($c) ?>
@@ -501,7 +499,10 @@
                              <?php endforeach; ?>
                          </select>
                      </div>
-
+                    <div class="org_create-section-title  mt">
+                     <i class="bi bi-telephone"></i>
+                     <h2>Contacto</h2>
+                    </div> <br>
                      <div class="org_create-form-group">
                          <label for="responsable_nombres">Nombre del responsable <span>*</span></label>
                          <div class="org_create-input-icon">
@@ -527,27 +528,46 @@
                                  required>
                          </div>
                      </div>
-                                    <div class="org_create-form-group">
-    <label for="responsable_fecha_nacimiento">Fecha de nacimiento del responsable <span>*</span></label>
-    <div class="org_create-input-icon">
-        <i class="bi bi-calendar-date"></i>
-        <input type="date"
-            id="responsable_fecha_nacimiento"
-            name="responsable_fecha_nacimiento"
-            value="<?= old('responsable_fecha_nacimiento') ?>"
-            required>
-    </div>
-</div>
+                     <div class="org_create-form-group">
+                         <label for="responsable_fecha_nacimiento">Fecha de nacimiento del responsable <span>*</span></label>
+                         <div class="org_create-input-icon">
+                             <i class="bi bi-calendar-date"></i>
+                             <input type="date"
+                                 id="responsable_fecha_nacimiento"
+                                 name="responsable_fecha_nacimiento"
+                                 value="<?= old('responsable_fecha_nacimiento') ?>"
+                                 required>
+                         </div>
+                     </div>
 
-<div class="org_create-form-group">
-    <label for="responsable_genero">Género del responsable <span>*</span></label>
-    <select id="responsable_genero" name="responsable_genero" class="form-select" required>
-        <option value="">Selecciona...</option>
-        <option value="M" <?= old('responsable_genero') === 'M' ? 'selected' : '' ?>>Masculino</option>
-        <option value="F" <?= old('responsable_genero') === 'F' ? 'selected' : '' ?>>Femenino</option>
-      
-    </select>
-</div>
+                     <div class="org_create-form-group">
+                         <label for="responsable_genero">Género del responsable <span>*</span></label>
+                         <select id="responsable_genero" name="responsable_genero" class="form-select" required>
+                             <option value="">Selecciona...</option>
+                             <option value="M" <?= old('responsable_genero') === 'M' ? 'selected' : '' ?>>Masculino</option>
+                             <option value="F" <?= old('responsable_genero') === 'F' ? 'selected' : '' ?>>Femenino</option>
+
+                         </select>
+                     </div>
+                       <div class="org_create-form-group">
+                         <label for="telefono">Teléfono <span>*</span></label>
+                         <div class="org_create-input-icon">
+                             <i class="bi bi-telephone"></i>
+                             <input type="text" id="telefono" name="telefono"
+                                 value="<?= old('telefono') ?>"
+                                 placeholder="Ej: 412 0000000" required>
+                         </div>
+                     </div>
+
+                     <div class="org_create-form-group">
+                         <label for="email">Correo electrónico <span>*</span></label>
+                         <div class="org_create-input-icon">
+                             <i class="bi bi-envelope"></i>
+                             <input type="email" id="email" name="email"
+                                 value="<?= old('email') ?>"
+                                 placeholder="ejemplo@organizacion.org" required>
+                         </div>
+                     </div>
                      <div class="org_create-form-group">
                          <label for="password">Contraseña <span>*</span></label>
                          <div class="org_create-input-icon">
@@ -574,31 +594,10 @@
                          </div>
                      </div>
                  </div>
-                 <div class="org_create-section-title  mt">
-                     <i class="bi bi-telephone"></i>
-                     <h2>Contacto</h2>
-                 </div>
+                 
 
                  <div class="org_create-form-grid">
-                     <div class="org_create-form-group">
-                         <label for="telefono">Teléfono <span>*</span></label>
-                         <div class="org_create-input-icon">
-                             <i class="bi bi-telephone"></i>
-                             <input type="text" id="telefono" name="telefono"
-                                 value="<?= old('telefono') ?>"
-                                 placeholder="Ej: 412 0000000" required>
-                         </div>
-                     </div>
-
-                     <div class="org_create-form-group">
-                         <label for="email">Correo electrónico <span>*</span></label>
-                         <div class="org_create-input-icon">
-                             <i class="bi bi-envelope"></i>
-                             <input type="email" id="email" name="email"
-                                 value="<?= old('email') ?>"
-                                 placeholder="ejemplo@organizacion.org" required>
-                         </div>
-                     </div>
+                   
                  </div>
 
                  <div class="org_create-action-card org_create-address-card">

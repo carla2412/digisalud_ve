@@ -30,8 +30,8 @@
     }
 
     .benef-topbar {
-        background: var(--benef-light);
-        border: 1px solid var(--benef-border-2);
+        background: #fff;
+        border: 1px solid #fff;
         border-radius: 18px;
         padding: 20px 24px;
         display: flex;
@@ -39,6 +39,7 @@
         align-items: center;
         gap: 20px;
         margin-bottom: 24px;
+        box-shadow: 0 10px 30px rgba(15, 40, 82, .08);
     }
 
     .benef-title {
@@ -74,11 +75,12 @@
     }
 
     .benef-filterbar {
-        background: var(--benef-soft);
-        border: 1px solid #d6eafe;
+        background: #fff;
+        border: 1px solid #ffffff;
         border-radius: 22px;
         padding: 24px;
         margin-bottom: 28px;
+        box-shadow:  0 10px 30px rgba(15, 40, 82, .08);
     }
 
     .benef-filter-head {
@@ -282,8 +284,16 @@
     .benef-help-list li::before {
         content: "✓";
         color: var(--benef-success);
-        font-weight: 900;
+        font-weight: 600;
         flex: 0 0 auto;
+    }
+.benef-results  {
+        
+        background: #fff;
+        border: 1px solid var(--benef-border-2);
+        border-radius: 20px;
+        margin:auto   0;
+        padding: 24px;
     }
 
     .benef-results-header {
@@ -292,6 +302,7 @@
         align-items: center;
         gap: 16px;
         margin-bottom: 18px;
+        background: #fff;
     }
 
     .benef-results-title {
@@ -325,7 +336,7 @@
         gap: 8px;
         font-weight: 900;
     }
-
+ 
     .benef-list {
         display: flex;
         flex-direction: column;

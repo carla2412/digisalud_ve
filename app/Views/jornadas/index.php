@@ -22,7 +22,7 @@
 
     .jornada-header h1 {
         font-size: 1.9rem;
-        font-weight: 800;
+        font-weight: 600;
         color: #0b1b3f;
         margin: 0;
     }
@@ -38,7 +38,7 @@
         padding: 15px 28px;
         border-radius: 10px;
         text-decoration: none;
-        font-weight: 700;
+        font-weight: 600;
         box-shadow: 0 10px 18px rgba(0, 102, 255, .25);
     }
 
@@ -103,6 +103,12 @@
         display: flex;
         flex-direction: column;
         gap: 18px;
+         padding: 24px 16px;
+          margin-bottom: 24px;
+        box-shadow: 0 10px 30px rgba(15, 40, 82, .08);
+        background: #fff;
+        border: 1px solid #fff;
+        border-radius: 18px;
     }
 
     .jornada-card {
@@ -110,45 +116,19 @@
         display: flex;
         gap: 28px;
         background: #fff;
-        border-radius: 14px;
+        
         padding: 28px;
-        box-shadow: 0 8px 22px rgba(15, 23, 42, .08);
+      
         overflow: visible;
-    }
 
-    .jornada-card::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 5px;
-        height: 100%;
+           box-shadow: 0 10px 30px rgba(15, 40, 82, .08);
+      
+        border: 1px solid #fff;
+        border-radius: 18px;
     }
-
-    .jornada-card.jornada-active::before {
-        background: #22c55e;
-    }
-
-    .jornada-card.jornada-finished::before {
-        background: #ef4444;
-    }
-
-    .jornada-card-icon {
-        width: 84px;
-        height: 84px;
-        border-radius: 16px;
-        display: grid;
-        place-items: center;
-        font-size: 2rem;
-    }
-
-    .jornada-card-icon.jornada-active {
-        background: #e7f8ee;
-    }
-
-    .jornada-card-icon.jornada-finished {
-        background: #feecec;
-    }
+    
+  
+ 
 
     .jornada-card-body {
         flex: 1;
@@ -219,7 +199,7 @@
     .jornada-status {
         padding: 8px 18px;
         border-radius: 999px;
-        font-weight: 800;
+        font-weight: 600;
         font-size: .85rem;
     }
 
@@ -365,7 +345,7 @@
         background: #fff;
         border-radius: 9px;
         color: #64748b;
-        font-weight: 700;
+        font-weight: 600;
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -520,7 +500,7 @@ $totalPages     = $totalPages ?? 1;
                     $estadoClass  = $jor['status_jor'] == 1 ? 'jornada-active' : ($esFinalizada ? 'jornada-finished' : 'jornada-inactive');
                     ?>
                     <article class="jornada-card <?= $estadoClass ?>">
-                        <div class="jornada-card-icon <?= $estadoClass ?>"></div>
+                         
 
                         <div class="jornada-card-body">
                             <h3><?= esc($jor['nombre_jornada']) ?></h3>

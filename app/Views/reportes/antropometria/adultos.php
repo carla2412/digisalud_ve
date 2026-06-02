@@ -177,12 +177,6 @@ $riesgos = [
     flex-wrap: wrap;
   }
 
-  .rep_ad_update_info {
-    color: var(--rep_ad_muted);
-    font-size: 14px;
-    white-space: nowrap;
-  }
-
   .rep_ad_btn {
     border: 0;
     border-radius: 12px;
@@ -328,12 +322,18 @@ $riesgos = [
     font-weight: 800;
   }
 
-  .rep_ad_risk_summary {
+  .rep_ad_risk_summary,
+  .rep_ad_iom_card,
+  .rep_ad_filters_card,
+  .rep_ad_table_card {
     background: var(--rep_ad_panel);
     border: 1px solid var(--rep_ad_line);
     border-radius: 18px;
-    padding: 16px 18px;
     box-shadow: var(--rep_ad_shadow);
+  }
+
+  .rep_ad_risk_summary {
+    padding: 16px 18px;
     margin-bottom: 18px;
   }
 
@@ -379,13 +379,34 @@ $riesgos = [
     border-radius: 50%;
   }
 
-  .rep_ad_filters_card,
-  .rep_ad_table_card {
-    background: var(--rep_ad_panel);
-    border: 1px solid var(--rep_ad_line);
-    border-radius: 18px;
-    box-shadow: var(--rep_ad_shadow);
+  .rep_ad_iom_card {
+    padding: 16px 20px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
   }
+
+  .rep_ad_iom_card h6 {
+    color: var(--rep_ad_text);
+    font-weight: 800;
+    margin: 0 12px 0 0;
+    white-space: nowrap;
+  }
+
+  .iom-chip {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: .78rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+  }
+
+  .iom-bajo { background: var(--rep_ad_red_soft); color: #991B1B; border-color: #FCA5A5; }
+  .iom-normal { background: var(--rep_ad_green_soft); color: #065F46; border-color: #6EE7B7; }
+  .iom-sobre { background: var(--rep_ad_yellow_soft); color: #78350F; border-color: #FDE68A; }
+  .iom-obesi { background: var(--rep_ad_orange_soft); color: #9A3412; border-color: #FDBA74; }
 
   .rep_ad_filters_card {
     padding: 18px;
@@ -394,7 +415,7 @@ $riesgos = [
 
   .rep_ad_filters_row {
     display: grid;
-    grid-template-columns: 2fr repeat(5, minmax(120px, 1fr)) auto;
+    grid-template-columns: 2fr repeat(4, minmax(120px, 1fr)) auto;
     gap: 14px;
     align-items: end;
   }
@@ -446,6 +467,7 @@ $riesgos = [
     gap: 20px;
     align-items: center;
     border-bottom: 1px solid var(--rep_ad_line);
+    flex-wrap: wrap;
   }
 
   .rep_ad_table_meta {
@@ -494,6 +516,14 @@ $riesgos = [
     min-width: 1320px;
   }
 
+  #tablaMenores {
+    min-width: 1520px;
+  }
+
+  #tablaEmbarazadas {
+    min-width: 1420px;
+  }
+
   .rep_ad_table thead th {
     text-align: left;
     font-size: 13px;
@@ -508,7 +538,7 @@ $riesgos = [
   }
 
   .rep_ad_table thead th small {
-    color: #c9cacd;
+    color: #f4c84a;
     font-size: 12px;
     font-weight: 700;
   }
@@ -525,25 +555,21 @@ $riesgos = [
     background: #fbfdff;
   }
 
-  .rep_ad_name_cell {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 220px;
-  }
-
-  .rep_ad_avatar {
-    width: 32px;
-    height: 32px;
+  .sem-dot {
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    display: grid;
-    place-items: center;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 800;
-    flex-shrink: 0;
+    display: inline-block;
+    margin: 0 auto;
   }
 
+  .sem-dot.verde { background: var(--rep_ad_green); }
+  .sem-dot.amarillo { background: var(--rep_ad_yellow); }
+  .sem-dot.naranja { background: var(--rep_ad_orange); }
+  .sem-dot.rojo { background: var(--rep_ad_red); }
+  .sem-dot.gris { background: var(--rep_ad_gray); }
+
+  .interp-badge,
   .rep_ad_badge {
     display: inline-flex;
     align-items: center;
@@ -555,31 +581,64 @@ $riesgos = [
     font-weight: 800;
     line-height: 1.3;
     min-width: 180px;
+    white-space: normal;
   }
 
+  .interp-verde,
   .rep_ad_badge_verde {
     color: #198c48;
     background: var(--rep_ad_green_soft);
   }
 
+  .interp-amarillo,
   .rep_ad_badge_amarillo {
     color: #9f7a00;
     background: var(--rep_ad_yellow_soft);
   }
 
+  .interp-naranja,
   .rep_ad_badge_naranja {
     color: #b96b14;
     background: var(--rep_ad_orange_soft);
   }
 
+  .interp-rojo,
   .rep_ad_badge_rojo {
     color: #c63e3d;
     background: var(--rep_ad_red_soft);
   }
 
+  .interp-gris,
   .rep_ad_badge_gris {
     color: #66758a;
     background: var(--rep_ad_gray_soft);
+  }
+
+  .zscore-chip {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: .76rem;
+    font-weight: 600;
+  }
+
+  .zs-ok {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  .zs-warn {
+    background: #FEF9C3;
+    color: #78350F;
+  }
+
+  .zs-bad {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  .zs-null {
+    color: #9CA3AF;
   }
 
   .rep_ad_empty {
@@ -849,24 +908,13 @@ $riesgos = [
     </section>
 
     <section class="rep_ad_table_card">
-      <div class="rep_ad_table_top">
-        <div class="rep_ad_table_meta" id="rep_ad_tableMeta">Detalle por beneficiario</div>
-
-        <div class="rep_ad_table_statuses">
-          <span>Estados de interpretación</span>
-          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_green"></i><span>Bajo</span></div>
-          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_yellow"></i><span>Leve</span></div>
-          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_orange"></i><span>Moderado</span></div>
-          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_red"></i><span>Alto</span></div>
-          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_gray"></i><span>Sin datos</span></div>
-        </div>
-      </div>
+       
 
       <div class="rep_ad_table_wrapper">
         <table id="tablaAdultos" class="rep_ad_table">
           <thead>
             <tr>
-              <th>#</th>
+             <th style="width:44px;text-align:center">🚦</th>
               <th>Nombre</th>
               <th>Identificación</th>
               <th>Sexo</th>
@@ -924,7 +972,7 @@ $riesgos = [
              
                 ?>
                 <tr data-risk="<?= esc($clase) ?>" data-sexo="<?= esc($sexo) ?>" data-age="<?= esc($edadGrupo) ?>">
-                  <td><?= esc((string)($index + 1)) ?></td>
+                  <td style="text-align:center"><span class="sem-dot <?= esc($clase) ?>"></span></td>
                   <td><?= esc($nombreCompleto ?: '—') ?></td>
                   <td><?= esc($d['id_digisalud'] ?? '—') ?></td>
                   <td><?= esc($sexo ?: '—') ?></td>
@@ -992,7 +1040,7 @@ $riesgos = [
         return explicitAge;
       }
 
-      const edadText = repAdGetCellText(row, 5);
+      const edadText = repAdGetCellText(row, 6);
       const match = edadText.match(/(\d+)/);
       const years = match ? parseInt(match[1], 10) : 0;
 
@@ -1103,7 +1151,7 @@ $riesgos = [
         responsive: false,
         pageLength: 25,
         lengthChange: false,
-        order: [[6, 'asc']],
+        order: [[7, 'asc']],
         language: {
           url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
           search: '',

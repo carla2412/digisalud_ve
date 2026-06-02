@@ -1,1 +1,1100 @@
-[{"id_meses":"1","p_indicador_genero":"F","p_indicador_denominador":"61","p_indicador_coeficiente_l":"-0,4681","p_indicador_coeficiente_m":"18,2579","p_indicador_coeficiente_s":"0,14295","p_sd0_mediana":"18,258"},{"id_meses":"2","p_indicador_genero":"F","p_indicador_denominador":"62","p_indicador_coeficiente_l":"-0,4711","p_indicador_coeficiente_m":"18,4329","p_indicador_coeficiente_s":"0,1435","p_sd0_mediana":"18,433"},{"id_meses":"3","p_indicador_genero":"F","p_indicador_denominador":"63","p_indicador_coeficiente_l":"-0,4742","p_indicador_coeficiente_m":"18,6073","p_indicador_coeficiente_s":"0,14404","p_sd0_mediana":"18,607"},{"id_meses":"4","p_indicador_genero":"F","p_indicador_denominador":"64","p_indicador_coeficiente_l":"-0,4773","p_indicador_coeficiente_m":"18,7811","p_indicador_coeficiente_s":"0,14459","p_sd0_mediana":"18,781"},{"id_meses":"5","p_indicador_genero":"F","p_indicador_denominador":"65","p_indicador_coeficiente_l":"-0,4803","p_indicador_coeficiente_m":"18,9545","p_indicador_coeficiente_s":"0,14514","p_sd0_mediana":"18,954"},{"id_meses":"6","p_indicador_genero":"F","p_indicador_denominador":"66","p_indicador_coeficiente_l":"-0,4834","p_indicador_coeficiente_m":"19,1276","p_indicador_coeficiente_s":"0,14569","p_sd0_mediana":"19,128"},{"id_meses":"7","p_indicador_genero":"F","p_indicador_denominador":"67","p_indicador_coeficiente_l":"-0,4864","p_indicador_coeficiente_m":"19,3004","p_indicador_coeficiente_s":"0,14624","p_sd0_mediana":"19,3"},{"id_meses":"8","p_indicador_genero":"F","p_indicador_denominador":"68","p_indicador_coeficiente_l":"-0,4894","p_indicador_coeficiente_m":"19,473","p_indicador_coeficiente_s":"0,14679","p_sd0_mediana":"19,473"},{"id_meses":"9","p_indicador_genero":"F","p_indicador_denominador":"69","p_indicador_coeficiente_l":"-0,4924","p_indicador_coeficiente_m":"19,6455","p_indicador_coeficiente_s":"0,14735","p_sd0_mediana":"19,646"},{"id_meses":"10","p_indicador_genero":"F","p_indicador_denominador":"70","p_indicador_coeficiente_l":"-0,4954","p_indicador_coeficiente_m":"19,818","p_indicador_coeficiente_s":"0,1479","p_sd0_mediana":"19,818"},{"id_meses":"11","p_indicador_genero":"F","p_indicador_denominador":"71","p_indicador_coeficiente_l":"-0,4984","p_indicador_coeficiente_m":"19,9908","p_indicador_coeficiente_s":"0,14845","p_sd0_mediana":"19,991"},{"id_meses":"12","p_indicador_genero":"F","p_indicador_denominador":"72","p_indicador_coeficiente_l":"-0,5013","p_indicador_coeficiente_m":"20,1639","p_indicador_coeficiente_s":"0,149","p_sd0_mediana":"20,164"},{"id_meses":"13","p_indicador_genero":"F","p_indicador_denominador":"73","p_indicador_coeficiente_l":"-0,5043","p_indicador_coeficiente_m":"20,3377","p_indicador_coeficiente_s":"0,14955","p_sd0_mediana":"20,338"},{"id_meses":"14","p_indicador_genero":"F","p_indicador_denominador":"74","p_indicador_coeficiente_l":"-0,5072","p_indicador_coeficiente_m":"20,5124","p_indicador_coeficiente_s":"0,1501","p_sd0_mediana":"20,512"},{"id_meses":"15","p_indicador_genero":"F","p_indicador_denominador":"75","p_indicador_coeficiente_l":"-0,51","p_indicador_coeficiente_m":"20,6885","p_indicador_coeficiente_s":"0,15065","p_sd0_mediana":"20,688"},{"id_meses":"16","p_indicador_genero":"F","p_indicador_denominador":"76","p_indicador_coeficiente_l":"-0,5129","p_indicador_coeficiente_m":"20,8661","p_indicador_coeficiente_s":"0,1512","p_sd0_mediana":"20,866"},{"id_meses":"17","p_indicador_genero":"F","p_indicador_denominador":"77","p_indicador_coeficiente_l":"-0,5157","p_indicador_coeficiente_m":"21,0457","p_indicador_coeficiente_s":"0,15175","p_sd0_mediana":"21,046"},{"id_meses":"18","p_indicador_genero":"F","p_indicador_denominador":"78","p_indicador_coeficiente_l":"-0,5185","p_indicador_coeficiente_m":"21,2274","p_indicador_coeficiente_s":"0,1523","p_sd0_mediana":"21,227"},{"id_meses":"19","p_indicador_genero":"F","p_indicador_denominador":"79","p_indicador_coeficiente_l":"-0,5213","p_indicador_coeficiente_m":"21,4113","p_indicador_coeficiente_s":"0,15284","p_sd0_mediana":"21,411"},{"id_meses":"20","p_indicador_genero":"F","p_indicador_denominador":"80","p_indicador_coeficiente_l":"-0,524","p_indicador_coeficiente_m":"21,5979","p_indicador_coeficiente_s":"0,15339","p_sd0_mediana":"21,598"},{"id_meses":"21","p_indicador_genero":"F","p_indicador_denominador":"81","p_indicador_coeficiente_l":"-0,5268","p_indicador_coeficiente_m":"21,7872","p_indicador_coeficiente_s":"0,15393","p_sd0_mediana":"21,787"},{"id_meses":"22","p_indicador_genero":"F","p_indicador_denominador":"82","p_indicador_coeficiente_l":"-0,5294","p_indicador_coeficiente_m":"21,9795","p_indicador_coeficiente_s":"0,15448","p_sd0_mediana":"21,98"},{"id_meses":"23","p_indicador_genero":"F","p_indicador_denominador":"83","p_indicador_coeficiente_l":"-0,5321","p_indicador_coeficiente_m":"22,1751","p_indicador_coeficiente_s":"0,15502","p_sd0_mediana":"22,175"},{"id_meses":"24","p_indicador_genero":"F","p_indicador_denominador":"84","p_indicador_coeficiente_l":"-0,5347","p_indicador_coeficiente_m":"22,374","p_indicador_coeficiente_s":"0,15556","p_sd0_mediana":"22,374"},{"id_meses":"25","p_indicador_genero":"F","p_indicador_denominador":"85","p_indicador_coeficiente_l":"-0,5372","p_indicador_coeficiente_m":"22,5762","p_indicador_coeficiente_s":"0,1561","p_sd0_mediana":"22,576"},{"id_meses":"26","p_indicador_genero":"F","p_indicador_denominador":"86","p_indicador_coeficiente_l":"-0,5398","p_indicador_coeficiente_m":"22,7816","p_indicador_coeficiente_s":"0,15663","p_sd0_mediana":"22,782"},{"id_meses":"27","p_indicador_genero":"F","p_indicador_denominador":"87","p_indicador_coeficiente_l":"-0,5423","p_indicador_coeficiente_m":"22,9904","p_indicador_coeficiente_s":"0,15717","p_sd0_mediana":"22,99"},{"id_meses":"28","p_indicador_genero":"F","p_indicador_denominador":"88","p_indicador_coeficiente_l":"-0,5447","p_indicador_coeficiente_m":"23,2025","p_indicador_coeficiente_s":"0,1577","p_sd0_mediana":"23,202"},{"id_meses":"29","p_indicador_genero":"F","p_indicador_denominador":"89","p_indicador_coeficiente_l":"-0,5471","p_indicador_coeficiente_m":"23,418","p_indicador_coeficiente_s":"0,15823","p_sd0_mediana":"23,418"},{"id_meses":"30","p_indicador_genero":"F","p_indicador_denominador":"90","p_indicador_coeficiente_l":"-0,5495","p_indicador_coeficiente_m":"23,6369","p_indicador_coeficiente_s":"0,15876","p_sd0_mediana":"23,637"},{"id_meses":"31","p_indicador_genero":"F","p_indicador_denominador":"91","p_indicador_coeficiente_l":"-0,5518","p_indicador_coeficiente_m":"23,8593","p_indicador_coeficiente_s":"0,15928","p_sd0_mediana":"23,859"},{"id_meses":"32","p_indicador_genero":"F","p_indicador_denominador":"92","p_indicador_coeficiente_l":"-0,5541","p_indicador_coeficiente_m":"24,0853","p_indicador_coeficiente_s":"0,1598","p_sd0_mediana":"24,085"},{"id_meses":"33","p_indicador_genero":"F","p_indicador_denominador":"93","p_indicador_coeficiente_l":"-0,5563","p_indicador_coeficiente_m":"24,3149","p_indicador_coeficiente_s":"0,16032","p_sd0_mediana":"24,315"},{"id_meses":"34","p_indicador_genero":"F","p_indicador_denominador":"94","p_indicador_coeficiente_l":"-0,5585","p_indicador_coeficiente_m":"24,5482","p_indicador_coeficiente_s":"0,16084","p_sd0_mediana":"24,5482"},{"id_meses":"35","p_indicador_genero":"F","p_indicador_denominador":"95","p_indicador_coeficiente_l":"-0,5606","p_indicador_coeficiente_m":"24,7853","p_indicador_coeficiente_s":"0,16135","p_sd0_mediana":"24,7853"},{"id_meses":"36","p_indicador_genero":"F","p_indicador_denominador":"96","p_indicador_coeficiente_l":"-0,5627","p_indicador_coeficiente_m":"25,0262","p_indicador_coeficiente_s":"0,16186","p_sd0_mediana":"25,026"},{"id_meses":"37","p_indicador_genero":"F","p_indicador_denominador":"97","p_indicador_coeficiente_l":"-0,5647","p_indicador_coeficiente_m":"25,271","p_indicador_coeficiente_s":"0,16237","p_sd0_mediana":"25,271"},{"id_meses":"38","p_indicador_genero":"F","p_indicador_denominador":"98","p_indicador_coeficiente_l":"-0,5667","p_indicador_coeficiente_m":"25,5197","p_indicador_coeficiente_s":"0,16287","p_sd0_mediana":"25,52"},{"id_meses":"39","p_indicador_genero":"F","p_indicador_denominador":"99","p_indicador_coeficiente_l":"-0,5686","p_indicador_coeficiente_m":"25,7721","p_indicador_coeficiente_s":"0,16337","p_sd0_mediana":"25,772"},{"id_meses":"40","p_indicador_genero":"F","p_indicador_denominador":"100","p_indicador_coeficiente_l":"-0,5704","p_indicador_coeficiente_m":"26,0284","p_indicador_coeficiente_s":"0,16386","p_sd0_mediana":"26,028"},{"id_meses":"41","p_indicador_genero":"F","p_indicador_denominador":"101","p_indicador_coeficiente_l":"-0,5722","p_indicador_coeficiente_m":"26,2883","p_indicador_coeficiente_s":"0,16435","p_sd0_mediana":"26,288"},{"id_meses":"42","p_indicador_genero":"F","p_indicador_denominador":"102","p_indicador_coeficiente_l":"-0,574","p_indicador_coeficiente_m":"26,5519","p_indicador_coeficiente_s":"0,16483","p_sd0_mediana":"26,552"},{"id_meses":"43","p_indicador_genero":"F","p_indicador_denominador":"103","p_indicador_coeficiente_l":"-0,5757","p_indicador_coeficiente_m":"26,819","p_indicador_coeficiente_s":"0,16532","p_sd0_mediana":"26,819"},{"id_meses":"44","p_indicador_genero":"F","p_indicador_denominador":"104","p_indicador_coeficiente_l":"-0,5773","p_indicador_coeficiente_m":"27,0896","p_indicador_coeficiente_s":"0,16579","p_sd0_mediana":"27,09"},{"id_meses":"45","p_indicador_genero":"F","p_indicador_denominador":"105","p_indicador_coeficiente_l":"-0,5789","p_indicador_coeficiente_m":"27,3635","p_indicador_coeficiente_s":"0,16626","p_sd0_mediana":"27,364"},{"id_meses":"46","p_indicador_genero":"F","p_indicador_denominador":"106","p_indicador_coeficiente_l":"-0,5804","p_indicador_coeficiente_m":"27,6406","p_indicador_coeficiente_s":"0,16673","p_sd0_mediana":"27,641"},{"id_meses":"47","p_indicador_genero":"F","p_indicador_denominador":"107","p_indicador_coeficiente_l":"-0,5819","p_indicador_coeficiente_m":"27,9208","p_indicador_coeficiente_s":"0,16719","p_sd0_mediana":"27,921"},{"id_meses":"48","p_indicador_genero":"F","p_indicador_denominador":"108","p_indicador_coeficiente_l":"-0,5833","p_indicador_coeficiente_m":"28,204","p_indicador_coeficiente_s":"0,16764","p_sd0_mediana":"28,204"},{"id_meses":"49","p_indicador_genero":"F","p_indicador_denominador":"109","p_indicador_coeficiente_l":"-0,5847","p_indicador_coeficiente_m":"28,4901","p_indicador_coeficiente_s":"0,16809","p_sd0_mediana":"28,49"},{"id_meses":"50","p_indicador_genero":"F","p_indicador_denominador":"110","p_indicador_coeficiente_l":"-0,5859","p_indicador_coeficiente_m":"28,7791","p_indicador_coeficiente_s":"0,16854","p_sd0_mediana":"28,779"},{"id_meses":"51","p_indicador_genero":"F","p_indicador_denominador":"111","p_indicador_coeficiente_l":"-0,5872","p_indicador_coeficiente_m":"29,0711","p_indicador_coeficiente_s":"0,16897","p_sd0_mediana":"29,071"},{"id_meses":"52","p_indicador_genero":"F","p_indicador_denominador":"112","p_indicador_coeficiente_l":"-0,5883","p_indicador_coeficiente_m":"29,3663","p_indicador_coeficiente_s":"0,16941","p_sd0_mediana":"29,366"},{"id_meses":"53","p_indicador_genero":"F","p_indicador_denominador":"113","p_indicador_coeficiente_l":"-0,5895","p_indicador_coeficiente_m":"29,6646","p_indicador_coeficiente_s":"0,16983","p_sd0_mediana":"29,665"},{"id_meses":"54","p_indicador_genero":"F","p_indicador_denominador":"114","p_indicador_coeficiente_l":"-0,5905","p_indicador_coeficiente_m":"29,9663","p_indicador_coeficiente_s":"0,17025","p_sd0_mediana":"29,966"},{"id_meses":"55","p_indicador_genero":"F","p_indicador_denominador":"115","p_indicador_coeficiente_l":"-0,5915","p_indicador_coeficiente_m":"30,2715","p_indicador_coeficiente_s":"0,17066","p_sd0_mediana":"30,272"},{"id_meses":"56","p_indicador_genero":"F","p_indicador_denominador":"116","p_indicador_coeficiente_l":"-0,5925","p_indicador_coeficiente_m":"30,5805","p_indicador_coeficiente_s":"0,17107","p_sd0_mediana":"30,58"},{"id_meses":"57","p_indicador_genero":"F","p_indicador_denominador":"117","p_indicador_coeficiente_l":"-0,5934","p_indicador_coeficiente_m":"30,8934","p_indicador_coeficiente_s":"0,17146","p_sd0_mediana":"30,893"},{"id_meses":"58","p_indicador_genero":"F","p_indicador_denominador":"118","p_indicador_coeficiente_l":"-0,5942","p_indicador_coeficiente_m":"31,2105","p_indicador_coeficiente_s":"0,17186","p_sd0_mediana":"31,21"},{"id_meses":"59","p_indicador_genero":"F","p_indicador_denominador":"119","p_indicador_coeficiente_l":"-0,595","p_indicador_coeficiente_m":"31,5319","p_indicador_coeficiente_s":"0,17224","p_sd0_mediana":"31,532"},{"id_meses":"60","p_indicador_genero":"F","p_indicador_denominador":"120","p_indicador_coeficiente_l":"-0,5958","p_indicador_coeficiente_m":"31,8578","p_indicador_coeficiente_s":"0,17262","p_sd0_mediana":"31,8578"},{"id_meses":"61","p_indicador_genero":"F","p_indicador_denominador":"121","p_indicador_coeficiente_l":"-0,5958","p_indicador_coeficiente_m":"31,8578","p_indicador_coeficiente_s":"0,17262","p_sd0_mediana":"31,8578"},{"id_meses":"62","p_indicador_genero":"M","p_indicador_denominador":"61","p_indicador_coeficiente_l":"-0,2026","p_indicador_coeficiente_m":"18,5057","p_indicador_coeficiente_s":"0,12988","p_sd0_mediana":"18,506"},{"id_meses":"63","p_indicador_genero":"M","p_indicador_denominador":"62","p_indicador_coeficiente_l":"-0,213","p_indicador_coeficiente_m":"18,6802","p_indicador_coeficiente_s":"0,13028","p_sd0_mediana":"18,68"},{"id_meses":"64","p_indicador_genero":"M","p_indicador_denominador":"63","p_indicador_coeficiente_l":"-0,2234","p_indicador_coeficiente_m":"18,8563","p_indicador_coeficiente_s":"0,13067","p_sd0_mediana":"18,856"},{"id_meses":"65","p_indicador_genero":"M","p_indicador_denominador":"64","p_indicador_coeficiente_l":"-0,2338","p_indicador_coeficiente_m":"19,034","p_indicador_coeficiente_s":"0,13105","p_sd0_mediana":"19,034"},{"id_meses":"66","p_indicador_genero":"M","p_indicador_denominador":"65","p_indicador_coeficiente_l":"-0,2443","p_indicador_coeficiente_m":"19,2132","p_indicador_coeficiente_s":"0,13142","p_sd0_mediana":"19,213"},{"id_meses":"67","p_indicador_genero":"M","p_indicador_denominador":"66","p_indicador_coeficiente_l":"-0,2548","p_indicador_coeficiente_m":"19,394","p_indicador_coeficiente_s":"0,13178","p_sd0_mediana":"19,394"},{"id_meses":"68","p_indicador_genero":"M","p_indicador_denominador":"67","p_indicador_coeficiente_l":"-0,2653","p_indicador_coeficiente_m":"19,5765","p_indicador_coeficiente_s":"0,13213","p_sd0_mediana":"19,576"},{"id_meses":"69","p_indicador_genero":"M","p_indicador_denominador":"68","p_indicador_coeficiente_l":"-0,2758","p_indicador_coeficiente_m":"19,7607","p_indicador_coeficiente_s":"0,13246","p_sd0_mediana":"19,761"},{"id_meses":"70","p_indicador_genero":"M","p_indicador_denominador":"69","p_indicador_coeficiente_l":"-0,2864","p_indicador_coeficiente_m":"19,9468","p_indicador_coeficiente_s":"0,13279","p_sd0_mediana":"19,947"},{"id_meses":"71","p_indicador_genero":"M","p_indicador_denominador":"70","p_indicador_coeficiente_l":"-0,2969","p_indicador_coeficiente_m":"20,1344","p_indicador_coeficiente_s":"0,13311","p_sd0_mediana":"20,134"},{"id_meses":"72","p_indicador_genero":"M","p_indicador_denominador":"71","p_indicador_coeficiente_l":"-0,3075","p_indicador_coeficiente_m":"20,3235","p_indicador_coeficiente_s":"0,13342","p_sd0_mediana":"20,324"},{"id_meses":"73","p_indicador_genero":"M","p_indicador_denominador":"72","p_indicador_coeficiente_l":"-0,318","p_indicador_coeficiente_m":"20,5137","p_indicador_coeficiente_s":"0,13372","p_sd0_mediana":"20,514"},{"id_meses":"74","p_indicador_genero":"M","p_indicador_denominador":"73","p_indicador_coeficiente_l":"-0,3285","p_indicador_coeficiente_m":"20,7052","p_indicador_coeficiente_s":"0,13402","p_sd0_mediana":"20,705"},{"id_meses":"75","p_indicador_genero":"M","p_indicador_denominador":"74","p_indicador_coeficiente_l":"-0,339","p_indicador_coeficiente_m":"20,8979","p_indicador_coeficiente_s":"0,13432","p_sd0_mediana":"20,898"},{"id_meses":"76","p_indicador_genero":"M","p_indicador_denominador":"75","p_indicador_coeficiente_l":"-0,3494","p_indicador_coeficiente_m":"21,0918","p_indicador_coeficiente_s":"0,13462","p_sd0_mediana":"21,092"},{"id_meses":"77","p_indicador_genero":"M","p_indicador_denominador":"76","p_indicador_coeficiente_l":"-0,3598","p_indicador_coeficiente_m":"21,287","p_indicador_coeficiente_s":"0,13493","p_sd0_mediana":"21,287"},{"id_meses":"78","p_indicador_genero":"M","p_indicador_denominador":"77","p_indicador_coeficiente_l":"-0,3701","p_indicador_coeficiente_m":"21,4833","p_indicador_coeficiente_s":"0,13523","p_sd0_mediana":"21,483"},{"id_meses":"79","p_indicador_genero":"M","p_indicador_denominador":"78","p_indicador_coeficiente_l":"-0,3804","p_indicador_coeficiente_m":"21,681","p_indicador_coeficiente_s":"0,13554","p_sd0_mediana":"21,681"},{"id_meses":"80","p_indicador_genero":"M","p_indicador_denominador":"79","p_indicador_coeficiente_l":"-0,3906","p_indicador_coeficiente_m":"21,8799","p_indicador_coeficiente_s":"0,13586","p_sd0_mediana":"21,88"},{"id_meses":"81","p_indicador_genero":"M","p_indicador_denominador":"80","p_indicador_coeficiente_l":"-0,4007","p_indicador_coeficiente_m":"22,08","p_indicador_coeficiente_s":"0,13618","p_sd0_mediana":"22,08"},{"id_meses":"82","p_indicador_genero":"M","p_indicador_denominador":"81","p_indicador_coeficiente_l":"-0,4107","p_indicador_coeficiente_m":"22,2813","p_indicador_coeficiente_s":"0,13652","p_sd0_mediana":"22,281"},{"id_meses":"83","p_indicador_genero":"M","p_indicador_denominador":"82","p_indicador_coeficiente_l":"-0,4207","p_indicador_coeficiente_m":"22,4837","p_indicador_coeficiente_s":"0,13686","p_sd0_mediana":"22,484"},{"id_meses":"84","p_indicador_genero":"M","p_indicador_denominador":"83","p_indicador_coeficiente_l":"-0,4305","p_indicador_coeficiente_m":"22,6872","p_indicador_coeficiente_s":"0,13722","p_sd0_mediana":"22,687"},{"id_meses":"85","p_indicador_genero":"M","p_indicador_denominador":"84","p_indicador_coeficiente_l":"-0,4402","p_indicador_coeficiente_m":"22,8915","p_indicador_coeficiente_s":"0,13759","p_sd0_mediana":"22,892"},{"id_meses":"86","p_indicador_genero":"M","p_indicador_denominador":"85","p_indicador_coeficiente_l":"-0,4499","p_indicador_coeficiente_m":"23,0968","p_indicador_coeficiente_s":"0,13797","p_sd0_mediana":"23,097"},{"id_meses":"87","p_indicador_genero":"M","p_indicador_denominador":"86","p_indicador_coeficiente_l":"-0,4594","p_indicador_coeficiente_m":"23,3029","p_indicador_coeficiente_s":"0,13838","p_sd0_mediana":"23,303"},{"id_meses":"88","p_indicador_genero":"M","p_indicador_denominador":"87","p_indicador_coeficiente_l":"-0,4688","p_indicador_coeficiente_m":"23,5101","p_indicador_coeficiente_s":"0,1388","p_sd0_mediana":"23,51"},{"id_meses":"89","p_indicador_genero":"M","p_indicador_denominador":"88","p_indicador_coeficiente_l":"-0,4781","p_indicador_coeficiente_m":"23,7182","p_indicador_coeficiente_s":"0,13923","p_sd0_mediana":"23,718"},{"id_meses":"90","p_indicador_genero":"M","p_indicador_denominador":"89","p_indicador_coeficiente_l":"-0,4873","p_indicador_coeficiente_m":"23,9272","p_indicador_coeficiente_s":"0,13969","p_sd0_mediana":"23,927"},{"id_meses":"91","p_indicador_genero":"M","p_indicador_denominador":"90","p_indicador_coeficiente_l":"-0,4964","p_indicador_coeficiente_m":"24,1371","p_indicador_coeficiente_s":"0,14016","p_sd0_mediana":"24,137"},{"id_meses":"92","p_indicador_genero":"M","p_indicador_denominador":"91","p_indicador_coeficiente_l":"-0,5053","p_indicador_coeficiente_m":"24,3479","p_indicador_coeficiente_s":"0,14065","p_sd0_mediana":"24,348"},{"id_meses":"93","p_indicador_genero":"M","p_indicador_denominador":"92","p_indicador_coeficiente_l":"-0,5142","p_indicador_coeficiente_m":"24,5595","p_indicador_coeficiente_s":"0,14117","p_sd0_mediana":"24,56"},{"id_meses":"94","p_indicador_genero":"M","p_indicador_denominador":"93","p_indicador_coeficiente_l":"-0,5229","p_indicador_coeficiente_m":"24,7722","p_indicador_coeficiente_s":"0,1417","p_sd0_mediana":"24,772"},{"id_meses":"95","p_indicador_genero":"M","p_indicador_denominador":"94","p_indicador_coeficiente_l":"-0,5315","p_indicador_coeficiente_m":"24,9858","p_indicador_coeficiente_s":"0,14226","p_sd0_mediana":"24,986"},{"id_meses":"96","p_indicador_genero":"M","p_indicador_denominador":"95","p_indicador_coeficiente_l":"-0,5399","p_indicador_coeficiente_m":"25,2005","p_indicador_coeficiente_s":"0,14284","p_sd0_mediana":"25,2"},{"id_meses":"97","p_indicador_genero":"M","p_indicador_denominador":"96","p_indicador_coeficiente_l":"-0,5482","p_indicador_coeficiente_m":"25,4163","p_indicador_coeficiente_s":"0,14344","p_sd0_mediana":"25,416"},{"id_meses":"98","p_indicador_genero":"M","p_indicador_denominador":"97","p_indicador_coeficiente_l":"-0,5564","p_indicador_coeficiente_m":"25,6332","p_indicador_coeficiente_s":"0,14407","p_sd0_mediana":"25,633"},{"id_meses":"99","p_indicador_genero":"M","p_indicador_denominador":"98","p_indicador_coeficiente_l":"-0,5644","p_indicador_coeficiente_m":"25,8513","p_indicador_coeficiente_s":"0,14472","p_sd0_mediana":"25,851"},{"id_meses":"100","p_indicador_genero":"M","p_indicador_denominador":"99","p_indicador_coeficiente_l":"-0,5722","p_indicador_coeficiente_m":"26,0706","p_indicador_coeficiente_s":"0,14539","p_sd0_mediana":"26,071"},{"id_meses":"101","p_indicador_genero":"M","p_indicador_denominador":"100","p_indicador_coeficiente_l":"-0,5799","p_indicador_coeficiente_m":"26,2911","p_indicador_coeficiente_s":"0,14608","p_sd0_mediana":"26,291"},{"id_meses":"102","p_indicador_genero":"M","p_indicador_denominador":"101","p_indicador_coeficiente_l":"-0,5873","p_indicador_coeficiente_m":"26,5128","p_indicador_coeficiente_s":"0,14679","p_sd0_mediana":"26,513"},{"id_meses":"103","p_indicador_genero":"M","p_indicador_denominador":"102","p_indicador_coeficiente_l":"-0,5946","p_indicador_coeficiente_m":"26,7358","p_indicador_coeficiente_s":"0,14752","p_sd0_mediana":"26,736"},{"id_meses":"104","p_indicador_genero":"M","p_indicador_denominador":"103","p_indicador_coeficiente_l":"-0,6017","p_indicador_coeficiente_m":"26,9602","p_indicador_coeficiente_s":"0,14828","p_sd0_mediana":"26,96"},{"id_meses":"105","p_indicador_genero":"M","p_indicador_denominador":"104","p_indicador_coeficiente_l":"-0,6085","p_indicador_coeficiente_m":"27,1861","p_indicador_coeficiente_s":"0,14905","p_sd0_mediana":"27,186"},{"id_meses":"106","p_indicador_genero":"M","p_indicador_denominador":"105","p_indicador_coeficiente_l":"-0,6152","p_indicador_coeficiente_m":"27,4137","p_indicador_coeficiente_s":"0,14984","p_sd0_mediana":"27,414"},{"id_meses":"107","p_indicador_genero":"M","p_indicador_denominador":"106","p_indicador_coeficiente_l":"-0,6216","p_indicador_coeficiente_m":"27,6432","p_indicador_coeficiente_s":"0,15066","p_sd0_mediana":"27,643"},{"id_meses":"108","p_indicador_genero":"M","p_indicador_denominador":"107","p_indicador_coeficiente_l":"-0,6278","p_indicador_coeficiente_m":"27,875","p_indicador_coeficiente_s":"0,15149","p_sd0_mediana":"27,875"},{"id_meses":"109","p_indicador_genero":"M","p_indicador_denominador":"108","p_indicador_coeficiente_l":"-0,6337","p_indicador_coeficiente_m":"28,1092","p_indicador_coeficiente_s":"0,15233","p_sd0_mediana":"28,109"},{"id_meses":"110","p_indicador_genero":"M","p_indicador_denominador":"109","p_indicador_coeficiente_l":"-0,6393","p_indicador_coeficiente_m":"28,3459","p_indicador_coeficiente_s":"0,15319","p_sd0_mediana":"28,346"},{"id_meses":"111","p_indicador_genero":"M","p_indicador_denominador":"110","p_indicador_coeficiente_l":"-0,6446","p_indicador_coeficiente_m":"28,5854","p_indicador_coeficiente_s":"0,15406","p_sd0_mediana":"28,585"},{"id_meses":"112","p_indicador_genero":"M","p_indicador_denominador":"111","p_indicador_coeficiente_l":"-0,6496","p_indicador_coeficiente_m":"28,8277","p_indicador_coeficiente_s":"0,15493","p_sd0_mediana":"28,828"},{"id_meses":"113","p_indicador_genero":"M","p_indicador_denominador":"112","p_indicador_coeficiente_l":"-0,6543","p_indicador_coeficiente_m":"29,0731","p_indicador_coeficiente_s":"0,15581","p_sd0_mediana":"29,073"},{"id_meses":"114","p_indicador_genero":"M","p_indicador_denominador":"113","p_indicador_coeficiente_l":"-0,6585","p_indicador_coeficiente_m":"29,3217","p_indicador_coeficiente_s":"0,1567","p_sd0_mediana":"29,322"},{"id_meses":"115","p_indicador_genero":"M","p_indicador_denominador":"114","p_indicador_coeficiente_l":"-0,6624","p_indicador_coeficiente_m":"29,5736","p_indicador_coeficiente_s":"0,1576","p_sd0_mediana":"29,574"},{"id_meses":"116","p_indicador_genero":"M","p_indicador_denominador":"115","p_indicador_coeficiente_l":"-0,6659","p_indicador_coeficiente_m":"29,8289","p_indicador_coeficiente_s":"0,1585","p_sd0_mediana":"29,829"},{"id_meses":"117","p_indicador_genero":"M","p_indicador_denominador":"116","p_indicador_coeficiente_l":"-0,6689","p_indicador_coeficiente_m":"30,0877","p_indicador_coeficiente_s":"0,1594","p_sd0_mediana":"30,088"},{"id_meses":"118","p_indicador_genero":"M","p_indicador_denominador":"117","p_indicador_coeficiente_l":"-0,6714","p_indicador_coeficiente_m":"30,3501","p_indicador_coeficiente_s":"0,16031","p_sd0_mediana":"30,35"},{"id_meses":"119","p_indicador_genero":"M","p_indicador_denominador":"118","p_indicador_coeficiente_l":"-0,6735","p_indicador_coeficiente_m":"30,616","p_indicador_coeficiente_s":"0,16122","p_sd0_mediana":"30,616"},{"id_meses":"120","p_indicador_genero":"M","p_indicador_denominador":"119","p_indicador_coeficiente_l":"-0,6752","p_indicador_coeficiente_m":"30,8854","p_indicador_coeficiente_s":"0,16213","p_sd0_mediana":"30,885"},{"id_meses":"121","p_indicador_genero":"M","p_indicador_denominador":"120","p_indicador_coeficiente_l":"-0,6764","p_indicador_coeficiente_m":"31,1586","p_indicador_coeficiente_s":"0,16305","p_sd0_mediana":"31,159"},{"id_meses":"122","p_indicador_genero":"M","p_indicador_denominador":"121","p_indicador_coeficiente_l":"-0,6764","p_indicador_coeficiente_m":"31,1586","p_indicador_coeficiente_s":"0,16305","p_sd0_mediana":"31,159"}]
+[
+    {
+        "id_meses": "1",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "61",
+        "p_indicador_coeficiente_l": "-0,4681",
+        "p_indicador_coeficiente_m": "18,2579",
+        "p_indicador_coeficiente_s": "0,14295",
+        "p_sd0_mediana": "18,258"
+    },
+    {
+        "id_meses": "2",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "62",
+        "p_indicador_coeficiente_l": "-0,4711",
+        "p_indicador_coeficiente_m": "18,4329",
+        "p_indicador_coeficiente_s": "0,1435",
+        "p_sd0_mediana": "18,433"
+    },
+    {
+        "id_meses": "3",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "63",
+        "p_indicador_coeficiente_l": "-0,4742",
+        "p_indicador_coeficiente_m": "18,6073",
+        "p_indicador_coeficiente_s": "0,14404",
+        "p_sd0_mediana": "18,607"
+    },
+    {
+        "id_meses": "4",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "64",
+        "p_indicador_coeficiente_l": "-0,4773",
+        "p_indicador_coeficiente_m": "18,7811",
+        "p_indicador_coeficiente_s": "0,14459",
+        "p_sd0_mediana": "18,781"
+    },
+    {
+        "id_meses": "5",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "65",
+        "p_indicador_coeficiente_l": "-0,4803",
+        "p_indicador_coeficiente_m": "18,9545",
+        "p_indicador_coeficiente_s": "0,14514",
+        "p_sd0_mediana": "18,954"
+    },
+    {
+        "id_meses": "6",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "66",
+        "p_indicador_coeficiente_l": "-0,4834",
+        "p_indicador_coeficiente_m": "19,1276",
+        "p_indicador_coeficiente_s": "0,14569",
+        "p_sd0_mediana": "19,128"
+    },
+    {
+        "id_meses": "7",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "67",
+        "p_indicador_coeficiente_l": "-0,4864",
+        "p_indicador_coeficiente_m": "19,3004",
+        "p_indicador_coeficiente_s": "0,14624",
+        "p_sd0_mediana": "19,3"
+    },
+    {
+        "id_meses": "8",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "68",
+        "p_indicador_coeficiente_l": "-0,4894",
+        "p_indicador_coeficiente_m": "19,473",
+        "p_indicador_coeficiente_s": "0,14679",
+        "p_sd0_mediana": "19,473"
+    },
+    {
+        "id_meses": "9",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "69",
+        "p_indicador_coeficiente_l": "-0,4924",
+        "p_indicador_coeficiente_m": "19,6455",
+        "p_indicador_coeficiente_s": "0,14735",
+        "p_sd0_mediana": "19,646"
+    },
+    {
+        "id_meses": "10",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "70",
+        "p_indicador_coeficiente_l": "-0,4954",
+        "p_indicador_coeficiente_m": "19,818",
+        "p_indicador_coeficiente_s": "0,1479",
+        "p_sd0_mediana": "19,818"
+    },
+    {
+        "id_meses": "11",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "71",
+        "p_indicador_coeficiente_l": "-0,4984",
+        "p_indicador_coeficiente_m": "19,9908",
+        "p_indicador_coeficiente_s": "0,14845",
+        "p_sd0_mediana": "19,991"
+    },
+    {
+        "id_meses": "12",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "72",
+        "p_indicador_coeficiente_l": "-0,5013",
+        "p_indicador_coeficiente_m": "20,1639",
+        "p_indicador_coeficiente_s": "0,149",
+        "p_sd0_mediana": "20,164"
+    },
+    {
+        "id_meses": "13",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "73",
+        "p_indicador_coeficiente_l": "-0,5043",
+        "p_indicador_coeficiente_m": "20,3377",
+        "p_indicador_coeficiente_s": "0,14955",
+        "p_sd0_mediana": "20,338"
+    },
+    {
+        "id_meses": "14",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "74",
+        "p_indicador_coeficiente_l": "-0,5072",
+        "p_indicador_coeficiente_m": "20,5124",
+        "p_indicador_coeficiente_s": "0,1501",
+        "p_sd0_mediana": "20,512"
+    },
+    {
+        "id_meses": "15",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "75",
+        "p_indicador_coeficiente_l": "-0,51",
+        "p_indicador_coeficiente_m": "20,6885",
+        "p_indicador_coeficiente_s": "0,15065",
+        "p_sd0_mediana": "20,688"
+    },
+    {
+        "id_meses": "16",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "76",
+        "p_indicador_coeficiente_l": "-0,5129",
+        "p_indicador_coeficiente_m": "20,8661",
+        "p_indicador_coeficiente_s": "0,1512",
+        "p_sd0_mediana": "20,866"
+    },
+    {
+        "id_meses": "17",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "77",
+        "p_indicador_coeficiente_l": "-0,5157",
+        "p_indicador_coeficiente_m": "21,0457",
+        "p_indicador_coeficiente_s": "0,15175",
+        "p_sd0_mediana": "21,046"
+    },
+    {
+        "id_meses": "18",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "78",
+        "p_indicador_coeficiente_l": "-0,5185",
+        "p_indicador_coeficiente_m": "21,2274",
+        "p_indicador_coeficiente_s": "0,1523",
+        "p_sd0_mediana": "21,227"
+    },
+    {
+        "id_meses": "19",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "79",
+        "p_indicador_coeficiente_l": "-0,5213",
+        "p_indicador_coeficiente_m": "21,4113",
+        "p_indicador_coeficiente_s": "0,15284",
+        "p_sd0_mediana": "21,411"
+    },
+    {
+        "id_meses": "20",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "80",
+        "p_indicador_coeficiente_l": "-0,524",
+        "p_indicador_coeficiente_m": "21,5979",
+        "p_indicador_coeficiente_s": "0,15339",
+        "p_sd0_mediana": "21,598"
+    },
+    {
+        "id_meses": "21",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "81",
+        "p_indicador_coeficiente_l": "-0,5268",
+        "p_indicador_coeficiente_m": "21,7872",
+        "p_indicador_coeficiente_s": "0,15393",
+        "p_sd0_mediana": "21,787"
+    },
+    {
+        "id_meses": "22",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "82",
+        "p_indicador_coeficiente_l": "-0,5294",
+        "p_indicador_coeficiente_m": "21,9795",
+        "p_indicador_coeficiente_s": "0,15448",
+        "p_sd0_mediana": "21,98"
+    },
+    {
+        "id_meses": "23",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "83",
+        "p_indicador_coeficiente_l": "-0,5321",
+        "p_indicador_coeficiente_m": "22,1751",
+        "p_indicador_coeficiente_s": "0,15502",
+        "p_sd0_mediana": "22,175"
+    },
+    {
+        "id_meses": "24",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "84",
+        "p_indicador_coeficiente_l": "-0,5347",
+        "p_indicador_coeficiente_m": "22,374",
+        "p_indicador_coeficiente_s": "0,15556",
+        "p_sd0_mediana": "22,374"
+    },
+    {
+        "id_meses": "25",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "85",
+        "p_indicador_coeficiente_l": "-0,5372",
+        "p_indicador_coeficiente_m": "22,5762",
+        "p_indicador_coeficiente_s": "0,1561",
+        "p_sd0_mediana": "22,576"
+    },
+    {
+        "id_meses": "26",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "86",
+        "p_indicador_coeficiente_l": "-0,5398",
+        "p_indicador_coeficiente_m": "22,7816",
+        "p_indicador_coeficiente_s": "0,15663",
+        "p_sd0_mediana": "22,782"
+    },
+    {
+        "id_meses": "27",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "87",
+        "p_indicador_coeficiente_l": "-0,5423",
+        "p_indicador_coeficiente_m": "22,9904",
+        "p_indicador_coeficiente_s": "0,15717",
+        "p_sd0_mediana": "22,99"
+    },
+    {
+        "id_meses": "28",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "88",
+        "p_indicador_coeficiente_l": "-0,5447",
+        "p_indicador_coeficiente_m": "23,2025",
+        "p_indicador_coeficiente_s": "0,1577",
+        "p_sd0_mediana": "23,202"
+    },
+    {
+        "id_meses": "29",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "89",
+        "p_indicador_coeficiente_l": "-0,5471",
+        "p_indicador_coeficiente_m": "23,418",
+        "p_indicador_coeficiente_s": "0,15823",
+        "p_sd0_mediana": "23,418"
+    },
+    {
+        "id_meses": "30",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "90",
+        "p_indicador_coeficiente_l": "-0,5495",
+        "p_indicador_coeficiente_m": "23,6369",
+        "p_indicador_coeficiente_s": "0,15876",
+        "p_sd0_mediana": "23,637"
+    },
+    {
+        "id_meses": "31",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "91",
+        "p_indicador_coeficiente_l": "-0,5518",
+        "p_indicador_coeficiente_m": "23,8593",
+        "p_indicador_coeficiente_s": "0,15928",
+        "p_sd0_mediana": "23,859"
+    },
+    {
+        "id_meses": "32",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "92",
+        "p_indicador_coeficiente_l": "-0,5541",
+        "p_indicador_coeficiente_m": "24,0853",
+        "p_indicador_coeficiente_s": "0,1598",
+        "p_sd0_mediana": "24,085"
+    },
+    {
+        "id_meses": "33",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "93",
+        "p_indicador_coeficiente_l": "-0,5563",
+        "p_indicador_coeficiente_m": "24,3149",
+        "p_indicador_coeficiente_s": "0,16032",
+        "p_sd0_mediana": "24,315"
+    },
+    {
+        "id_meses": "34",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "94",
+        "p_indicador_coeficiente_l": "-0,5585",
+        "p_indicador_coeficiente_m": "24,5482",
+        "p_indicador_coeficiente_s": "0,16084",
+        "p_sd0_mediana": "24,5482"
+    },
+    {
+        "id_meses": "35",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "95",
+        "p_indicador_coeficiente_l": "-0,5606",
+        "p_indicador_coeficiente_m": "24,7853",
+        "p_indicador_coeficiente_s": "0,16135",
+        "p_sd0_mediana": "24,7853"
+    },
+    {
+        "id_meses": "36",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "96",
+        "p_indicador_coeficiente_l": "-0,5627",
+        "p_indicador_coeficiente_m": "25,0262",
+        "p_indicador_coeficiente_s": "0,16186",
+        "p_sd0_mediana": "25,026"
+    },
+    {
+        "id_meses": "37",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "97",
+        "p_indicador_coeficiente_l": "-0,5647",
+        "p_indicador_coeficiente_m": "25,271",
+        "p_indicador_coeficiente_s": "0,16237",
+        "p_sd0_mediana": "25,271"
+    },
+    {
+        "id_meses": "38",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "98",
+        "p_indicador_coeficiente_l": "-0,5667",
+        "p_indicador_coeficiente_m": "25,5197",
+        "p_indicador_coeficiente_s": "0,16287",
+        "p_sd0_mediana": "25,52"
+    },
+    {
+        "id_meses": "39",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "99",
+        "p_indicador_coeficiente_l": "-0,5686",
+        "p_indicador_coeficiente_m": "25,7721",
+        "p_indicador_coeficiente_s": "0,16337",
+        "p_sd0_mediana": "25,772"
+    },
+    {
+        "id_meses": "40",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "100",
+        "p_indicador_coeficiente_l": "-0,5704",
+        "p_indicador_coeficiente_m": "26,0284",
+        "p_indicador_coeficiente_s": "0,16386",
+        "p_sd0_mediana": "26,028"
+    },
+    {
+        "id_meses": "41",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "101",
+        "p_indicador_coeficiente_l": "-0,5722",
+        "p_indicador_coeficiente_m": "26,2883",
+        "p_indicador_coeficiente_s": "0,16435",
+        "p_sd0_mediana": "26,288"
+    },
+    {
+        "id_meses": "42",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "102",
+        "p_indicador_coeficiente_l": "-0,574",
+        "p_indicador_coeficiente_m": "26,5519",
+        "p_indicador_coeficiente_s": "0,16483",
+        "p_sd0_mediana": "26,552"
+    },
+    {
+        "id_meses": "43",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "103",
+        "p_indicador_coeficiente_l": "-0,5757",
+        "p_indicador_coeficiente_m": "26,819",
+        "p_indicador_coeficiente_s": "0,16532",
+        "p_sd0_mediana": "26,819"
+    },
+    {
+        "id_meses": "44",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "104",
+        "p_indicador_coeficiente_l": "-0,5773",
+        "p_indicador_coeficiente_m": "27,0896",
+        "p_indicador_coeficiente_s": "0,16579",
+        "p_sd0_mediana": "27,09"
+    },
+    {
+        "id_meses": "45",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "105",
+        "p_indicador_coeficiente_l": "-0,5789",
+        "p_indicador_coeficiente_m": "27,3635",
+        "p_indicador_coeficiente_s": "0,16626",
+        "p_sd0_mediana": "27,364"
+    },
+    {
+        "id_meses": "46",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "106",
+        "p_indicador_coeficiente_l": "-0,5804",
+        "p_indicador_coeficiente_m": "27,6406",
+        "p_indicador_coeficiente_s": "0,16673",
+        "p_sd0_mediana": "27,641"
+    },
+    {
+        "id_meses": "47",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "107",
+        "p_indicador_coeficiente_l": "-0,5819",
+        "p_indicador_coeficiente_m": "27,9208",
+        "p_indicador_coeficiente_s": "0,16719",
+        "p_sd0_mediana": "27,921"
+    },
+    {
+        "id_meses": "48",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "108",
+        "p_indicador_coeficiente_l": "-0,5833",
+        "p_indicador_coeficiente_m": "28,204",
+        "p_indicador_coeficiente_s": "0,16764",
+        "p_sd0_mediana": "28,204"
+    },
+    {
+        "id_meses": "49",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "109",
+        "p_indicador_coeficiente_l": "-0,5847",
+        "p_indicador_coeficiente_m": "28,4901",
+        "p_indicador_coeficiente_s": "0,16809",
+        "p_sd0_mediana": "28,49"
+    },
+    {
+        "id_meses": "50",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "110",
+        "p_indicador_coeficiente_l": "-0,5859",
+        "p_indicador_coeficiente_m": "28,7791",
+        "p_indicador_coeficiente_s": "0,16854",
+        "p_sd0_mediana": "28,779"
+    },
+    {
+        "id_meses": "51",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "111",
+        "p_indicador_coeficiente_l": "-0,5872",
+        "p_indicador_coeficiente_m": "29,0711",
+        "p_indicador_coeficiente_s": "0,16897",
+        "p_sd0_mediana": "29,071"
+    },
+    {
+        "id_meses": "52",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "112",
+        "p_indicador_coeficiente_l": "-0,5883",
+        "p_indicador_coeficiente_m": "29,3663",
+        "p_indicador_coeficiente_s": "0,16941",
+        "p_sd0_mediana": "29,366"
+    },
+    {
+        "id_meses": "53",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "113",
+        "p_indicador_coeficiente_l": "-0,5895",
+        "p_indicador_coeficiente_m": "29,6646",
+        "p_indicador_coeficiente_s": "0,16983",
+        "p_sd0_mediana": "29,665"
+    },
+    {
+        "id_meses": "54",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "114",
+        "p_indicador_coeficiente_l": "-0,5905",
+        "p_indicador_coeficiente_m": "29,9663",
+        "p_indicador_coeficiente_s": "0,17025",
+        "p_sd0_mediana": "29,966"
+    },
+    {
+        "id_meses": "55",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "115",
+        "p_indicador_coeficiente_l": "-0,5915",
+        "p_indicador_coeficiente_m": "30,2715",
+        "p_indicador_coeficiente_s": "0,17066",
+        "p_sd0_mediana": "30,272"
+    },
+    {
+        "id_meses": "56",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "116",
+        "p_indicador_coeficiente_l": "-0,5925",
+        "p_indicador_coeficiente_m": "30,5805",
+        "p_indicador_coeficiente_s": "0,17107",
+        "p_sd0_mediana": "30,58"
+    },
+    {
+        "id_meses": "57",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "117",
+        "p_indicador_coeficiente_l": "-0,5934",
+        "p_indicador_coeficiente_m": "30,8934",
+        "p_indicador_coeficiente_s": "0,17146",
+        "p_sd0_mediana": "30,893"
+    },
+    {
+        "id_meses": "58",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "118",
+        "p_indicador_coeficiente_l": "-0,5942",
+        "p_indicador_coeficiente_m": "31,2105",
+        "p_indicador_coeficiente_s": "0,17186",
+        "p_sd0_mediana": "31,21"
+    },
+    {
+        "id_meses": "59",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "119",
+        "p_indicador_coeficiente_l": "-0,595",
+        "p_indicador_coeficiente_m": "31,5319",
+        "p_indicador_coeficiente_s": "0,17224",
+        "p_sd0_mediana": "31,532"
+    },
+    {
+        "id_meses": "60",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "120",
+        "p_indicador_coeficiente_l": "-0,5958",
+        "p_indicador_coeficiente_m": "31,8578",
+        "p_indicador_coeficiente_s": "0,17262",
+        "p_sd0_mediana": "31,8578"
+    },
+    {
+        "id_meses": "61",
+        "p_indicador_genero": "F",
+        "p_indicador_denominador": "121",
+        "p_indicador_coeficiente_l": "-0,5958",
+        "p_indicador_coeficiente_m": "31,8578",
+        "p_indicador_coeficiente_s": "0,17262",
+        "p_sd0_mediana": "31,8578"
+    },
+    {
+        "id_meses": "62",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "61",
+        "p_indicador_coeficiente_l": "-0,2026",
+        "p_indicador_coeficiente_m": "18,5057",
+        "p_indicador_coeficiente_s": "0,12988",
+        "p_sd0_mediana": "18,506"
+    },
+    {
+        "id_meses": "63",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "62",
+        "p_indicador_coeficiente_l": "-0,213",
+        "p_indicador_coeficiente_m": "18,6802",
+        "p_indicador_coeficiente_s": "0,13028",
+        "p_sd0_mediana": "18,68"
+    },
+    {
+        "id_meses": "64",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "63",
+        "p_indicador_coeficiente_l": "-0,2234",
+        "p_indicador_coeficiente_m": "18,8563",
+        "p_indicador_coeficiente_s": "0,13067",
+        "p_sd0_mediana": "18,856"
+    },
+    {
+        "id_meses": "65",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "64",
+        "p_indicador_coeficiente_l": "-0,2338",
+        "p_indicador_coeficiente_m": "19,034",
+        "p_indicador_coeficiente_s": "0,13105",
+        "p_sd0_mediana": "19,034"
+    },
+    {
+        "id_meses": "66",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "65",
+        "p_indicador_coeficiente_l": "-0,2443",
+        "p_indicador_coeficiente_m": "19,2132",
+        "p_indicador_coeficiente_s": "0,13142",
+        "p_sd0_mediana": "19,213"
+    },
+    {
+        "id_meses": "67",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "66",
+        "p_indicador_coeficiente_l": "-0,2548",
+        "p_indicador_coeficiente_m": "19,394",
+        "p_indicador_coeficiente_s": "0,13178",
+        "p_sd0_mediana": "19,394"
+    },
+    {
+        "id_meses": "68",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "67",
+        "p_indicador_coeficiente_l": "-0,2653",
+        "p_indicador_coeficiente_m": "19,5765",
+        "p_indicador_coeficiente_s": "0,13213",
+        "p_sd0_mediana": "19,576"
+    },
+    {
+        "id_meses": "69",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "68",
+        "p_indicador_coeficiente_l": "-0,2758",
+        "p_indicador_coeficiente_m": "19,7607",
+        "p_indicador_coeficiente_s": "0,13246",
+        "p_sd0_mediana": "19,761"
+    },
+    {
+        "id_meses": "70",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "69",
+        "p_indicador_coeficiente_l": "-0,2864",
+        "p_indicador_coeficiente_m": "19,9468",
+        "p_indicador_coeficiente_s": "0,13279",
+        "p_sd0_mediana": "19,947"
+    },
+    {
+        "id_meses": "71",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "70",
+        "p_indicador_coeficiente_l": "-0,2969",
+        "p_indicador_coeficiente_m": "20,1344",
+        "p_indicador_coeficiente_s": "0,13311",
+        "p_sd0_mediana": "20,134"
+    },
+    {
+        "id_meses": "72",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "71",
+        "p_indicador_coeficiente_l": "-0,3075",
+        "p_indicador_coeficiente_m": "20,3235",
+        "p_indicador_coeficiente_s": "0,13342",
+        "p_sd0_mediana": "20,324"
+    },
+    {
+        "id_meses": "73",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "72",
+        "p_indicador_coeficiente_l": "-0,318",
+        "p_indicador_coeficiente_m": "20,5137",
+        "p_indicador_coeficiente_s": "0,13372",
+        "p_sd0_mediana": "20,514"
+    },
+    {
+        "id_meses": "74",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "73",
+        "p_indicador_coeficiente_l": "-0,3285",
+        "p_indicador_coeficiente_m": "20,7052",
+        "p_indicador_coeficiente_s": "0,13402",
+        "p_sd0_mediana": "20,705"
+    },
+    {
+        "id_meses": "75",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "74",
+        "p_indicador_coeficiente_l": "-0,339",
+        "p_indicador_coeficiente_m": "20,8979",
+        "p_indicador_coeficiente_s": "0,13432",
+        "p_sd0_mediana": "20,898"
+    },
+    {
+        "id_meses": "76",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "75",
+        "p_indicador_coeficiente_l": "-0,3494",
+        "p_indicador_coeficiente_m": "21,0918",
+        "p_indicador_coeficiente_s": "0,13462",
+        "p_sd0_mediana": "21,092"
+    },
+    {
+        "id_meses": "77",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "76",
+        "p_indicador_coeficiente_l": "-0,3598",
+        "p_indicador_coeficiente_m": "21,287",
+        "p_indicador_coeficiente_s": "0,13493",
+        "p_sd0_mediana": "21,287"
+    },
+    {
+        "id_meses": "78",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "77",
+        "p_indicador_coeficiente_l": "-0,3701",
+        "p_indicador_coeficiente_m": "21,4833",
+        "p_indicador_coeficiente_s": "0,13523",
+        "p_sd0_mediana": "21,483"
+    },
+    {
+        "id_meses": "79",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "78",
+        "p_indicador_coeficiente_l": "-0,3804",
+        "p_indicador_coeficiente_m": "21,681",
+        "p_indicador_coeficiente_s": "0,13554",
+        "p_sd0_mediana": "21,681"
+    },
+    {
+        "id_meses": "80",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "79",
+        "p_indicador_coeficiente_l": "-0,3906",
+        "p_indicador_coeficiente_m": "21,8799",
+        "p_indicador_coeficiente_s": "0,13586",
+        "p_sd0_mediana": "21,88"
+    },
+    {
+        "id_meses": "81",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "80",
+        "p_indicador_coeficiente_l": "-0,4007",
+        "p_indicador_coeficiente_m": "22,08",
+        "p_indicador_coeficiente_s": "0,13618",
+        "p_sd0_mediana": "22,08"
+    },
+    {
+        "id_meses": "82",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "81",
+        "p_indicador_coeficiente_l": "-0,4107",
+        "p_indicador_coeficiente_m": "22,2813",
+        "p_indicador_coeficiente_s": "0,13652",
+        "p_sd0_mediana": "22,281"
+    },
+    {
+        "id_meses": "83",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "82",
+        "p_indicador_coeficiente_l": "-0,4207",
+        "p_indicador_coeficiente_m": "22,4837",
+        "p_indicador_coeficiente_s": "0,13686",
+        "p_sd0_mediana": "22,484"
+    },
+    {
+        "id_meses": "84",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "83",
+        "p_indicador_coeficiente_l": "-0,4305",
+        "p_indicador_coeficiente_m": "22,6872",
+        "p_indicador_coeficiente_s": "0,13722",
+        "p_sd0_mediana": "22,687"
+    },
+    {
+        "id_meses": "85",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "84",
+        "p_indicador_coeficiente_l": "-0,4402",
+        "p_indicador_coeficiente_m": "22,8915",
+        "p_indicador_coeficiente_s": "0,13759",
+        "p_sd0_mediana": "22,892"
+    },
+    {
+        "id_meses": "86",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "85",
+        "p_indicador_coeficiente_l": "-0,4499",
+        "p_indicador_coeficiente_m": "23,0968",
+        "p_indicador_coeficiente_s": "0,13797",
+        "p_sd0_mediana": "23,097"
+    },
+    {
+        "id_meses": "87",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "86",
+        "p_indicador_coeficiente_l": "-0,4594",
+        "p_indicador_coeficiente_m": "23,3029",
+        "p_indicador_coeficiente_s": "0,13838",
+        "p_sd0_mediana": "23,303"
+    },
+    {
+        "id_meses": "88",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "87",
+        "p_indicador_coeficiente_l": "-0,4688",
+        "p_indicador_coeficiente_m": "23,5101",
+        "p_indicador_coeficiente_s": "0,1388",
+        "p_sd0_mediana": "23,51"
+    },
+    {
+        "id_meses": "89",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "88",
+        "p_indicador_coeficiente_l": "-0,4781",
+        "p_indicador_coeficiente_m": "23,7182",
+        "p_indicador_coeficiente_s": "0,13923",
+        "p_sd0_mediana": "23,718"
+    },
+    {
+        "id_meses": "90",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "89",
+        "p_indicador_coeficiente_l": "-0,4873",
+        "p_indicador_coeficiente_m": "23,9272",
+        "p_indicador_coeficiente_s": "0,13969",
+        "p_sd0_mediana": "23,927"
+    },
+    {
+        "id_meses": "91",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "90",
+        "p_indicador_coeficiente_l": "-0,4964",
+        "p_indicador_coeficiente_m": "24,1371",
+        "p_indicador_coeficiente_s": "0,14016",
+        "p_sd0_mediana": "24,137"
+    },
+    {
+        "id_meses": "92",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "91",
+        "p_indicador_coeficiente_l": "-0,5053",
+        "p_indicador_coeficiente_m": "24,3479",
+        "p_indicador_coeficiente_s": "0,14065",
+        "p_sd0_mediana": "24,348"
+    },
+    {
+        "id_meses": "93",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "92",
+        "p_indicador_coeficiente_l": "-0,5142",
+        "p_indicador_coeficiente_m": "24,5595",
+        "p_indicador_coeficiente_s": "0,14117",
+        "p_sd0_mediana": "24,56"
+    },
+    {
+        "id_meses": "94",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "93",
+        "p_indicador_coeficiente_l": "-0,5229",
+        "p_indicador_coeficiente_m": "24,7722",
+        "p_indicador_coeficiente_s": "0,1417",
+        "p_sd0_mediana": "24,772"
+    },
+    {
+        "id_meses": "95",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "94",
+        "p_indicador_coeficiente_l": "-0,5315",
+        "p_indicador_coeficiente_m": "24,9858",
+        "p_indicador_coeficiente_s": "0,14226",
+        "p_sd0_mediana": "24,986"
+    },
+    {
+        "id_meses": "96",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "95",
+        "p_indicador_coeficiente_l": "-0,5399",
+        "p_indicador_coeficiente_m": "25,2005",
+        "p_indicador_coeficiente_s": "0,14284",
+        "p_sd0_mediana": "25,2"
+    },
+    {
+        "id_meses": "97",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "96",
+        "p_indicador_coeficiente_l": "-0,5482",
+        "p_indicador_coeficiente_m": "25,4163",
+        "p_indicador_coeficiente_s": "0,14344",
+        "p_sd0_mediana": "25,416"
+    },
+    {
+        "id_meses": "98",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "97",
+        "p_indicador_coeficiente_l": "-0,5564",
+        "p_indicador_coeficiente_m": "25,6332",
+        "p_indicador_coeficiente_s": "0,14407",
+        "p_sd0_mediana": "25,633"
+    },
+    {
+        "id_meses": "99",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "98",
+        "p_indicador_coeficiente_l": "-0,5644",
+        "p_indicador_coeficiente_m": "25,8513",
+        "p_indicador_coeficiente_s": "0,14472",
+        "p_sd0_mediana": "25,851"
+    },
+    {
+        "id_meses": "100",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "99",
+        "p_indicador_coeficiente_l": "-0,5722",
+        "p_indicador_coeficiente_m": "26,0706",
+        "p_indicador_coeficiente_s": "0,14539",
+        "p_sd0_mediana": "26,071"
+    },
+    {
+        "id_meses": "101",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "100",
+        "p_indicador_coeficiente_l": "-0,5799",
+        "p_indicador_coeficiente_m": "26,2911",
+        "p_indicador_coeficiente_s": "0,14608",
+        "p_sd0_mediana": "26,291"
+    },
+    {
+        "id_meses": "102",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "101",
+        "p_indicador_coeficiente_l": "-0,5873",
+        "p_indicador_coeficiente_m": "26,5128",
+        "p_indicador_coeficiente_s": "0,14679",
+        "p_sd0_mediana": "26,513"
+    },
+    {
+        "id_meses": "103",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "102",
+        "p_indicador_coeficiente_l": "-0,5946",
+        "p_indicador_coeficiente_m": "26,7358",
+        "p_indicador_coeficiente_s": "0,14752",
+        "p_sd0_mediana": "26,736"
+    },
+    {
+        "id_meses": "104",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "103",
+        "p_indicador_coeficiente_l": "-0,6017",
+        "p_indicador_coeficiente_m": "26,9602",
+        "p_indicador_coeficiente_s": "0,14828",
+        "p_sd0_mediana": "26,96"
+    },
+    {
+        "id_meses": "105",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "104",
+        "p_indicador_coeficiente_l": "-0,6085",
+        "p_indicador_coeficiente_m": "27,1861",
+        "p_indicador_coeficiente_s": "0,14905",
+        "p_sd0_mediana": "27,186"
+    },
+    {
+        "id_meses": "106",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "105",
+        "p_indicador_coeficiente_l": "-0,6152",
+        "p_indicador_coeficiente_m": "27,4137",
+        "p_indicador_coeficiente_s": "0,14984",
+        "p_sd0_mediana": "27,414"
+    },
+    {
+        "id_meses": "107",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "106",
+        "p_indicador_coeficiente_l": "-0,6216",
+        "p_indicador_coeficiente_m": "27,6432",
+        "p_indicador_coeficiente_s": "0,15066",
+        "p_sd0_mediana": "27,643"
+    },
+    {
+        "id_meses": "108",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "107",
+        "p_indicador_coeficiente_l": "-0,6278",
+        "p_indicador_coeficiente_m": "27,875",
+        "p_indicador_coeficiente_s": "0,15149",
+        "p_sd0_mediana": "27,875"
+    },
+    {
+        "id_meses": "109",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "108",
+        "p_indicador_coeficiente_l": "-0,6337",
+        "p_indicador_coeficiente_m": "28,1092",
+        "p_indicador_coeficiente_s": "0,15233",
+        "p_sd0_mediana": "28,109"
+    },
+    {
+        "id_meses": "110",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "109",
+        "p_indicador_coeficiente_l": "-0,6393",
+        "p_indicador_coeficiente_m": "28,3459",
+        "p_indicador_coeficiente_s": "0,15319",
+        "p_sd0_mediana": "28,346"
+    },
+    {
+        "id_meses": "111",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "110",
+        "p_indicador_coeficiente_l": "-0,6446",
+        "p_indicador_coeficiente_m": "28,5854",
+        "p_indicador_coeficiente_s": "0,15406",
+        "p_sd0_mediana": "28,585"
+    },
+    {
+        "id_meses": "112",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "111",
+        "p_indicador_coeficiente_l": "-0,6496",
+        "p_indicador_coeficiente_m": "28,8277",
+        "p_indicador_coeficiente_s": "0,15493",
+        "p_sd0_mediana": "28,828"
+    },
+    {
+        "id_meses": "113",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "112",
+        "p_indicador_coeficiente_l": "-0,6543",
+        "p_indicador_coeficiente_m": "29,0731",
+        "p_indicador_coeficiente_s": "0,15581",
+        "p_sd0_mediana": "29,073"
+    },
+    {
+        "id_meses": "114",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "113",
+        "p_indicador_coeficiente_l": "-0,6585",
+        "p_indicador_coeficiente_m": "29,3217",
+        "p_indicador_coeficiente_s": "0,1567",
+        "p_sd0_mediana": "29,322"
+    },
+    {
+        "id_meses": "115",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "114",
+        "p_indicador_coeficiente_l": "-0,6624",
+        "p_indicador_coeficiente_m": "29,5736",
+        "p_indicador_coeficiente_s": "0,1576",
+        "p_sd0_mediana": "29,574"
+    },
+    {
+        "id_meses": "116",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "115",
+        "p_indicador_coeficiente_l": "-0,6659",
+        "p_indicador_coeficiente_m": "29,8289",
+        "p_indicador_coeficiente_s": "0,1585",
+        "p_sd0_mediana": "29,829"
+    },
+    {
+        "id_meses": "117",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "116",
+        "p_indicador_coeficiente_l": "-0,6689",
+        "p_indicador_coeficiente_m": "30,0877",
+        "p_indicador_coeficiente_s": "0,1594",
+        "p_sd0_mediana": "30,088"
+    },
+    {
+        "id_meses": "118",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "117",
+        "p_indicador_coeficiente_l": "-0,6714",
+        "p_indicador_coeficiente_m": "30,3501",
+        "p_indicador_coeficiente_s": "0,16031",
+        "p_sd0_mediana": "30,35"
+    },
+    {
+        "id_meses": "119",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "118",
+        "p_indicador_coeficiente_l": "-0,6735",
+        "p_indicador_coeficiente_m": "30,616",
+        "p_indicador_coeficiente_s": "0,16122",
+        "p_sd0_mediana": "30,616"
+    },
+    {
+        "id_meses": "120",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "119",
+        "p_indicador_coeficiente_l": "-0,6752",
+        "p_indicador_coeficiente_m": "30,8854",
+        "p_indicador_coeficiente_s": "0,16213",
+        "p_sd0_mediana": "30,885"
+    },
+    {
+        "id_meses": "121",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "120",
+        "p_indicador_coeficiente_l": "-0,6764",
+        "p_indicador_coeficiente_m": "31,1586",
+        "p_indicador_coeficiente_s": "0,16305",
+        "p_sd0_mediana": "31,159"
+    },
+    {
+        "id_meses": "122",
+        "p_indicador_genero": "M",
+        "p_indicador_denominador": "121",
+        "p_indicador_coeficiente_l": "-0,6764",
+        "p_indicador_coeficiente_m": "31,1586",
+        "p_indicador_coeficiente_s": "0,16305",
+        "p_sd0_mediana": "31,159"
+    }
+]

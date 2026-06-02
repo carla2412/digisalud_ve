@@ -14,7 +14,7 @@
     .usu_mod-org-container {
         max-width: 1600px;
         margin: 0 auto;
-        background: #f9fbff;
+        background: #fff;
         border-radius: 24px;
         padding: 28px 32px 34px;
         box-shadow: 0 8px 30px rgba(31, 42, 68, 0.08);

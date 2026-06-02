@@ -75,7 +75,7 @@ $riesgos = [
     'soft'  => '#fdeaea',
   ],
   'gris' => [
-    'label' => 'Datos insuficientes',
+    'label' => 'Revisar Datos',
     'icon'  => '🗎',
     'color' => '#a7b1bf',
     'soft'  => '#f1f4f8',
@@ -84,29 +84,119 @@ $riesgos = [
 
 
 ?>
-
 <style>
   :root {
-    --rp-primary: #101a61;
-    --rp-cyan: #00D4FF;
-    --rp-verde: #00B140;
-    --rp-amarillo: #FFC609;
-    --rp-naranja: #FF8724;
-    --rp-rojo: #E43312;
-    --rp-gris: #9CA3AF;
-    --rp-bg: #F0F4FA;
-    --rp-card: #ffffff;
-    --rp-radius: 12px;
+    --rep_ad_bg: #f5f8fc;
+    --rep_ad_panel: #ffffff;
+    --rep_ad_line: #e6edf5;
+    --rep_ad_text: #102c63;
+    --rep_ad_muted: #6e7f99;
+    --rep_ad_primary: #1f66e5;
+    --rep_ad_primary_dark: #0d3b91;
+    --rep_ad_green: #2db463;
+    --rep_ad_green_soft: #e8f8ef;
+    --rep_ad_yellow: #f4c84a;
+    --rep_ad_yellow_soft: #fff7df;
+    --rep_ad_orange: #ff9429;
+    --rep_ad_orange_soft: #fff0e2;
+    --rep_ad_red: #ef5350;
+    --rep_ad_red_soft: #fdeaea;
+    --rep_ad_gray: #a7b1bf;
+    --rep_ad_gray_soft: #f1f4f8;
+    --rep_ad_shadow: 0 10px 30px rgba(15, 40, 82, .08);
   }
 
-  .rp-shell {
-    padding: 24px 28px 60px;
-    background: var(--rp-bg);
-    min-height: 100vh;
+  .rep_ad_app,
+  .rep_ad_app * {
+    box-sizing: border-box;
   }
 
-  .rp-header {
+  .rep_ad_app {
+    min-height: calc(100vh - 118px);
+    background: var(--rep_ad_bg);
+    color: var(--rep_ad_text);
+    padding: 24px 24px 32px;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+  .rep_ad_app button,
+  .rep_ad_app input,
+  .rep_ad_app select {
+    font: inherit;
+  }
+
+  .rep_ad_main {
+    width: 100%;
+  }
+
+  .rep_ad_topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--rep_ad_line);
+  }
+
+  .rep_ad_breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--rep_ad_muted);
+    font-size: 14px;
+  }
+
+  .rep_ad_breadcrumbs strong {
+    color: var(--rep_ad_text);
+  }
+
+  .rep_ad_topbar_actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .rep_ad_btn {
+    border: 0;
+    border-radius: 12px;
+    padding: 12px 18px;
+    cursor: pointer;
+    transition: .2s ease;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+  }
+
+  .rep_ad_btn_primary {
+    background: var(--rep_ad_primary);
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(31, 102, 229, .18);
+  }
+
+  .rep_ad_btn_primary:hover {
+    background: #1658cb;
+    color: #fff;
+  }
+
+  .rep_ad_btn_secondary {
     background: #fff;
+    color: var(--rep_ad_primary);
+    border: 1px solid #bfd4fb;
+  }
+
+  .rep_ad_btn_secondary:hover {
+    background: #f5f9ff;
+    color: var(--rep_ad_primary);
+  }
+
+  .rep_ad_hero {
+    background: var(--rep_ad_panel);
     border: 1px solid var(--rep_ad_line);
     border-radius: 22px;
     padding: 22px 26px;
@@ -118,139 +208,113 @@ $riesgos = [
     margin-bottom: 18px;
   }
 
-  .rp-header-left {
+  .rep_ad_hero_left {
     display: flex;
     align-items: center;
     gap: 16px;
   }
 
-  .rp-header-icon {
+  .rep_ad_hero_icon {
     width: 52px;
     height: 52px;
-    background: rgba(255, 255, 255, .12);
-    border-radius: 12px;
+    border-radius: 16px;
+    background: #ffefbe;
     display: grid;
     place-items: center;
+    flex: 0 0 52px;
   }
 
-  .rp-header-icon img {
-    width: 36px;
+  .rep_ad_hero_icon img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
   }
 
-  .rp-header-sub {
-    font-size: .8rem;
-    opacity: .7;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-  }
-
-  .rp-header-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin: 0;
-  }
-
-  .rp-header-pill {
-    background: rgba(255, 255, 255, .15);
-    border: 1px solid rgba(255, 255, 255, .25);
-    border-radius: 20px;
-    padding: 5px 14px;
-    font-size: .82rem;
-  }
-
-  .rp-btn-back {
-    background: rgba(255, 255, 255, .18);
-    border: 1px solid rgba(255, 255, 255, .3);
-    color: #fff;
-    border-radius: 8px;
-    padding: 8px 18px;
-    font-size: .85rem;
-    text-decoration: none;
-  }
-
-  .rp-btn-back:hover {
-    background: rgba(255, 255, 255, .3);
-    color: #fff;
-  }
-
-  .rp-kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 14px;
-    margin-bottom: 24px;
-  }
-
-  .rp-kpi {
-    background: var(--rp-card);
-    border-radius: var(--rp-radius);
-    padding: 18px 16px;
-    text-align: center;
-    border-top: 4px solid #e5e7eb;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
-  }
-
-  .rp-kpi.verde {
-    border-top-color: var(--rp-verde);
-  }
-
-  .rp-kpi.amarillo {
-    border-top-color: var(--rp-amarillo);
-  }
-
-  .rp-kpi.naranja {
-    border-top-color: var(--rp-naranja);
-  }
-
-  .rp-kpi.rojo {
-    border-top-color: var(--rp-rojo);
-  }
-
-  .rp-kpi.gris {
-    border-top-color: var(--rp-gris);
-  }
-
-  .rp-kpi.total {
-    border-top-color: var(--rp-cyan);
-  }
-
-  .rp-kpi-val {
-    font-size: 2rem;
+  .rep_ad_hero h1 {
+    margin: 0 0 4px;
+    font-size: 22px;
     font-weight: 800;
-    color: var(--rp-primary);
-    line-height: 1;
   }
 
-  .rp-kpi-label {
-    font-size: .75rem;
-    color: #6B7280;
-    margin-top: 4px;
+  .rep_ad_hero p {
+    margin: 0;
+    color: var(--rep_ad_primary_dark);
+    font-weight: 800;
   }
 
-  .rp-kpi-pct {
-    font-size: .8rem;
-    color: #9CA3AF;
-    margin-top: 2px;
+  .rep_ad_hero_chip {
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #f7faff;
+    color: #5d74a0;
+    border: 1px solid #dbe7fb;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 700;
   }
 
-  .rp-dist-bar {
+  .rep_ad_kpi_grid {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .rep_ad_kpi_card {
+    background: var(--rep_ad_panel);
+    border: 1px solid var(--rep_ad_line);
+    border-radius: 18px;
+    padding: 18px 14px;
+    min-height: 112px;
+    box-shadow: var(--rep_ad_shadow);
     display: flex;
-    height: 10px;
-    border-radius: 99px;
-    overflow: hidden;
-    margin-bottom: 24px;
-    gap: 2px;
+    gap: 12px;
+    align-items: flex-start;
   }
 
-  .rp-dist-seg {
-    transition: flex .4s;
+  .rep_ad_kpi_icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-size: 22px;
+    flex: 0 0 44px;
+  }
+
+  .rep_ad_kpi_value {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: var(--rep_ad_text);
+  }
+
+  .rep_ad_kpi_title {
+    font-size: 13px;
+    color: #445674;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .rep_ad_kpi_subtitle {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #7a8aa6;
+    font-weight: 800;
+  }
+
+  .rep_ad_risk_summary,
+  .rep_ad_iom_card,
+  .rep_ad_filters_card,
+  .rep_ad_table_card {
+    background: var(--rep_ad_panel);
+    border: 1px solid var(--rep_ad_line);
+    border-radius: 18px;
+    box-shadow: var(--rep_ad_shadow);
   }
 
   .rep_ad_risk_summary {
-    background: var(--rp-card);
-    border: 1px solid #EEF2F7;
-    border-radius: var(--rp-radius);
     padding: 16px 18px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, .06);
     margin-bottom: 18px;
   }
 
@@ -296,6 +360,103 @@ $riesgos = [
     border-radius: 50%;
   }
 
+  .rep_ad_iom_card {
+    padding: 16px 20px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .rep_ad_iom_card h6 {
+    color: var(--rep_ad_text);
+    font-weight: 800;
+    margin: 0 12px 0 0;
+    white-space: nowrap;
+  }
+
+  .iom-chip {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: .78rem;
+    font-weight: 700;
+    border: 1px solid transparent;
+  }
+
+  .iom-bajo { background: var(--rep_ad_red_soft); color: #991B1B; border-color: #FCA5A5; }
+  .iom-normal { background: var(--rep_ad_green_soft); color: #065F46; border-color: #6EE7B7; }
+  .iom-sobre { background: var(--rep_ad_yellow_soft); color: #78350F; border-color: #FDE68A; }
+  .iom-obesi { background: var(--rep_ad_orange_soft); color: #9A3412; border-color: #FDBA74; }
+
+  .rep_ad_filters_card {
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+
+  .rep_ad_filters_row {
+    display: grid;
+    grid-template-columns: 2fr repeat(4, minmax(120px, 1fr)) auto;
+    gap: 14px;
+    align-items: end;
+  }
+
+  .rep_ad_field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rep_ad_field label {
+    font-size: 13px;
+    color: #506685;
+    font-weight: 800;
+  }
+
+  .rep_ad_field input,
+  .rep_ad_field select {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #d7e1ee;
+    border-radius: 12px;
+    background: #fff;
+    padding: 0 14px;
+    color: var(--rep_ad_text);
+    outline: 0;
+  }
+
+  .rep_ad_field input:focus,
+  .rep_ad_field select:focus {
+    border-color: #9bbcf7;
+    box-shadow: 0 0 0 4px rgba(31, 102, 229, .08);
+  }
+
+  .rep_ad_field_action .rep_ad_btn {
+    width: 100%;
+    height: 44px;
+  }
+
+  .rep_ad_table_card {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .rep_ad_table_top {
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    border-bottom: 1px solid var(--rep_ad_line);
+    flex-wrap: wrap;
+  }
+
+  .rep_ad_table_meta {
+    color: #5f7390;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
   .rep_ad_table_statuses {
     display: flex;
     align-items: center;
@@ -319,239 +480,119 @@ $riesgos = [
     display: inline-block;
   }
 
-  .rep_ad_dot_green {
-    background: var(--rp-verde);
+  .rep_ad_dot_green { background: var(--rep_ad_green); }
+  .rep_ad_dot_yellow { background: var(--rep_ad_yellow); }
+  .rep_ad_dot_orange { background: var(--rep_ad_orange); }
+  .rep_ad_dot_red { background: var(--rep_ad_red); }
+  .rep_ad_dot_gray { background: var(--rep_ad_gray); }
+
+  .rep_ad_table_wrapper {
+    overflow: auto;
   }
 
-  .rep_ad_dot_yellow {
-    background: var(--rp-amarillo);
+  .rep_ad_table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 1420px;
   }
 
-  .rep_ad_dot_orange {
-    background: var(--rp-naranja);
+  #tablaMenores {
+    min-width: 1520px;
   }
-
-  .rep_ad_dot_red {
-    background: var(--rp-rojo);
-  }
-
-  .rep_ad_dot_gray {
-    background: var(--rp-gris);
-  }
-
-  .rp-filters-card {
-    background: var(--rp-card);
-    border-radius: var(--rp-radius);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, .06);
-    padding: 18px;
-    margin-bottom: 18px;
-    border: 1px solid #EEF2F7;
-  }
-
-  .rp-filters-row {
-    display: grid;
-    grid-template-columns: 2fr repeat(4, minmax(120px, 1fr)) auto;
-    gap: 14px;
-    align-items: end;
-  }
-
-  .rp-field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .rp-field label {
+#tablaMenores th:nth-child(2),
+#tablaMenores td:nth-child(2) {
+  min-width: 260px;
+}
+ 
+  .rep_ad_table thead th {
+    text-align: left;
     font-size: 13px;
-    color: #506685;
-    font-weight: 800;
+    color: #23406d;
+    background: #f7faff;
+    padding: 16px 12px;
+    border-bottom: 1px solid var(--rep_ad_line);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 2;
   }
 
-  .rp-field input,
-  .rp-field select {
-    width: 100%;
-    height: 44px;
-    border: 1px solid #d7e1ee;
-    border-radius: 12px;
-    background: #fff;
-    padding: 0 14px;
-    color: var(--rp-primary);
-    outline: 0;
-  }
-
-  .rp-field input:focus,
-  .rp-field select:focus {
-    border-color: #9bbcf7;
-    box-shadow: 0 0 0 4px rgba(31, 102, 229, .08);
-  }
-
-  .rp-btn-clear {
-    width: 100%;
-    height: 44px;
-    border: 1px solid #bfd4fb;
-    border-radius: 12px;
-    background: #fff;
-    color: #1f66e5;
+  .rep_ad_table thead th small {
+    color: #8a97aa;
+    font-size: 12px;
     font-weight: 700;
-    padding: 0 16px;
   }
 
-  .rp-btn-clear:hover {
-    background: #f5f9ff;
-  }
-
-  .rp-table-meta {
-    color: #5f7390;
+  .rep_ad_table tbody td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #edf2f8;
+    vertical-align: middle;
     font-size: 14px;
-    font-weight: 700;
+    color: #2d466e;
   }
 
-  .rp-table-card .dataTables_length,
-  .rp-table-card .dataTables_filter {
-    display: none;
-  }
-
-  .rp-table-card .dataTables_info {
-    padding: 16px 18px !important;
-    color: #5f7390 !important;
-    font-size: 14px;
-    font-weight: 700;
-  }
-
-  .rp-table-card .dataTables_paginate {
-    padding: 12px 18px 16px !important;
-  }
-
-  @media (max-width: 1280px) {
-    .rp-filters-row {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .rp-field-search {
-      grid-column: span 3;
-    }
-  }
-
-  @media (max-width: 900px) {
-    .rp-shell {
-      padding: 16px;
-    }
-
-    .rp-filters-row {
-      grid-template-columns: 1fr;
-    }
-
-    .rp-field-search {
-      grid-column: auto;
-    }
-  }
-
-  .rp-table-card {
-    background: var(--rp-card);
-    border-radius: var(--rp-radius);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, .06);
-    overflow: hidden;
-  }
-
-  .rp-table-toolbar {
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    border-bottom: 1px solid #F3F4F6;
-  }
-
-  .rp-table-title {
-    font-weight: 700;
-    color: var(--rp-primary);
-    font-size: 1rem;
-  }
-
-  .rp-btn-excel {
-    background: #217346;
-    color: #fff;
-    border: none;
-    border-radius: 7px;
-    padding: 8px 16px;
-    font-size: .82rem;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    text-decoration: none;
-  }
-
-  .rp-btn-excel:hover {
-    background: #1a5c38;
-    color: #fff;
+  .rep_ad_table tbody tr:hover {
+    background: #fbfdff;
   }
 
   .sem-dot {
-    width: 32px;
-    height: 32px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    display: grid;
-    place-items: center;
-    margin: 0 auto;
-    font-weight: 700;
-    font-size: .7rem;
-    color: #fff;
-  }
-
-  .sem-dot.verde {
-    background: var(--rp-verde);
-  }
-
-  .sem-dot.amarillo {
-    background: var(--rp-amarillo);
-    color: #333;
-  }
-
-  .sem-dot.naranja {
-    background: var(--rp-naranja);
-  }
-
-  .sem-dot.rojo {
-    background: var(--rp-rojo);
-  }
-
-  .sem-dot.gris {
-    background: var(--rp-gris);
-  }
-
-  .interp-badge {
     display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: .77rem;
-    font-weight: 600;
+    margin: 0 auto;
+  }
+
+  .sem-dot.verde { background: var(--rep_ad_green); }
+  .sem-dot.amarillo { background: var(--rep_ad_yellow); }
+  .sem-dot.naranja { background: var(--rep_ad_orange); }
+  .sem-dot.rojo { background: var(--rep_ad_red); }
+  .sem-dot.gris { background: var(--rep_ad_gray); }
+
+  .interp-badge,
+  .rep_ad_badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.3;
+    min-width: 180px;
     white-space: normal;
   }
 
-  .interp-verde {
-    background: #D1FAE5;
-    color: #065F46;
+  .interp-verde,
+  .rep_ad_badge_verde {
+    color: #198c48;
+    background: var(--rep_ad_green_soft);
   }
 
-  .interp-amarillo {
-    background: #FEF9C3;
-    color: #78350F;
+  .interp-amarillo,
+  .rep_ad_badge_amarillo {
+    color: #9f7a00;
+    background: var(--rep_ad_yellow_soft);
   }
 
-  .interp-naranja {
-    background: #FFEDD5;
-    color: #9A3412;
+  .interp-naranja,
+  .rep_ad_badge_naranja {
+    color: #b96b14;
+    background: var(--rep_ad_orange_soft);
   }
 
-  .interp-rojo {
-    background: #FEE2E2;
-    color: #991B1B;
+  .interp-rojo,
+  .rep_ad_badge_rojo {
+    color: #c63e3d;
+    background: var(--rep_ad_red_soft);
   }
 
-  .interp-gris {
-    background: #F3F4F6;
-    color: #4B5563;
+  .interp-gris,
+  .rep_ad_badge_gris {
+    color: #66758a;
+    background: var(--rep_ad_gray_soft);
   }
 
   .zscore-chip {
@@ -579,6 +620,103 @@ $riesgos = [
 
   .zs-null {
     color: #9CA3AF;
+  }
+
+  .rep_ad_empty {
+    padding: 44px 18px !important;
+    text-align: center;
+    color: #7a8aa6 !important;
+  }
+
+  .rep_ad_empty i {
+    display: block;
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+
+  .rep_ad_table_card .dataTables_wrapper {
+    padding: 0;
+  }
+
+  .rep_ad_table_card .dataTables_length,
+  .rep_ad_table_card .dataTables_filter {
+    display: none;
+  }
+
+  .rep_ad_table_card .dataTables_info {
+    padding: 16px 18px !important;
+    color: #5f7390 !important;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .rep_ad_table_card .dataTables_paginate {
+    padding: 12px 18px 16px !important;
+  }
+
+  .rep_ad_table_card .dataTables_paginate .paginate_button {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 10px !important;
+    border: 1px solid #d7e1ee !important;
+    background: #fff !important;
+    color: #436089 !important;
+    font-weight: 800;
+    margin: 0 3px;
+  }
+
+  .rep_ad_table_card .dataTables_paginate .paginate_button.current,
+  .rep_ad_table_card .dataTables_paginate .paginate_button.current:hover {
+    background: var(--rep_ad_primary) !important;
+    border-color: var(--rep_ad_primary) !important;
+    color: #fff !important;
+  }
+
+  @media (max-width: 1600px) {
+    .rep_ad_kpi_grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 1280px) {
+    .rep_ad_filters_row {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .rep_ad_field_search {
+      grid-column: span 3;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .rep_ad_app {
+      padding: 16px;
+    }
+
+    .rep_ad_topbar,
+    .rep_ad_hero,
+    .rep_ad_table_top {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .rep_ad_kpi_grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .rep_ad_filters_row {
+      grid-template-columns: 1fr;
+    }
+
+    .rep_ad_field_search {
+      grid-column: auto;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .rep_ad_kpi_grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
@@ -694,14 +832,14 @@ $riesgos = [
       </div>
     </section>
     <!-- FILTROS -->
-    <section class="rp-filters-card">
-      <div class="rp-filters-row">
-        <div class="rp-field rp-field-search">
+    <section class="rep_ad_filters_card">
+      <div class="rep_ad_filters_row">
+        <div class="rep_ad_field rep_ad_field_search">
           <label for="rp_men_searchInput">Buscar</label>
           <input type="text" id="rp_men_searchInput" placeholder="Buscar por nombre, cédula u observación...">
         </div>
 
-        <div class="rp-field">
+        <div class="rep_ad_field">
           <label for="rp_men_sexoFilter">Sexo</label>
           <select id="rp_men_sexoFilter">
             <option value="">Todos</option>
@@ -710,7 +848,7 @@ $riesgos = [
           </select>
         </div>
 
-        <div class="rp-field">
+        <div class="rep_ad_field">
           <label for="rp_men_ageFilter">Grupo etario</label>
           <select id="rp_men_ageFilter">
             <option value="">Todos</option>
@@ -719,7 +857,7 @@ $riesgos = [
           </select>
         </div>
 
-        <div class="rp-field">
+        <div class="rep_ad_field">
           <label for="rp_men_riskFilter">Estado de riesgo</label>
           <select id="rp_men_riskFilter">
             <option value="">Todos</option>
@@ -727,11 +865,11 @@ $riesgos = [
             <option value="amarillo">En riesgo</option>
             <option value="naranja">Leve / Moderado</option>
             <option value="rojo">Atención inmediata</option>
-            <option value="gris">Datos insuficientes</option>
+            <option value="gris">Revisar Datos</option>
           </select>
         </div>
 
-        <div class="rp-field">
+        <div class="rep_ad_field">
           <label for="rp_men_rowsPerPage">Registros por página</label>
           <select id="rp_men_rowsPerPage">
             <option value="10">10</option>
@@ -741,36 +879,18 @@ $riesgos = [
           </select>
         </div>
 
-        <div class="rp-field">
+        <div class="rep_ad_field">
           <label>&nbsp;</label>
-          <button type="button" class="rp-btn-clear" id="rp_men_clearFilters">Limpiar filtros</button>
+          <button type="button" class="rep_ad_btn rep_ad_btn_secondary" id="rp_men_clearFilters">Limpiar filtros</button>
         </div>
       </div>
     </section>
     <!-- TABLA -->
     <section class="rep_ad_table_card">
-      <div class="rep_ad_table_top">
-        <div class="rep_ad_table_meta" id="rp_men_tableMeta">Detalle por beneficiario</div>
-
-        <div class="rep_ad_table_statuses">
-          <span>Estados de interpretación</span>
-          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_green"></i><span>Adecuado</span></div>
-          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_yellow"></i><span>Riesgo</span></div>
-          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_orange"></i><span>Leve / Moderado</span></div>
-          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_red"></i><span>Inmediato</span></div>
-          <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_gray"></i><span>Sin datos</span></div>
-        </div>
-      </div>
-
-      <a href="<?= site_url("jornadas/{$jornadaId}/reportes/antropometria/menores-19/excel") ?>" class="rp-btn-excel">
-        <i class="bi bi-file-earmark-excel-fill"></i> Exportar Excel
-      </a>
-</div>
-
-
+      
 <div class="rep_ad_table_wrapper">
-  <table id="tablaMenores" class="table table-hover align-middle mb-0" style="font-size:.83rem;">
-    <thead class="table-dark">
+  <table id="tablaMenores" class="rep_ad_table">
+    <thead>
       <tr>
         <th style="width:44px;text-align:center">🚦</th>
         <th>Nombre</th>
@@ -788,7 +908,6 @@ $riesgos = [
         <th>ZP/E</th>
         <th>ZT/E</th>
         <th>ZIMC/E</th>
-
         <th>Edema</th>
         <th>Observaciones</th>
       </tr>
@@ -833,7 +952,7 @@ $riesgos = [
         ?>
           <tr data-risk="<?= esc($clase) ?>" data-sexo="<?= esc($sexo) ?>" data-age="<?= esc($grupoEdad) ?>">
   <td><span class="sem-dot <?= esc($clase) ?>"></span></td>
-  <td class="fw-500"><?= esc($nombreCompleto ?: '—') ?></td>
+  <td><?= esc($nombreCompleto ?: '—') ?></td>
   <td><?= esc($d['id_digisalud'] ?? $d['cedula'] ?? '—') ?></td>
   <td><?= esc($sexo ?: '—') ?></td>
   <td><?= esc($fnac_f) ?></td>
@@ -1001,7 +1120,7 @@ $riesgos = [
         pageLength: 25,
         lengthChange: false,
         order: [
-          [7, 'asc']
+          [0, 'asc']
         ],
         language: {
           url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
