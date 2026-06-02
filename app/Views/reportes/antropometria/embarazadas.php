@@ -10,6 +10,24 @@ function pctE(int $val, int $total): string {
     if ($total <= 0) return '0';
     return number_format(($val * 100) / $total, 1);
 }
+$riesgos = [
+    'verde' => [
+        'label' => 'Ganancia adecuada',
+        'color' => '#00B140',
+    ],
+    'naranja' => [
+        'label' => 'Ganancia excesiva',
+        'color' => '#FF8724',
+    ],
+    'rojo' => [
+        'label' => 'Ganancia insuficiente',
+        'color' => '#E43312',
+    ],
+    'gris' => [
+        'label' => 'Datos insuficientes',
+        'color' => '#9CA3AF',
+    ],
+];
 ?>
 
 <style>
@@ -54,7 +72,84 @@ function pctE(int $val, int $total): string {
 .rp-dist-bar{display:flex;height:10px;border-radius:99px;overflow:hidden;
   margin-bottom:24px;gap:2px;}
 .rp-dist-seg{transition:flex .4s;}
+.rep_ad_risk_summary {
+  background: var(--rp-card);
+  border: 1px solid #EEF2F7;
+  border-radius: var(--rp-radius);
+  padding: 16px 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  margin-bottom: 18px;
+}
 
+.rep_ad_risk_bar {
+  display: flex;
+  width: 100%;
+  height: 18px;
+  background: #edf2f8;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.rep_ad_risk_segment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  min-width: 0;
+}
+
+.rep_ad_risk_legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+}
+
+.rep_ad_legend_item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #536783;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.rep_ad_legend_dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.rep_ad_table_statuses {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: #5f7390;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.rep_ad_dot_item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rep_ad_dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.rep_ad_dot_green { background: var(--rp-verde); }
+.rep_ad_dot_orange { background: var(--rp-naranja); }
+.rep_ad_dot_red { background: var(--rp-rojo); }
+.rep_ad_dot_gray { background: var(--rp-gris); }
 /* Leyenda IOM */
 .rp-iom-card{
   background:var(--rp-card);border-radius:var(--rp-radius);
@@ -152,20 +247,31 @@ function pctE(int $val, int $total): string {
   </div>
 
   <!-- BARRA -->
-  <?php if ($semTotal > 0): ?>
-  <div class="rp-dist-bar mb-4">
-    <?php foreach ([
-      ['color'=>'#00B140','val'=>$semaforo['verde']],
-      ['color'=>'#FF8724','val'=>$semaforo['naranja']],
-      ['color'=>'#E43312','val'=>$semaforo['rojo']],
-      ['color'=>'#9CA3AF','val'=>$semaforo['gris']],
-    ] as $s):
-      $flex = $semTotal > 0 ? round(($s['val'] / $semTotal) * 100) : 0;
-      if ($flex > 0):
-    ?><div class="rp-dist-seg" style="flex:<?= $flex ?>;background:<?= $s['color'] ?>;"></div>
-    <?php endif; endforeach; ?>
+ <!-- RESUMEN DE RIESGO -->
+<section class="rep_ad_risk_summary">
+  <div class="rep_ad_risk_bar">
+    <?php foreach ($riesgos as $key => $cfg): ?>
+      <?php
+      $valor = (int)($semaforo[$key] ?? 0);
+      $width = $semTotal > 0 ? (($valor / $semTotal) * 100) : 0;
+      ?>
+      <?php if ($width > 0): ?>
+        <div class="rep_ad_risk_segment" style="width:<?= esc(number_format($width, 4, '.', '')) ?>%; background:<?= esc($cfg['color']) ?>">
+          <?= esc(pctE($valor, (int)$semTotal)) ?>%
+        </div>
+      <?php endif; ?>
+    <?php endforeach; ?>
   </div>
-  <?php endif; ?>
+
+  <div class="rep_ad_risk_legend">
+    <?php foreach ($riesgos as $cfg): ?>
+      <div class="rep_ad_legend_item">
+        <span class="rep_ad_legend_dot" style="background:<?= esc($cfg['color']) ?>"></span>
+        <span><?= esc($cfg['label']) ?></span>
+      </div>
+    <?php endforeach; ?>
+  </div>
+</section>
 
   <!-- LEYENDA IOM -->
   <div class="rp-iom-card">
@@ -179,12 +285,21 @@ function pctE(int $val, int $total): string {
 
   <!-- TABLA -->
   <div class="rp-table-card">
-    <div class="rp-table-toolbar">
-      <span class="rp-table-title"><i class="bi bi-table me-2"></i>Detalle por beneficiaria</span>
-      <a href="<?= site_url("jornadas/{$jornadaId}/reportes/antropometria/embarazadas/excel") ?>" class="rp-btn-excel">
-        <i class="bi bi-file-earmark-excel-fill"></i> Exportar Excel
-      </a>
-    </div>
+   <div class="rp-table-toolbar">
+  <span class="rp-table-title"><i class="bi bi-table me-2"></i>Detalle por beneficiaria</span>
+
+  <div class="rep_ad_table_statuses">
+    <span>Estados de interpretación</span>
+    <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_green"></i><span>Adecuada</span></div>
+    <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_orange"></i><span>Excesiva</span></div>
+    <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_red"></i><span>Insuficiente</span></div>
+    <div class="rep_ad_dot_item"><i class="rep_ad_dot rep_ad_dot_gray"></i><span>Sin datos</span></div>
+  </div>
+
+  <a href="<?= site_url("jornadas/{$jornadaId}/reportes/antropometria/embarazadas/excel") ?>" class="rp-btn-excel">
+    <i class="bi bi-file-earmark-excel-fill"></i> Exportar Excel
+  </a>
+</div>
     <div class="table-responsive">
       <table id="tablaEmbarazadas" class="table table-hover align-middle mb-0" style="font-size:.83rem;">
         <thead class="table-dark">
@@ -193,6 +308,7 @@ function pctE(int $val, int $total): string {
             <th>Nombre</th>
             <th>Cédula</th>
             <th>F. Nac.</th>
+            <th>F. Evaluación</th>
             <th>Edad</th>
             <th>Interpretación combinada</th>
             <th>Semanas<br><small class="text-muted fw-normal">gestación</small></th>
@@ -209,7 +325,7 @@ function pctE(int $val, int $total): string {
         <tbody>
           <?php if (empty($datos)): ?>
             <tr>
-              <td colspan="15" class="text-center py-5 text-muted">
+              <td colspan="16" class="text-center py-5 text-muted">
                 <i class="bi bi-inbox fs-2 d-block mb-2"></i>
                 No hay registros de embarazadas en esta jornada.
               </td>
@@ -223,6 +339,8 @@ function pctE(int $val, int $total): string {
               $m = $dias > 0 ? floor(($dias % 365.25) / 30.44) : 0;
               $fnac = $d['fecha_nacimiento'] ?? '';
               $fnac_f = $fnac ? date('d/m/Y', strtotime($fnac)) : '—';
+              $fechaEval = $d['fecha_evaluacion'] ?? '';
+$fechaEval_f = $fechaEval ? date('d/m/Y', strtotime($fechaEval)) : '—';
               $fum = $d['embarazo_fum'] ?? '';
               $fum_f = $fum ? date('d/m/Y', strtotime($fum)) : '—';
               $eco = $d['embarazo_fecha_eco'] ?? '';
@@ -234,6 +352,7 @@ function pctE(int $val, int $total): string {
               <td class="fw-500"><?= esc(ucwords(strtolower((string)($d['nombre_completo'] ?? '')))) ?></td>
               <td><?= esc($d['cedula'] ?? '—') ?></td>
               <td><?= esc($fnac_f) ?></td>
+              <td><?= esc($fechaEval_f) ?></td>
               <td><?= $dias > 0 ? "{$a} a. {$m} m." : '—' ?></td>
               <td><span class="interp-badge interp-<?= esc($clase) ?>"><?= esc($interp) ?></span></td>
               <td class="text-center fw-600">

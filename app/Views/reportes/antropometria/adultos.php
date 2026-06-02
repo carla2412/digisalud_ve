@@ -100,18 +100,7 @@ $riesgos = [
   ],
 ];
 
-$avatarColors = [
-  '#9b5de5',
-  '#ff7f11',
-  '#14b8a6',
-  '#2196f3',
-  '#8b5cf6',
-  '#22c55e',
-  '#f97316',
-  '#e11d48',
-  '#0ea5e9',
-  '#7c3aed',
-];
+ 
 ?>
 
 <style>
@@ -882,6 +871,7 @@ $avatarColors = [
               <th>Identificación</th>
               <th>Sexo</th>
               <th>Fecha nac.</th>
+              <th>Fecha eval.</th>
               <th>Edad</th>
               <th>Interpretación combinada</th>
               <th>Peso<br><small>(kg)</small></th>
@@ -896,7 +886,7 @@ $avatarColors = [
           <tbody>
             <?php if (empty($datos)): ?>
               <tr>
-                <td colspan="14" class="rep_ad_empty">
+                <td colspan="15" class="rep_ad_empty">
                   <i class="bi bi-inbox"></i>
                   No hay registros de adultos en esta jornada.
                 </td>
@@ -916,6 +906,8 @@ $avatarColors = [
                 $cintura = $d['circ_cintura'] ?? null;
                 $fnac    = $d['fecha_nacimiento'] ?? '';
                 $fnac_f  = rep_ad_fecha($fnac ?: null);
+                $fechaEval = $d['fecha_evaluacion'] ?? '';
+                $fechaEval_f = rep_ad_fecha($fechaEval ?: null);
                 $dias    = (float)($d['edad_dias_medicion'] ?? 0);
                 $edadStr = '—';
                 $edadGrupo = '';
@@ -929,19 +921,15 @@ $avatarColors = [
 
                 $nombreCompleto = ucwords(strtolower((string)($d['nombre_completo'] ?? '')));
                 $sexo = (string)($d['_sexo'] ?? '');
-                $avatarColor = $avatarColors[$index % count($avatarColors)];
+             
                 ?>
                 <tr data-risk="<?= esc($clase) ?>" data-sexo="<?= esc($sexo) ?>" data-age="<?= esc($edadGrupo) ?>">
                   <td><?= esc((string)($index + 1)) ?></td>
-                  <td>
-                    <div class="rep_ad_name_cell">
-                   
-                      <span><?= esc($nombreCompleto ?: '—') ?></span>
-                    </div>
-                  </td>
+                  <td><?= esc($nombreCompleto ?: '—') ?></td>
                   <td><?= esc($d['id_digisalud'] ?? '—') ?></td>
                   <td><?= esc($sexo ?: '—') ?></td>
                   <td><?= esc($fnac_f) ?></td>
+                  <td><?= esc($fechaEval_f) ?></td>
                   <td><?= esc($edadStr) ?></td>
                   <td>
                     <span class="rep_ad_badge rep_ad_badge_<?= esc($clase) ?>">
@@ -1133,7 +1121,7 @@ $avatarColors = [
         dom: 'rt<"rep_ad_dt_footer"ip>',
         columnDefs: [{
           orderable: false,
-          targets: [0, 11, 12, 13]
+          targets: [0, 12, 13, 14]
         }]
       });
 
