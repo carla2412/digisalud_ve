@@ -348,24 +348,7 @@ class CargaMasivaController extends BaseController
         return trim((string) $texto, '_');
     }
 
-    private function mapearEncabezados($sheet): array
-    {
-        $highestIndex = Coordinate::columnIndexFromString($sheet->getHighestColumn());
-        $map = [];
 
-        for ($col = 1; $col <= $highestIndex; $col++) {
-            $colLetter = Coordinate::stringFromColumnIndex($col);
-            $value = trim((string) $sheet->getCell($colLetter . '1')->getValue());
-
-            if ($value === '') {
-                continue;
-            }
-
-            $map[$this->normalizarClaveColumna($value)] = $col;
-        }
-
-        return $map;
-    }
 
     private function buscarColumnaPorAlias(array $headers, array $aliases): ?int
     {
@@ -386,18 +369,6 @@ class CargaMasivaController extends BaseController
         return null;
     }
 
-    private function valorPorAlias($sheet, array $headers, int $fila, array $aliases): string
-    {
-        $col = $this->buscarColumnaPorAlias($headers, $aliases);
-
-        if ($col === null) {
-            return '';
-        }
-
-        $colLetter = Coordinate::stringFromColumnIndex($col);
-
-        return trim((string) $sheet->getCell($colLetter . $fila)->getFormattedValue());
-    }
 
 
 
@@ -819,7 +790,6 @@ class CargaMasivaController extends BaseController
             'edad_meses_medicion',
             'grupo_edad_reporte',
 
-            // Z-score y percentiles para menores de 19 años
             'zpe',
             'zpe_percentil',
             'zte',
@@ -958,7 +928,7 @@ class CargaMasivaController extends BaseController
             $tricipital = $this->parsearNumero($tricipitalRaw);
             $subescapular = $this->parsearNumero($subescapularRaw);
 
-            if ($metodoMedicionTallaRaw !== '' && $metodoMedicionTalla === null) {
+            if ($metodoMedicionTalla === null) {
                 $errFila[] = 'metodo_medicion_talla invalido. Use de_pie o acostado';
             }
 
@@ -993,6 +963,13 @@ class CargaMasivaController extends BaseController
             }
             if ($cefalica !== null) {
                 $this->validarRangoItem($errFila, 'circunferencia cefalica', $cefalica, $itemsPorCodigo['circ_cefalica']);
+            }
+            if ($tricipital !== null) {
+                $this->validarRangoItem($errFila, 'pliegue tricipital', $tricipital, $itemsPorCodigo['pliegue_tricipital']);
+            }
+
+            if ($subescapular !== null) {
+                $this->validarRangoItem($errFila, 'pliegue subescapular', $subescapular, $itemsPorCodigo['pliegue_subescapular']);
             }
 
             $beneficiario = null;
@@ -1089,7 +1066,6 @@ class CargaMasivaController extends BaseController
                 'pliegue_subescapular'  => $subescapular,
                 'edema'                 => 0,
             ]);
-
             $imc = $calculadosAntro['imc'] ?? (
                 ($peso !== null && $tallaParaCalculo !== null && $tallaParaCalculo > 0)
                 ? round($peso / pow($tallaParaCalculo / 100, 2), 2)
@@ -1794,7 +1770,6 @@ class CargaMasivaController extends BaseController
     }
 
 
-
     private function valorItemAntroPorCodigo($sheet, array $headers, array $itemsPorCodigo, int $fila, string $codigo): string
     {
         $aliases = [$codigo];
@@ -1806,36 +1781,94 @@ class CargaMasivaController extends BaseController
         return $this->valorPorAlias($sheet, $headers, $fila, $aliases);
     }
 
-    private function normalizarMetodoMedicionTalla(?string $valor): ?string
+    private function valorPorAlias($sheet, array $headers, int $fila, array $aliases): string
     {
-        $valor = strtolower($this->limpiarTextoBasico(trim((string) $valor)));
-        $valor = str_replace([' ', '-'], '_', $valor);
+        foreach ($aliases as $alias) {
+            $key = $this->normalizarHeaderExcel((string) $alias);
 
-        if ($valor === '') {
-            return null;
+            if (isset($headers[$key])) {
+                return trim((string) $sheet->getCell($headers[$key] . $fila)->getValue());
+            }
         }
 
-        return match ($valor) {
-            'de_pie', 'pie', 'parado', 'bipedestacion' => 'de_pie',
-            'acostado', 'acostada', 'decubito', 'longitud' => 'acostado',
-            default => null,
-        };
+        return '';
+    }
+
+    private function mapearEncabezados($sheet): array
+    {
+        $highestColumn = $sheet->getHighestColumn();
+        $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
+
+        $headers = [];
+
+        for ($col = 1; $col <= $highestColumnIndex; $col++) {
+            $letra = Coordinate::stringFromColumnIndex($col);
+            $valor = trim((string) $sheet->getCell($letra . '1')->getValue());
+
+            if ($valor === '') {
+                continue;
+            }
+
+            $headers[$this->normalizarHeaderExcel($valor)] = $letra;
+        }
+
+        return $headers;
+    }
+
+    private function normalizarHeaderExcel(string $texto): string
+    {
+        $texto = strtolower(trim($texto));
+        $texto = str_replace(
+            ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ü', 'Ñ'],
+            ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u', 'u', 'n'],
+            $texto
+        );
+
+        $texto = preg_replace('/[^a-z0-9]+/', '_', $texto);
+        return trim($texto, '_');
+    }
+
+    private function normalizarMetodoMedicionTalla(?string $valor): ?string
+    {
+        $valor = strtolower(trim((string) $valor));
+        $valor = str_replace(
+            ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', 'Á', 'É', 'Í', 'Ó', 'Ú', 'Ü', 'Ñ'],
+            ['a', 'e', 'i', 'o', 'u', 'u', 'n', 'a', 'e', 'i', 'o', 'u', 'u', 'n'],
+            $valor
+        );
+
+        $valor = str_replace([' ', '-'], '_', $valor);
+
+        // Regla solicitada: si no viene informado, por defecto es de_pie.
+        if ($valor === '') {
+            return 'de_pie';
+        }
+
+        if (in_array($valor, ['de_pie', 'pie', 'parado', 'bipedestacion'], true)) {
+            return 'de_pie';
+        }
+
+        if (in_array($valor, ['acostado', 'acostada', 'decubito', 'longitud'], true)) {
+            return 'acostado';
+        }
+
+        return null;
     }
 
     private function ajustarTallaPorMetodoMedicion(?float $talla, ?int $edadDias, ?string $metodoMedicionTalla): ?float
-    {
-        if ($talla === null || $edadDias === null || $metodoMedicionTalla === null) {
-            return $talla;
-        }
-
-        if ($edadDias < 730 && $metodoMedicionTalla === 'de_pie') {
-            return round($talla + 0.7, 1);
-        }
-
-        if ($edadDias > 730 && $metodoMedicionTalla === 'acostado') {
-            return round($talla - 0.7, 1);
-        }
-
+{
+    if ($talla === null || $edadDias === null || $metodoMedicionTalla === null) {
         return $talla;
     }
+
+    if ($edadDias <= 730 && $metodoMedicionTalla === 'de_pie') {
+        return round($talla + 0.7, 1);
+    }
+
+    if ($edadDias > 730 && $metodoMedicionTalla === 'acostado') {
+        return round($talla - 0.7, 1);
+    }
+
+    return $talla;
+}
 } // fin clase
