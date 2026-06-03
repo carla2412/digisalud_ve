@@ -444,7 +444,7 @@ class CargaMasivaController extends BaseController
         $tempPath = $excel['tempPath'];
         $sheet = $this->obtenerHoja($spreadsheet, ['Beneficiarios', 'beneficiarios']);
         $highestRow = $sheet->getHighestRow();
-
+        $headers = $this->mapearEncabezados($sheet);
         if ($highestRow < 2) {
             @unlink($tempPath);
             return $this->response->setJSON(['ok' => false, 'error' => 'El archivo no contiene datos, solo encabezados.']);
@@ -807,10 +807,13 @@ class CargaMasivaController extends BaseController
         $codigosNecesarios = [
             'peso',
             'talla',
+            'metodo_medicion_talla',
             'edema',
             'circ_cintura',
             'circ_brazo_izq',
             'circ_cefalica',
+            'pliegue_tricipital',
+            'pliegue_subescapular',
             'imc',
             'edad_dias_medicion',
             'edad_meses_medicion',
@@ -829,6 +832,13 @@ class CargaMasivaController extends BaseController
             'zcc_percentil',
             'zcbi',
             'zcbi_percentil',
+            'zptri',
+            'zptri_percentil',
+            'zpsub',
+            'zpsub_percentil',
+
+            'clasificacion_imc_talla',
+            'estado_nutricional_agregado',
         ];
 
         $faltantes = array_values(array_filter($codigosNecesarios, static fn($codigo) => ! isset($itemsPorCodigo[$codigo])));
@@ -853,6 +863,7 @@ class CargaMasivaController extends BaseController
 
         $db = \Config\Database::connect();
         $antroService = new AntropometriaZscoreService();
+        $headers = $this->mapearEncabezados($sheet);
         for ($fila = 2; $fila <= $highestRow; $fila++) {
             $idDigi = trim((string) $sheet->getCell("A{$fila}")->getValue());
             $nombresExcel = trim((string) $sheet->getCell("B{$fila}")->getValue());
@@ -864,6 +875,43 @@ class CargaMasivaController extends BaseController
             $observacion = trim((string) $sheet->getCell("H{$fila}")->getValue());
             $brazoRaw = $sheet->getCell("I{$fila}")->getValue();
             $cefalicaRaw = $sheet->getCell("J{$fila}")->getValue();
+
+            $metodoMedicionTallaRaw = $this->valorItemAntroPorCodigo(
+                $sheet,
+                $headers,
+                $itemsPorCodigo,
+                $fila,
+                'metodo_medicion_talla'
+            );
+
+            $tricipitalRaw = $this->valorItemAntroPorCodigo(
+                $sheet,
+                $headers,
+                $itemsPorCodigo,
+                $fila,
+                'pliegue_tricipital'
+            );
+
+            $subescapularRaw = $this->valorItemAntroPorCodigo(
+                $sheet,
+                $headers,
+                $itemsPorCodigo,
+                $fila,
+                'pliegue_subescapular'
+            );
+
+            if (
+                $idDigi === ''
+                && $nombresExcel === ''
+                && $apellidosExcel === ''
+                && $pesoRaw === null
+                && $tallaRaw === null
+                && $metodoMedicionTallaRaw === ''
+                && $tricipitalRaw === ''
+                && $subescapularRaw === ''
+            ) {
+                continue;
+            }
 
             if ($idDigi === '' && $nombresExcel === '' && $apellidosExcel === '' && $pesoRaw === null && $tallaRaw === null) {
                 continue;
@@ -906,7 +954,21 @@ class CargaMasivaController extends BaseController
             $cintura = $this->parsearNumero($cinturaRaw);
             $brazo = $this->parsearNumero($brazoRaw);
             $cefalica = $this->parsearNumero($cefalicaRaw);
+            $metodoMedicionTalla = $this->normalizarMetodoMedicionTalla($metodoMedicionTallaRaw);
+            $tricipital = $this->parsearNumero($tricipitalRaw);
+            $subescapular = $this->parsearNumero($subescapularRaw);
 
+            if ($metodoMedicionTallaRaw !== '' && $metodoMedicionTalla === null) {
+                $errFila[] = 'metodo_medicion_talla invalido. Use de_pie o acostado';
+            }
+
+            if ($tricipitalRaw !== '' && $tricipital === null) {
+                $errFila[] = 'pliegue tricipital invalido';
+            }
+
+            if ($subescapularRaw !== '' && $subescapular === null) {
+                $errFila[] = 'pliegue subescapular invalido';
+            }
             if ($cinturaRaw !== null && trim((string) $cinturaRaw) !== '' && $cintura === null) {
                 $errFila[] = 'circunferencia de cintura invalida';
             }
@@ -916,7 +978,13 @@ class CargaMasivaController extends BaseController
             if ($cefalicaRaw !== null && trim((string) $cefalicaRaw) !== '' && $cefalica === null) {
                 $errFila[] = 'circunferencia cefalica invalida';
             }
+            if ($tricipital !== null) {
+                $this->validarRangoItem($errFila, 'pliegue tricipital', $tricipital, $itemsPorCodigo['pliegue_tricipital']);
+            }
 
+            if ($subescapular !== null) {
+                $this->validarRangoItem($errFila, 'pliegue subescapular', $subescapular, $itemsPorCodigo['pliegue_subescapular']);
+            }
             if ($cintura !== null) {
                 $this->validarRangoItem($errFila, 'circunferencia de cintura', $cintura, $itemsPorCodigo['circ_cintura']);
             }
@@ -1002,40 +1070,68 @@ class CargaMasivaController extends BaseController
             $edadDias = $this->calcularEdadDias($beneficiario['fecha_nacimiento'] ?? null, $fechaEvaluacion);
             $edadMeses = $edadDias !== null ? round($edadDias / 30.4375, 2) : null;
 
+            $tallaParaCalculo = $this->ajustarTallaPorMetodoMedicion(
+                $talla,
+                $edadDias,
+                $metodoMedicionTalla
+            );
+
             $calculadosAntro = $antroService->calcularMenor([
-                'sexo'             => $beneficiario['sexo'] ?? null,
-                'fecha_nacimiento' => $beneficiario['fecha_nacimiento'] ?? null,
-                'fecha_evaluacion' => $fechaEvaluacion,
-                'peso'             => $peso,
-                'talla'            => $talla,
-                'circ_cefalica'    => $cefalica,
-                'circ_brazo_izq'   => $brazo,
-                'edema'            => 0,
+                'sexo'                  => $beneficiario['sexo'] ?? null,
+                'fecha_nacimiento'      => $beneficiario['fecha_nacimiento'] ?? null,
+                'fecha_evaluacion'      => $fechaEvaluacion,
+                'peso'                  => $peso,
+                'talla'                 => $tallaParaCalculo,
+                'metodo_medicion_talla' => $metodoMedicionTalla,
+                'circ_cefalica'         => $cefalica,
+                'circ_brazo_izq'        => $brazo,
+                'pliegue_tricipital'    => $tricipital,
+                'pliegue_subescapular'  => $subescapular,
+                'edema'                 => 0,
             ]);
 
             $imc = $calculadosAntro['imc'] ?? (
-                ($peso !== null && $talla !== null && $talla > 0)
-                ? round($peso / pow($talla / 100, 2), 2)
+                ($peso !== null && $tallaParaCalculo !== null && $tallaParaCalculo > 0)
+                ? round($peso / pow($tallaParaCalculo / 100, 2), 2)
                 : null
             );
 
             $campos = [
                 'peso' => $peso,
-                'talla' => $talla,
+                'talla' => $tallaParaCalculo,
+                'metodo_medicion_talla' => $metodoMedicionTalla,
                 'edema' => 0,
                 'imc' => $imc,
                 'edad_dias_medicion' => $calculadosAntro['edad_dias_medicion'] ?? $edadDias,
                 'edad_meses_medicion' => $edadMeses,
                 'grupo_edad_reporte' => ($edadDias !== null && $edadDias > self::EDAD_DIAS_ADULTO) ? 'adultos' : 'menores-19',
             ];
+            if ($tricipital !== null) {
+                $campos['pliegue_tricipital'] = $tricipital;
+            }
 
+            if ($subescapular !== null) {
+                $campos['pliegue_subescapular'] = $subescapular;
+            }
             if ($edadDias !== null && $edadDias <= self::EDAD_DIAS_ADULTO) {
                 foreach (
                     [
                         'zpe',
+                        'zpe_percentil',
                         'zte',
+                        'zte_percentil',
                         'zimce',
+                        'zimce_percentil',
                         'zpt',
+                        'zpt_percentil',
+                        'zcc',
+                        'zcc_percentil',
+                        'zcbi',
+                        'zcbi_percentil',
+                        'zptri',
+                        'zptri_percentil',
+                        'zpsub',
+                        'zpsub_percentil',
                         'clasificacion_imc_talla',
                         'estado_nutricional_agregado',
                     ] as $codigoCalculado
@@ -1057,26 +1153,7 @@ class CargaMasivaController extends BaseController
             if ($cefalica !== null) {
                 $campos['circ_cefalica'] = $cefalica;
             }
-            if (
-    $edadDias !== null
-    && $edadDias >= 0
-    && $edadDias <= self::EDAD_DIAS_ADULTO
-    && $peso !== null
-    && $talla !== null
-    && $imc !== null
-) {
-    $zscoreCampos = $this->calcularZscoresAntropometriaMasiva(
-        $peso,
-        $talla,
-        $imc,
-        $edadDias,
-        $beneficiario['sexo'] ?? null,
-        $cefalica,
-        $brazo
-    );
 
-    $campos = array_merge($campos, $zscoreCampos);
-}
             $db->transBegin();
             try {
                 $evaluacionId = $evalModel->insert([
@@ -1210,511 +1287,555 @@ class CargaMasivaController extends BaseController
             return null;
         }
     }
-private function calcularZscoresAntropometriaMasiva(
-    ?float $peso,
-    ?float $talla,
-    ?float $imc,
-    int $edadDias,
-    ?string $sexo,
-    ?float $circCefalica = null,
-    ?float $circBrazoIzq = null
-): array {
-    $sexo = $this->normalizarSexoZscore($sexo);
-    if ($sexo === null) {
-        return [];
+    private function calcularZscoresAntropometriaMasiva(
+        ?float $peso,
+        ?float $talla,
+        ?float $imc,
+        int $edadDias,
+        ?string $sexo,
+        ?float $circCefalica = null,
+        ?float $circBrazoIzq = null
+    ): array {
+        $sexo = $this->normalizarSexoZscore($sexo);
+        if ($sexo === null) {
+            return [];
+        }
+
+        $resultados = [];
+
+        // Peso / edad: hasta 3653 días
+        if ($peso !== null && $edadDias <= 3653) {
+            $zpe = $this->calcularZPesoEdad($peso, $edadDias, $sexo);
+            $this->agregarZscoreConPercentil($resultados, 'zpe', $zpe);
+        }
+
+        // Talla / edad: hasta 6939 días
+        if ($talla !== null && $edadDias <= self::EDAD_DIAS_ADULTO) {
+            $zte = $this->calcularZTallaEdad($talla, $edadDias, $sexo);
+            $this->agregarZscoreConPercentil($resultados, 'zte', $zte);
+        }
+
+        // IMC / edad: hasta 6939 días
+        if ($imc !== null && $edadDias <= self::EDAD_DIAS_ADULTO) {
+            $zimce = $this->calcularZImcEdad($imc, $edadDias, $sexo);
+            $this->agregarZscoreConPercentil($resultados, 'zimce', $zimce);
+        }
+
+        // Peso / talla: hasta 1856 días
+        if ($peso !== null && $talla !== null && $edadDias <= 1856) {
+            $zpt = $this->calcularZPesoTalla($peso, $talla, $sexo);
+            $this->agregarZscoreConPercentil($resultados, 'zpt', $zpt);
+        }
+
+        // Circunferencia cefálica: hasta 1856 días
+        if ($circCefalica !== null && $edadDias <= 1856) {
+            $zcc = $this->calcularZGenericoPorDias(
+                'zcc_dias',
+                $circCefalica,
+                $edadDias,
+                $sexo,
+                'ccdias_indicador_genero',
+                'ccdias_indicador_denominador',
+                'ccdias_sd0',
+                'ccdias_indicador_coeficiente_l',
+                'ccdias_indicador_coeficiente_s'
+            );
+            $this->agregarZscoreConPercentil($resultados, 'zcc', $zcc);
+        }
+
+        // Circunferencia brazo izquierdo: de 91 a 1856 días
+        if ($circBrazoIzq !== null && $edadDias >= 91 && $edadDias <= 1856) {
+            $zcbi = $this->calcularZGenericoPorDias(
+                'zcbi_dias',
+                $circBrazoIzq,
+                $edadDias,
+                $sexo,
+                'cbidias_indicador_genero',
+                'cbidias_indicador_denominador',
+                'cbidias_sd0',
+                'cbidias_indicador_coeficiente_l',
+                'cbidias_indicador_coeficiente_s'
+            );
+            $this->agregarZscoreConPercentil($resultados, 'zcbi', $zcbi);
+        }
+
+        return $resultados;
     }
 
-    $resultados = [];
+    private function agregarZscoreConPercentil(array &$resultados, string $codigo, ?float $zscore): void
+    {
+        if ($zscore === null || ! is_finite($zscore)) {
+            return;
+        }
 
-    // Peso / edad: hasta 3653 días
-    if ($peso !== null && $edadDias <= 3653) {
-        $zpe = $this->calcularZPesoEdad($peso, $edadDias, $sexo);
-        $this->agregarZscoreConPercentil($resultados, 'zpe', $zpe);
+        $resultados[$codigo] = round($zscore, 2);
+        $resultados[$codigo . '_percentil'] = $this->zscoreAPercentil($zscore);
     }
 
-    // Talla / edad: hasta 6939 días
-    if ($talla !== null && $edadDias <= self::EDAD_DIAS_ADULTO) {
-        $zte = $this->calcularZTallaEdad($talla, $edadDias, $sexo);
-        $this->agregarZscoreConPercentil($resultados, 'zte', $zte);
-    }
+    private function calcularZPesoEdad(float $peso, int $edadDias, string $sexo): ?float
+    {
+        if ($edadDias <= 1856) {
+            return $this->calcularZGenericoPorDias(
+                'zpe_dias',
+                $peso,
+                $edadDias,
+                $sexo,
+                'pdias_indicador_genero',
+                'pdias_indicador_denominador',
+                'pdias_sd0_mediana',
+                'pdias_indicador_coeficiente_l',
+                'pdias_indicador_coeficiente_s'
+            );
+        }
 
-    // IMC / edad: hasta 6939 días
-    if ($imc !== null && $edadDias <= self::EDAD_DIAS_ADULTO) {
-        $zimce = $this->calcularZImcEdad($imc, $edadDias, $sexo);
-        $this->agregarZscoreConPercentil($resultados, 'zimce', $zimce);
-    }
-
-    // Peso / talla: hasta 1856 días
-    if ($peso !== null && $talla !== null && $edadDias <= 1856) {
-        $zpt = $this->calcularZPesoTalla($peso, $talla, $sexo);
-        $this->agregarZscoreConPercentil($resultados, 'zpt', $zpt);
-    }
-
-    // Circunferencia cefálica: hasta 1856 días
-    if ($circCefalica !== null && $edadDias <= 1856) {
-        $zcc = $this->calcularZGenericoPorDias(
-            'zcc_dias',
-            $circCefalica,
-            $edadDias,
-            $sexo,
-            'ccdias_indicador_genero',
-            'ccdias_indicador_denominador',
-            'ccdias_sd0',
-            'ccdias_indicador_coeficiente_l',
-            'ccdias_indicador_coeficiente_s'
-        );
-        $this->agregarZscoreConPercentil($resultados, 'zcc', $zcc);
-    }
-
-    // Circunferencia brazo izquierdo: de 91 a 1856 días
-    if ($circBrazoIzq !== null && $edadDias >= 91 && $edadDias <= 1856) {
-        $zcbi = $this->calcularZGenericoPorDias(
-            'zcbi_dias',
-            $circBrazoIzq,
-            $edadDias,
-            $sexo,
-            'cbidias_indicador_genero',
-            'cbidias_indicador_denominador',
-            'cbidias_sd0',
-            'cbidias_indicador_coeficiente_l',
-            'cbidias_indicador_coeficiente_s'
-        );
-        $this->agregarZscoreConPercentil($resultados, 'zcbi', $zcbi);
-    }
-
-    return $resultados;
-}
-
-private function agregarZscoreConPercentil(array &$resultados, string $codigo, ?float $zscore): void
-{
-    if ($zscore === null || ! is_finite($zscore)) {
-        return;
-    }
-
-    $resultados[$codigo] = round($zscore, 2);
-    $resultados[$codigo . '_percentil'] = $this->zscoreAPercentil($zscore);
-}
-
-private function calcularZPesoEdad(float $peso, int $edadDias, string $sexo): ?float
-{
-    if ($edadDias <= 1856) {
-        return $this->calcularZGenericoPorDias(
-            'zpe_dias',
+        return $this->calcularZGenericoPorMeses(
+            'zpe_meses',
             $peso,
             $edadDias,
             $sexo,
-            'pdias_indicador_genero',
-            'pdias_indicador_denominador',
-            'pdias_sd0_mediana',
-            'pdias_indicador_coeficiente_l',
-            'pdias_indicador_coeficiente_s'
+            'p_indicador_genero',
+            'p_indicador_denominador',
+            'p_indicador_coeficiente_m',
+            'p_indicador_coeficiente_l',
+            'p_indicador_coeficiente_s'
         );
     }
 
-    return $this->calcularZGenericoPorMeses(
-        'zpe_meses',
-        $peso,
-        $edadDias,
-        $sexo,
-        'p_indicador_genero',
-        'p_indicador_denominador',
-        'p_indicador_coeficiente_m',
-        'p_indicador_coeficiente_l',
-        'p_indicador_coeficiente_s'
-    );
-}
+    private function calcularZTallaEdad(float $talla, int $edadDias, string $sexo): ?float
+    {
+        if ($edadDias <= 1856) {
+            return $this->calcularZGenericoPorDias(
+                'zte_dias',
+                $talla,
+                $edadDias,
+                $sexo,
+                'tdias_indicador_genero',
+                'tdias_indicador_denominador',
+                'tdias_sd0_mediana',
+                'tdias_indicador_coeficiente_l',
+                'tdias_indicador_coeficiente_s'
+            );
+        }
 
-private function calcularZTallaEdad(float $talla, int $edadDias, string $sexo): ?float
-{
-    if ($edadDias <= 1856) {
-        return $this->calcularZGenericoPorDias(
-            'zte_dias',
+        $archivo = $sexo === 'F' ? 'zte_meses_f' : 'zte_meses_m';
+
+        return $this->calcularZGenericoPorMeses(
+            $archivo,
             $talla,
             $edadDias,
             $sexo,
-            'tdias_indicador_genero',
-            'tdias_indicador_denominador',
-            'tdias_sd0_mediana',
-            'tdias_indicador_coeficiente_l',
-            'tdias_indicador_coeficiente_s'
+            't_indicador_genero',
+            't_indicador_denominador',
+            't_indicador_coeficiente_m',
+            't_indicador_coeficiente_l',
+            't_indicador_coeficiente_s'
         );
     }
 
-    $archivo = $sexo === 'F' ? 'zte_meses_f' : 'zte_meses_m';
+    private function calcularZImcEdad(float $imc, int $edadDias, string $sexo): ?float
+    {
+        if ($edadDias <= 1856) {
+            return $this->calcularZGenericoPorDias(
+                'zimce_dias',
+                $imc,
+                $edadDias,
+                $sexo,
+                'idias_indicador_genero',
+                'idias_indicador_denominador',
+                'idias_sd0_mediana',
+                'idias_indicador_coeficiente_l',
+                'idias_indicador_coeficiente_s'
+            );
+        }
 
-    return $this->calcularZGenericoPorMeses(
-        $archivo,
-        $talla,
-        $edadDias,
-        $sexo,
-        't_indicador_genero',
-        't_indicador_denominador',
-        't_indicador_coeficiente_m',
-        't_indicador_coeficiente_l',
-        't_indicador_coeficiente_s'
-    );
-}
-
-private function calcularZImcEdad(float $imc, int $edadDias, string $sexo): ?float
-{
-    if ($edadDias <= 1856) {
-        return $this->calcularZGenericoPorDias(
-            'zimce_dias',
+        return $this->calcularZGenericoPorMeses(
+            'zimce_meses',
             $imc,
             $edadDias,
             $sexo,
-            'idias_indicador_genero',
-            'idias_indicador_denominador',
-            'idias_sd0_mediana',
-            'idias_indicador_coeficiente_l',
-            'idias_indicador_coeficiente_s'
+            'i_indicador_genero',
+            'i_indicador_denominador',
+            'i_indicador_coeficiente_m',
+            'i_indicador_coeficiente_l',
+            'i_indicador_coeficiente_s'
         );
     }
 
-    return $this->calcularZGenericoPorMeses(
-        'zimce_meses',
-        $imc,
-        $edadDias,
-        $sexo,
-        'i_indicador_genero',
-        'i_indicador_denominador',
-        'i_indicador_coeficiente_m',
-        'i_indicador_coeficiente_l',
-        'i_indicador_coeficiente_s'
-    );
-}
+    private function calcularZPesoTalla(float $peso, float $talla, string $sexo): ?float
+    {
+        $archivo = $talla >= 65 ? 'zpt_65_120' : 'zpt_45_110';
+        $filas = $this->obtenerDataZscore($archivo);
 
-private function calcularZPesoTalla(float $peso, float $talla, string $sexo): ?float
-{
-    $archivo = $talla >= 65 ? 'zpt_65_120' : 'zpt_45_110';
-    $filas = $this->obtenerDataZscore($archivo);
+        $denominador = round($talla, 1);
 
-    $denominador = round($talla, 1);
+        $filasSexo = array_values(array_filter($filas, function ($fila) use ($sexo) {
+            return $this->normalizarTextoZscore($fila['petadias_indicador_genero'] ?? null) === $sexo;
+        }));
 
-    $filasSexo = array_values(array_filter($filas, function ($fila) use ($sexo) {
-        return $this->normalizarTextoZscore($fila['petadias_indicador_genero'] ?? null) === $sexo;
-    }));
-
-    $fila = null;
-    foreach ($filasSexo as $f) {
-        $valorDenominador = $this->numeroZscore($f['petadias_indicador_denominador'] ?? null);
-        if ($valorDenominador !== null && abs($valorDenominador - $denominador) < 0.051) {
-            $fila = $f;
-            break;
-        }
-    }
-
-    if ($fila === null) {
-        $fila = $this->buscarFilaMasCercana($filasSexo, 'petadias_indicador_denominador', $denominador);
-    }
-
-    if ($fila === null) {
-        return null;
-    }
-
-    return $this->calcularZLms(
-        $peso,
-        $fila['petadias_sd0_mediana'] ?? null,
-        $fila['petadias_indicador_coeficiente_l'] ?? null,
-        $fila['petadias_indicador_coeficiente_s'] ?? null
-    );
-}
-
-private function calcularZGenericoPorDias(
-    string $archivo,
-    float $valor,
-    int $edadDias,
-    string $sexo,
-    string $campoSexo,
-    string $campoDenominador,
-    string $campoMediana,
-    string $campoL,
-    string $campoS
-): ?float {
-    $filas = $this->obtenerDataZscore($archivo);
-
-    $filasSexo = array_values(array_filter($filas, function ($fila) use ($sexo, $campoSexo) {
-        return $this->normalizarTextoZscore($fila[$campoSexo] ?? null) === $sexo;
-    }));
-
-    $fila = null;
-    foreach ($filasSexo as $f) {
-        $denominador = $this->numeroZscore($f[$campoDenominador] ?? null);
-        if ($denominador !== null && (int) $denominador === $edadDias) {
-            $fila = $f;
-            break;
-        }
-    }
-
-    if ($fila === null) {
-        $fila = $this->buscarFilaMasCercana($filasSexo, $campoDenominador, $edadDias);
-    }
-
-    if ($fila === null) {
-        return null;
-    }
-
-    return $this->calcularZLms(
-        $valor,
-        $fila[$campoMediana] ?? null,
-        $fila[$campoL] ?? null,
-        $fila[$campoS] ?? null
-    );
-}
-
-private function calcularZGenericoPorMeses(
-    string $archivo,
-    float $valor,
-    int $edadDias,
-    string $sexo,
-    string $campoSexo,
-    string $campoDenominador,
-    string $campoMediana,
-    string $campoL,
-    string $campoS
-): ?float {
-    $filas = $this->obtenerDataZscore($archivo);
-
-    $filasSexo = array_values(array_filter($filas, function ($fila) use ($sexo, $campoSexo) {
-        return $this->normalizarTextoZscore($fila[$campoSexo] ?? null) === $sexo;
-    }));
-
-    $edadMesesExacta = $edadDias / 30.4375;
-    $mes = (int) floor($edadMesesExacta);
-    $fraccion = $edadMesesExacta - $mes;
-
-    $fila1 = $this->buscarFilaPorDenominadorEntero($filasSexo, $campoDenominador, $mes)
-        ?? $this->buscarFilaMasCercana($filasSexo, $campoDenominador, $mes);
-
-    if ($fila1 === null) {
-        return null;
-    }
-
-    $fila2 = $this->buscarFilaPorDenominadorEntero($filasSexo, $campoDenominador, $mes + 1) ?? $fila1;
-
-    $mediana = $this->interpolarZscore(
-        $this->numeroZscore($fila1[$campoMediana] ?? null),
-        $this->numeroZscore($fila2[$campoMediana] ?? null),
-        $fraccion
-    );
-
-    $l = $this->interpolarZscore(
-        $this->numeroZscore($fila1[$campoL] ?? null),
-        $this->numeroZscore($fila2[$campoL] ?? null),
-        $fraccion
-    );
-
-    $s = $this->interpolarZscore(
-        $this->numeroZscore($fila1[$campoS] ?? null),
-        $this->numeroZscore($fila2[$campoS] ?? null),
-        $fraccion
-    );
-
-    return $this->calcularZLms($valor, $mediana, $l, $s);
-}
-
-private function calcularZLms(float $valor, $mediana, $l, $s): ?float
-{
-    $mediana = $this->numeroZscore($mediana);
-    $l = $this->numeroZscore($l);
-    $s = $this->numeroZscore($s);
-
-    if ($valor <= 0 || $mediana === null || $mediana <= 0 || $l === null || $s === null || $s == 0.0) {
-        return null;
-    }
-
-    $z = (pow($valor / $mediana, $l) - 1) / ($l * $s);
-
-    if ($z < -3 || $z > 3) {
-        $z = $this->ajustarZscoreExtremo($z, $valor, $mediana, $l, $s);
-    }
-
-    return $z;
-}
-
-private function ajustarZscoreExtremo(float $z, float $valor, float $mediana, float $l, float $s): float
-{
-    $exp = 1 / $l;
-
-    if ($z < -3) {
-        $sd2 = $mediana * pow(1 + $l * $s * -2, $exp);
-        $sd3 = $mediana * pow(1 + $l * $s * -3, $exp);
-
-        return -3 + (($valor - $sd3) / ($sd2 - $sd3));
-    }
-
-    if ($z > 3) {
-        $sd2 = $mediana * pow(1 + $l * $s * 2, $exp);
-        $sd3 = $mediana * pow(1 + $l * $s * 3, $exp);
-
-        return 3 + (($valor - $sd3) / ($sd3 - $sd2));
-    }
-
-    return $z;
-}
-
-private function zscoreAPercentil(float $z): string
-{
-    $p = $this->normalCdfZscore($z) * 100;
-
-    if (! is_finite($p)) {
-        return '';
-    }
-
-    if ($p < 0.01) {
-        return '<0.01';
-    }
-
-    if ($p > 99.99) {
-        return '>99.99';
-    }
-
-    return number_format($p, 2, '.', '');
-}
-
-private function normalCdfZscore(float $x): float
-{
-    return 0.5 * (1 + $this->erfZscore($x / sqrt(2)));
-}
-
-private function erfZscore(float $x): float
-{
-    $sign = $x >= 0 ? 1 : -1;
-    $x = abs($x);
-
-    $a1 = 0.254829592;
-    $a2 = -0.284496736;
-    $a3 = 1.421413741;
-    $a4 = -1.453152027;
-    $a5 = 1.061405429;
-    $p = 0.3275911;
-
-    $t = 1 / (1 + $p * $x);
-    $y = 1 - (((((($a5 * $t + $a4) * $t) + $a3) * $t + $a2) * $t + $a1) * $t * exp(-$x * $x));
-
-    return $sign * $y;
-}
-
-private function obtenerDataZscore(string $clave): array
-{
-    if (isset($this->antroZscoreCache[$clave])) {
-        return $this->antroZscoreCache[$clave];
-    }
-
-    $archivos = [
-        'zpe_dias'     => 'zpe_dias.json',
-        'zpe_meses'    => 'zpe_meses.json',
-        'zte_dias'     => 'zte_dias.json',
-        'zte_meses_m'  => 'zte_meses.json',
-        'zte_meses_f'  => 'zte_meses_parte2.json',
-        'zimce_dias'   => 'zimce_dias.json',
-        'zimce_meses'  => 'zimce_meses.json',
-        'zpt_65_120'   => 'zpeso_talla.json',
-        'zpt_45_110'   => 'zpeso_talla2.json',
-        'zcc_dias'     => 'zcc_dias.json',
-        'zcbi_dias'    => 'zcbi_dias.json',
-    ];
-
-    if (! isset($archivos[$clave])) {
-        return $this->antroZscoreCache[$clave] = [];
-    }
-
-    $path = FCPATH . 'data/antro/' . $archivos[$clave];
-
-    if (! is_file($path)) {
-        log_message('error', 'Archivo z-score no encontrado: ' . $path);
-        return $this->antroZscoreCache[$clave] = [];
-    }
-
-    $contenido = file_get_contents($path);
-    $data = json_decode($contenido, true);
-
-    if (! is_array($data)) {
-        log_message('error', 'Archivo z-score invalido: ' . $path);
-        return $this->antroZscoreCache[$clave] = [];
-    }
-
-    return $this->antroZscoreCache[$clave] = $data;
-}
-
-private function buscarFilaPorDenominadorEntero(array $filas, string $campo, int $valor): ?array
-{
-    foreach ($filas as $fila) {
-        $denominador = $this->numeroZscore($fila[$campo] ?? null);
-        if ($denominador !== null && (int) $denominador === $valor) {
-            return $fila;
-        }
-    }
-
-    return null;
-}
-
-private function buscarFilaMasCercana(array $filas, string $campo, float $objetivo): ?array
-{
-    $mejor = null;
-    $mejorDistancia = null;
-
-    foreach ($filas as $fila) {
-        $valor = $this->numeroZscore($fila[$campo] ?? null);
-        if ($valor === null) {
-            continue;
+        $fila = null;
+        foreach ($filasSexo as $f) {
+            $valorDenominador = $this->numeroZscore($f['petadias_indicador_denominador'] ?? null);
+            if ($valorDenominador !== null && abs($valorDenominador - $denominador) < 0.051) {
+                $fila = $f;
+                break;
+            }
         }
 
-        $distancia = abs($valor - $objetivo);
-        if ($mejor === null || $distancia < $mejorDistancia) {
-            $mejor = $fila;
-            $mejorDistancia = $distancia;
+        if ($fila === null) {
+            $fila = $this->buscarFilaMasCercana($filasSexo, 'petadias_indicador_denominador', $denominador);
         }
+
+        if ($fila === null) {
+            return null;
+        }
+
+        return $this->calcularZLms(
+            $peso,
+            $fila['petadias_sd0_mediana'] ?? null,
+            $fila['petadias_indicador_coeficiente_l'] ?? null,
+            $fila['petadias_indicador_coeficiente_s'] ?? null
+        );
     }
 
-    return $mejor;
-}
+    private function calcularZGenericoPorDias(
+        string $archivo,
+        float $valor,
+        int $edadDias,
+        string $sexo,
+        string $campoSexo,
+        string $campoDenominador,
+        string $campoMediana,
+        string $campoL,
+        string $campoS
+    ): ?float {
+        $filas = $this->obtenerDataZscore($archivo);
 
-private function interpolarZscore(?float $a, ?float $b, float $fraccion): ?float
-{
-    if ($a === null && $b === null) {
+        $filasSexo = array_values(array_filter($filas, function ($fila) use ($sexo, $campoSexo) {
+            return $this->normalizarTextoZscore($fila[$campoSexo] ?? null) === $sexo;
+        }));
+
+        $fila = null;
+        foreach ($filasSexo as $f) {
+            $denominador = $this->numeroZscore($f[$campoDenominador] ?? null);
+            if ($denominador !== null && (int) $denominador === $edadDias) {
+                $fila = $f;
+                break;
+            }
+        }
+
+        if ($fila === null) {
+            $fila = $this->buscarFilaMasCercana($filasSexo, $campoDenominador, $edadDias);
+        }
+
+        if ($fila === null) {
+            return null;
+        }
+
+        return $this->calcularZLms(
+            $valor,
+            $fila[$campoMediana] ?? null,
+            $fila[$campoL] ?? null,
+            $fila[$campoS] ?? null
+        );
+    }
+
+    private function calcularZGenericoPorMeses(
+        string $archivo,
+        float $valor,
+        int $edadDias,
+        string $sexo,
+        string $campoSexo,
+        string $campoDenominador,
+        string $campoMediana,
+        string $campoL,
+        string $campoS
+    ): ?float {
+        $filas = $this->obtenerDataZscore($archivo);
+
+        $filasSexo = array_values(array_filter($filas, function ($fila) use ($sexo, $campoSexo) {
+            return $this->normalizarTextoZscore($fila[$campoSexo] ?? null) === $sexo;
+        }));
+
+        $edadMesesExacta = $edadDias / 30.4375;
+        $mes = (int) floor($edadMesesExacta);
+        $fraccion = $edadMesesExacta - $mes;
+
+        $fila1 = $this->buscarFilaPorDenominadorEntero($filasSexo, $campoDenominador, $mes)
+            ?? $this->buscarFilaMasCercana($filasSexo, $campoDenominador, $mes);
+
+        if ($fila1 === null) {
+            return null;
+        }
+
+        $fila2 = $this->buscarFilaPorDenominadorEntero($filasSexo, $campoDenominador, $mes + 1) ?? $fila1;
+
+        $mediana = $this->interpolarZscore(
+            $this->numeroZscore($fila1[$campoMediana] ?? null),
+            $this->numeroZscore($fila2[$campoMediana] ?? null),
+            $fraccion
+        );
+
+        $l = $this->interpolarZscore(
+            $this->numeroZscore($fila1[$campoL] ?? null),
+            $this->numeroZscore($fila2[$campoL] ?? null),
+            $fraccion
+        );
+
+        $s = $this->interpolarZscore(
+            $this->numeroZscore($fila1[$campoS] ?? null),
+            $this->numeroZscore($fila2[$campoS] ?? null),
+            $fraccion
+        );
+
+        return $this->calcularZLms($valor, $mediana, $l, $s);
+    }
+
+    private function calcularZLms(float $valor, $mediana, $l, $s): ?float
+    {
+        $mediana = $this->numeroZscore($mediana);
+        $l = $this->numeroZscore($l);
+        $s = $this->numeroZscore($s);
+
+        if ($valor <= 0 || $mediana === null || $mediana <= 0 || $l === null || $s === null || $s == 0.0) {
+            return null;
+        }
+
+        $z = (pow($valor / $mediana, $l) - 1) / ($l * $s);
+
+        if ($z < -3 || $z > 3) {
+            $z = $this->ajustarZscoreExtremo($z, $valor, $mediana, $l, $s);
+        }
+
+        return $z;
+    }
+
+    private function ajustarZscoreExtremo(float $z, float $valor, float $mediana, float $l, float $s): float
+    {
+        $exp = 1 / $l;
+
+        if ($z < -3) {
+            $sd2 = $mediana * pow(1 + $l * $s * -2, $exp);
+            $sd3 = $mediana * pow(1 + $l * $s * -3, $exp);
+
+            return -3 + (($valor - $sd3) / ($sd2 - $sd3));
+        }
+
+        if ($z > 3) {
+            $sd2 = $mediana * pow(1 + $l * $s * 2, $exp);
+            $sd3 = $mediana * pow(1 + $l * $s * 3, $exp);
+
+            return 3 + (($valor - $sd3) / ($sd3 - $sd2));
+        }
+
+        return $z;
+    }
+
+    private function zscoreAPercentil(float $z): string
+    {
+        $p = $this->normalCdfZscore($z) * 100;
+
+        if (! is_finite($p)) {
+            return '';
+        }
+
+        if ($p < 0.01) {
+            return '<0.01';
+        }
+
+        if ($p > 99.99) {
+            return '>99.99';
+        }
+
+        return number_format($p, 2, '.', '');
+    }
+
+    private function normalCdfZscore(float $x): float
+    {
+        return 0.5 * (1 + $this->erfZscore($x / sqrt(2)));
+    }
+
+    private function erfZscore(float $x): float
+    {
+        $sign = $x >= 0 ? 1 : -1;
+        $x = abs($x);
+
+        $a1 = 0.254829592;
+        $a2 = -0.284496736;
+        $a3 = 1.421413741;
+        $a4 = -1.453152027;
+        $a5 = 1.061405429;
+        $p = 0.3275911;
+
+        $t = 1 / (1 + $p * $x);
+        $y = 1 - (((((($a5 * $t + $a4) * $t) + $a3) * $t + $a2) * $t + $a1) * $t * exp(-$x * $x));
+
+        return $sign * $y;
+    }
+
+    private function obtenerDataZscore(string $clave): array
+    {
+        if (isset($this->antroZscoreCache[$clave])) {
+            return $this->antroZscoreCache[$clave];
+        }
+
+        $archivos = [
+            'zpe_dias'     => 'zpe_dias.json',
+            'zpe_meses'    => 'zpe_meses.json',
+            'zte_dias'     => 'zte_dias.json',
+            'zte_meses_m'  => 'zte_meses.json',
+            'zte_meses_f'  => 'zte_meses_parte2.json',
+            'zimce_dias'   => 'zimce_dias.json',
+            'zimce_meses'  => 'zimce_meses.json',
+            'zpt_65_120'   => 'zpeso_talla.json',
+            'zpt_45_110'   => 'zpeso_talla2.json',
+            'zcc_dias'     => 'zcc_dias.json',
+            'zcbi_dias'    => 'zcbi_dias.json',
+        ];
+
+        if (! isset($archivos[$clave])) {
+            return $this->antroZscoreCache[$clave] = [];
+        }
+
+        $path = FCPATH . 'data/antro/' . $archivos[$clave];
+
+        if (! is_file($path)) {
+            log_message('error', 'Archivo z-score no encontrado: ' . $path);
+            return $this->antroZscoreCache[$clave] = [];
+        }
+
+        $contenido = file_get_contents($path);
+        $data = json_decode($contenido, true);
+
+        if (! is_array($data)) {
+            log_message('error', 'Archivo z-score invalido: ' . $path);
+            return $this->antroZscoreCache[$clave] = [];
+        }
+
+        return $this->antroZscoreCache[$clave] = $data;
+    }
+
+    private function buscarFilaPorDenominadorEntero(array $filas, string $campo, int $valor): ?array
+    {
+        foreach ($filas as $fila) {
+            $denominador = $this->numeroZscore($fila[$campo] ?? null);
+            if ($denominador !== null && (int) $denominador === $valor) {
+                return $fila;
+            }
+        }
+
         return null;
     }
 
-    if ($a === null) {
-        return $b;
+    private function buscarFilaMasCercana(array $filas, string $campo, float $objetivo): ?array
+    {
+        $mejor = null;
+        $mejorDistancia = null;
+
+        foreach ($filas as $fila) {
+            $valor = $this->numeroZscore($fila[$campo] ?? null);
+            if ($valor === null) {
+                continue;
+            }
+
+            $distancia = abs($valor - $objetivo);
+            if ($mejor === null || $distancia < $mejorDistancia) {
+                $mejor = $fila;
+                $mejorDistancia = $distancia;
+            }
+        }
+
+        return $mejor;
     }
 
-    if ($b === null) {
-        return $a;
+    private function interpolarZscore(?float $a, ?float $b, float $fraccion): ?float
+    {
+        if ($a === null && $b === null) {
+            return null;
+        }
+
+        if ($a === null) {
+            return $b;
+        }
+
+        if ($b === null) {
+            return $a;
+        }
+
+        return $a + (($b - $a) * $fraccion);
     }
 
-    return $a + (($b - $a) * $fraccion);
-}
+    private function numeroZscore($valor): ?float
+    {
+        if ($valor === null || trim((string) $valor) === '') {
+            return null;
+        }
 
-private function numeroZscore($valor): ?float
-{
-    if ($valor === null || trim((string) $valor) === '') {
-        return null;
+        $valor = str_replace(',', '.', trim((string) $valor));
+
+        return is_numeric($valor) ? (float) $valor : null;
     }
 
-    $valor = str_replace(',', '.', trim((string) $valor));
+    private function normalizarSexoZscore(?string $sexo): ?string
+    {
+        $sexo = strtoupper(trim((string) $sexo));
 
-    return is_numeric($valor) ? (float) $valor : null;
-}
+        if ($sexo === '') {
+            return null;
+        }
 
-private function normalizarSexoZscore(?string $sexo): ?string
-{
-    $sexo = strtoupper(trim((string) $sexo));
+        $sexo = substr($sexo, 0, 1);
 
-    if ($sexo === '') {
-        return null;
+        return in_array($sexo, ['M', 'F'], true) ? $sexo : null;
     }
 
-    $sexo = substr($sexo, 0, 1);
-
-    return in_array($sexo, ['M', 'F'], true) ? $sexo : null;
-}
-
-private function normalizarTextoZscore($valor): string
-{
-    return strtoupper(trim((string) $valor));
-}
+    private function normalizarTextoZscore($valor): string
+    {
+        return strtoupper(trim((string) $valor));
+    }
 
 
-}
+
+    private function valorItemAntroPorCodigo($sheet, array $headers, array $itemsPorCodigo, int $fila, string $codigo): string
+    {
+        $aliases = [$codigo];
+
+        if (isset($itemsPorCodigo[$codigo]['nombre'])) {
+            $aliases[] = (string) $itemsPorCodigo[$codigo]['nombre'];
+        }
+
+        return $this->valorPorAlias($sheet, $headers, $fila, $aliases);
+    }
+
+    private function normalizarMetodoMedicionTalla(?string $valor): ?string
+    {
+        $valor = strtolower($this->limpiarTextoBasico(trim((string) $valor)));
+        $valor = str_replace([' ', '-'], '_', $valor);
+
+        if ($valor === '') {
+            return null;
+        }
+
+        return match ($valor) {
+            'de_pie', 'pie', 'parado', 'bipedestacion' => 'de_pie',
+            'acostado', 'acostada', 'decubito', 'longitud' => 'acostado',
+            default => null,
+        };
+    }
+
+    private function ajustarTallaPorMetodoMedicion(?float $talla, ?int $edadDias, ?string $metodoMedicionTalla): ?float
+    {
+        if ($talla === null || $edadDias === null || $metodoMedicionTalla === null) {
+            return $talla;
+        }
+
+        if ($edadDias < 730 && $metodoMedicionTalla === 'de_pie') {
+            return round($talla + 0.7, 1);
+        }
+
+        if ($edadDias > 730 && $metodoMedicionTalla === 'acostado') {
+            return round($talla - 0.7, 1);
+        }
+
+        return $talla;
+    }
+} // fin clase

@@ -28,12 +28,16 @@ class AntropometriaZscoreService
 
         $peso = $this->toFloat($datos['peso'] ?? null);
         $talla = $this->toFloat($datos['talla'] ?? null);
-
+        $circCefalica = $this->toFloat($datos['circ_cefalica'] ?? null);
+        $circBrazoIzq = $this->toFloat($datos['circ_brazo_izq'] ?? null);
+        $pliegueTricipital = $this->toFloat($datos['pliegue_tricipital'] ?? null);
+        $pliegueSubescapular = $this->toFloat($datos['pliegue_subescapular'] ?? null);
+        $metodoMedicionTalla = $this->normalizarMetodoMedicionTalla($datos['metodo_medicion_talla'] ?? null);
         $fechaNacimiento = $datos['fecha_nacimiento'] ?? null;
         $fechaEvaluacion = $datos['fecha_evaluacion'] ?? null;
 
         $edadDias = $this->calcularEdadDias($fechaNacimiento, $fechaEvaluacion);
-
+        $talla = $this->ajustarTallaPorMetodoMedicion($talla, $edadDias, $metodoMedicionTalla);
         $edemaRaw = strtolower(trim((string)($datos['edema'] ?? '')));
         $tieneEdema = in_array($edemaRaw, ['1', 'si', 'sí', 's', 'true'], true);
 
@@ -62,6 +66,18 @@ class AntropometriaZscoreService
             'semaforo_nutricional'        => null,
             'interpretacion_zimce_zte'    => null,
             'interpretacion_zpt_zte'      => null,
+            'zpe_percentil'                => null,
+            'zte_percentil'                => null,
+            'zimce_percentil'              => null,
+            'zpt_percentil'                => null,
+            'zcc'                          => null,
+            'zcc_percentil'                => null,
+            'zcbi'                         => null,
+            'zcbi_percentil'               => null,
+            'zptri'                        => null,
+            'zptri_percentil'              => null,
+            'zpsub'                        => null,
+            'zpsub_percentil'              => null,
         ];
 
         if (
@@ -78,15 +94,47 @@ class AntropometriaZscoreService
             return $resultado;
         }
 
-        $resultado['zpe'] = $this->zEdadPeso($sexo, $edadDias, $peso);
-        $resultado['zte'] = $this->zEdadTalla($sexo, $edadDias, $talla);
+        $this->setZscoreConPercentil($resultado, 'zpe', $this->zEdadPeso($sexo, $edadDias, $peso));
+        $this->setZscoreConPercentil($resultado, 'zte', $this->zEdadTalla($sexo, $edadDias, $talla));
 
         if ($imc !== null) {
-            $resultado['zimce'] = $this->zEdadImc($sexo, $edadDias, $imc);
+            $this->setZscoreConPercentil($resultado, 'zimce', $this->zEdadImc($sexo, $edadDias, $imc));
         }
 
-        if ($edadDias <= 1856) {
-            $resultado['zpt'] = $this->zPesoTalla($sexo, $talla, $peso);
+        $this->setZscoreConPercentil($resultado, 'zpt', $this->zPesoTalla($sexo, $edadDias, $talla, $peso));
+
+        if ($edadDias >= 1 && $edadDias <= 1856) {
+            if ($circCefalica !== null) {
+                $this->setZscoreConPercentil(
+                    $resultado,
+                    'zcc',
+                    $this->zGenericByDias('zcc_dias.json', $sexo, $edadDias, $circCefalica)
+                );
+            }
+
+            if ($circBrazoIzq !== null) {
+                $this->setZscoreConPercentil(
+                    $resultado,
+                    'zcbi',
+                    $this->zGenericByDias('zcbi_dias.json', $sexo, $edadDias, $circBrazoIzq)
+                );
+            }
+
+            if ($pliegueTricipital !== null) {
+                $this->setZscoreConPercentil(
+                    $resultado,
+                    'zptri',
+                    $this->zGenericByDias('ztricipital_dias.json', $sexo, $edadDias, $pliegueTricipital)
+                );
+            }
+
+            if ($pliegueSubescapular !== null) {
+                $this->setZscoreConPercentil(
+                    $resultado,
+                    'zpsub',
+                    $this->zGenericByDias('zsubescapular_dias.json', $sexo, $edadDias, $pliegueSubescapular)
+                );
+            }
         }
 
         $resultado['interpretacion_zimce_zte'] = $this->interpretacionZimceZte(
@@ -123,11 +171,11 @@ class AntropometriaZscoreService
 
     protected function zEdadPeso(string $sexo, int $edadDias, float $peso): ?float
     {
-        if ($edadDias <= 1856) {
+        if ($edadDias >= 1 && $edadDias <= 1856) {
             return $this->zGenericByDias('zpe_dias.json', $sexo, $edadDias, $peso);
         }
 
-        if ($edadDias <= 3653) {
+        if ($edadDias > 1856 && $edadDias <= 3653) {
             return $this->zGenericByMeses('zpe_meses.json', $sexo, $edadDias, $peso);
         }
 
@@ -136,11 +184,11 @@ class AntropometriaZscoreService
 
     protected function zEdadTalla(string $sexo, int $edadDias, float $talla): ?float
     {
-        if ($edadDias <= 1856) {
+        if ($edadDias >= 1 && $edadDias <= 1856) {
             return $this->zGenericByDias('zte_dias.json', $sexo, $edadDias, $talla);
         }
 
-        if ($edadDias <= 6939) {
+        if ($edadDias > 1856 && $edadDias <= 6939) {
             $archivo = $sexo === 'M'
                 ? 'zte_meses.json'
                 : 'zte_meses_parte2.json';
@@ -164,9 +212,15 @@ class AntropometriaZscoreService
         return null;
     }
 
-    protected function zPesoTalla(string $sexo, float $talla, float $peso): ?float
+    protected function zPesoTalla(string $sexo, int $edadDias, float $talla, float $peso): ?float
     {
-        $archivo = $talla >= 65 ? 'zpeso_talla.json' : 'zpeso_talla2.json';
+        if ($edadDias < 1 || $edadDias > 1856) {
+            return null;
+        }
+
+        $archivo = $edadDias <= 730
+            ? 'zpeso_talla2.json'
+            : 'zpeso_talla.json';
 
         $rows = $this->filtrarPorSexo($this->loadJson($archivo), $sexo);
 
@@ -269,10 +323,10 @@ class AntropometriaZscoreService
             -3 => $minus3,
             -2 => $minus2,
             -1 => $minus1,
-             0 => $zero,
-             1 => $plus1,
-             2 => $plus2,
-             3 => $plus3,
+            0 => $zero,
+            1 => $plus1,
+            2 => $plus2,
+            3 => $plus3,
         ];
 
         $valid = [];
@@ -692,4 +746,96 @@ class AntropometriaZscoreService
 
         return is_numeric($value) ? (float)$value : null;
     }
-}
+
+    protected function setZscoreConPercentil(array &$resultado, string $codigo, ?float $zscore): void
+    {
+        if ($zscore === null || ! is_finite($zscore)) {
+            return;
+        }
+
+        $resultado[$codigo] = round($zscore, 2);
+        $resultado[$codigo . '_percentil'] = $this->zscoreAPercentil($zscore);
+    }
+
+    protected function zscoreAPercentil(float $z): string
+    {
+        $p = $this->normalCdf($z) * 100;
+
+        if (! is_finite($p)) {
+            return '';
+        }
+
+        if ($p < 0.01) {
+            return '<0.01';
+        }
+
+        if ($p > 99.99) {
+            return '>99.99';
+        }
+
+        return number_format($p, 2, '.', '');
+    }
+
+    protected function normalCdf(float $x): float
+    {
+        return 0.5 * (1 + $this->erf($x / sqrt(2)));
+    }
+
+    protected function erf(float $x): float
+    {
+        $sign = $x >= 0 ? 1 : -1;
+        $x = abs($x);
+
+        $a1 = 0.254829592;
+        $a2 = -0.284496736;
+        $a3 = 1.421413741;
+        $a4 = -1.453152027;
+        $a5 = 1.061405429;
+        $p = 0.3275911;
+
+        $t = 1 / (1 + $p * $x);
+        $y = 1 - (((((($a5 * $t + $a4) * $t) + $a3) * $t + $a2) * $t + $a1) * $t * exp(-$x * $x));
+
+        return $sign * $y;
+    }
+
+    protected function normalizarMetodoMedicionTalla($valor): ?string
+    {
+        $valor = strtolower(trim((string) $valor));
+
+        $valor = str_replace(
+            ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ'],
+            ['a', 'e', 'i', 'o', 'u', 'u', 'n'],
+            $valor
+        );
+
+        $valor = str_replace([' ', '-'], '_', $valor);
+
+        if ($valor === '') {
+            return null;
+        }
+
+        return match ($valor) {
+            'de_pie', 'pie', 'parado', 'bipedestacion' => 'de_pie',
+            'acostado', 'acostada', 'decubito', 'longitud' => 'acostado',
+            default => null,
+        };
+    }
+
+    protected function ajustarTallaPorMetodoMedicion(?float $talla, ?int $edadDias, ?string $metodoMedicionTalla): ?float
+    {
+        if ($talla === null || $edadDias === null || $metodoMedicionTalla === null) {
+            return $talla;
+        }
+
+        if ($edadDias < 730 && $metodoMedicionTalla === 'de_pie') {
+            return round($talla + 0.7, 1);
+        }
+
+        if ($edadDias > 730 && $metodoMedicionTalla === 'acostado') {
+            return round($talla - 0.7, 1);
+        }
+
+        return $talla;
+    }
+} // Fin de la clase AntropometriaZscoreService

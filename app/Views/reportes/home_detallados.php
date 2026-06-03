@@ -220,7 +220,7 @@ if (in_array('6', $pesquisasActivas, true) && !empty($reportesDisponibles['vacun
 
         border-radius: 24px;
         padding: 24px;
-
+background: #fff;
         box-shadow: 0 18px 40px rgba(16, 26, 97, .18);
         margin-bottom: 24px;
         position: relative;
@@ -595,12 +595,13 @@ if (in_array('6', $pesquisasActivas, true) && !empty($reportesDisponibles['vacun
     }
     .rep-empty-state {
     background: #fff;
-    border: 1px dashed var(--rep-border);
+    border: 1px solid var(--rep-border);
     border-radius: 24px;
     padding: 36px;
     text-align: center;
     color: var(--rep-muted);
-    box-shadow: 0 10px 28px rgba(15, 23, 42, .06);
+   
+        box-shadow: 0 18px 40px rgba(16, 26, 97, .18);
 }
 
 .rep-empty-state h3 {
