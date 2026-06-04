@@ -1156,7 +1156,7 @@ class AntropometriaZscoreService
 
     protected function truncarDosDecimales(float $valor): string
     {
-        $factor = 100;
+        $factor = 1000;
 
         $truncado = $valor < 0
             ? ceil($valor * $factor) / $factor
@@ -1433,7 +1433,7 @@ class AntropometriaZscoreService
         return trim((string) $valor);
     }
 
-    protected function floatDebug(?float $valor, int $decimales = 12): ?string
+    protected function floatDebug(?float $valor, int $decimales = 10): ?string
     {
         if ($valor === null || ! is_finite($valor)) {
             return null;
