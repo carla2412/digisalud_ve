@@ -46,7 +46,9 @@ class AntropometriaZscoreService
             $tallaMetros = $talla / 100;
 
             if ($tallaMetros > 0) {
-                $imc = round($peso / ($tallaMetros * $tallaMetros), 2);
+                // Regla carga masiva / plataforma: el IMC se guarda con 1 decimal
+                // y ese mismo valor es el que se usa para calcular Z-IMC/E.
+                $imc = $this->imcUnDecimal($peso / ($tallaMetros * $tallaMetros));
             }
         }
 
@@ -79,6 +81,7 @@ class AntropometriaZscoreService
             'semaforo_nutricional'        => null,
             'interpretacion_zimce_zte'    => null,
             'interpretacion_zpt_zte'      => null,
+            'debug_zscores' => [],
         ];
 
         if (
@@ -95,86 +98,91 @@ class AntropometriaZscoreService
             return $resultado;
         }
 
-        $this->setZscoreConPercentil($resultado, 'zpe', $this->zEdadPeso($sexo, $edadDias, $peso));
-        $this->setZscoreConPercentil($resultado, 'zte', $this->zEdadTalla($sexo, $edadDias, $talla));
+        $calc = $this->calcularZpeConDebug($sexo, $edadDias, $peso);
+        $this->setZscoreConPercentil($resultado, 'zpe', $calc['zscore']);
+        $this->agregarDebugZscore($resultado, 'zpe', $calc['debug']);
+
+        $calc = $this->calcularZteConDebug($sexo, $edadDias, $talla);
+        $this->setZscoreConPercentil($resultado, 'zte', $calc['zscore']);
+        $this->agregarDebugZscore($resultado, 'zte', $calc['debug']);
 
         if ($imc !== null) {
-            $this->setZscoreConPercentil($resultado, 'zimce', $this->zEdadImc($sexo, $edadDias, $imc));
+            $calc = $this->calcularZimceConDebug($sexo, $edadDias, $imc);
+            $this->setZscoreConPercentil($resultado, 'zimce', $calc['zscore']);
+            $this->agregarDebugZscore($resultado, 'zimce', $calc['debug']);
         }
 
-        $this->setZscoreConPercentil($resultado, 'zpt', $this->zPesoTalla($sexo, $edadDias, $talla, $peso));
+        $calc = $this->zPesoTallaConDebug($sexo, $edadDias, $talla, $peso);
+        $this->setZscoreConPercentil($resultado, 'zpt', $calc['zscore']);
+        $this->agregarDebugZscore($resultado, 'zpt', $calc['debug']);
 
         if ($edadDias >= 1 && $edadDias <= 1856) {
             if ($circCefalica !== null) {
-                $this->setZscoreConPercentil(
-                    $resultado,
+                $calc = $this->zGenericByDiasCamposConDebug(
                     'zcc',
-                    $this->zGenericByDiasCampos(
-                        'zcc_dias.json',
-                        $sexo,
-                        $edadDias,
-                        $circCefalica,
-                        'ccdias_indicador_genero',
-                        'ccdias_indicador_denominador',
-                        'ccdias_sd0',
-                        'ccdias_indicador_coeficiente_l',
-                        'ccdias_indicador_coeficiente_s'
-                    )
+                    'zcc_dias.json',
+                    $sexo,
+                    $edadDias,
+                    $circCefalica,
+                    'ccdias_indicador_genero',
+                    'ccdias_indicador_denominador',
+                    'ccdias_sd0',
+                    'ccdias_indicador_coeficiente_l',
+                    'ccdias_indicador_coeficiente_s'
                 );
+                $this->setZscoreConPercentil($resultado, 'zcc', $calc['zscore']);
+                $this->agregarDebugZscore($resultado, 'zcc', $calc['debug']);
             }
 
             if ($circBrazoIzq !== null) {
-                $this->setZscoreConPercentil(
-                    $resultado,
+                $calc = $this->zGenericByDiasCamposConDebug(
                     'zcbi',
-                    $this->zGenericByDiasCampos(
-                        'zcbi_dias.json',
-                        $sexo,
-                        $edadDias,
-                        $circBrazoIzq,
-                        'cbidias_indicador_genero',
-                        'cbidias_indicador_denominador',
-                        'cbidias_sd0',
-                        'cbidias_indicador_coeficiente_l',
-                        'cbidias_indicador_coeficiente_s'
-                    )
+                    'zcbi_dias.json',
+                    $sexo,
+                    $edadDias,
+                    $circBrazoIzq,
+                    'cbidias_indicador_genero',
+                    'cbidias_indicador_denominador',
+                    'cbidias_sd0',
+                    'cbidias_indicador_coeficiente_l',
+                    'cbidias_indicador_coeficiente_s'
                 );
+                $this->setZscoreConPercentil($resultado, 'zcbi', $calc['zscore']);
+                $this->agregarDebugZscore($resultado, 'zcbi', $calc['debug']);
             }
 
             if ($pliegueTricipital !== null) {
-                $this->setZscoreConPercentil(
-                    $resultado,
+                $calc = $this->zGenericByDiasCamposConDebug(
                     'zptri',
-                    $this->zGenericByDiasCampos(
-                        'ztricipital_dias.json',
-                        $sexo,
-                        $edadDias,
-                        $pliegueTricipital,
-                        'tridias_indicador_genero',
-                        'tridias_indicador_denominador',
-                        'tridias_sd0',
-                        'tridias_indicador_coeficiente_l',
-                        'tridias_indicador_coeficiente_s'
-                    )
+                    'ztricipital_dias.json',
+                    $sexo,
+                    $edadDias,
+                    $pliegueTricipital,
+                    'tridias_indicador_genero',
+                    'tridias_indicador_denominador',
+                    'tridias_sd0',
+                    'tridias_indicador_coeficiente_l',
+                    'tridias_indicador_coeficiente_s'
                 );
+                $this->setZscoreConPercentil($resultado, 'zptri', $calc['zscore']);
+                $this->agregarDebugZscore($resultado, 'zptri', $calc['debug']);
             }
 
             if ($pliegueSubescapular !== null) {
-                $this->setZscoreConPercentil(
-                    $resultado,
+                $calc = $this->zGenericByDiasCamposConDebug(
                     'zpsub',
-                    $this->zGenericByDiasCampos(
-                        'zsubescapular_dias.json',
-                        $sexo,
-                        $edadDias,
-                        $pliegueSubescapular,
-                        'subdias_indicador_genero',
-                        'subdias_indicador_denominador',
-                        'subdias_sd0',
-                        'subdias_indicador_coeficiente_l',
-                        'subdias_indicador_coeficiente_s'
-                    )
+                    'zsubescapular_dias.json',
+                    $sexo,
+                    $edadDias,
+                    $pliegueSubescapular,
+                    'subdias_indicador_genero',
+                    'subdias_indicador_denominador',
+                    'subdias_sd0',
+                    'subdias_indicador_coeficiente_l',
+                    'subdias_indicador_coeficiente_s'
                 );
+                $this->setZscoreConPercentil($resultado, 'zpsub', $calc['zscore']);
+                $this->agregarDebugZscore($resultado, 'zpsub', $calc['debug']);
             }
         }
 
@@ -333,7 +341,7 @@ class AntropometriaZscoreService
             return null;
         }
 
-        $denominador = round($talla, 1);
+        $denominador = $talla;
         $row = $this->nearestCampo($rows, $denominador, 'petadias_indicador_denominador');
 
         if (!$row) {
@@ -396,7 +404,7 @@ class AntropometriaZscoreService
                 $z = (pow($valor / $m, $l) - 1) / ($l * $s);
             }
 
-            return $this->valoresExtremos(round($z, 2));
+            return $this->valoresExtremos($z);
         }
 
         $sd0 = $this->getValue($row, ['sd0', 'SD0', 'p50', 'P50', 'mediana', 'median']);
@@ -410,7 +418,7 @@ class AntropometriaZscoreService
                     return null;
                 }
 
-                return $this->valoresExtremos(round(($valor - $sd0) / $den, 2));
+                return $this->valoresExtremos(($valor - $sd0) / $den);
             }
 
             $den = $sd0 - $sd_1;
@@ -418,7 +426,7 @@ class AntropometriaZscoreService
                 return null;
             }
 
-            return $this->valoresExtremos(round(($valor - $sd0) / $den, 2));
+            return $this->valoresExtremos(($valor - $sd0) / $den);
         }
 
         $minus3 = $this->getValue($row, ['sd3neg', 'SD3neg', 'sd_3_neg', 'sd-3', '-3sd', 'SD-3']);
@@ -455,7 +463,7 @@ class AntropometriaZscoreService
 
         $z = $this->interp($valor, $valid);
 
-        return $z !== null ? $this->valoresExtremos(round($z, 2)) : null;
+        return $z !== null ? $this->valoresExtremos($z) : null;
     }
 
     protected function interp(float $valor, array $points): ?float
@@ -863,8 +871,11 @@ class AntropometriaZscoreService
             return;
         }
 
-        $resultado[$codigo] = round($zscore, 2);
-        $resultado[$codigo . '_percentil'] = $this->zscoreAPercentil($zscore);
+        $zscore = $this->valoresExtremos($zscore);
+        $zscoreTruncado = $this->truncarDosDecimales($zscore);
+
+        $resultado[$codigo] = $zscoreTruncado;
+        $resultado[$codigo . '_percentil'] = $this->zscoreAPercentil((float) $zscoreTruncado);
     }
 
     protected function zscoreAPercentil(float $z): string
@@ -1060,7 +1071,7 @@ class AntropometriaZscoreService
             $z = (pow($valor / $mediana, $l) - 1) / ($l * $s);
         }
 
-        return $this->valoresExtremos(round($z, 2));
+        return $this->valoresExtremos($z);
     }
 
     protected function numeroZscore($valor): ?float
@@ -1088,7 +1099,7 @@ class AntropometriaZscoreService
             return $a;
         }
 
-        return $a + (($b - $a) * $fraccion);
+        return   (($b - $a) * $fraccion) + $a;
     }
 
 
@@ -1129,13 +1140,513 @@ class AntropometriaZscoreService
         }
 
         if ($edadDias <= 730 && $metodoMedicionTalla === 'de_pie') {
-            return round($talla + 0.7, 1);
+            return round($talla + 0.7, 4);
         }
 
         if ($edadDias > 730 && $metodoMedicionTalla === 'acostado') {
-            return round($talla - 0.7, 1);
+            return round($talla - 0.7, 4);
         }
 
         return $talla;
     }
+    protected function imcUnDecimal(float $valor): float
+    {
+        return (float) number_format(round($valor, 1), 1, '.', '');
+    }
+
+    protected function truncarDosDecimales(float $valor): string
+    {
+        $factor = 100;
+
+        $truncado = $valor < 0
+            ? ceil($valor * $factor) / $factor
+            : floor($valor * $factor) / $factor;
+
+        return number_format($truncado, 2, '.', '');
+    }
+    protected function calcularZpeConDebug(string $sexo, int $edadDias, float $peso): array
+    {
+        if ($edadDias >= 1 && $edadDias <= 1856) {
+            return $this->zGenericByDiasCamposConDebug(
+                'zpe',
+                'zpe_dias.json',
+                $sexo,
+                $edadDias,
+                $peso,
+                'pdias_indicador_genero',
+                'pdias_indicador_denominador',
+                'pdias_sd0_mediana',
+                'pdias_indicador_coeficiente_l',
+                'pdias_indicador_coeficiente_s'
+            );
+        }
+
+        if ($edadDias > 1856 && $edadDias <= 3653) {
+            return $this->zGenericByMesesCamposConDebug(
+                'zpe',
+                'zpe_meses.json',
+                $sexo,
+                $edadDias,
+                $peso,
+                'p_indicador_genero',
+                'p_indicador_denominador',
+                'p_indicador_coeficiente_m',
+                'p_indicador_coeficiente_l',
+                'p_indicador_coeficiente_s'
+            );
+        }
+
+        return $this->debugFueraDeRango('zpe', $sexo, $edadDias, $peso);
+    }
+
+    protected function calcularZteConDebug(string $sexo, int $edadDias, float $talla): array
+    {
+        if ($edadDias >= 1 && $edadDias <= 1856) {
+            return $this->zGenericByDiasCamposConDebug(
+                'zte',
+                'zte_dias.json',
+                $sexo,
+                $edadDias,
+                $talla,
+                'tdias_indicador_genero',
+                'tdias_indicador_denominador',
+                'tdias_sd0_mediana',
+                'tdias_indicador_coeficiente_l',
+                'tdias_indicador_coeficiente_s'
+            );
+        }
+
+        if ($edadDias > 1856 && $edadDias <= 6939) {
+            $archivo = $sexo === 'M' ? 'zte_meses.json' : 'zte_meses_parte2.json';
+
+            return $this->zGenericByMesesCamposConDebug(
+                'zte',
+                $archivo,
+                $sexo,
+                $edadDias,
+                $talla,
+                't_indicador_genero',
+                't_indicador_denominador',
+                't_indicador_coeficiente_m',
+                't_indicador_coeficiente_l',
+                't_indicador_coeficiente_s'
+            );
+        }
+
+        return $this->debugFueraDeRango('zte', $sexo, $edadDias, $talla);
+    }
+
+    protected function calcularZimceConDebug(string $sexo, int $edadDias, float $imc): array
+    {
+        if ($edadDias >= 1 && $edadDias <= 1856) {
+            return $this->zGenericByDiasCamposConDebug(
+                'zimce',
+                'zimce_dias.json',
+                $sexo,
+                $edadDias,
+                $imc,
+                'idias_indicador_genero',
+                'idias_indicador_denominador',
+                'idias_sd0_mediana',
+                'idias_indicador_coeficiente_l',
+                'idias_indicador_coeficiente_s'
+            );
+        }
+
+        if ($edadDias > 1856 && $edadDias <= 6939) {
+            return $this->zGenericByMesesCamposConDebug(
+                'zimce',
+                'zimce_meses.json',
+                $sexo,
+                $edadDias,
+                $imc,
+                'i_indicador_genero',
+                'i_indicador_denominador',
+                'i_indicador_coeficiente_m',
+                'i_indicador_coeficiente_l',
+                'i_indicador_coeficiente_s'
+            );
+        }
+
+        return $this->debugFueraDeRango('zimce', $sexo, $edadDias, $imc);
+    }
+
+    protected function zPesoTallaConDebug(string $sexo, int $edadDias, float $talla, float $peso): array
+    {
+        if ($edadDias < 1 || $edadDias > 1856) {
+            return $this->debugFueraDeRango('zpt', $sexo, $edadDias, $peso, [
+                'talla' => $talla,
+                'motivo' => 'ZPT solo aplica para edad <= 1856 dias',
+            ]);
+        }
+
+        $archivo = $edadDias <= 730 ? 'zpeso_talla2.json' : 'zpeso_talla.json';
+
+        $rows = $this->filtrarPorSexoCampo(
+            $this->loadJson($archivo),
+            $sexo,
+            'petadias_indicador_genero'
+        );
+
+        if (empty($rows)) {
+            return [
+                'zscore' => null,
+                'debug' => [
+                    'codigo' => 'zpt',
+                    'archivo' => $archivo,
+                    'error' => 'No hay filas para el sexo indicado',
+                    'sexo' => $sexo,
+                    'edad_dias' => $edadDias,
+                    'talla' => $talla,
+                    'valor_medido' => $peso,
+                ],
+            ];
+        }
+
+        $denominador = round($talla, 1);
+        $row = $this->nearestCampo($rows, $denominador, 'petadias_indicador_denominador');
+
+        if (! $row) {
+            return [
+                'zscore' => null,
+                'debug' => [
+                    'codigo' => 'zpt',
+                    'archivo' => $archivo,
+                    'error' => 'No se encontro fila por talla',
+                    'sexo' => $sexo,
+                    'edad_dias' => $edadDias,
+                    'talla' => $talla,
+                    'talla_busqueda' => $denominador,
+                    'valor_medido' => $peso,
+                ],
+            ];
+        }
+
+        return $this->calcZLmsConDebug(
+            'zpt',
+            $archivo,
+            $peso,
+            $row['petadias_sd0_mediana'] ?? null,
+            $row['petadias_indicador_coeficiente_l'] ?? null,
+            $row['petadias_indicador_coeficiente_s'] ?? null,
+            [
+                'sexo' => $sexo,
+                'edad_dias' => $edadDias,
+                'talla' => $talla,
+                'talla_busqueda' => $denominador,
+                'denominador_usado' => $row['petadias_indicador_denominador'] ?? null,
+                'campo_denominador' => 'petadias_indicador_denominador',
+                'campo_mediana' => 'petadias_sd0_mediana',
+                'campo_l' => 'petadias_indicador_coeficiente_l',
+                'campo_s' => 'petadias_indicador_coeficiente_s',
+            ]
+        );
+    }
+
+    protected function debugFueraDeRango(
+        string $codigo,
+        string $sexo,
+        int $edadDias,
+        float $valor,
+        array $extra = []
+    ): array {
+        return [
+            'zscore' => null,
+            'debug' => array_merge([
+                'codigo' => $codigo,
+                'archivo' => null,
+                'error' => 'Fuera de rango para este indicador',
+                'sexo' => $sexo,
+                'edad_dias' => $edadDias,
+                'valor_medido' => $valor,
+            ], $extra),
+        ];
+    }
+
+    protected function calcZLmsConDebug(
+        string $codigo,
+        string $archivo,
+        float $valor,
+        $m,
+        $l,
+        $s,
+        array $extraDebug = []
+    ): array {
+        $mJson = $this->valorOriginalDebug($m);
+        $lJson = $this->valorOriginalDebug($l);
+        $sJson = $this->valorOriginalDebug($s);
+
+        $m = $this->numeroZscore($m);
+        $l = $this->numeroZscore($l);
+        $s = $this->numeroZscore($s);
+
+        // La formula LMS usa M, L y S. En las tablas por DIAS, M viene de *_sd0_mediana.
+        // En las tablas por MESES, M viene de *_indicador_coeficiente_m.
+        // El debug usa nombres explicitos para no confundir mediana con coeficiente_m.
+        $debug = array_merge([
+            'codigo' => $codigo,
+            'archivo' => $archivo,
+            'valor_medido' => $this->floatDebug($valor),
+            'coeficientes_origen' => 'json',
+            'm_json' => $mJson,
+            'coef_l_json' => $lJson,
+            'coef_s_json' => $sJson,
+            'm_usado_calculo' => $this->floatDebug($m),
+            'coef_l_usado_calculo' => $this->floatDebug($l),
+            'coef_s_usado_calculo' => $this->floatDebug($s),
+            'zscore_sin_formato' => null,
+            'zscore_limitado' => null,
+            'zscore_final' => null,
+        ], $extraDebug);
+
+        if ($valor <= 0 || $m === null || $m <= 0 || $l === null || $s === null || $s == 0.0) {
+            $debug['error'] = 'Coeficientes LMS invalidos o valor medido invalido';
+            return [
+                'zscore' => null,
+                'debug' => $debug,
+            ];
+        }
+
+        if (abs($l) < 0.0000001) {
+            $z = log($valor / $m) / $s;
+        } else {
+            $z = (pow($valor / $m, $l) - 1) / ($l * $s);
+        }
+
+        $zFinal = $this->valoresExtremos($z);
+
+        $debug['zscore_sin_formato'] = $this->floatDebug($z);
+        $debug['zscore_limitado'] = $this->floatDebug($zFinal);
+        $debug['zscore_final'] = $this->truncarDosDecimales($zFinal);
+
+        return [
+            'zscore' => $zFinal,
+            'debug' => $debug,
+        ];
+    }
+    protected function valorOriginalDebug($valor): ?string
+    {
+        if ($valor === null || trim((string) $valor) === '') {
+            return null;
+        }
+
+        return trim((string) $valor);
+    }
+
+    protected function floatDebug(?float $valor, int $decimales = 12): ?string
+    {
+        if ($valor === null || ! is_finite($valor)) {
+            return null;
+        }
+
+        $texto = number_format($valor, $decimales, '.', '');
+        $texto = rtrim(rtrim($texto, '0'), '.');
+
+        return $texto === '-0' ? '0' : $texto;
+    }
+    // debug
+    protected function agregarDebugZscore(array &$resultado, string $codigo, array $debug): void
+{
+    if (! isset($resultado['debug_zscores']) || ! is_array($resultado['debug_zscores'])) {
+        $resultado['debug_zscores'] = [];
+    }
+
+    $resultado['debug_zscores'][$codigo] = $debug;
+}
+protected function zGenericByDiasCamposConDebug(
+    string $codigo,
+    string $archivo,
+    string $sexo,
+    int $edadDias,
+    float $valor,
+    string $campoSexo,
+    string $campoDenominador,
+    string $campoMediana,
+    string $campoL,
+    string $campoS
+): array {
+    $rows = $this->filtrarPorSexoCampo($this->loadJson($archivo), $sexo, $campoSexo);
+
+    if (empty($rows)) {
+        return [
+            'zscore' => null,
+            'debug' => [
+                'codigo' => $codigo,
+                'archivo' => $archivo,
+                'error' => 'No hay filas para el sexo indicado',
+                'sexo' => $sexo,
+                'edad_dias' => $edadDias,
+                'valor_medido' => $this->floatDebug($valor),
+            ],
+        ];
+    }
+
+    $row = $this->buscarFilaDenominadorEntero($rows, $campoDenominador, $edadDias)
+        ?? $this->nearestCampo($rows, $edadDias, $campoDenominador);
+
+    if (! $row) {
+        return [
+            'zscore' => null,
+            'debug' => [
+                'codigo' => $codigo,
+                'archivo' => $archivo,
+                'error' => 'No se encontro fila por denominador',
+                'sexo' => $sexo,
+                'edad_dias' => $edadDias,
+                'valor_medido' => $this->floatDebug($valor),
+            ],
+        ];
+    }
+
+    $medianaRaw = $row[$campoMediana] ?? null;
+    $lRaw = $row[$campoL] ?? null;
+    $sRaw = $row[$campoS] ?? null;
+
+    return $this->calcZLmsConDebug(
+        $codigo,
+        $archivo,
+        $valor,
+        $medianaRaw,
+        $lRaw,
+        $sRaw,
+        [
+            'sexo' => $sexo,
+            'edad_dias' => $edadDias,
+            'coeficientes_origen' => 'json_dias',
+            'm_origen' => 'mediana_sd0',
+            'campo_denominador' => $campoDenominador,
+            'denominador_usado' => $this->valorOriginalDebug($row[$campoDenominador] ?? null),
+            'campo_mediana' => $campoMediana,
+            'campo_l' => $campoL,
+            'campo_s' => $campoS,
+            'mediana_json' => $this->valorOriginalDebug($medianaRaw),
+            'mediana_usada_calculo' => $this->floatDebug($this->numeroZscore($medianaRaw)),
+            'nota_m' => 'Tabla por dias: M se toma del campo de mediana *_sd0_mediana, igual que la plataforma vieja.',
+        ]
+    );
+}
+protected function zGenericByMesesCamposConDebug(
+    string $codigo,
+    string $archivo,
+    string $sexo,
+    int $edadDias,
+    float $valor,
+    string $campoSexo,
+    string $campoDenominador,
+    string $campoM,
+    string $campoL,
+    string $campoS
+): array {
+    $rows = $this->filtrarPorSexoCampo($this->loadJson($archivo), $sexo, $campoSexo);
+
+    if (empty($rows)) {
+        return [
+            'zscore' => null,
+            'debug' => [
+                'codigo' => $codigo,
+                'archivo' => $archivo,
+                'error' => 'No hay filas para el sexo indicado',
+                'sexo' => $sexo,
+                'edad_dias' => $edadDias,
+                'valor_medido' => $this->floatDebug($valor),
+            ],
+        ];
+    }
+
+    // Replica la plataforma vieja: edad_dias / 30.4375 con 6 decimales
+    // antes de tomar mes entero y parte decimal.
+    $mesesExactosTexto = number_format($edadDias / 30.4375, 6, '.', '');
+    $mesesExactos = (float) $mesesExactosTexto;
+    $mes = (int) floor($mesesExactos);
+    $fraccion = $mesesExactos - $mes;
+    $fraccionTexto = number_format($fraccion, 6, '.', '');
+
+    $row1 = $this->buscarFilaDenominadorEntero($rows, $campoDenominador, $mes)
+        ?? $this->nearestCampo($rows, $mes, $campoDenominador);
+
+    if (! $row1) {
+        return [
+            'zscore' => null,
+            'debug' => [
+                'codigo' => $codigo,
+                'archivo' => $archivo,
+                'error' => 'No se encontro fila base por mes',
+                'sexo' => $sexo,
+                'edad_dias' => $edadDias,
+                'meses_exactos' => $mesesExactosTexto,
+                'mes_base' => $mes,
+                'valor_medido' => $this->floatDebug($valor),
+            ],
+        ];
+    }
+
+    $row2 = $this->buscarFilaDenominadorEntero($rows, $campoDenominador, $mes + 1) ?? $row1;
+
+    $m1Raw = $row1[$campoM] ?? null;
+    $m2Raw = $row2[$campoM] ?? null;
+    $l1Raw = $row1[$campoL] ?? null;
+    $l2Raw = $row2[$campoL] ?? null;
+    $s1Raw = $row1[$campoS] ?? null;
+    $s2Raw = $row2[$campoS] ?? null;
+
+    $m1 = $this->numeroZscore($m1Raw);
+    $m2 = $this->numeroZscore($m2Raw);
+    $l1 = $this->numeroZscore($l1Raw);
+    $l2 = $this->numeroZscore($l2Raw);
+    $s1 = $this->numeroZscore($s1Raw);
+    $s2 = $this->numeroZscore($s2Raw);
+
+    $m = $this->interpolar($m1, $m2, $fraccion);
+    $l = $this->interpolar($l1, $l2, $fraccion);
+    $s = $this->interpolar($s1, $s2, $fraccion);
+
+    return $this->calcZLmsConDebug(
+        $codigo,
+        $archivo,
+        $valor,
+        $m,
+        $l,
+        $s,
+        [
+            'sexo' => $sexo,
+            'edad_dias' => $edadDias,
+            'meses_exactos' => $mesesExactosTexto,
+            'mes_base' => $mes,
+            'mes_siguiente' => $mes + 1,
+            'fraccion' => $fraccionTexto,
+            'coeficientes_origen' => 'interpolado_meses',
+            'm_origen' => 'coeficiente_m',
+            'nota_m' => 'Tabla por meses: M se toma del campo *_indicador_coeficiente_m. No se usa *_sd0_mediana.',
+            'nota_coeficientes' => 'Para edades por meses se interpolan M, L y S entre el mes base y el mes siguiente; por eso el valor usado no existe literal en el JSON.',
+            'campo_denominador' => $campoDenominador,
+            'denominador_base' => $this->valorOriginalDebug($row1[$campoDenominador] ?? null),
+            'denominador_siguiente' => $this->valorOriginalDebug($row2[$campoDenominador] ?? null),
+            'campo_m' => $campoM,
+            'campo_l' => $campoL,
+            'campo_s' => $campoS,
+
+            // Para meses, estos son los valores exactos que deben existir en el JSON.
+            'coef_m_base_json' => $this->valorOriginalDebug($m1Raw),
+            'coef_m_siguiente_json' => $this->valorOriginalDebug($m2Raw),
+            'coef_l_base_json' => $this->valorOriginalDebug($l1Raw),
+            'coef_l_siguiente_json' => $this->valorOriginalDebug($l2Raw),
+            'coef_s_base_json' => $this->valorOriginalDebug($s1Raw),
+            'coef_s_siguiente_json' => $this->valorOriginalDebug($s2Raw),
+
+            // Estos NO existen literal en el JSON; son calculados para la formula.
+            'coef_m_interpolado_calculo' => $this->floatDebug($m),
+            'coef_l_interpolado_calculo' => $this->floatDebug($l),
+            'coef_s_interpolado_calculo' => $this->floatDebug($s),
+            'coef_m_usado_calculo' => $this->floatDebug($m),
+            'coef_l_usado_calculo' => $this->floatDebug($l),
+            'coef_s_usado_calculo' => $this->floatDebug($s),
+
+            // Evita confundir tablas mensuales con mediana JSON.
+            'm_json' => null,
+            'mediana_json' => null,
+            'coef_l_json' => null,
+            'coef_s_json' => null,
+        ]
+    );
+}
 } // Fin de la clase AntropometriaZscoreService

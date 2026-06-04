@@ -990,6 +990,7 @@ class CargaMasivaController extends BaseController
 
             if ($beneficiario && $fechaEvaluacion) {
                 $edadDias = $this->calcularEdadDias($beneficiario['fecha_nacimiento'] ?? null, $fechaEvaluacion);
+
                 if ($edadDias === null) {
                     $errFila[] = 'no se pudo calcular edad con fecha_nacimiento y fecha_evaluacion';
                 } elseif ($edadDias < 0) {
@@ -1045,7 +1046,12 @@ class CargaMasivaController extends BaseController
             }
 
             $edadDias = $this->calcularEdadDias($beneficiario['fecha_nacimiento'] ?? null, $fechaEvaluacion);
-            $edadMeses = $edadDias !== null ? round($edadDias / 30.4375, 2) : null;
+            $edadMeses = $edadDias !== null ?  $edadDias / 30.4375  : null;
+            // debug
+            $edadMesesExactos = $edadDias !== null ? $edadDias / 30.4375 : null;
+            $edadMesesEnteros = $edadMesesExactos !== null ? (int) floor($edadMesesExactos) : null;
+            $parteDecimalMes = $edadMesesExactos !== null ? $edadMesesExactos - $edadMesesEnteros : null;
+
 
             $tallaParaCalculo = $this->ajustarTallaPorMetodoMedicion(
                 $talla,
@@ -1066,11 +1072,66 @@ class CargaMasivaController extends BaseController
                 'pliegue_subescapular'  => $subescapular,
                 'edema'                 => 0,
             ]);
-            $imc = $calculadosAntro['imc'] ?? (
-                ($peso !== null && $tallaParaCalculo !== null && $tallaParaCalculo > 0)
-                ? round($peso / pow($tallaParaCalculo / 100, 2), 2)
-                : null
-            );
+
+            $debugZscores = $calculadosAntro['debug_zscores'] ?? [];
+            $debugCoeficientes = [];
+
+            foreach ($debugZscores as $codigoDebug => $debug) {
+                if (! is_array($debug)) {
+                    continue;
+                }
+
+                $debugCoeficientes[$codigoDebug] = [
+                    'archivo' => $debug['archivo'] ?? null,
+                    'sexo' => $debug['sexo'] ?? null,
+                    'edad_dias' => $debug['edad_dias'] ?? null,
+                    'meses_exactos' => $debug['meses_exactos'] ?? null,
+                    'mes_base' => $debug['mes_base'] ?? null,
+                    'mes_siguiente' => $debug['mes_siguiente'] ?? null,
+                    'fraccion' => $debug['fraccion'] ?? null,
+                    'coeficientes_origen' => $debug['coeficientes_origen'] ?? null,
+                    'm_origen' => $debug['m_origen'] ?? null,
+                    'nota_m' => $debug['nota_m'] ?? null,
+                    'nota_coeficientes' => $debug['nota_coeficientes'] ?? null,
+                    'valor_medido' => $debug['valor_medido'] ?? null,
+
+                    // DIAS: valores exactos del JSON
+                    'campo_mediana' => $debug['campo_mediana'] ?? null,
+                    'mediana_json' => $debug['mediana_json'] ?? null,
+                    'mediana_usada_calculo' => $debug['mediana_usada_calculo'] ?? null,
+
+                    // MESES: valores exactos del JSON
+                    'campo_m' => $debug['campo_m'] ?? null,
+                    'coef_m_base_json' => $debug['coef_m_base_json'] ?? null,
+                    'coef_m_siguiente_json' => $debug['coef_m_siguiente_json'] ?? null,
+                    'coef_l_base_json' => $debug['coef_l_base_json'] ?? null,
+                    'coef_l_siguiente_json' => $debug['coef_l_siguiente_json'] ?? null,
+                    'coef_s_base_json' => $debug['coef_s_base_json'] ?? null,
+                    'coef_s_siguiente_json' => $debug['coef_s_siguiente_json'] ?? null,
+
+                    // MESES: valores calculados/interpolados, no existen literal en JSON
+                    'coef_m_interpolado_calculo' => $debug['coef_m_interpolado_calculo'] ?? null,
+                    'coef_l_interpolado_calculo' => $debug['coef_l_interpolado_calculo'] ?? null,
+                    'coef_s_interpolado_calculo' => $debug['coef_s_interpolado_calculo'] ?? null,
+
+                    // LMS usado finalmente
+                    'm_usado_calculo' => $debug['m_usado_calculo'] ?? null,
+                    'coef_m_usado_calculo' => $debug['coef_m_usado_calculo'] ?? null,
+                    'coef_l_usado_calculo' => $debug['coef_l_usado_calculo'] ?? null,
+                    'coef_s_usado_calculo' => $debug['coef_s_usado_calculo'] ?? null,
+
+                    'zscore_sin_formato' => $debug['zscore_sin_formato'] ?? null,
+                    'zscore_limitado' => $debug['zscore_limitado'] ?? null,
+                    'zscore_final' => $debug['zscore_final'] ?? null,
+                    'error' => $debug['error'] ?? null,
+                ];
+            }
+
+           $imc = $calculadosAntro['imc'] ?? (
+    ($peso !== null && $tallaParaCalculo !== null && $tallaParaCalculo > 0)
+    ? (float) number_format(round($peso / pow($tallaParaCalculo / 100, 2), 1), 1, '.', '')
+    : null
+);
 
             $campos = [
                 'peso' => $peso,
@@ -1164,7 +1225,23 @@ class CargaMasivaController extends BaseController
                 $resultadoModel->guardarLote((int) $evaluacionId, $datosResultados);
                 $db->transCommit();
                 $guardados++;
-                $logs[] = $this->crearLog($fila, 'GUARDADO', $idDigi, $nombresExcel, $apellidosExcel, 'Evaluacion de antropometria guardada.');
+
+                $logs[] = $this->crearLog(
+    $fila,
+    'GUARDADO',
+    $idDigi,
+    $nombresExcel,
+    $apellidosExcel,
+    'Evaluacion guardada. Debug edad: '
+    . 'fecha_nacimiento=' . ($beneficiario['fecha_nacimiento'] ?? 'N/A')
+    . '; fecha_evaluacion=' . $fechaEvaluacion
+    . '; edad_dias=' . ($edadDias ?? 'N/A')
+    . '; edad_meses_exactos=' . ($edadMesesExactos !== null ? number_format($edadMesesExactos, 6, '.', '') : 'N/A')
+    . '; edad_meses_enteros=' . ($edadMesesEnteros ?? 'N/A')
+    . '; parte_decimal_mes=' . ($parteDecimalMes !== null ? number_format($parteDecimalMes, 6, '.', '') : 'N/A')
+    . '; imc_usado_guardado=' . ($imc !== null ? number_format((float) $imc, 1, '.', '') : 'N/A')
+    . '; DEBUG coeficientes=' . json_encode($debugCoeficientes, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+);
             } catch (\Throwable $e) {
                 $db->transRollback();
                 log_message('error', 'Error en carga masiva antropometria fila ' . $fila . ': ' . $e->getMessage());
@@ -1856,19 +1933,19 @@ class CargaMasivaController extends BaseController
     }
 
     private function ajustarTallaPorMetodoMedicion(?float $talla, ?int $edadDias, ?string $metodoMedicionTalla): ?float
-{
-    if ($talla === null || $edadDias === null || $metodoMedicionTalla === null) {
+    {
+        if ($talla === null || $edadDias === null || $metodoMedicionTalla === null) {
+            return $talla;
+        }
+
+        if ($edadDias <= 730 && $metodoMedicionTalla === 'de_pie') {
+            return round($talla + 0.7, 1);
+        }
+
+        if ($edadDias > 730 && $metodoMedicionTalla === 'acostado') {
+            return round($talla - 0.7, 1);
+        }
+
         return $talla;
     }
-
-    if ($edadDias <= 730 && $metodoMedicionTalla === 'de_pie') {
-        return round($talla + 0.7, 1);
-    }
-
-    if ($edadDias > 730 && $metodoMedicionTalla === 'acostado') {
-        return round($talla - 0.7, 1);
-    }
-
-    return $talla;
-}
 } // fin clase
