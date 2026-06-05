@@ -290,8 +290,9 @@ background: #fff;
 
     .rep-back {
         border: 0;
-        background: #fff;
-        color: var(--rep-dark);
+        background: #3695f5;
+ 
+        color: #fff;
         border-radius: 14px;
         padding: 10px 16px;
         font-weight: 700;
@@ -303,10 +304,12 @@ background: #fff;
     }
 
     .rep-back:hover {
-        color: var(--rep-primary-dark);
+             background: var(--ds-primary-dark);
+     color: #fff;
         text-decoration: none;
+             transform: translateY(-1px);
     }
-
+  
     .rep-summary-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -629,7 +632,7 @@ background: #fff;
 }
 
 .rep-back-inline:hover {
-    color: #fff;
+    color: #c7baba;
     text-decoration: none;
     background: var(--rep-dark);
 }

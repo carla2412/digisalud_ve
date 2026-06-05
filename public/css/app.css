@@ -131,6 +131,7 @@
    .btnAgregarOrg:hover,
    .btnBloquear:hover {
      background-color: #88d8f8 !important;
+          transform: translateY(-1px);
 
    }
 
@@ -155,6 +156,7 @@
    .secundaria:hover {
      background-color: #b5e4ee !important;
      color: #4f4b4b !important;
+     transform: translateY(-1px);
    }
 
    /* Botón activo */
@@ -198,6 +200,7 @@
    .btn-opcion:hover {
      background-color: var(--ds-primary-dark);
      color: #fff;
+          transform: translateY(-1px);
    }
 
    header.bg-primary {
@@ -249,12 +252,13 @@
      text-transform: uppercase;
      letter-spacing: .5px;
      text-decoration: none;
-     transition: all .2s
+     transition: all .2s;
    }
 
    .btn-registrar:hover {
      background: var(--ds-primary-dark);
-     color: #fff
+     color: #fff ;
+          transform: translateY(-1px);
    }
 
    .benef-card {
@@ -268,7 +272,7 @@
    }
 
    .benef-card:hover {
-     box-shadow: 0 4px 16px rgba(0, 0, 0, .08)
+     box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
    }
 
    .benef-card-name {
@@ -324,7 +328,8 @@
    .pesquisa-btn:hover {
      border-color: var(--ds-primary-dark);
      background: var(--ds-primary-light);
-     transform: scale(1.1)
+     transform: scale(1.1);
+          transform: translateY(-1px);
    }
 
    .pesquisa-btn.evaluado {

@@ -33,13 +33,19 @@
     }
 
     .jornada-btn-primary {
-        background: linear-gradient(135deg, #1476ff, #0059e8);
+        background: #3695f5;
         color: white;
         padding: 15px 28px;
         border-radius: 10px;
         text-decoration: none;
         font-weight: 600;
         box-shadow: 0 10px 18px rgba(0, 102, 255, .25);
+    }
+
+    .jornada-btn-primary:hover {
+        background: #1b7ae2;
+        color: white;
+        transform: translateY(-1px);
     }
 
     .jornada-filters {
@@ -103,8 +109,8 @@
         display: flex;
         flex-direction: column;
         gap: 18px;
-         padding: 24px 16px;
-          margin-bottom: 24px;
+        padding: 24px 16px;
+        margin-bottom: 24px;
         box-shadow: 0 10px 30px rgba(15, 40, 82, .08);
         background: #fff;
         border: 1px solid #fff;
@@ -116,19 +122,19 @@
         display: flex;
         gap: 28px;
         background: #fff;
-        
+
         padding: 28px;
-      
+
         overflow: visible;
 
-           box-shadow: 0 10px 30px rgba(15, 40, 82, .08);
-      
+        box-shadow: 0 10px 30px rgba(15, 40, 82, .08);
+
         border: 1px solid #fff;
         border-radius: 18px;
     }
-    
-  
- 
+
+
+
 
     .jornada-card-body {
         flex: 1;
@@ -304,7 +310,7 @@
     .jornada-alert-info {
         background: #ffffff;
         color: #3695f5;
-         
+
     }
 
     .jornada-pager-links nav {
@@ -453,7 +459,7 @@ $totalPages     = $totalPages ?? 1;
         <div class="jornada-header">
             <div>
                 <h1>Jornadas</h1>
-                
+
             </div>
             <a href="<?= base_url('jornadas/crear') ?>" class="jornada-btn-primary">+ Crear Jornada</a>
         </div>
@@ -500,7 +506,7 @@ $totalPages     = $totalPages ?? 1;
                     $estadoClass  = $jor['status_jor'] == 1 ? 'jornada-active' : ($esFinalizada ? 'jornada-finished' : 'jornada-inactive');
                     ?>
                     <article class="jornada-card <?= $estadoClass ?>">
-                         
+
 
                         <div class="jornada-card-body">
                             <h3><?= esc($jor['nombre_jornada']) ?></h3>
@@ -537,21 +543,19 @@ $totalPages     = $totalPages ?? 1;
 
                             <div class="jornada-actions">
                                 <a href="<?= $esFinalizada ? '#' : base_url('jornadas/editar/' . $jor['id_jornada']) ?>"
-                                    class="<?= $esFinalizada ? 'jornada-disabled' : '' ?>">Editar</a>
+                                    class="<?= $esFinalizada ? 'jornada-disabled' : 'btn btn-primary' ?>">Editar</a>
 
                                 <?php if (in_array(session('id_rol'), [1, 2, 3, 4])): ?>
-                                    <a href="<?= base_url('jornadas/' . $jor['id_jornada'] . '/usuarios') ?>">Usuarios</a>
+                                    <a class="btn btn-primary" href="<?= base_url('jornadas/' . $jor['id_jornada'] . '/usuarios') ?>">Usuarios</a>
                                 <?php else: ?>
-                                    <a href="#" class="jornada-disabled">Usuarios</a>
+                                    <a href="#" class="btn btn-primary">Usuarios</a>
                                 <?php endif; ?>
 
-                                <a href="<?= base_url('jornadas/' . $jor['id_jornada'] . '/beneficiarios') ?>">Beneficiarios</a>
-        <a 
-    href="<?= site_url('jornadas/' . $jor['id_jornada'] . '/reportes') ?>" 
-    class="btn btn-primary"
->
-    Reportes
-</a>
+                                <a class="btn btn-primary" href="<?= base_url('jornadas/' . $jor['id_jornada'] . '/beneficiarios') ?>">Beneficiarios</a>
+                                <a class="btn btn-primary" href="<?= site_url('jornadas/' . $jor['id_jornada'] . '/reportes') ?>"
+                                  >
+                                    Reportes
+                                </a>
                             </div>
                         </div>
                     </article>
