@@ -41,17 +41,20 @@ class AntropometriaZscoreService
         $tieneEdema = in_array($edemaRaw, ['1', 'si', 'sí', 's', 'true'], true);
 
         $imc = null;
+        $imcParaZscore = null;
 
         if ($peso !== null && $peso > 0 && $talla !== null && $talla > 0) {
             $tallaMetros = $talla / 100;
 
             if ($tallaMetros > 0) {
-                // Regla carga masiva / plataforma: el IMC se guarda con 1 decimal
-                // y ese mismo valor es el que se usa para calcular Z-IMC/E.
-                $imc = $this->imcUnDecimal($peso / ($tallaMetros * $tallaMetros));
+                $imcCrudo = $peso / ($tallaMetros * $tallaMetros);
+                // El IMC se sigue guardando/mostrando con 1 decimal (sin cambios).
+                $imc = $this->imcUnDecimal($imcCrudo);
+                // Para Z-IMC/E se usa el IMC con 4 decimales, igual que la plataforma
+                // anterior: calculaZ(rs_imc.toFixed(4), ...).
+                $imcParaZscore = round($imcCrudo, 4);
             }
         }
-
         $grupoEdadReporte = $this->grupoEdadReporte($edadDias);
 
         $resultado = [
@@ -106,8 +109,8 @@ class AntropometriaZscoreService
         $this->setZscoreConPercentil($resultado, 'zte', $calc['zscore']);
         $this->agregarDebugZscore($resultado, 'zte', $calc['debug']);
 
-        if ($imc !== null) {
-            $calc = $this->calcularZimceConDebug($sexo, $edadDias, $imc);
+        if ($imcParaZscore !== null) {
+            $calc = $this->calcularZimceConDebug($sexo, $edadDias, $imcParaZscore);
             $this->setZscoreConPercentil($resultado, 'zimce', $calc['zscore']);
             $this->agregarDebugZscore($resultado, 'zimce', $calc['debug']);
         }
@@ -824,7 +827,7 @@ class AntropometriaZscoreService
         return 'verde';
     }
 
-    protected function valoresExtremos(?float $z): ?float
+  protected function valoresExtremos(?float $z): ?float
     {
         if ($z === null) {
             return null;
@@ -836,6 +839,38 @@ class AntropometriaZscoreService
 
         if ($z < -6) {
             return -6.0;
+        }
+
+        return $z;
+    }
+
+    /**
+     * Extrapolacion de z-scores extremos (|z| > 3) por el metodo OMS,
+     * identica a valores_extremos_antro() de la plataforma anterior.
+     */
+    protected function ajustarZscoreExtremo(float $z, float $valor, float $m, float $l, float $s): float
+    {
+        // Sin L valido no se puede extrapolar; se devuelve el z calculado.
+        if (abs($l) < 0.0000001) {
+            return $z;
+        }
+
+        $exp = 1 / $l;
+
+        if ($z < -3) {
+            $sd2 = $m * pow(1 + $l * $s * -2, $exp);
+            $sd3 = $m * pow(1 + $l * $s * -3, $exp);
+            $den = $sd2 - $sd3;
+
+            return $den == 0.0 ? $z : -3 + (($valor - $sd3) / $den);
+        }
+
+        if ($z > 3) {
+            $sd2 = $m * pow(1 + $l * $s * 2, $exp);
+            $sd3 = $m * pow(1 + $l * $s * 3, $exp);
+            $den = $sd3 - $sd2;
+
+            return $den == 0.0 ? $z : 3 + (($valor - $sd3) / $den);
         }
 
         return $z;
@@ -871,7 +906,8 @@ class AntropometriaZscoreService
             return;
         }
 
-        $zscore = $this->valoresExtremos($zscore);
+        // El z ya llega con la extrapolacion OMS aplicada (calcZLmsConDebug);
+        // no se recorta a +-6 para no diverger de la plataforma anterior.
         $zscoreTruncado = $this->truncarDosDecimales($zscore);
 
         $resultado[$codigo] = $zscoreTruncado;
@@ -1413,7 +1449,12 @@ class AntropometriaZscoreService
             $z = (pow($valor / $m, $l) - 1) / ($l * $s);
         }
 
-        $zFinal = $this->valoresExtremos($z);
+        // Igual que la plataforma anterior (valores_extremos_antro / metodo OMS):
+        // para |z| > 3 se reemplaza por la extrapolacion lineal SD2/SD3.
+        // La circunferencia cefalica (zcc) NO se extrapola en la plataforma vieja.
+        $zFinal = ($codigo === 'zcc')
+            ? $z
+            : $this->ajustarZscoreExtremo($z, $valor, $m, $l, $s);
 
         $debug['zscore_sin_formato'] = $this->floatDebug($z);
         $debug['zscore_limitado'] = $this->floatDebug($zFinal);
