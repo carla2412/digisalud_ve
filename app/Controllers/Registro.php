@@ -27,10 +27,21 @@ class Registro extends BaseController
     {
         $usuarios       = new UsuarioModel();
         $direcciones    = new DireccionModel();
-        $rolesContexto  = new \App\Models\RolesUsuariosContextoModel(); //  
+        $rolesContexto  = new \App\Models\RolesUsuariosContextoModel();
+
+        $email = $this->normalizarEmail((string) $this->request->getPost('email'));
+        $username = $this->generarUsernameDesdeEmail($email);
+
+        $errores = $this->validarUsuarioDisponible($usuarios, $email, $username);
+        if ($errores !== []) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('errors', $errores);
+        }
 
         $db = \Config\Database::connect();
-        $db->transStart(); //   Iniciar transacción segura
+        $db->transStart();
 
         // 1 Guardar dirección
         $direccionData = [
@@ -54,12 +65,12 @@ class Registro extends BaseController
             'nombres'        => $this->request->getPost('nombres'),
             'apellidos'      => $this->request->getPost('apellidos'),
             'genero'         => $this->request->getPost('genero'),
-            'email'          => $this->request->getPost('email'),
+            'email'          => $email,
             'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento'),
-            'username'       => explode('@', $this->request->getPost('email'))[0],
+            'username'       => $username,
             'password_hash'  => password_hash($this->request->getPost('contrasena'), PASSWORD_DEFAULT),
             'telefono'       => $this->request->getPost('telefono'),
-            'profesion'      => $this->request->getPost('profesion'),    // 👈 NUEVO
+            'profesion'      => $this->request->getPost('profesion'),
             'direccion_id'   => $direccionId,
             'organizacion_id' => 1,
             'status_usu'     => '1'
@@ -80,7 +91,7 @@ class Registro extends BaseController
             'status_urc'      => '1',
         ]);
 
-        $db->transComplete(); //   Ejecutar transacción
+        $db->transComplete();
 
         if (!$db->transStatus()) {
             dd('❌ Error en la transacción completa');
@@ -180,5 +191,30 @@ class Registro extends BaseController
         return redirect()
             ->back()
             ->with('success', 'Organización y usuario creados correctamente.');
+    }
+
+    private function normalizarEmail(string $email): string
+    {
+        return strtolower(trim($email));
+    }
+
+    private function generarUsernameDesdeEmail(string $email): string
+    {
+        return strtolower(trim((string) explode('@', $email)[0]));
+    }
+
+    private function validarUsuarioDisponible(UsuarioModel $usuarios, string $email, string $username): array
+    {
+        $errores = [];
+
+        if ($usuarios->existeEmail($email)) {
+            $errores['email'] = 'El correo ya está registrado.';
+        }
+
+        if ($usuarios->existeUsername($username)) {
+            $errores['username'] = 'El username generado a partir del correo ya está registrado. Usa un correo diferente.';
+        }
+
+        return $errores;
     }
 }
