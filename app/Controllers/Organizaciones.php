@@ -3,39 +3,15 @@
 namespace App\Controllers;
 
 use App\Models\OrganizacionModel;
-use CodeIgniter\Controller;
-use CodeIgniter\HTTP\ResponseInterface;
-use App\Models\UsuarioModel;
 use App\Models\RolesUsuariosContextoModel;
+use App\Models\UsuarioModel;
+use CodeIgniter\HTTP\ResponseInterface;
 
-/**
- * Controlador Organizaciones
- *
- * Gestiona el CRUD de la tabla `organizacion`.
- * Acceso restringido a roles: 1 (Admin TI), 2 (Admin Digisalud), 3 (Admin Org).
- *
- * Vistas separadas:
- *  - organizaciones/create_org  → formulario de creación
- *  - organizaciones/editar_org  → formulario de edición
- *
- * Gestión de logos:
- *  - Almacenamiento en FCPATH . 'uploads/logos/'
- *  - Servido mediante método logo() con verificación de sesión
- *  - Renombrado aleatorio con bin2hex(random_bytes(16))
- *  - Validación MIME real via getClientMimeType() + getImageType()
- */
 class Organizaciones extends BaseController
 {
-    // Roles con acceso al módulo
     private const ROLES_PERMITIDOS = [1, 2, 3, 4, 5, 6, 7];
-
-    // Directorio de logos
     private const LOGO_DIR = FCPATH . 'uploads/logos/';
-
-    // Extensiones permitidas (minúsculas)
     private const LOGO_EXTENSIONES = ['png', 'jpg', 'jpeg'];
-
-    // MIME types permitidos mapeados
     private const LOGO_MIMES = [
         'image/png'  => 'png',
         'image/jpeg' => 'jpg',
@@ -51,10 +27,6 @@ class Organizaciones extends BaseController
         parent::initController($request, $response, $logger);
         $this->model = new OrganizacionModel();
     }
-
-    // ----------------------------------------------------------------
-    // Control de acceso centralizado
-    // ----------------------------------------------------------------
 
     private function verificarAcceso(): bool
     {
@@ -75,9 +47,10 @@ class Organizaciones extends BaseController
         return true;
     }
 
-    // ----------------------------------------------------------------
-    // index — Listar organizaciones
-    // ----------------------------------------------------------------
+    private function esAdminGeneral(): bool
+    {
+        return in_array((int) session()->get('id_rol'), [1, 2], true);
+    }
 
     public function index(): string|ResponseInterface
     {
@@ -93,7 +66,6 @@ class Organizaciones extends BaseController
             ->join('direcciones', 'direcciones.id_direccion = organizacion.direccion_id', 'left')
             ->where('organizacion.status_org', 1);
 
-        // Roles 3 al 7: solo ven la organización a la que pertenecen
         if (in_array($idRol, [3, 4, 5, 6, 7], true)) {
             $builder->where('organizacion.id_organizacion', $organizacionSesion);
         }
@@ -107,13 +79,6 @@ class Organizaciones extends BaseController
             'organizaciones' => $organizaciones,
         ]);
     }
-    private function esAdminGeneral(): bool
-    {
-        return in_array((int) session()->get('id_rol'), [1, 2], true);
-    }
-    // ----------------------------------------------------------------
-    // create — Mostrar formulario de creación
-    // ----------------------------------------------------------------
 
     public function create(): string|ResponseInterface
     {
@@ -131,10 +96,6 @@ class Organizaciones extends BaseController
         ]);
     }
 
-    // ----------------------------------------------------------------
-    // store — Guardar nueva organización
-    // ----------------------------------------------------------------
-
     public function store(): ResponseInterface
     {
         if (! $this->esAdminGeneral()) {
@@ -147,24 +108,30 @@ class Organizaciones extends BaseController
         }
 
         $rules = [
-            'nombre_org'                  => 'required|max_length[120]',
-            'tipo'                        => 'required|max_length[50]',
-            'categoria'                   => 'required|max_length[80]',
-            'telefono'                    => 'required|max_length[30]',
-            'email'                       => 'required|valid_email|max_length[120]',
-            'responsable_nombres'         => 'required|max_length[80]',
-            'responsable_apellidos'       => 'required|max_length[80]',
+            'nombre_org'                   => 'required|max_length[120]',
+            'tipo'                         => 'required|max_length[50]',
+            'categoria'                    => 'required|max_length[80]',
+            'telefono'                     => 'required|max_length[30]',
+            'email'                        => 'required|valid_email|max_length[120]',
+            'responsable_nombres'          => 'required|max_length[80]',
+            'responsable_apellidos'        => 'required|max_length[80]',
             'responsable_fecha_nacimiento' => 'required|valid_date[Y-m-d]',
-            'responsable_genero'          => 'required|in_list[M,F]',
-            'password'                    => 'required|min_length[6]|max_length[255]',
-            'confirmar_password'          => 'required|matches[password]',
+            'responsable_genero'           => 'required|in_list[M,F]',
+            'password'                     => 'required|min_length[6]|max_length[255]',
+            'confirmar_password'           => 'required|matches[password]',
         ];
 
         if (! $this->validate($rules)) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('errors', $this->validator->getErrors());
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $usuarioModel = new UsuarioModel();
+        $email = $this->normalizarEmail((string) $this->request->getPost('email'));
+        $username = $this->generarUsernameDesdeEmail($email);
+
+        $erroresUnicidad = $this->validarEmailYUsernameDisponibles($usuarioModel, $email, $username);
+        if ($erroresUnicidad !== []) {
+            return redirect()->back()->withInput()->with('errors', $erroresUnicidad);
         }
 
         $db = \Config\Database::connect();
@@ -177,43 +144,33 @@ class Organizaciones extends BaseController
             $resultado = $this->procesarLogo($archivo);
 
             if ($resultado['error']) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with('errors', ['logo' => $resultado['mensaje']]);
+                return redirect()->back()->withInput()->with('errors', ['logo' => $resultado['mensaje']]);
             }
 
             $logoUrl = $resultado['filename'];
         }
 
         $direccionId = $this->procesarDireccion();
-
         $responsableNombres = trim((string) $this->request->getPost('responsable_nombres'));
         $responsableApellidos = trim((string) $this->request->getPost('responsable_apellidos'));
         $nombreResponsable = trim($responsableNombres . ' ' . $responsableApellidos);
 
-        $datos = [
+        $this->model->skipValidation(true)->insert([
             'nombre_org'         => $this->request->getPost('nombre_org'),
             'tipo'               => $this->request->getPost('tipo'),
             'categoria'          => $this->request->getPost('categoria'),
             'telefono'           => $this->request->getPost('telefono'),
-            'email'              => $this->request->getPost('email'),
+            'email'              => $email,
             'nombre_responsable' => $nombreResponsable,
             'direccion_id'       => $direccionId,
             'logo_url'           => $logoUrl,
             'status_org'         => 1,
             'creado_en'          => date('Y-m-d H:i:s'),
             'creado_por'         => (int) session()->get('id_usuario'),
-        ];
+        ]);
 
-        $this->model->skipValidation(true)->insert($datos);
         $organizacionId = $this->model->getInsertID();
-
-        $usuarioModel = new UsuarioModel();
         $rolesContexto = new RolesUsuariosContextoModel();
-
-        $email = trim((string) $this->request->getPost('email'));
-        $username = explode('@', $email)[0];
 
         $usuarioModel->insert([
             'nombres'          => $responsableNombres,
@@ -252,10 +209,6 @@ class Organizaciones extends BaseController
         return redirect()->to(base_url('organizaciones'));
     }
 
-    // ----------------------------------------------------------------
-    // edit — Mostrar formulario de edición
-    // ----------------------------------------------------------------
-
     public function edit(int $id): string|ResponseInterface
     {
         if (! $this->verificarAcceso()) {
@@ -269,7 +222,6 @@ class Organizaciones extends BaseController
             return redirect()->to(base_url('organizaciones'));
         }
 
-        // Obtener datos de dirección si existe
         $direccion = null;
         if (! empty($organizacion['direccion_id'])) {
             $db = \Config\Database::connect();
@@ -278,17 +230,9 @@ class Organizaciones extends BaseController
                 ->get()
                 ->getRowArray();
         }
-        $usuarioModel = new UsuarioModel();
 
-        $responsable = $usuarioModel
-            ->select('usuarios.*')
-            ->join('roles_usuarios_contexto ruc', 'ruc.id_usuario = usuarios.id_usuario', 'left')
-            ->where('usuarios.organizacion_id', $id)
-            ->where('usuarios.status_usu', 1)
-            ->where('ruc.id_rol', 3)
-            ->where('ruc.status_urc', 1)
-            ->orderBy('usuarios.id_usuario', 'ASC')
-            ->first();
+        $usuarioModel = new UsuarioModel();
+        $responsable = $this->buscarResponsableOrganizacion($usuarioModel, $id);
 
         return view('organizaciones/editar_org', [
             'titulo'       => 'Editar Organización',
@@ -297,10 +241,6 @@ class Organizaciones extends BaseController
             'responsable'  => $responsable,
         ]);
     }
-
-    // ----------------------------------------------------------------
-    // update — Actualizar organización existente
-    // ----------------------------------------------------------------
 
     public function update(int $id): ResponseInterface
     {
@@ -316,27 +256,34 @@ class Organizaciones extends BaseController
         }
 
         $rules = [
-            'nombre_org'            => 'required|max_length[120]',
-            'tipo'                  => 'required|max_length[50]',
-            'categoria'             => 'required|max_length[80]',
-            'telefono'              => 'required|max_length[30]',
-            'email'                 => 'required|valid_email|max_length[120]',
-            'responsable_nombres'   => 'required|max_length[80]',
-            'responsable_apellidos' => 'required|max_length[80]',
-            'password'              => 'permit_empty|min_length[6]|max_length[255]',
-            'confirmar_password'    => 'matches[password]',
+            'nombre_org'                   => 'required|max_length[120]',
+            'tipo'                         => 'required|max_length[50]',
+            'categoria'                    => 'required|max_length[80]',
+            'telefono'                     => 'required|max_length[30]',
+            'email'                        => 'required|valid_email|max_length[120]',
+            'responsable_nombres'          => 'required|max_length[80]',
+            'responsable_apellidos'        => 'required|max_length[80]',
+            'password'                     => 'permit_empty|min_length[6]|max_length[255]',
+            'confirmar_password'           => 'matches[password]',
             'responsable_fecha_nacimiento' => 'required|valid_date[Y-m-d]',
             'responsable_genero'           => 'required|in_list[M,F]',
         ];
 
         if (! $this->validate($rules)) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->with('errors', $this->validator->getErrors());
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        // Manejar el logo
+        $usuarioModel = new UsuarioModel();
+        $responsable = $this->buscarResponsableOrganizacion($usuarioModel, $id);
+        $responsableId = $responsable ? (int) $responsable['id_usuario'] : null;
+        $email = $this->normalizarEmail((string) $this->request->getPost('email'));
+        $username = $this->generarUsernameDesdeEmail($email);
+
+        $erroresUnicidad = $this->validarEmailYUsernameDisponibles($usuarioModel, $email, $username, $responsableId, $id);
+        if ($erroresUnicidad !== []) {
+            return redirect()->back()->withInput()->with('errors', $erroresUnicidad);
+        }
+
         $logoUrl = $organizacion['logo_url'];
         $archivo = $this->request->getFile('logo');
 
@@ -344,10 +291,7 @@ class Organizaciones extends BaseController
             $resultado = $this->procesarLogo($archivo);
 
             if ($resultado['error']) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with('errors', ['logo' => $resultado['mensaje']]);
+                return redirect()->back()->withInput()->with('errors', ['logo' => $resultado['mensaje']]);
             }
 
             if (! empty($organizacion['logo_url'])) {
@@ -357,40 +301,29 @@ class Organizaciones extends BaseController
             $logoUrl = $resultado['filename'];
         }
 
-        // Procesar dirección
         $direccionId = $this->procesarDireccion($organizacion['direccion_id']);
         $responsableNombres = trim((string) $this->request->getPost('responsable_nombres'));
         $responsableApellidos = trim((string) $this->request->getPost('responsable_apellidos'));
         $nombreResponsable = trim($responsableNombres . ' ' . $responsableApellidos);
-        $datos = [
+
+        $this->model->skipValidation(true)->update($id, [
             'nombre_org'         => $this->request->getPost('nombre_org'),
             'tipo'               => $this->request->getPost('tipo'),
             'categoria'          => $this->request->getPost('categoria'),
             'telefono'           => $this->request->getPost('telefono'),
-            'email'             => $this->request->getPost('email'),
+            'email'              => $email,
             'nombre_responsable' => $nombreResponsable,
             'direccion_id'       => $direccionId,
             'logo_url'           => $logoUrl,
-        ];
-
-        $this->model->skipValidation(true)->update($id, $datos);
-        $usuarioModel = new UsuarioModel();
-
-        $responsable = $usuarioModel
-            ->where('organizacion_id', $id)
-            ->where('status_usu', 1)
-            ->orderBy('id_usuario', 'ASC')
-            ->first();
+        ]);
 
         if ($responsable) {
-            $email = trim((string) $this->request->getPost('email'));
-
             $userData = [
-                'nombres'   => $responsableNombres,
-                'apellidos' => $responsableApellidos,
-                'email'     => $email,
-                'username'  => explode('@', $email)[0],
-                'telefono'  => $this->request->getPost('telefono'),
+                'nombres'          => $responsableNombres,
+                'apellidos'        => $responsableApellidos,
+                'email'            => $email,
+                'username'         => $username,
+                'telefono'         => $this->request->getPost('telefono'),
                 'genero'           => $this->request->getPost('responsable_genero'),
                 'fecha_nacimiento' => $this->request->getPost('responsable_fecha_nacimiento'),
             ];
@@ -406,10 +339,6 @@ class Organizaciones extends BaseController
         return redirect()->to(base_url('organizaciones'));
     }
 
-    // ----------------------------------------------------------------
-    // logo — Servir el archivo de logo
-    // ----------------------------------------------------------------
-
     public function logo(string $filename): ResponseInterface
     {
         if (! session()->has('id_usuario') || ! session()->get('id_usuario')) {
@@ -417,21 +346,18 @@ class Organizaciones extends BaseController
         }
 
         $filename = basename($filename);
-
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         if (! in_array($ext, self::LOGO_EXTENSIONES, true)) {
             return $this->response->setStatusCode(400)->setBody('Tipo de archivo no permitido.');
         }
 
         $ruta = self::LOGO_DIR . $filename;
-
         if (! is_file($ruta)) {
             return $this->response->setStatusCode(404)->setBody('Logo no encontrado.');
         }
 
-        $finfo    = new \finfo(FILEINFO_MIME_TYPE);
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $mimeReal = $finfo->file($ruta);
-
         if (! array_key_exists($mimeReal, self::LOGO_MIMES)) {
             return $this->response->setStatusCode(415)->setBody('Tipo MIME no permitido.');
         }
@@ -444,28 +370,13 @@ class Organizaciones extends BaseController
             ->setBody(file_get_contents($ruta));
     }
 
-    // ----------------------------------------------------------------
-    // Métodos privados
-    // ----------------------------------------------------------------
-
-    /**
-     * Procesa la sección de dirección del formulario.
-     * Inserta o actualiza en la tabla `direcciones`.
-     *
-     * @param int|null $direccionIdExistente ID de dirección existente (para update)
-     * @return int|null ID de la dirección o null si no se activó la sección
-     */
     private function procesarDireccion(?int $direccionIdExistente = null): ?int
     {
-        // Si la sección de dirección no fue activada, conservar valor anterior
         if (! $this->request->getPost('direccion_activa')) {
             return $direccionIdExistente;
         }
 
-        $estado    = $this->request->getPost('estado');
-        $municipio = $this->request->getPost('municipio');
-
-        // Si no hay estado seleccionado, no guardar dirección
+        $estado = $this->request->getPost('estado');
         if (empty($estado)) {
             return $direccionIdExistente;
         }
@@ -473,7 +384,7 @@ class Organizaciones extends BaseController
         $datosDireccion = [
             'pais'      => $this->request->getPost('pais') ?: 'Venezuela',
             'estado'    => $estado,
-            'municipio' => $municipio,
+            'municipio' => $this->request->getPost('municipio'),
             'parroquia' => $this->request->getPost('parroquia'),
             'ciudad'    => $this->request->getPost('ciudad'),
             'detalle'   => $this->request->getPost('detalle'),
@@ -482,21 +393,14 @@ class Organizaciones extends BaseController
         $db = \Config\Database::connect();
 
         if ($direccionIdExistente) {
-            // Actualizar dirección existente
-            $db->table('direcciones')
-                ->where('id_direccion', $direccionIdExistente)
-                ->update($datosDireccion);
+            $db->table('direcciones')->where('id_direccion', $direccionIdExistente)->update($datosDireccion);
             return $direccionIdExistente;
         }
 
-        // Insertar nueva dirección
         $db->table('direcciones')->insert($datosDireccion);
         return $db->insertID();
     }
 
-    /**
-     * Procesa y guarda el archivo de logo de forma segura.
-     */
     private function procesarLogo(\CodeIgniter\HTTP\Files\UploadedFile $archivo): array
     {
         if (! $archivo->isValid()) {
@@ -514,12 +418,11 @@ class Organizaciones extends BaseController
         }
 
         $tmpPath = $archivo->getTempName();
-        $imgInfo = @getimagesize($tmpPath);
-        if ($imgInfo === false) {
+        if (@getimagesize($tmpPath) === false) {
             return ['error' => true, 'mensaje' => 'El archivo no es una imagen válida.', 'filename' => ''];
         }
 
-        $finfo    = new \finfo(FILEINFO_MIME_TYPE);
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
         $mimeReal = $finfo->file($tmpPath);
         if (! array_key_exists($mimeReal, self::LOGO_MIMES)) {
             return ['error' => true, 'mensaje' => 'El contenido del archivo no corresponde a una imagen permitida.', 'filename' => ''];
@@ -529,7 +432,7 @@ class Organizaciones extends BaseController
             mkdir(self::LOGO_DIR, 0755, true);
         }
 
-        $ext         = self::LOGO_MIMES[$mimeReal];
+        $ext = self::LOGO_MIMES[$mimeReal];
         $nuevoNombre = bin2hex(random_bytes(16)) . '.' . $ext;
 
         while (file_exists(self::LOGO_DIR . $nuevoNombre)) {
@@ -543,16 +446,71 @@ class Organizaciones extends BaseController
         return ['error' => false, 'mensaje' => '', 'filename' => $nuevoNombre];
     }
 
-    /**
-     * Elimina el archivo de logo del servidor si existe.
-     */
     private function eliminarLogo(string $filename): void
     {
         $filename = basename($filename);
-        $ruta     = self::LOGO_DIR . $filename;
+        $ruta = self::LOGO_DIR . $filename;
 
         if (is_file($ruta)) {
             unlink($ruta);
         }
+    }
+
+    private function normalizarEmail(string $email): string
+    {
+        return strtolower(trim($email));
+    }
+
+    private function generarUsernameDesdeEmail(string $email): string
+    {
+        return strtolower(trim((string) explode('@', $email)[0]));
+    }
+
+    private function buscarResponsableOrganizacion(UsuarioModel $usuarioModel, int $organizacionId): ?array
+    {
+        return $usuarioModel
+            ->select('usuarios.*')
+            ->join('roles_usuarios_contexto ruc', 'ruc.id_usuario = usuarios.id_usuario', 'left')
+            ->where('usuarios.organizacion_id', $organizacionId)
+            ->where('usuarios.status_usu', 1)
+            ->where('ruc.id_rol', 3)
+            ->where('ruc.status_urc', 1)
+            ->orderBy('usuarios.id_usuario', 'ASC')
+            ->first();
+    }
+
+    private function existeEmailOrganizacion(string $email, ?int $exceptoOrganizacionId = null): bool
+    {
+        $builder = $this->model->where('email', $email);
+
+        if ($exceptoOrganizacionId !== null) {
+            $builder->where('id_organizacion !=', $exceptoOrganizacionId);
+        }
+
+        return $builder->first() !== null;
+    }
+
+    private function validarEmailYUsernameDisponibles(
+        UsuarioModel $usuarioModel,
+        string $email,
+        string $username,
+        ?int $exceptoUsuarioId = null,
+        ?int $exceptoOrganizacionId = null
+    ): array {
+        $errores = [];
+
+        if ($this->existeEmailOrganizacion($email, $exceptoOrganizacionId)) {
+            $errores['email'] = 'El correo ya está registrado en otra organización.';
+        }
+
+        if ($usuarioModel->existeEmail($email, $exceptoUsuarioId)) {
+            $errores['email'] = 'El correo ya está registrado en otro usuario.';
+        }
+
+        if ($usuarioModel->existeUsername($username, $exceptoUsuarioId)) {
+            $errores['username'] = 'El username generado a partir del correo ya está registrado. Usa un correo diferente.';
+        }
+
+        return $errores;
     }
 }
