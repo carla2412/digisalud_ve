@@ -27,6 +27,28 @@ class UsuarioModel extends Model
                     ->first();
     }
 
+    public function existeEmail(string $email, ?int $exceptoUsuarioId = null): bool
+    {
+        $builder = $this->where('email', strtolower(trim($email)));
+
+        if ($exceptoUsuarioId !== null) {
+            $builder->where($this->primaryKey . ' !=', $exceptoUsuarioId);
+        }
+
+        return $builder->first() !== null;
+    }
+
+    public function existeUsername(string $username, ?int $exceptoUsuarioId = null): bool
+    {
+        $builder = $this->where('username', strtolower(trim($username)));
+
+        if ($exceptoUsuarioId !== null) {
+            $builder->where($this->primaryKey . ' !=', $exceptoUsuarioId);
+        }
+
+        return $builder->first() !== null;
+    }
+
     public function usuariosPorOrganizacion($organizacionId)
     {
         return $this->where('organizacion_id', $organizacionId)->findAll();
@@ -48,8 +70,8 @@ class UsuarioModel extends Model
     }
 
     public function usuariosConOrganizacionFiltrado($orgId)
-{
-    return $this->select('usuarios.*, 
+    {
+        return $this->select('usuarios.*, 
                           organizacion.nombre_org AS nombre_organizacion,
                           roles.nombre_rol AS nombre_rol')
                 ->join('organizacion', 'organizacion.id_organizacion = usuarios.organizacion_id', 'left')
@@ -58,7 +80,7 @@ class UsuarioModel extends Model
                 ->where('usuarios.organizacion_id', $orgId)
                 ->groupBy('usuarios.id_usuario')
                 ->findAll();
-}
+    }
 
     public function buscarUsuariosPorOrg($texto, $orgId)
     {
@@ -117,4 +139,4 @@ class UsuarioModel extends Model
             ->where('usuarios.id_usuario', $id_usuario)
             ->first();
     }
-} //  llave clase
+}
