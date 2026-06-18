@@ -101,6 +101,17 @@ class OrganizacionModel extends Model
     // Queries auxiliares
     // ----------------------------------------------------------------
 
+    public function existeEmail(string $email, ?int $exceptoOrganizacionId = null): bool
+    {
+        $builder = $this->where('email', strtolower(trim($email)));
+
+        if ($exceptoOrganizacionId !== null) {
+            $builder->where($this->primaryKey . ' !=', $exceptoOrganizacionId);
+        }
+
+        return $builder->first() !== null;
+    }
+
     /**
      * Retorna todas las organizaciones activas ordenadas por nombre.
      */
