@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\UsuarioModel;
 use App\Models\RolesUsuariosContextoModel;
+use CodeIgniter\Database\Exceptions\DatabaseException;
 
 class PerfilController extends BaseController
 {
@@ -38,21 +39,51 @@ class PerfilController extends BaseController
 
     public function actualizar()
     {
-        $id = session('id_usuario');
+        $id = (int) session('id_usuario');
+
+        if (!$id) {
+            return redirect()->to('/login')->with('error', 'Tu sesión no es válida. Inicia sesión nuevamente.');
+        }
+
+        $email = strtolower(trim((string) $this->request->getPost('email')));
+        $username = explode('@', $email)[0] ?? '';
 
         $data = [
-            'nombres'          => $this->request->getPost('nombres'),
-            'apellidos'        => $this->request->getPost('apellidos'),
+            'nombres'          => trim((string) $this->request->getPost('nombres')),
+            'apellidos'        => trim((string) $this->request->getPost('apellidos')),
             'genero'           => $this->request->getPost('genero'),
             'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento'),
-            'email'            => $this->request->getPost('email'),
-            'username'         => explode('@', $this->request->getPost('email'))[0],
+            'email'            => $email,
+            'username'         => $username,
             'profesion'        => $this->request->getPost('profesion'),
             'telefono'         => $this->request->getPost('telefono'),
         ];
 
         $usuarioModel = new UsuarioModel();
-        $usuarioModel->update($id, $data);
+
+        if ($usuarioModel->existeEmail($email, $id)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'El correo electrónico ingresado ya está registrado por otro usuario.');
+        }
+
+        if ($usuarioModel->existeUsername($username, $id)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'El nombre de usuario generado por el correo ya está registrado por otro usuario.');
+        }
+
+        try {
+            $usuarioModel->update($id, $data);
+        } catch (DatabaseException $e) {
+            if ((int) $e->getCode() === 1062) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'No se pudo actualizar el perfil porque el correo o usuario ya existe.');
+            }
+
+            throw $e;
+        }
 
         // Actualizar sesión para que el header refleje el cambio
         session()->set([
