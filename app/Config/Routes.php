@@ -13,6 +13,12 @@ $routes->post('login', 'Auth::attempt');
 $routes->get('logout', 'Auth::logout');
 $routes->post('auth/attempt', 'Auth::attempt');
 
+// Recuperar contraseña
+$routes->get('recuperar-password', 'PasswordResetController::solicitar');
+$routes->post('recuperar-password', 'PasswordResetController::enviar');
+$routes->get('reset-password/(:segment)', 'PasswordResetController::form/$1');
+$routes->post('reset-password', 'PasswordResetController::actualizar');
+
 // Registro individual
 $routes->get('registro/individual', 'Registro::individual');
 $routes->get('registro/individual/validar-email', 'Registro::validarEmailIndividual');
