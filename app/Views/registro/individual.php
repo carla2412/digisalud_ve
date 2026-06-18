@@ -17,6 +17,17 @@
         </div>
 <br>
 
+            <?php if (session()->getFlashdata('errors')): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <ul class="mb-0">
+                        <?php foreach (session()->getFlashdata('errors') as $err): ?>
+                            <li><?= esc($err) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
+
             <form method="post" action="<?= site_url('registro/individual') ?>" id="formUsuario" class="needs-validation" novalidate>
                 <?= csrf_field() ?>
 
@@ -33,13 +44,13 @@
 
                             <div class="col-md-6">
                                 <label for="nombres" class="form-label">Nombres *</label>
-                                <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Ej. Juan" required>
+                                <input type="text" class="form-control" id="nombres" name="nombres" value="<?= old('nombres') ?>" placeholder="Ej. Juan" required>
                                 <div class="invalid-feedback">Por favor ingresa tus nombres.</div>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="apellidos" class="form-label">Apellidos *</label>
-                                <input type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Ej. Pérez" required>
+                                <input type="text" class="form-control" id="apellidos" name="apellidos" value="<?= old('apellidos') ?>" placeholder="Ej. Pérez" required>
                                 <div class="invalid-feedback">Por favor ingresa tus apellidos.</div>
                             </div>
 
@@ -48,12 +59,12 @@
 
                                 <div class="d-flex gap-3 pt-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="genero" id="generoF" value="F" required>
+                                        <input class="form-check-input" type="radio" name="genero" id="generoF" value="F" <?= old('genero') === 'F' ? 'checked' : '' ?> required>
                                         <label class="form-check-label" for="generoF">Femenino</label>
                                     </div>
 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="genero" id="generoM" value="M" required>
+                                        <input class="form-check-input" type="radio" name="genero" id="generoM" value="M" <?= old('genero') === 'M' ? 'checked' : '' ?> required>
                                         <label class="form-check-label" for="generoM">Masculino</label>
                                     </div>
                                 </div>
@@ -67,7 +78,7 @@
                                     <span class="input-group-text bg-light">
                                         <i class="fas fa-calendar-alt"></i>
                                     </span>
-                                    <input type="date" class="form-control" id="fechaNacimiento" name="fecha_nacimiento" required>
+                                    <input type="date" class="form-control" id="fechaNacimiento" name="fecha_nacimiento" value="<?= old('fecha_nacimiento') ?>" required>
                                     <div class="invalid-feedback">Selecciona una fecha de nacimiento.</div>
                                 </div>
                             </div>
@@ -89,7 +100,7 @@
 
                             <div class="col-md-6">
                                 <label for="profesion" class="form-label">Profesión *</label>
-                                <select id="profesion" name="profesion" class="form-select" required></select>
+                                <select id="profesion" name="profesion" class="form-select" data-selected="<?= esc(old('profesion')) ?>" required></select>
                                 <div class="invalid-feedback">Ingresa una profesión válida.</div>
                             </div>
 
@@ -99,7 +110,7 @@
                                     <span class="input-group-text bg-light">
                                         <i class="fas fa-phone"></i>
                                     </span>
-                                    <input type="tel" class="form-control" id="telefono" name="telefono" pattern="[0-9+ ]{6,15}" placeholder="412 1234567" required>
+                                    <input type="tel" class="form-control" id="telefono" name="telefono" value="<?= old('telefono') ?>" pattern="[0-9+ ]{6,15}" placeholder="412 1234567" required>
                                     <div class="invalid-feedback">Ingresa un número de teléfono válido.</div>
                                 </div>
                             </div>
@@ -126,33 +137,33 @@
 
                             <div class="col-md-6">
                                 <label for="estado" class="form-label">Estado *</label>
-                                <select id="estado" name="estado" class="form-select" required>
+                                <select id="estado" name="estado" class="form-select" data-selected="<?= esc(old('estado')) ?>" required>
                                     <option value="">Selecciona un estado...</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="municipio" class="form-label">Municipio *</label>
-                                <select id="municipio" name="municipio" class="form-select" required>
+                                <select id="municipio" name="municipio" class="form-select" data-selected="<?= esc(old('municipio')) ?>" required>
                                     <option value="">Selecciona un municipio...</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="parroquia" class="form-label">Parroquia *</label>
-                                <select id="parroquia" name="parroquia" class="form-select" required>
+                                <select id="parroquia" name="parroquia" class="form-select" data-selected="<?= esc(old('parroquia')) ?>" required>
                                     <option value="">Selecciona una parroquia...</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="ciudad" class="form-label">Ciudad o Localidad</label>
-                                <input type="text" class="form-control" id="ciudad" name="ciudad" placeholder="Ej. Acarigua">
+                                <input type="text" class="form-control" id="ciudad" name="ciudad" value="<?= old('ciudad') ?>" placeholder="Ej. Acarigua">
                             </div>
 
                             <div class="col-md-6">
                                 <label for="detalle" class="form-label">Detalle opcional</label>
-                                <input type="text" class="form-control" id="detalle" name="detalle" placeholder="Calle, edificio, referencia...">
+                                <input type="text" class="form-control" id="detalle" name="detalle" value="<?= old('detalle') ?>" placeholder="Calle, edificio, referencia...">
                             </div>
 
                         </div>
@@ -176,9 +187,9 @@
                                     <span class="input-group-text bg-light">
                                         <i class="fas fa-envelope"></i>
                                     </span>
-                                    <input type="email" class="form-control" name="email" id="email" placeholder="usuario@ejemplo.com" required>
-                                    <div class="invalid-feedback">Ingresa un email válido.</div>
+                                    <input type="email" class="form-control" name="email" id="email" value="<?= old('email') ?>" placeholder="usuario@ejemplo.com" required>
                                 </div>
+                                <div class="invalid-feedback" id="email-feedback">Ingresa un email válido.</div>
                             </div>
 
                             <div class="col-md-6">
@@ -233,7 +244,7 @@ $(document).ready(function () {
     // Profesiones
     if (Array.isArray(profesiones)) {
         profesiones.forEach(function(p) {
-            $profesion.append(new Option(p, p));
+            $profesion.append(new Option(p, p, false, p === $profesion.data('selected')));
         });
     }
 
@@ -245,56 +256,182 @@ $(document).ready(function () {
 
     // Estados
     Object.keys(ubicaciones).forEach(estado => {
-        $estado.append(new Option(estado, estado));
+        $estado.append(new Option(estado, estado, false, estado === $estado.data('selected')));
     });
 
     $estado.select2({ placeholder: 'Selecciona un estado', width: '100%' });
     $municipio.select2({ placeholder: 'Selecciona un municipio', width: '100%' });
     $parroquia.select2({ placeholder: 'Selecciona una parroquia', width: '100%' });
 
-    $estado.on('change', function() {
-        const estadoSeleccionado = this.value;
+    function cargarMunicipios(estadoSeleccionado, municipioActual) {
         const municipios = Object.keys(ubicaciones[estadoSeleccionado] || {});
 
         $municipio.empty().append(new Option('', ''));
         $parroquia.empty().append(new Option('', ''));
 
         municipios.forEach(mun => {
-            $municipio.append(new Option(mun, mun));
+            $municipio.append(new Option(mun, mun, false, mun === municipioActual));
         });
 
         $municipio.trigger('change.select2');
         $parroquia.trigger('change.select2');
-    });
+    }
 
-    $municipio.on('change', function() {
-        const estadoSeleccionado = $estado.val();
-        const municipioSeleccionado = this.value;
+    function cargarParroquias(estadoSeleccionado, municipioSeleccionado, parroquiaActual) {
         const parroquias = ubicaciones[estadoSeleccionado]?.[municipioSeleccionado] || [];
 
         $parroquia.empty().append(new Option('', ''));
 
         parroquias.forEach(pq => {
-            $parroquia.append(new Option(pq, pq));
+            $parroquia.append(new Option(pq, pq, false, pq === parroquiaActual));
         });
 
         $parroquia.trigger('change.select2');
+    }
+
+    $estado.on('change', function() {
+        cargarMunicipios(this.value, '');
     });
 
+    $municipio.on('change', function() {
+        cargarParroquias($estado.val(), this.value, '');
+    });
+
+    const estadoActual = $estado.data('selected');
+    const municipioActual = $municipio.data('selected');
+    const parroquiaActual = $parroquia.data('selected');
+
+    if (estadoActual) {
+        cargarMunicipios(estadoActual, municipioActual);
+        if (municipioActual) {
+            cargarParroquias(estadoActual, municipioActual, parroquiaActual);
+        }
+    }
 });
 </script>
 
 <script>
 const form = document.getElementById('formUsuario');
+const emailInput = document.getElementById('email');
+const emailFeedback = document.getElementById('email-feedback');
+const submitButton = form.querySelector('button[type="submit"]');
+let emailValido = true;
+let ultimoEmailValidado = emailInput.value.trim().toLowerCase();
+let emailTimer = null;
+
+function setEmailInvalido(mensaje) {
+    emailValido = false;
+    emailInput.classList.add('is-invalid');
+    emailInput.classList.remove('is-valid');
+    emailFeedback.textContent = mensaje || 'Correo electrónico no válido.';
+    emailFeedback.style.display = 'block';
+    submitButton.disabled = true;
+}
+
+function setEmailValido() {
+    emailValido = true;
+    emailInput.classList.remove('is-invalid');
+    emailInput.classList.add('is-valid');
+    emailFeedback.textContent = '';
+    emailFeedback.style.display = 'none';
+    submitButton.disabled = false;
+}
+
+function limpiarEmail() {
+    emailValido = true;
+    emailInput.classList.remove('is-invalid', 'is-valid');
+    emailFeedback.textContent = '';
+    emailFeedback.style.display = 'none';
+    submitButton.disabled = false;
+}
+
+function validarEmailRegistro(callback) {
+    const email = emailInput.value.trim().toLowerCase();
+
+    if (email === '') {
+        limpiarEmail();
+        if (callback) callback(true);
+        return;
+    }
+
+    if (!emailInput.checkValidity()) {
+        setEmailInvalido('Ingresa un correo electrónico válido.');
+        if (callback) callback(false);
+        return;
+    }
+
+    fetch('<?= site_url('registro/individual/validar-email') ?>?email=' + encodeURIComponent(email), {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('Error al validar el correo.');
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            ultimoEmailValidado = email;
+
+            if (data.valid) {
+                setEmailValido();
+                if (callback) callback(true);
+                return;
+            }
+
+            setEmailInvalido(data.message || 'Este correo electrónico ya está registrado.');
+            if (callback) callback(false);
+        })
+        .catch(function() {
+            limpiarEmail();
+            if (callback) callback(true);
+        });
+}
+
+emailInput.addEventListener('input', function() {
+    clearTimeout(emailTimer);
+    limpiarEmail();
+    emailTimer = setTimeout(validarEmailRegistro, 450);
+});
+
+emailInput.addEventListener('blur', function() {
+    clearTimeout(emailTimer);
+    validarEmailRegistro();
+});
 
 form.addEventListener('submit', function(e) {
     const pass = document.getElementById('contrasena');
     const confirm = document.getElementById('confirmarContrasena');
+    const emailActual = emailInput.value.trim().toLowerCase();
 
     if (pass.value !== confirm.value) {
         confirm.setCustomValidity("Las contraseñas no coinciden");
     } else {
         confirm.setCustomValidity("");
+    }
+
+    if (!emailValido || emailInput.classList.contains('is-invalid')) {
+        e.preventDefault();
+        e.stopPropagation();
+        setEmailInvalido(emailFeedback.textContent || 'Corrige el correo antes de guardar.');
+        form.classList.add('was-validated');
+        return;
+    }
+
+    if (emailActual !== ultimoEmailValidado && emailInput.checkValidity()) {
+        e.preventDefault();
+        e.stopPropagation();
+        validarEmailRegistro(function(valid) {
+            if (valid && form.checkValidity()) {
+                form.submit();
+            } else {
+                form.classList.add('was-validated');
+            }
+        });
+        return;
     }
 
     if (!form.checkValidity()) {
