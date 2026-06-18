@@ -26,6 +26,13 @@
     <?= $this->include('partials/sidebar') ?>
 
     <main class="container-fluid py-4">
+        <?php if (session('error')): ?>
+            <div class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i> <?= esc(session('error')) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <?php endif; ?>
+
         <?= $this->renderSection('content') ?>
     </main>
    <?= $this->include('partials/footer') ?>
@@ -33,7 +40,6 @@
     <!-- Tus scripts22 personalizados -->
     <?= $this->renderSection('scripts') ?>
 
- 
+  
 </body>
 </html>
-
