@@ -37,6 +37,55 @@ class PerfilController extends BaseController
         return view('perfil/index', compact('perfil', 'estadisticas'));
     }
 
+    public function validarEmail()
+    {
+        $id = (int) session('id_usuario');
+        $email = strtolower(trim((string) $this->request->getGet('email')));
+        $username = explode('@', $email)[0] ?? '';
+
+        if (!$id) {
+            return $this->response->setJSON([
+                'valid' => false,
+                'message' => 'Tu sesión no es válida. Inicia sesión nuevamente.'
+            ]);
+        }
+
+        if ($email === '') {
+            return $this->response->setJSON([
+                'valid' => true,
+                'message' => ''
+            ]);
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->response->setJSON([
+                'valid' => false,
+                'message' => 'Ingresa un correo electrónico válido.'
+            ]);
+        }
+
+        $usuarioModel = new UsuarioModel();
+
+        if ($usuarioModel->existeEmail($email, $id)) {
+            return $this->response->setJSON([
+                'valid' => false,
+                'message' => 'Este correo electrónico ya está registrado por otro usuario.'
+            ]);
+        }
+
+        if ($usuarioModel->existeUsername($username, $id)) {
+            return $this->response->setJSON([
+                'valid' => false,
+                'message' => 'El usuario generado por este correo ya existe.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'valid' => true,
+            'message' => ''
+        ]);
+    }
+
     public function actualizar()
     {
         $id = (int) session('id_usuario');
