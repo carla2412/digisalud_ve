@@ -80,7 +80,7 @@ $routes->group('jornadas', ['filter' => 'auth'], function ($routes) {
     $routes->post('(:num)/beneficiarios/store', 'BeneficiariosController::store/$1');
     $routes->get('(:num)/beneficiarios/buscar', 'JornadaBeneficiariosController::buscar/$1');
     $routes->post('(:num)/asociar/(:num)',       'JornadaBeneficiariosController::asociar/$1/$2');
-    $routes->get('(:num)/desasociar/(:num)',     'JornadaBeneficiariosController::desasociar/$1');
+    $routes->get('(:num)/desasociar/(:num)',     'JornadaBeneficiariosController::desasociar/$1/$2');
     $routes->get('(:num)/beneficiarios/(:num)/ficha-rapida','JornadaBeneficiariosController::fichaRapida/$1/$2'
 );
 });
