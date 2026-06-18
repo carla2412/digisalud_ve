@@ -32,9 +32,16 @@
                 <h2 class="fw-bold text-dark mb-2 text-center ">Iniciar Sesión</h2>
                 <p class="text-muted mb-4"> </p>
 
+                <?php if (session()->getFlashdata('success')): ?>
+                    <div class="alert alert-success alert-dismissible fade show rounded-3 border-0" role="alert">
+                        <?= esc(session()->getFlashdata('success')) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
+
                 <?php if (session()->getFlashdata('error')): ?>
                     <div class="alert alert-danger alert-dismissible fade show rounded-3 border-0" role="alert">
-                        <?= session()->getFlashdata('error') ?>
+                        <?= esc(session()->getFlashdata('error')) ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php endif; ?>
@@ -65,7 +72,7 @@
                             <label class="form-label small fw-bold text-uppercase text-muted">
                                 Contraseña
                             </label>
-                            <a href="#" class="ds-link small">¿La olvidaste?</a>
+                            <a href="<?= site_url('recuperar-password') ?>" class="ds-link small">¿La olvidaste?</a>
                         </div>
 
                         <div class="input-group password-group">
