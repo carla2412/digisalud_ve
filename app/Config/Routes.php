@@ -112,6 +112,7 @@ $routes->get('organizaciones',               'Organizaciones::index',     ['as' 
 $routes->get('organizaciones/crear',         'Organizaciones::create',    ['as' => 'organizaciones.create']);
 $routes->post('organizaciones/guardar',      'Organizaciones::store',     ['as' => 'organizaciones.store']);
 $routes->get('organizaciones/editar/(:num)', 'Organizaciones::edit/$1',   ['as' => 'organizaciones.edit']);
+$routes->get('organizaciones/validar-email/(:num)', 'OrganizacionesEmailValidation::validar/$1');
 $routes->post('organizaciones/update/(:num)', 'Organizaciones::update/$1', ['as' => 'organizaciones.update']);
 // ═══════════════════════════════════════════════════════════════
 // EVALUACIONES (transversal jornadas y centros)
