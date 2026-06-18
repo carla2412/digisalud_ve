@@ -15,6 +15,7 @@ $routes->post('auth/attempt', 'Auth::attempt');
 
 // Registro individual
 $routes->get('registro/individual', 'Registro::individual');
+$routes->get('registro/individual/validar-email', 'Registro::validarEmailIndividual');
 $routes->post('registro/individual', 'Registro::guardarIndividual');
 
 // Registro organizacion
