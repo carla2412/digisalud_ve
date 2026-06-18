@@ -112,6 +112,7 @@ class PasswordResetController extends BaseController
         $nombre = trim(($usuario['nombres'] ?? '') . ' ' . ($usuario['apellidos'] ?? '')) ?: 'usuario';
 
         $email = service('email');
+        $email->setMailType('html');
         $email->setTo($usuario['email']);
         $email->setSubject('Restablecer contraseña - Digisalud');
         $email->setMessage(view('emails/reset_password', [
