@@ -40,6 +40,132 @@
     <!-- Tus scripts22 personalizados -->
     <?= $this->renderSection('scripts') ?>
 
-  
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const formPerfil = document.getElementById('modoEdicion');
+
+            if (!formPerfil || !formPerfil.matches('form[action*="perfil/actualizar"]')) {
+                return;
+            }
+
+            const emailInput = formPerfil.querySelector('input[name="email"]');
+            const submitButtons = formPerfil.querySelectorAll('button[type="submit"]');
+
+            if (!emailInput) {
+                return;
+            }
+
+            let feedback = emailInput.parentElement.querySelector('.invalid-feedback[data-email-feedback="perfil"]');
+
+            if (!feedback) {
+                feedback = document.createElement('div');
+                feedback.className = 'invalid-feedback';
+                feedback.dataset.emailFeedback = 'perfil';
+                emailInput.insertAdjacentElement('afterend', feedback);
+            }
+
+            let timer = null;
+            let ultimoValorValidado = emailInput.value.trim().toLowerCase();
+            let emailValido = true;
+
+            function setEstadoInvalido(mensaje) {
+                emailValido = false;
+                emailInput.classList.add('is-invalid');
+                emailInput.classList.remove('is-valid');
+                feedback.textContent = mensaje || 'Correo electrónico no válido.';
+                submitButtons.forEach(function (button) {
+                    button.disabled = true;
+                });
+            }
+
+            function setEstadoValido() {
+                emailValido = true;
+                emailInput.classList.remove('is-invalid');
+                emailInput.classList.add('is-valid');
+                feedback.textContent = '';
+                submitButtons.forEach(function (button) {
+                    button.disabled = false;
+                });
+            }
+
+            function limpiarEstado() {
+                emailValido = true;
+                emailInput.classList.remove('is-invalid', 'is-valid');
+                feedback.textContent = '';
+                submitButtons.forEach(function (button) {
+                    button.disabled = false;
+                });
+            }
+
+            function validarEmail() {
+                const email = emailInput.value.trim().toLowerCase();
+
+                if (email === '') {
+                    limpiarEstado();
+                    return;
+                }
+
+                if (!emailInput.checkValidity()) {
+                    setEstadoInvalido('Ingresa un correo electrónico válido.');
+                    return;
+                }
+
+                fetch('<?= site_url('perfil/validar-email') ?>?email=' + encodeURIComponent(email), {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(function (response) {
+                        if (!response.ok) {
+                            throw new Error('Error al validar el correo.');
+                        }
+
+                        return response.json();
+                    })
+                    .then(function (data) {
+                        ultimoValorValidado = email;
+
+                        if (data.valid) {
+                            setEstadoValido();
+                            return;
+                        }
+
+                        setEstadoInvalido(data.message || 'Este correo electrónico ya está registrado.');
+                    })
+                    .catch(function () {
+                        limpiarEstado();
+                    });
+            }
+
+            emailInput.addEventListener('input', function () {
+                clearTimeout(timer);
+                limpiarEstado();
+
+                timer = setTimeout(validarEmail, 450);
+            });
+
+            emailInput.addEventListener('blur', function () {
+                clearTimeout(timer);
+                validarEmail();
+            });
+
+            formPerfil.addEventListener('submit', function (event) {
+                const emailActual = emailInput.value.trim().toLowerCase();
+
+                if (!emailValido || emailInput.classList.contains('is-invalid')) {
+                    event.preventDefault();
+                    setEstadoInvalido(feedback.textContent || 'Corrige el correo antes de guardar.');
+                    return;
+                }
+
+                if (emailActual !== ultimoValorValidado && emailInput.checkValidity()) {
+                    event.preventDefault();
+                    validarEmail();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
