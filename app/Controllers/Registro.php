@@ -59,6 +59,41 @@ class Registro extends BaseController
         ]);
     }
 
+    public function validarEmailOrganizacion()
+    {
+        $usuarios = new UsuarioModel();
+        $email = $this->normalizarEmail((string) $this->request->getGet('email'));
+        $username = $this->generarUsernameDesdeEmail($email);
+
+        if ($email === '') {
+            return $this->response->setJSON([
+                'valid' => true,
+                'message' => ''
+            ]);
+        }
+
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->response->setJSON([
+                'valid' => false,
+                'message' => 'Ingresa un correo electrónico válido.'
+            ]);
+        }
+
+        $errores = $this->validarUsuarioDisponible($usuarios, $email, $username);
+
+        if ($errores !== []) {
+            return $this->response->setJSON([
+                'valid' => false,
+                'message' => reset($errores)
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'valid' => true,
+            'message' => ''
+        ]);
+    }
+
     public function guardarIndividual()
     {
         $usuarios       = new UsuarioModel();
@@ -149,6 +184,17 @@ class Registro extends BaseController
         $direccionModel    = new \App\Models\DireccionModel();
         $rolesContexto     = new \App\Models\RolesUsuariosContextoModel();
 
+        $email = $this->normalizarEmail((string) $this->request->getPost('email'));
+        $username = $this->generarUsernameDesdeEmail($email);
+
+        $errores = $this->validarUsuarioDisponible($usuarioModel, $email, $username);
+        if ($errores !== []) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('errors', $errores);
+        }
+
         $db = \Config\Database::connect();
         $db->transStart(); //   Iniciar transacción segura
 
@@ -175,7 +221,7 @@ class Registro extends BaseController
             'tipo'               => $this->request->getPost('tipoOrg'),
             'categoria'          => $this->request->getPost('categoriaOrg'),
             'telefono'           => $this->request->getPost('telefono'),
-            'email'             => $this->request->getPost('email'),
+            'email'              => $email,
             'nombre_responsable' => $this->request->getPost('nombres') . ' ' . $this->request->getPost('apellidos'),
             'direccion_id'       => $direccionId,
             'status_org'         => '1'
@@ -192,9 +238,9 @@ class Registro extends BaseController
             'nombres'        => $this->request->getPost('nombres'),
             'apellidos'      => $this->request->getPost('apellidos'),
             'genero'         => $this->request->getPost('genero'),
-            'email'          => $this->request->getPost('email'),
+            'email'          => $email,
             'fecha_nacimiento' => $this->request->getPost('fecha_nacimiento'),
-            'username'       => explode('@', $this->request->getPost('email'))[0],
+            'username'       => $username,
             'password_hash'  => password_hash($this->request->getPost('contrasena'), PASSWORD_DEFAULT),
             'telefono'       => $this->request->getPost('telefono'),
             'profesion'      => $this->request->getPost('profesion'),
