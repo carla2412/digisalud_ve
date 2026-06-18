@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\UsuarioModel;
+use App\Models\OrganizacionModel;
 use App\Models\RolesUsuariosContextoModel;
 use CodeIgniter\Database\Exceptions\DatabaseException;
 
@@ -65,11 +66,19 @@ class PerfilController extends BaseController
         }
 
         $usuarioModel = new UsuarioModel();
+        $organizacionModel = new OrganizacionModel();
 
         if ($usuarioModel->existeEmail($email, $id)) {
             return $this->response->setJSON([
                 'valid' => false,
                 'message' => 'Este correo electrónico ya está registrado por otro usuario.'
+            ]);
+        }
+
+        if ($organizacionModel->existeEmail($email)) {
+            return $this->response->setJSON([
+                'valid' => false,
+                'message' => 'Este correo electrónico ya está registrado en una organización.'
             ]);
         }
 
@@ -109,11 +118,18 @@ class PerfilController extends BaseController
         ];
 
         $usuarioModel = new UsuarioModel();
+        $organizacionModel = new OrganizacionModel();
 
         if ($usuarioModel->existeEmail($email, $id)) {
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'El correo electrónico ingresado ya está registrado por otro usuario.');
+        }
+
+        if ($organizacionModel->existeEmail($email)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'El correo electrónico ingresado ya está registrado en una organización.');
         }
 
         if ($usuarioModel->existeUsername($username, $id)) {
