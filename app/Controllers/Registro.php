@@ -12,6 +12,7 @@ class Registro extends BaseController
     {
         helper('url');
     }
+
     public function individual()
     {
         return view('registro/individual');
@@ -21,6 +22,41 @@ class Registro extends BaseController
     {
 
         return view('registro/organizacion');
+    }
+
+    public function validarEmailIndividual()
+    {
+        $usuarios = new UsuarioModel();
+        $email = $this->normalizarEmail((string) $this->request->getGet('email'));
+        $username = $this->generarUsernameDesdeEmail($email);
+
+        if ($email === '') {
+            return $this->response->setJSON([
+                'valid' => true,
+                'message' => ''
+            ]);
+        }
+
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $this->response->setJSON([
+                'valid' => false,
+                'message' => 'Ingresa un correo electrónico válido.'
+            ]);
+        }
+
+        $errores = $this->validarUsuarioDisponible($usuarios, $email, $username);
+
+        if ($errores !== []) {
+            return $this->response->setJSON([
+                'valid' => false,
+                'message' => reset($errores)
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'valid' => true,
+            'message' => ''
+        ]);
     }
 
     public function guardarIndividual()
@@ -206,9 +242,14 @@ class Registro extends BaseController
     private function validarUsuarioDisponible(UsuarioModel $usuarios, string $email, string $username): array
     {
         $errores = [];
+        $organizaciones = new OrganizacionModel();
 
         if ($usuarios->existeEmail($email)) {
-            $errores['email'] = 'El correo ya está registrado.';
+            $errores['email'] = 'El correo ya está registrado por otro usuario.';
+        }
+
+        if ($organizaciones->existeEmail($email)) {
+            $errores['email'] = 'El correo ya está registrado en una organización.';
         }
 
         if ($usuarios->existeUsername($username)) {
