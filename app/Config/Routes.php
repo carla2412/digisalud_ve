@@ -26,6 +26,7 @@ $routes->get('dashboard', 'Dashboard::index');
 
 // ═══ PERFIL DE USUARIO ═══
 $routes->get('perfil', 'PerfilController::index');
+$routes->get('perfil/validar-email', 'PerfilController::validarEmail');
 $routes->post('perfil/actualizar', 'PerfilController::actualizar');
 $routes->post('perfil/subir-foto', 'PerfilController::subirFoto');
 
