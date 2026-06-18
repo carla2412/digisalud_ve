@@ -6,58 +6,37 @@ use CodeIgniter\Model;
 
 class PasswordResetModel extends Model
 {
-    protected $table      = 'password_resets';
-    protected $primaryKey = 'id';
-
-    protected $returnType     = 'array';
-    protected $useSoftDeletes = false;
+    protected $table            = 'password_resets';
+    protected $primaryKey       = 'id';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
 
     protected $allowedFields = [
-        'user_id',
+        'id_usuario',
         'token_hash',
         'expires_at',
+        'used_at',
+        'created_at',
+        'ip_address',
+        'user_agent',
     ];
 
-    public function createTokenForUser(int $userId): array
+    protected $useTimestamps = false;
+
+    public function invalidarTokensActivos(int $usuarioId): void
     {
-        // Token real (se enviará por correo)
-        $token = bin2hex(random_bytes(32));
-
-        // Hash para guardar en la BD
-        $tokenHash = password_hash($token, PASSWORD_DEFAULT);
-
-        $expiresAt = date('Y-m-d H:i:s', time() + 3600); // 1 hora expira el token
-
-        $id = $this->insert([
-            'user_id'    => $userId,
-            'token_hash' => $tokenHash,
-            'expires_at' => $expiresAt,
-        ]);
-
-        return [
-            'id'    => $id,
-            'token' => $token,
-        ];
+        $this->where('id_usuario', $usuarioId)
+            ->where('used_at', null)
+            ->set(['used_at' => date('Y-m-d H:i:s')])
+            ->update();
     }
 
-    public function verifyToken(int $id, string $token): ?array
+    public function buscarTokenValido(string $tokenHash): ?array
     {
-        $reset = $this->find($id);
-
-        if (!$reset) {
-            return null;
-        }
-
-        // ¿Expiró?
-        if (strtotime($reset['expires_at']) < time()) {
-            return null;
-        }
-
-        // ¿Coincide el hash?
-        if (!password_verify($token, $reset['token_hash'])) {
-            return null;
-        }
-
-        return $reset;
+        return $this->where('token_hash', $tokenHash)
+            ->where('used_at', null)
+            ->where('expires_at >=', date('Y-m-d H:i:s'))
+            ->first();
     }
 }
